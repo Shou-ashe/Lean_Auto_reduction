@@ -1,0 +1,60 @@
+schema_version: opencode_lean_proposition_sample_file_v1
+id: right_tagged_nae3_to_one_in_three_composed_gadget
+name: right_tagged_nae3_to_one_in_three_composed_gadget_problem
+benchmark_level: L11
+input_language: right_tagged_nae3_to_one_in_three_composed_gadget
+problem_family: csp_gadget_composition
+certificate_contract: lean_proposition
+route_target_policy: specified_in_problem_statement
+problem_statement: "Input is an ordinary NAE-3SAT CSP instance paired with a trailing Boolean audit flag. The flag is ignored. Prove NP membership by normalizing the interface and synthesizing a new CSP gadget route from NAE-3SAT through 3-SAT into one-in-three CSP, using existing public gadget reductions."
+difficulty: composed_gadget_synthesis
+difficulty_tags:
+  - csp
+  - gadget_composition
+  - bridge_authoring
+  - two_step_gadget_route
+  - descriptor_composition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction
+
+  noncomputable section
+
+  abbrev sourceProblem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.CSP.Examples.notAllEqual3DecisionProblem
+
+  abbrev targetProblem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.CSP.Examples.oneInThreeDecisionProblem
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    { Instance := ComplexityReduction.EncodedType.prod
+        sourceProblem.Instance
+        ComplexityReduction.EncodedType.bool
+      isYes := fun p => sourceProblem.isYes p.1 }
+lean_target_type: |
+  ∃ normalizedProblem : ComplexityReduction.EncodedDecisionProblem,
+    ∃ _encodingBridgeCertificate :
+      ComplexityReduction.ProblemEquivM
+        ComplexityReduction.CostedPolyTimeModel
+        problem
+        normalizedProblem,
+      ∃ _sourceToPivotGadget :
+        ComplexityReduction.KarpReductionM
+          ComplexityReduction.CostedPolyTimeModel
+          normalizedProblem
+          ComplexityReduction.SAT.threeSATDecisionProblem,
+        ∃ _pivotToTargetGadget :
+          ComplexityReduction.KarpReductionM
+            ComplexityReduction.CostedPolyTimeModel
+            ComplexityReduction.SAT.threeSATDecisionProblem
+            targetProblem,
+          ComplexityReduction.PolyReducibleM
+            ComplexityReduction.CostedPolyTimeModel
+            problem
+            targetProblem ∧
+          ComplexityReduction.InNPEnc
+            ComplexityReduction.CostedPolyTimeModel
+            targetProblem ∧
+          ComplexityReduction.InNPEnc
+            ComplexityReduction.CostedPolyTimeModel
+            problem

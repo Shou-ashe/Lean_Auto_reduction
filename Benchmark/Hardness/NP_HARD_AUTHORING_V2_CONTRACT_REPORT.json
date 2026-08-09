@@ -1,0 +1,738 @@
+{
+  "active_plan_sha256": "4cbafc4cfbb12f9a3dd78e19a7a1a1cfbeead72137925b4bfcc3e9d7a63550e1",
+  "cases": [
+    {
+      "editable_declaration_count": 1,
+      "final_command": {
+        "command": [
+          "lake",
+          "env",
+          "lean",
+          "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-authoring-v2-contract-g-b-final/Final1.lean"
+        ],
+        "duration_seconds": 5.252,
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": "",
+        "timed_out": false
+      },
+      "gap_node_count": 1,
+      "gold_module": "Benchmark.Hardness.Gold.NPHardGeneralization.SatProofOnly",
+      "gold_source_sha256": "sha256:a1bd3ee22237be0a4986efa4c33bb3c995e32114de70fd1824509d929783c7ce",
+      "matched_contract": true,
+      "prompt_safe": true,
+      "prompt_sha256": "sha256:fa38dda265bfc4c29e7ae829d10b9a7f66d3865856ca00ad9ec113017cdcedef",
+      "replay_command": {
+        "command": [
+          "lake",
+          "env",
+          "lean",
+          "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-authoring-v2-contract-g-b-final/Replay1.lean"
+        ],
+        "duration_seconds": 2.33,
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": "",
+        "timed_out": false
+      },
+      "request_id": "sha256:0ec1d415def09ee0d1b22bbbffd23ec9aff9f43cd8d20f27badb87c0a29989d1",
+      "result": {
+        "accepted_nodes": [
+          "semantic-proof"
+        ],
+        "candidate_hashes": {
+          "semantic-proof": "sha256:a1bd3ee22237be0a4986efa4c33bb3c995e32114de70fd1824509d929783c7ce"
+        },
+        "final_certificate": "sha256:7751d70434c4ebc6aa36a8bcd26f42022ba05226ad40826ccac34c207756752a",
+        "lean_diagnostics": [
+          "isolated exact-endpoint Gold replay accepted"
+        ],
+        "model_calls": [],
+        "outcome": "accepted",
+        "policy_diagnostics": [
+          "public task and prompt contain no Gold metadata"
+        ],
+        "remaining_nodes": [],
+        "replay_certificate": "sha256:66689152db1673c3641b82a91701ce2329a9f591529c402c7f85a6440e368a94",
+        "request_id": "sha256:0ec1d415def09ee0d1b22bbbffd23ec9aff9f43cd8d20f27badb87c0a29989d1",
+        "schema_version": "hardness_np_hard_authoring_result_v2"
+      },
+      "source_problem": {
+        "module": "ComplexityReduction.Certificate.NativeCookLevin",
+        "term": "ComplexityReduction.Certificate.NativeCookLevin.canonicalThreeSAT"
+      },
+      "target_problem": {
+        "module": "Benchmark.Hardness.Inputs.NPHardMVP.ModelAuthoredTaggedThreeSAT",
+        "term": "Benchmark.Hardness.Inputs.NPHardMVP.ModelAuthoredTaggedThreeSAT.source"
+      },
+      "task": {
+        "allowed_imports": [
+          "Benchmark.Hardness.Inputs.NPHardMVP.ModelAuthoredTaggedThreeSAT",
+          "ComplexityReduction.Certificate.NativeCookLevin",
+          "ComplexityReduction.Agent.Hardness.Runtime"
+        ],
+        "allowed_primitives": [
+          "Benchmark.Hardness.Inputs.NPHardMVP.ModelAuthoredTaggedThreeSAT.forwardProgram"
+        ],
+        "attempt_budget": 4,
+        "candidate_module": "Generated.NPHardV2.C13bcf8b0dc04dfed.Authoring",
+        "dependency_hashes": {
+          "module:Benchmark.Hardness.Inputs.NPHardMVP.ModelAuthoredTaggedThreeSAT": "sha256:01ead5c8dc779be47ba4c6d2ffd2c95f8fc79cfd1158ec67f74f9318488dace9",
+          "module:ComplexityReduction.Agent.Hardness.Runtime": "sha256:a7f25cb8e9d263a7e385795814b19c85bc95ab2da2d9805e5efc80a45d7ae0af",
+          "module:ComplexityReduction.Certificate.NativeCookLevin": "sha256:2a85b2fb0fe05b7865672f4cd50ede71cf8d3e000ba998fdbd8e34761e2a627a",
+          "public:Lean/Reference/Benchmark/Hardness/Inputs/NPHardMVP/ModelAuthoredTaggedThreeSAT.lean": "sha256:01ead5c8dc779be47ba4c6d2ffd2c95f8fc79cfd1158ec67f74f9318488dace9"
+        },
+        "editable_declarations": [
+          "Generated.NPHardV2.C13bcf8b0dc04dfed.Authoring.semanticCorrect"
+        ],
+        "final_candidate_declaration": "Generated.NPHardV2.C13bcf8b0dc04dfed.Authoring.authoredForwardReduction",
+        "final_exact_type": "ComplexityReduction.Certificate.CertifiedReduction ComplexityReduction.Certificate.NativeCookLevin.canonicalThreeSAT Benchmark.Hardness.Inputs.NPHardMVP.ModelAuthoredTaggedThreeSAT.source",
+        "forbidden_axioms": [
+          "sorryAx",
+          "admit",
+          "axiom",
+          "unsafe"
+        ],
+        "gap_nodes": [
+          {
+            "capability": "semantic_proof",
+            "declaration": "Generated.NPHardV2.C13bcf8b0dc04dfed.Authoring.semanticCorrect",
+            "depends_on": [],
+            "exact_type": "∀ input : ComplexityReduction.Certificate.NativeCookLevin.canonicalThreeSAT.Instance, ComplexityReduction.Certificate.NativeCookLevin.canonicalThreeSAT.accepts input ↔ Benchmark.Hardness.Inputs.NPHardMVP.ModelAuthoredTaggedThreeSAT.source.accepts (Benchmark.Hardness.Inputs.NPHardMVP.ModelAuthoredTaggedThreeSAT.forwardProgram.run input)",
+            "node_id": "semantic-proof"
+          }
+        ],
+        "max_output_tokens": 3000,
+        "public_source_files": [
+          "Lean/Reference/Benchmark/Hardness/Inputs/NPHardMVP/ModelAuthoredTaggedThreeSAT.lean"
+        ],
+        "request_id": "sha256:0ec1d415def09ee0d1b22bbbffd23ec9aff9f43cd8d20f27badb87c0a29989d1",
+        "required_direction": "source_to_target",
+        "schema_version": "hardness_np_hard_authoring_task_v2",
+        "source_problem": {
+          "module": "ComplexityReduction.Certificate.NativeCookLevin",
+          "term": "ComplexityReduction.Certificate.NativeCookLevin.canonicalThreeSAT"
+        },
+        "target_problem": {
+          "module": "Benchmark.Hardness.Inputs.NPHardMVP.ModelAuthoredTaggedThreeSAT",
+          "term": "Benchmark.Hardness.Inputs.NPHardMVP.ModelAuthoredTaggedThreeSAT.source"
+        },
+        "task_class": "semantic_proof",
+        "timeout_seconds": 60
+      },
+      "task_class": "semantic_proof"
+    },
+    {
+      "editable_declaration_count": 2,
+      "final_command": {
+        "command": [
+          "lake",
+          "env",
+          "lean",
+          "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-authoring-v2-contract-g-b-final/Final2.lean"
+        ],
+        "duration_seconds": 2.354,
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": "",
+        "timed_out": false
+      },
+      "gap_node_count": 2,
+      "gold_module": "Benchmark.Hardness.Gold.NPHardGeneralization.GraphProofOnly",
+      "gold_source_sha256": "sha256:2f085faa43e5b17d274229b0c249e69a6d322f39c0a525c7a5af18c45d022740",
+      "matched_contract": true,
+      "prompt_safe": true,
+      "prompt_sha256": "sha256:a0a7fb22ed360c3d700f07f5aed7dc756855874587db666cc9860f4949d2d7e7",
+      "replay_command": {
+        "command": [
+          "lake",
+          "env",
+          "lean",
+          "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-authoring-v2-contract-g-b-final/Replay2.lean"
+        ],
+        "duration_seconds": 2.319,
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": "",
+        "timed_out": false
+      },
+      "request_id": "sha256:832de87f32e823d55a63bf4c2415bd6dbded058a35fc1f76d53889123c5f3f38",
+      "result": {
+        "accepted_nodes": [
+          "mapping-invariant",
+          "semantic-iff"
+        ],
+        "candidate_hashes": {
+          "mapping-invariant": "sha256:2f085faa43e5b17d274229b0c249e69a6d322f39c0a525c7a5af18c45d022740",
+          "semantic-iff": "sha256:2f085faa43e5b17d274229b0c249e69a6d322f39c0a525c7a5af18c45d022740"
+        },
+        "final_certificate": "sha256:3744042b66926e97f9acc20b152f13abb539359183231cbe69ffe314bd64d699",
+        "lean_diagnostics": [
+          "isolated exact-endpoint Gold replay accepted"
+        ],
+        "model_calls": [],
+        "outcome": "accepted",
+        "policy_diagnostics": [
+          "public task and prompt contain no Gold metadata"
+        ],
+        "remaining_nodes": [],
+        "replay_certificate": "sha256:c054df3cc77e0b13669a645fbd31bb4ee8eb68a6fd982341bd02ea5718c62c9e",
+        "request_id": "sha256:832de87f32e823d55a63bf4c2415bd6dbded058a35fc1f76d53889123c5f3f38",
+        "schema_version": "hardness_np_hard_authoring_result_v2"
+      },
+      "source_problem": {
+        "module": "ComplexityReduction.Problems.Karp21.GraphAtoms",
+        "term": "ComplexityReduction.Problems.Karp21.GraphAtoms.cliqueStructuredProblem"
+      },
+      "target_problem": {
+        "module": "Benchmark.Hardness.Inputs.NPHardGeneralization.GraphProofOnly",
+        "term": "Benchmark.Hardness.Inputs.NPHardGeneralization.GraphProofOnly.source"
+      },
+      "task": {
+        "allowed_imports": [
+          "Benchmark.Hardness.Inputs.NPHardGeneralization.GraphProofOnly",
+          "ComplexityReduction.Problems.Karp21.GraphAtoms",
+          "ComplexityReduction.Agent.Hardness.Runtime"
+        ],
+        "allowed_primitives": [
+          "Benchmark.Hardness.Inputs.NPHardGeneralization.GraphProofOnly.forwardProgram",
+          "Benchmark.Hardness.Inputs.NPHardGeneralization.GraphProofOnly.mappingInvariant"
+        ],
+        "attempt_budget": 4,
+        "candidate_module": "Generated.NPHardV2.C2871aec4588b5eb2.Authoring",
+        "dependency_hashes": {
+          "module:Benchmark.Hardness.Inputs.NPHardGeneralization.GraphProofOnly": "sha256:21c6c900966f5cb1c30d2ee24b005db16374140091010edb9d9f44c17267d515",
+          "module:ComplexityReduction.Agent.Hardness.Runtime": "sha256:a7f25cb8e9d263a7e385795814b19c85bc95ab2da2d9805e5efc80a45d7ae0af",
+          "module:ComplexityReduction.Problems.Karp21.GraphAtoms": "sha256:e0367d654ee112022baa2f14856be41aaa545c6f3e85b2cbb1ede562ab2071c4",
+          "public:Lean/Reference/Benchmark/Hardness/Inputs/NPHardGeneralization/GraphProofOnly.lean": "sha256:21c6c900966f5cb1c30d2ee24b005db16374140091010edb9d9f44c17267d515"
+        },
+        "editable_declarations": [
+          "Generated.NPHardV2.C2871aec4588b5eb2.Authoring.mappingInvariantProof",
+          "Generated.NPHardV2.C2871aec4588b5eb2.Authoring.semanticCorrect"
+        ],
+        "final_candidate_declaration": "Generated.NPHardV2.C2871aec4588b5eb2.Authoring.authoredForwardReduction",
+        "final_exact_type": "ComplexityReduction.Certificate.CertifiedReduction ComplexityReduction.Problems.Karp21.GraphAtoms.cliqueStructuredProblem Benchmark.Hardness.Inputs.NPHardGeneralization.GraphProofOnly.source",
+        "forbidden_axioms": [
+          "sorryAx",
+          "admit",
+          "axiom",
+          "unsafe"
+        ],
+        "gap_nodes": [
+          {
+            "capability": "mapping_invariant",
+            "declaration": "Generated.NPHardV2.C2871aec4588b5eb2.Authoring.mappingInvariantProof",
+            "depends_on": [],
+            "exact_type": "∀ input : ComplexityReduction.Problems.Karp21.GraphAtoms.cliqueStructuredProblem.Instance, Benchmark.Hardness.Inputs.NPHardGeneralization.GraphProofOnly.mappingInvariant input (Benchmark.Hardness.Inputs.NPHardGeneralization.GraphProofOnly.forwardProgram.run input)",
+            "node_id": "mapping-invariant"
+          },
+          {
+            "capability": "semantic_proof",
+            "declaration": "Generated.NPHardV2.C2871aec4588b5eb2.Authoring.semanticCorrect",
+            "depends_on": [
+              "mapping-invariant"
+            ],
+            "exact_type": "∀ input : ComplexityReduction.Problems.Karp21.GraphAtoms.cliqueStructuredProblem.Instance, ComplexityReduction.Problems.Karp21.GraphAtoms.cliqueStructuredProblem.accepts input ↔ Benchmark.Hardness.Inputs.NPHardGeneralization.GraphProofOnly.source.accepts (Benchmark.Hardness.Inputs.NPHardGeneralization.GraphProofOnly.forwardProgram.run input)",
+            "node_id": "semantic-iff"
+          }
+        ],
+        "max_output_tokens": 3000,
+        "public_source_files": [
+          "Lean/Reference/Benchmark/Hardness/Inputs/NPHardGeneralization/GraphProofOnly.lean"
+        ],
+        "request_id": "sha256:832de87f32e823d55a63bf4c2415bd6dbded058a35fc1f76d53889123c5f3f38",
+        "required_direction": "source_to_target",
+        "schema_version": "hardness_np_hard_authoring_task_v2",
+        "source_problem": {
+          "module": "ComplexityReduction.Problems.Karp21.GraphAtoms",
+          "term": "ComplexityReduction.Problems.Karp21.GraphAtoms.cliqueStructuredProblem"
+        },
+        "target_problem": {
+          "module": "Benchmark.Hardness.Inputs.NPHardGeneralization.GraphProofOnly",
+          "term": "Benchmark.Hardness.Inputs.NPHardGeneralization.GraphProofOnly.source"
+        },
+        "task_class": "semantic_proof",
+        "timeout_seconds": 60
+      },
+      "task_class": "semantic_proof"
+    },
+    {
+      "editable_declaration_count": 2,
+      "final_command": {
+        "command": [
+          "lake",
+          "env",
+          "lean",
+          "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-authoring-v2-contract-g-b-final/Final3.lean"
+        ],
+        "duration_seconds": 2.379,
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": "",
+        "timed_out": false
+      },
+      "gap_node_count": 2,
+      "gold_module": "Benchmark.Hardness.Gold.NPHardGeneralization.SetSystemProgramComposition",
+      "gold_source_sha256": "sha256:7a55c8aef06f9e04a04f34729fea95111fb8085819ae28fa33b52954c1bb3e83",
+      "matched_contract": true,
+      "prompt_safe": true,
+      "prompt_sha256": "sha256:bfc9987f8ac60a0e0c4fc4e4aa9761c41fece2a47243aed6ecae8dbf8a3289b8",
+      "replay_command": {
+        "command": [
+          "lake",
+          "env",
+          "lean",
+          "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-authoring-v2-contract-g-b-final/Replay3.lean"
+        ],
+        "duration_seconds": 2.263,
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": "",
+        "timed_out": false
+      },
+      "request_id": "sha256:d4d16c63f75e354e0b4500291a7070c620f95656604d20a3f47a27e996d41402",
+      "result": {
+        "accepted_nodes": [
+          "composed-program",
+          "semantic-proof"
+        ],
+        "candidate_hashes": {
+          "composed-program": "sha256:7a55c8aef06f9e04a04f34729fea95111fb8085819ae28fa33b52954c1bb3e83",
+          "semantic-proof": "sha256:7a55c8aef06f9e04a04f34729fea95111fb8085819ae28fa33b52954c1bb3e83"
+        },
+        "final_certificate": "sha256:ffa593ee6155b832f2b85748fe07af922ce2f97693c602133c960ccdcadddf2d",
+        "lean_diagnostics": [
+          "isolated exact-endpoint Gold replay accepted"
+        ],
+        "model_calls": [],
+        "outcome": "accepted",
+        "policy_diagnostics": [
+          "public task and prompt contain no Gold metadata"
+        ],
+        "remaining_nodes": [],
+        "replay_certificate": "sha256:7f0a7d1696cf856380a26394effc1434d4e81beeedec54e6e445081c6d073a13",
+        "request_id": "sha256:d4d16c63f75e354e0b4500291a7070c620f95656604d20a3f47a27e996d41402",
+        "schema_version": "hardness_np_hard_authoring_result_v2"
+      },
+      "source_problem": {
+        "module": "ComplexityReduction.Presentation.SetSystem",
+        "term": "ComplexityReduction.Presentation.SetSystem.exactCoverStructuredProblem"
+      },
+      "target_problem": {
+        "module": "Benchmark.Hardness.Inputs.NPHardGeneralization.SetSystemProgramComposition",
+        "term": "Benchmark.Hardness.Inputs.NPHardGeneralization.SetSystemProgramComposition.source"
+      },
+      "task": {
+        "allowed_imports": [
+          "Benchmark.Hardness.Inputs.NPHardGeneralization.SetSystemProgramComposition",
+          "ComplexityReduction.Presentation.SetSystem",
+          "ComplexityReduction.Agent.Hardness.Runtime"
+        ],
+        "allowed_primitives": [
+          "Benchmark.Hardness.Inputs.NPHardGeneralization.SetSystemProgramComposition.firstAdapter",
+          "Benchmark.Hardness.Inputs.NPHardGeneralization.SetSystemProgramComposition.secondAdapter"
+        ],
+        "attempt_budget": 4,
+        "candidate_module": "Generated.NPHardV2.C0249284bb293bc74.Authoring",
+        "dependency_hashes": {
+          "module:Benchmark.Hardness.Inputs.NPHardGeneralization.SetSystemProgramComposition": "sha256:785416ca851022c56f44f98613d24bd0c33f0e172df33675f967279c49cd6373",
+          "module:ComplexityReduction.Agent.Hardness.Runtime": "sha256:a7f25cb8e9d263a7e385795814b19c85bc95ab2da2d9805e5efc80a45d7ae0af",
+          "module:ComplexityReduction.Presentation.SetSystem": "sha256:511f88d87ed30e2e5b936273e394572eb2dd5e0334296285681f86d9b4f2bdfb",
+          "public:Lean/Reference/Benchmark/Hardness/Inputs/NPHardGeneralization/SetSystemProgramComposition.lean": "sha256:785416ca851022c56f44f98613d24bd0c33f0e172df33675f967279c49cd6373"
+        },
+        "editable_declarations": [
+          "Generated.NPHardV2.C0249284bb293bc74.Authoring.composedProgram",
+          "Generated.NPHardV2.C0249284bb293bc74.Authoring.semanticCorrect"
+        ],
+        "final_candidate_declaration": "Generated.NPHardV2.C0249284bb293bc74.Authoring.authoredForwardReduction",
+        "final_exact_type": "ComplexityReduction.Certificate.CertifiedReduction ComplexityReduction.Presentation.SetSystem.exactCoverStructuredProblem Benchmark.Hardness.Inputs.NPHardGeneralization.SetSystemProgramComposition.source",
+        "forbidden_axioms": [
+          "sorryAx",
+          "admit",
+          "axiom",
+          "unsafe"
+        ],
+        "gap_nodes": [
+          {
+            "capability": "poly_program",
+            "declaration": "Generated.NPHardV2.C0249284bb293bc74.Authoring.composedProgram",
+            "depends_on": [],
+            "exact_type": "ComplexityReduction.Program.PolyProg ComplexityReduction.Presentation.SetSystem.exactCoverStructuredProblem.representation Benchmark.Hardness.Inputs.NPHardGeneralization.SetSystemProgramComposition.source.representation",
+            "node_id": "composed-program"
+          },
+          {
+            "capability": "semantic_proof",
+            "declaration": "Generated.NPHardV2.C0249284bb293bc74.Authoring.semanticCorrect",
+            "depends_on": [
+              "composed-program"
+            ],
+            "exact_type": "∀ input : ComplexityReduction.Presentation.SetSystem.exactCoverStructuredProblem.Instance, ComplexityReduction.Presentation.SetSystem.exactCoverStructuredProblem.accepts input ↔ Benchmark.Hardness.Inputs.NPHardGeneralization.SetSystemProgramComposition.source.accepts (Generated.NPHardV2.C0249284bb293bc74.Authoring.composedProgram.run input)",
+            "node_id": "semantic-proof"
+          }
+        ],
+        "max_output_tokens": 3000,
+        "public_source_files": [
+          "Lean/Reference/Benchmark/Hardness/Inputs/NPHardGeneralization/SetSystemProgramComposition.lean"
+        ],
+        "request_id": "sha256:d4d16c63f75e354e0b4500291a7070c620f95656604d20a3f47a27e996d41402",
+        "required_direction": "source_to_target",
+        "schema_version": "hardness_np_hard_authoring_task_v2",
+        "source_problem": {
+          "module": "ComplexityReduction.Presentation.SetSystem",
+          "term": "ComplexityReduction.Presentation.SetSystem.exactCoverStructuredProblem"
+        },
+        "target_problem": {
+          "module": "Benchmark.Hardness.Inputs.NPHardGeneralization.SetSystemProgramComposition",
+          "term": "Benchmark.Hardness.Inputs.NPHardGeneralization.SetSystemProgramComposition.source"
+        },
+        "task_class": "program_composition",
+        "timeout_seconds": 60
+      },
+      "task_class": "program_composition"
+    },
+    {
+      "editable_declaration_count": 2,
+      "final_command": {
+        "command": [
+          "lake",
+          "env",
+          "lean",
+          "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-authoring-v2-contract-g-b-final/Final4.lean"
+        ],
+        "duration_seconds": 2.302,
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": "",
+        "timed_out": false
+      },
+      "gap_node_count": 2,
+      "gold_module": "Benchmark.Hardness.Gold.NPHardGeneralization.NumericProgramComposition",
+      "gold_source_sha256": "sha256:646b099caafef71bf8396ebd15c8b8e5ed7f09cf7ec7d590b224034da6a90353",
+      "matched_contract": true,
+      "prompt_safe": true,
+      "prompt_sha256": "sha256:28059c8a4dde9b75dcfd75503c4c840555c9101590b63afde7264501ac75dfd9",
+      "replay_command": {
+        "command": [
+          "lake",
+          "env",
+          "lean",
+          "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-authoring-v2-contract-g-b-final/Replay4.lean"
+        ],
+        "duration_seconds": 2.283,
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": "",
+        "timed_out": false
+      },
+      "request_id": "sha256:12150b54cc2d581795e05854966e93184cc1187ee781a8223de3df335b53473b",
+      "result": {
+        "accepted_nodes": [
+          "composed-program",
+          "semantic-proof"
+        ],
+        "candidate_hashes": {
+          "composed-program": "sha256:646b099caafef71bf8396ebd15c8b8e5ed7f09cf7ec7d590b224034da6a90353",
+          "semantic-proof": "sha256:646b099caafef71bf8396ebd15c8b8e5ed7f09cf7ec7d590b224034da6a90353"
+        },
+        "final_certificate": "sha256:31ea962d4eabdd6a00870c646a009104f074d46332856f5e9fec27c34309cf1e",
+        "lean_diagnostics": [
+          "isolated exact-endpoint Gold replay accepted"
+        ],
+        "model_calls": [],
+        "outcome": "accepted",
+        "policy_diagnostics": [
+          "public task and prompt contain no Gold metadata"
+        ],
+        "remaining_nodes": [],
+        "replay_certificate": "sha256:80f56917b67d5b51850b5b9dfb534edc057ca5baf0a5576c36a896caa3f89d64",
+        "request_id": "sha256:12150b54cc2d581795e05854966e93184cc1187ee781a8223de3df335b53473b",
+        "schema_version": "hardness_np_hard_authoring_result_v2"
+      },
+      "source_problem": {
+        "module": "ComplexityReduction.Presentation.ZeroOneIP",
+        "term": "ComplexityReduction.Presentation.ZeroOneIP.structuredProblem"
+      },
+      "target_problem": {
+        "module": "Benchmark.Hardness.Inputs.NPHardGeneralization.NumericProgramComposition",
+        "term": "Benchmark.Hardness.Inputs.NPHardGeneralization.NumericProgramComposition.source"
+      },
+      "task": {
+        "allowed_imports": [
+          "Benchmark.Hardness.Inputs.NPHardGeneralization.NumericProgramComposition",
+          "ComplexityReduction.Presentation.ZeroOneIP",
+          "ComplexityReduction.Agent.Hardness.Runtime"
+        ],
+        "allowed_primitives": [
+          "Benchmark.Hardness.Inputs.NPHardGeneralization.NumericProgramComposition.firstAdapter",
+          "Benchmark.Hardness.Inputs.NPHardGeneralization.NumericProgramComposition.secondAdapter"
+        ],
+        "attempt_budget": 4,
+        "candidate_module": "Generated.NPHardV2.C136a8e1425010e2f.Authoring",
+        "dependency_hashes": {
+          "module:Benchmark.Hardness.Inputs.NPHardGeneralization.NumericProgramComposition": "sha256:c33bfc0b4040065dded35770a490eaf9959c27ee6f8d5f6aa843109e66a86de3",
+          "module:ComplexityReduction.Agent.Hardness.Runtime": "sha256:a7f25cb8e9d263a7e385795814b19c85bc95ab2da2d9805e5efc80a45d7ae0af",
+          "module:ComplexityReduction.Presentation.ZeroOneIP": "sha256:a10ca8966b9caac8891522e04b12a30dde3fd1c08b90faf444e5b0edda8690a6",
+          "public:Lean/Reference/Benchmark/Hardness/Inputs/NPHardGeneralization/NumericProgramComposition.lean": "sha256:c33bfc0b4040065dded35770a490eaf9959c27ee6f8d5f6aa843109e66a86de3"
+        },
+        "editable_declarations": [
+          "Generated.NPHardV2.C136a8e1425010e2f.Authoring.composedProgram",
+          "Generated.NPHardV2.C136a8e1425010e2f.Authoring.semanticCorrect"
+        ],
+        "final_candidate_declaration": "Generated.NPHardV2.C136a8e1425010e2f.Authoring.authoredForwardReduction",
+        "final_exact_type": "ComplexityReduction.Certificate.CertifiedReduction ComplexityReduction.Presentation.ZeroOneIP.structuredProblem Benchmark.Hardness.Inputs.NPHardGeneralization.NumericProgramComposition.source",
+        "forbidden_axioms": [
+          "sorryAx",
+          "admit",
+          "axiom",
+          "unsafe"
+        ],
+        "gap_nodes": [
+          {
+            "capability": "poly_program",
+            "declaration": "Generated.NPHardV2.C136a8e1425010e2f.Authoring.composedProgram",
+            "depends_on": [],
+            "exact_type": "ComplexityReduction.Program.PolyProg ComplexityReduction.Presentation.ZeroOneIP.structuredProblem.representation Benchmark.Hardness.Inputs.NPHardGeneralization.NumericProgramComposition.source.representation",
+            "node_id": "composed-program"
+          },
+          {
+            "capability": "semantic_proof",
+            "declaration": "Generated.NPHardV2.C136a8e1425010e2f.Authoring.semanticCorrect",
+            "depends_on": [
+              "composed-program"
+            ],
+            "exact_type": "∀ input : ComplexityReduction.Presentation.ZeroOneIP.structuredProblem.Instance, ComplexityReduction.Presentation.ZeroOneIP.structuredProblem.accepts input ↔ Benchmark.Hardness.Inputs.NPHardGeneralization.NumericProgramComposition.source.accepts (Generated.NPHardV2.C136a8e1425010e2f.Authoring.composedProgram.run input)",
+            "node_id": "semantic-proof"
+          }
+        ],
+        "max_output_tokens": 3000,
+        "public_source_files": [
+          "Lean/Reference/Benchmark/Hardness/Inputs/NPHardGeneralization/NumericProgramComposition.lean"
+        ],
+        "request_id": "sha256:12150b54cc2d581795e05854966e93184cc1187ee781a8223de3df335b53473b",
+        "required_direction": "source_to_target",
+        "schema_version": "hardness_np_hard_authoring_task_v2",
+        "source_problem": {
+          "module": "ComplexityReduction.Presentation.ZeroOneIP",
+          "term": "ComplexityReduction.Presentation.ZeroOneIP.structuredProblem"
+        },
+        "target_problem": {
+          "module": "Benchmark.Hardness.Inputs.NPHardGeneralization.NumericProgramComposition",
+          "term": "Benchmark.Hardness.Inputs.NPHardGeneralization.NumericProgramComposition.source"
+        },
+        "task_class": "program_composition",
+        "timeout_seconds": 60
+      },
+      "task_class": "program_composition"
+    },
+    {
+      "editable_declaration_count": 5,
+      "final_command": {
+        "command": [
+          "lake",
+          "env",
+          "lean",
+          "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-authoring-v2-contract-g-b-final/Final5.lean"
+        ],
+        "duration_seconds": 2.26,
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": "",
+        "timed_out": false
+      },
+      "gap_node_count": 5,
+      "gold_module": "Benchmark.Hardness.Gold.NPHardGeneralization.GraphProgramSynthesis",
+      "gold_source_sha256": "sha256:c1151aa9b7c56d20a4e21312bd3e7045de82de259aaeb3d0353a248171eb0f49",
+      "matched_contract": true,
+      "prompt_safe": true,
+      "prompt_sha256": "sha256:59b19c3f75a188bec8b5942dc167193dc2e54ce5d7bdb05e123e218de6e87797",
+      "replay_command": {
+        "command": [
+          "lake",
+          "env",
+          "lean",
+          "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-authoring-v2-contract-g-b-final/Replay5.lean"
+        ],
+        "duration_seconds": 2.29,
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": "",
+        "timed_out": false
+      },
+      "request_id": "sha256:52b8ba8e71a8cbc26c8e0a67278d162dc6264f5d8afe186c77250a29db7b87a0",
+      "result": {
+        "accepted_nodes": [
+          "reduction-executable",
+          "poly-program",
+          "program-run-coherence",
+          "mapping-invariant",
+          "semantic-iff"
+        ],
+        "candidate_hashes": {
+          "mapping-invariant": "sha256:c1151aa9b7c56d20a4e21312bd3e7045de82de259aaeb3d0353a248171eb0f49",
+          "poly-program": "sha256:c1151aa9b7c56d20a4e21312bd3e7045de82de259aaeb3d0353a248171eb0f49",
+          "program-run-coherence": "sha256:c1151aa9b7c56d20a4e21312bd3e7045de82de259aaeb3d0353a248171eb0f49",
+          "reduction-executable": "sha256:c1151aa9b7c56d20a4e21312bd3e7045de82de259aaeb3d0353a248171eb0f49",
+          "semantic-iff": "sha256:c1151aa9b7c56d20a4e21312bd3e7045de82de259aaeb3d0353a248171eb0f49"
+        },
+        "final_certificate": "sha256:c84f0386365cdb5bf63a3004e96c27d8a2470e90a74e51f8965fa37b27e857e2",
+        "lean_diagnostics": [
+          "isolated exact-endpoint Gold replay accepted"
+        ],
+        "model_calls": [],
+        "outcome": "accepted",
+        "policy_diagnostics": [
+          "public task and prompt contain no Gold metadata"
+        ],
+        "remaining_nodes": [],
+        "replay_certificate": "sha256:7cb1eaebcd82e3dedcd84b757ab1fffa220c01a397e944b589ffef13de84d6e1",
+        "request_id": "sha256:52b8ba8e71a8cbc26c8e0a67278d162dc6264f5d8afe186c77250a29db7b87a0",
+        "schema_version": "hardness_np_hard_authoring_result_v2"
+      },
+      "source_problem": {
+        "module": "ComplexityReduction.Problems.Karp21.GraphAtoms",
+        "term": "ComplexityReduction.Problems.Karp21.GraphAtoms.vertexCoverStructuredProblem"
+      },
+      "target_problem": {
+        "module": "Benchmark.Hardness.Inputs.NPHardGeneralization.GraphProgramSynthesis",
+        "term": "Benchmark.Hardness.Inputs.NPHardGeneralization.GraphProgramSynthesis.source"
+      },
+      "task": {
+        "allowed_imports": [
+          "Benchmark.Hardness.Inputs.NPHardGeneralization.GraphProgramSynthesis",
+          "ComplexityReduction.Problems.Karp21.GraphAtoms",
+          "ComplexityReduction.Agent.Hardness.Runtime"
+        ],
+        "allowed_primitives": [
+          "ComplexityReduction.Program.PolyProg.const",
+          "ComplexityReduction.Program.PolyProg.id",
+          "ComplexityReduction.Program.PolyProg.pair",
+          "Benchmark.Hardness.Inputs.NPHardGeneralization.GraphProgramSynthesis.mappingInvariant"
+        ],
+        "attempt_budget": 4,
+        "candidate_module": "Generated.NPHardV2.Ce776f0900a2475dc.Authoring",
+        "dependency_hashes": {
+          "module:Benchmark.Hardness.Inputs.NPHardGeneralization.GraphProgramSynthesis": "sha256:1a5b73aab53e0ecd16511450d697690cd506dee5d9e0c1e2b0ee373409cfd57b",
+          "module:ComplexityReduction.Agent.Hardness.Runtime": "sha256:a7f25cb8e9d263a7e385795814b19c85bc95ab2da2d9805e5efc80a45d7ae0af",
+          "module:ComplexityReduction.Problems.Karp21.GraphAtoms": "sha256:e0367d654ee112022baa2f14856be41aaa545c6f3e85b2cbb1ede562ab2071c4",
+          "public:Lean/Reference/Benchmark/Hardness/Inputs/NPHardGeneralization/GraphProgramSynthesis.lean": "sha256:1a5b73aab53e0ecd16511450d697690cd506dee5d9e0c1e2b0ee373409cfd57b"
+        },
+        "editable_declarations": [
+          "Generated.NPHardV2.Ce776f0900a2475dc.Authoring.synthesizedExecutable",
+          "Generated.NPHardV2.Ce776f0900a2475dc.Authoring.synthesizedProgram",
+          "Generated.NPHardV2.Ce776f0900a2475dc.Authoring.programRunCoherence",
+          "Generated.NPHardV2.Ce776f0900a2475dc.Authoring.mappingInvariantProof",
+          "Generated.NPHardV2.Ce776f0900a2475dc.Authoring.semanticCorrect"
+        ],
+        "final_candidate_declaration": "Generated.NPHardV2.Ce776f0900a2475dc.Authoring.authoredForwardReduction",
+        "final_exact_type": "ComplexityReduction.Certificate.CertifiedReduction ComplexityReduction.Problems.Karp21.GraphAtoms.vertexCoverStructuredProblem Benchmark.Hardness.Inputs.NPHardGeneralization.GraphProgramSynthesis.source",
+        "forbidden_axioms": [
+          "sorryAx",
+          "admit",
+          "axiom",
+          "unsafe"
+        ],
+        "gap_nodes": [
+          {
+            "capability": "reduction_executable",
+            "declaration": "Generated.NPHardV2.Ce776f0900a2475dc.Authoring.synthesizedExecutable",
+            "depends_on": [],
+            "exact_type": "ComplexityReduction.Problems.Karp21.GraphAtoms.vertexCoverStructuredProblem.Instance → Benchmark.Hardness.Inputs.NPHardGeneralization.GraphProgramSynthesis.source.Instance",
+            "node_id": "reduction-executable"
+          },
+          {
+            "capability": "poly_program",
+            "declaration": "Generated.NPHardV2.Ce776f0900a2475dc.Authoring.synthesizedProgram",
+            "depends_on": [
+              "reduction-executable"
+            ],
+            "exact_type": "ComplexityReduction.Program.PolyProg ComplexityReduction.Problems.Karp21.GraphAtoms.vertexCoverStructuredProblem.representation Benchmark.Hardness.Inputs.NPHardGeneralization.GraphProgramSynthesis.source.representation",
+            "node_id": "poly-program"
+          },
+          {
+            "capability": "program_run_coherence",
+            "declaration": "Generated.NPHardV2.Ce776f0900a2475dc.Authoring.programRunCoherence",
+            "depends_on": [
+              "poly-program"
+            ],
+            "exact_type": "∀ input : ComplexityReduction.Problems.Karp21.GraphAtoms.vertexCoverStructuredProblem.Instance, Generated.NPHardV2.Ce776f0900a2475dc.Authoring.synthesizedProgram.run input = Generated.NPHardV2.Ce776f0900a2475dc.Authoring.synthesizedExecutable input",
+            "node_id": "program-run-coherence"
+          },
+          {
+            "capability": "mapping_invariant",
+            "declaration": "Generated.NPHardV2.Ce776f0900a2475dc.Authoring.mappingInvariantProof",
+            "depends_on": [
+              "program-run-coherence"
+            ],
+            "exact_type": "∀ input : ComplexityReduction.Problems.Karp21.GraphAtoms.vertexCoverStructuredProblem.Instance, Benchmark.Hardness.Inputs.NPHardGeneralization.GraphProgramSynthesis.mappingInvariant input (Generated.NPHardV2.Ce776f0900a2475dc.Authoring.synthesizedProgram.run input)",
+            "node_id": "mapping-invariant"
+          },
+          {
+            "capability": "semantic_proof",
+            "declaration": "Generated.NPHardV2.Ce776f0900a2475dc.Authoring.semanticCorrect",
+            "depends_on": [
+              "mapping-invariant"
+            ],
+            "exact_type": "∀ input : ComplexityReduction.Problems.Karp21.GraphAtoms.vertexCoverStructuredProblem.Instance, ComplexityReduction.Problems.Karp21.GraphAtoms.vertexCoverStructuredProblem.accepts input ↔ Benchmark.Hardness.Inputs.NPHardGeneralization.GraphProgramSynthesis.source.accepts (Generated.NPHardV2.Ce776f0900a2475dc.Authoring.synthesizedProgram.run input)",
+            "node_id": "semantic-iff"
+          }
+        ],
+        "max_output_tokens": 3000,
+        "public_source_files": [
+          "Lean/Reference/Benchmark/Hardness/Inputs/NPHardGeneralization/GraphProgramSynthesis.lean"
+        ],
+        "request_id": "sha256:52b8ba8e71a8cbc26c8e0a67278d162dc6264f5d8afe186c77250a29db7b87a0",
+        "required_direction": "source_to_target",
+        "schema_version": "hardness_np_hard_authoring_task_v2",
+        "source_problem": {
+          "module": "ComplexityReduction.Problems.Karp21.GraphAtoms",
+          "term": "ComplexityReduction.Problems.Karp21.GraphAtoms.vertexCoverStructuredProblem"
+        },
+        "target_problem": {
+          "module": "Benchmark.Hardness.Inputs.NPHardGeneralization.GraphProgramSynthesis",
+          "term": "Benchmark.Hardness.Inputs.NPHardGeneralization.GraphProgramSynthesis.source"
+        },
+        "task_class": "program_synthesis",
+        "timeout_seconds": 60
+      },
+      "task_class": "program_synthesis"
+    }
+  ],
+  "generated_at": "2026-08-07T15:43:09.595350+00:00",
+  "metrics": {
+    "compiler_inserted_math_token_count": 0,
+    "exact_endpoint_final_count": 5,
+    "independent_replay_count": 5,
+    "model_calls": 0,
+    "prompt_safe_count": 5,
+    "request_round_trip_count": 5,
+    "task_class_counts": {
+      "program_composition": 2,
+      "program_synthesis": 1,
+      "semantic_proof": 2
+    },
+    "task_count": 5
+  },
+  "passed": true,
+  "prebuild": {
+    "command": [
+      "lake",
+      "build",
+      "ComplexityReduction.Agent.Hardness.Runtime",
+      "Benchmark.Hardness.Gold.NPHardGeneralization.GraphProgramSynthesis",
+      "Benchmark.Hardness.Gold.NPHardGeneralization.GraphProofOnly",
+      "Benchmark.Hardness.Gold.NPHardGeneralization.NumericProgramComposition",
+      "Benchmark.Hardness.Gold.NPHardGeneralization.SatProofOnly",
+      "Benchmark.Hardness.Gold.NPHardGeneralization.SetSystemProgramComposition"
+    ],
+    "duration_seconds": 1.49,
+    "exit_code": 0,
+    "stderr": "",
+    "stdout": "ℹ [3494/3939] Replayed ComplexityReduction.Legacy.ComplexityReduction.Bridges.TMEncodingDiscipline\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/TMEncodingDiscipline.lean:87:0: ComplexityReduction.SAT.TMVerifierEncodingDiscipline {L : EncodedDecisionProblem} (V : TMVerifier L) : Type\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/TMEncodingDiscipline.lean:88:0: ComplexityReduction.SAT.TMVerifierEncodingDiscipline.ofCheckedSuffixDecoder {L : EncodedDecisionProblem}\n  {V : TMVerifier L} (D : TMVerifierXOnlyCheckedSuffixDecoder V) : TMVerifierEncodingDiscipline V\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/TMEncodingDiscipline.lean:89:0: ComplexityReduction.SAT.TMVerifierEncodingDiscipline.toCheckedSuffixDecoder {L : EncodedDecisionProblem}\n  {V : TMVerifier L} (D : TMVerifierEncodingDiscipline V) : TMVerifierXOnlyCheckedSuffixDecoder V\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/TMEncodingDiscipline.lean:90:0: ComplexityReduction.SAT.TMVerifierEncodingDiscipline.toCheckedSuffixValidity {L : EncodedDecisionProblem}\n  {V : TMVerifier L} (D : TMVerifierEncodingDiscipline V) : TMVerifierXOnlyCheckedSuffixValidity V\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/TMEncodingDiscipline.lean:91:0: ComplexityReduction.SAT.UniformTMVerifierEncodingDiscipline : Prop\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/TMEncodingDiscipline.lean:92:0: ComplexityReduction.SAT.uniformCheckedSuffixValidityOfEncodingDiscipline\n  (hDiscipline : UniformTMVerifierEncodingDiscipline) {L : EncodedDecisionProblem} (V : TMVerifier L) :\n  TMVerifierXOnlyCheckedSuffixValidity V\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/TMEncodingDiscipline.lean:93:0: ComplexityReduction.SAT.standardTMCookLevinTheoremOfEncodingDiscipline\n  (hSplit : TMPolyTimeMap cnfStructuredEncodedType threeSATDecisionProblem.Instance CNF.splitToThreeCNF)\n  (hDiscipline : UniformTMVerifierEncodingDiscipline) : TMCookLevinTheorem\nℹ [3511/3939] Replayed ComplexityReduction.Legacy.ComplexityReduction.Core.ReductionComposition\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Core/ReductionComposition.lean:68:0: ComplexityReduction.TMKarpReduction.toTMPolyReducible {A B : EncodedDecisionProblem} (r : TMKarpReduction A B) :\n  TMPolyReducible A B\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Core/ReductionComposition.lean:69:0: ComplexityReduction.composeTMKarp {A B C : EncodedDecisionProblem} (rAB : TMPolyReducible A B)\n  (rBC : TMPolyReducible B C) : TMPolyReducible A C\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Core/ReductionComposition.lean:70:0: ComplexityReduction.liftNPCompleteAlongReduction {K L : EncodedDecisionProblem} (hK : TMNPCompleteEnc K)\n  (rKL : TMPolyReducible K L) (hL : TMInNP L) : TMNPCompleteEnc L\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Core/ReductionComposition.lean:71:0: ComplexityReduction.transferTMNPComplete {A B : EncodedDecisionProblem} (rAB : TMPolyReducible A B)\n  (_rBA : TMPolyReducible B A) (hA : TMNPCompleteEnc A) (hBmem : TMInNP B) : TMNPCompleteEnc B\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Core/ReductionComposition.lean:72:0: ComplexityReduction.reduceViaEncodingBridge {A B C : EncodedDecisionProblem} (encode : TMKarpReduction A B)\n  (hard : TMPolyReducible B C) : TMPolyReducible A C\n⚠ [3745/3939] Replayed ComplexityReduction.Legacy.ComplexityReduction.Karp21.Knapsack.StructuredTM.UnaryToBinary\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/Knapsack/StructuredTM/UnaryToBinary.lean:132:29: This simp argument is unused:\n  unaryIntScanAccEncodedType\n\nHint: Omit it from the simp argument list.\n  simp [unaryIntScanToInt, u̵n̵a̵r̵y̵I̵n̵t̵S̵c̵a̵n̵A̵c̵c̵E̵n̵c̵o̵d̵e̵d̵T̵y̵p̵e̵,̵ ̵EncodedType.prod, EncodedType.bool, EncodedType.binaryInt,\n  ̲  ̲ ̲ ̲ ̲ ̲unaryIntScanAccToBinaryIntKeep]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/Knapsack/StructuredTM/UnaryToBinary.lean:132:57: This simp argument is unused:\n  EncodedType.prod\n\nHint: Omit it from the simp argument list.\n  simp [unaryIntScanToInt, unaryIntScanAccEncodedType, E̵n̵c̵o̵d̵e̵d̵T̵y̵p̵e̵.̵p̵r̵o̵d̵,̵EncodedType.bool, EncodedType.binaryInt,\n  ̲  ̲ ̲ ̲ ̲ ̲unaryIntScanAccToBinaryIntKeep]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/Knapsack/StructuredTM/UnaryToBinary.lean:133:6: This simp argument is unused:\n  EncodedType.bool\n\nHint: Omit it from the simp argument list.\n  simp [unaryIntScanToInt, unaryIntScanAccEncodedType, EncodedType.prod, E̵n̵c̵o̵d̵e̵d̵T̵y̵p̵e̵.̵b̵o̵o̵l̵,̵ ̵EncodedType.binaryInt,\n  ̲  ̲ ̲ ̲ ̲ ̲unaryIntScanAccToBinaryIntKeep]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\n⚠ [3748/3939] Replayed ComplexityReduction.Agent.Hardness.Authoring\nwarning: Reference/ComplexityReduction/Agent/Hardness/Authoring.lean:162:2: 'change source.accepts input ↔ target.accepts (program.run input)' tactic does nothing\n\nNote: This linter can be disabled with `set_option linter.unusedTactic false`\n⚠ [3754/3939] Replayed ComplexityReduction.Domain.CliqueToNodeDeletionBipartite\nwarning: Reference/ComplexityReduction/Domain/CliqueToNodeDeletionBipartite.lean:257:5: unused variable `deletedNodup`\n\nNote: This linter can be disabled with `set_option linter.unusedVariables false`\n⚠ [3756/3939] Replayed ComplexityReduction.Domain.VertexCoverToMostNeighborsCore\nwarning: Reference/ComplexityReduction/Domain/VertexCoverToMostNeighborsCore.lean:263:21: This simp argument is unused:\n  or_assoc\n\nHint: Omit it from the simp argument list.\n  simp [gadgetEdges,̵ ̵o̵r̵_̵a̵s̵s̵o̵c̵]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Domain/VertexCoverToMostNeighborsCore.lean:401:28: This simp argument is unused:\n  bound\n\nHint: Omit it from the simp argument list.\n  simp [assignmentForCover,̵ ̵b̵o̵u̵n̵d̵]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Domain/VertexCoverToMostNeighborsCore.lean:497:28: This simp argument is unused:\n  offset\n\nHint: Omit it from the simp argument list.\n  simp [constraintVertex,̵ ̵o̵f̵f̵s̵e̵t̵]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Domain/VertexCoverToMostNeighborsCore.lean:648:10: try 'simp' instead of 'simpa'\n\nNote: This linter can be disabled with `set_option linter.unnecessarySimpa false`\nwarning: Reference/ComplexityReduction/Domain/VertexCoverToMostNeighborsCore.lean:685:7: `Finset.filter_card_add_filter_neg_card_eq_card` has been deprecated: Use `Finset.card_filter_add_card_filter_not` instead\n⚠ [3899/4025] Replayed ComplexityReduction.Domain.PartitionToTwoDisjointBoundedPathsCore\nwarning: Reference/ComplexityReduction/Domain/PartitionToTwoDisjointBoundedPathsCore.lean:91:21: This simp argument is unused:\n  Nat.mul_comm\n\nHint: Omit it from the simp argument list.\n  simp [ladderEdges, N̵a̵t̵.̵m̵u̵l̵_̵c̵o̵m̵m̵,̵ ̵Nat.two_mul]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Domain/PartitionToTwoDisjointBoundedPathsCore.lean:107:21: This simp argument is unused:\n  Nat.mul_comm\n\nHint: Omit it from the simp argument list.\n  simp [ladderCosts, N̵a̵t̵.̵m̵u̵l̵_̵c̵o̵m̵m̵,̵ ̵Nat.two_mul]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Domain/PartitionToTwoDisjointBoundedPathsCore.lean:222:8: try 'simp' instead of 'simpa'\n\nNote: This linter can be disabled with `set_option linter.unnecessarySimpa false`\nwarning: Reference/ComplexityReduct\n... output trimmed ...\nyReduction.Problems.Karp21.NumericMembership.knapsackStructured_completenessOutcome :\n  KnapsackStructuredCompletenessOutcome\ninfo: Reference/ComplexityReduction/Problems/Karp21/NumericMembership.lean:243:0: ComplexityReduction.Problems.Karp21.NumericMembership.knapsackStructured_nativeCapability_exactComponents\n  (capability : NativeVerifierCapability Presentation.Knapsack.structuredProblem) :\n  ∃ verifier discipline, capability = NativeVerifierCapability.mk verifier discipline ∧ ⋯ = ⋯\ninfo: Reference/ComplexityReduction/Problems/Karp21/NumericMembership.lean:244:0: ComplexityReduction.Problems.Karp21.NumericMembership.knapsackStructured_nativeCapability_exactDisciplineProvenance\n  (capability : NativeVerifierCapability Presentation.Knapsack.structuredProblem) :\n  ∃ backendDiscipline, capability.discipline.basis = VerifierEncodingDisciplineBasis.checkedDecoder backendDiscipline\nℹ [3986/4025] Replayed ComplexityReduction.Problems.Karp21.MaxCutMembership\ninfo: Reference/ComplexityReduction/Problems/Karp21/MaxCutMembership.lean:133:0: ComplexityReduction.Problems.Karp21.MaxCutMembership.maxCutStructured_backendTMInNP_export :\n  TMInNP Presentation.MaxCut.structuredProblem.toEncodedDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/MaxCutMembership.lean:134:0: ComplexityReduction.Problems.Karp21.MaxCutMembership.maxCutStructured_backendTMInNP :\n  BackendTMInNP Presentation.MaxCut.structuredProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/MaxCutMembership.lean:135:0: ComplexityReduction.Karp21.maxCutStructured_TMInNP : TMInNP Combinatorics.Graph.maxCutStructuredDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/MaxCutMembership.lean:136:0: ComplexityReduction.Problems.Karp21.MaxCutMembership.maxCutStructured_nativeMembershipOutcome :\n  MaxCutStructuredNativeMembershipOutcome\ninfo: Reference/ComplexityReduction/Problems/Karp21/MaxCutMembership.lean:137:0: ComplexityReduction.Problems.Karp21.MaxCutMembership.maxCutStructured_completenessOutcome :\n  MaxCutStructuredCompletenessOutcome\ninfo: Reference/ComplexityReduction/Problems/Karp21/MaxCutMembership.lean:167:0: 'ComplexityReduction.Problems.Karp21.MaxCutMembership.maxCutStructured_backendTMInNP_export' depends on axioms: [propext,\n Classical.choice,\n Quot.sound,\n Karp21.MaxCut.maxCutEdgeCountFold_tm_polytime._native.native_decide.ax_1_1]\nℹ [3994/4025] Replayed ComplexityReduction.Problems.Karp21.SetSystemMembership\ninfo: Reference/ComplexityReduction/Problems/Karp21/SetSystemMembership.lean:81:0: ComplexityReduction.Problems.Karp21.SetSystemMembership.setCoveringStructured_backendTMInNP_export :\n  TMInNP Presentation.SetSystem.setCoveringStructuredProblem.toEncodedDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/SetSystemMembership.lean:82:0: ComplexityReduction.Problems.Karp21.SetSystemMembership.setCoveringStructured_backendTMInNP :\n  BackendTMInNP Presentation.SetSystem.setCoveringStructuredProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/SetSystemMembership.lean:83:0: ComplexityReduction.Karp21.setCoveringStructured_TMInNP : TMInNP Combinatorics.setCoveringStructuredDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/SetSystemMembership.lean:84:0: ComplexityReduction.Problems.Karp21.SetSystemMembership.exactCoverStructured_backendTMInNP_export :\n  TMInNP Presentation.SetSystem.exactCoverStructuredProblem.toEncodedDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/SetSystemMembership.lean:85:0: ComplexityReduction.Problems.Karp21.SetSystemMembership.exactCoverStructured_backendTMInNP :\n  BackendTMInNP Presentation.SetSystem.exactCoverStructuredProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/SetSystemMembership.lean:86:0: ComplexityReduction.Karp21.exactCoverStructured_TMInNP : TMInNP Combinatorics.exactCoverStructuredDecisionProblem\nℹ [3995/4025] Replayed ComplexityReduction.Problems.Karp21.SetSystemHittingSetMembership\ninfo: Reference/ComplexityReduction/Problems/Karp21/SetSystemHittingSetMembership.lean:130:0: ComplexityReduction.Problems.Karp21.SetSystemHittingSetMembership.hittingSetStructured_backendTMInNP_export :\n  TMInNP Presentation.SetSystem.hittingSetStructuredProblem.toEncodedDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/SetSystemHittingSetMembership.lean:131:0: ComplexityReduction.Problems.Karp21.SetSystemHittingSetMembership.hittingSetStructured_backendTMInNP :\n  BackendTMInNP Presentation.SetSystem.hittingSetStructuredProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/SetSystemHittingSetMembership.lean:132:0: ComplexityReduction.Karp21.hittingSetStructured_TMInNP : TMInNP Combinatorics.hittingSetStructuredDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/SetSystemHittingSetMembership.lean:133:0: ComplexityReduction.Problems.Karp21.SetSystemHittingSetMembership.hittingSetStructured_nativeMembershipOutcome :\n  HittingSetStructuredNativeMembershipOutcome\ninfo: Reference/ComplexityReduction/Problems/Karp21/SetSystemHittingSetMembership.lean:134:0: ComplexityReduction.Problems.Karp21.SetSystemHittingSetMembership.hittingSetStructured_completenessOutcome :\n  HittingSetStructuredCompletenessOutcome\nℹ [3996/4025] Replayed ComplexityReduction.Problems.Karp21.SteinerTreeMembership\ninfo: Reference/ComplexityReduction/Problems/Karp21/SteinerTreeMembership.lean:132:0: ComplexityReduction.Problems.Karp21.SteinerTreeMembership.steinerTreeStructured_backendTMInNP_export :\n  TMInNP Presentation.SteinerTree.structuredProblem.toEncodedDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/SteinerTreeMembership.lean:133:0: ComplexityReduction.Problems.Karp21.SteinerTreeMembership.steinerTreeStructured_backendTMInNP :\n  BackendTMInNP Presentation.SteinerTree.structuredProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/SteinerTreeMembership.lean:134:0: ComplexityReduction.Karp21.SteinerTreeMembership.steinerTreeStructured_TMInNP :\n  TMInNP Combinatorics.Graph.steinerTreeStructuredDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/SteinerTreeMembership.lean:135:0: ComplexityReduction.Problems.Karp21.SteinerTreeMembership.steinerTreeStructured_nativeMembershipOutcome :\n  SteinerTreeStructuredNativeMembershipOutcome\ninfo: Reference/ComplexityReduction/Problems/Karp21/SteinerTreeMembership.lean:136:0: ComplexityReduction.Problems.Karp21.SteinerTreeMembership.steinerTreeStructured_completenessOutcome :\n  SteinerTreeStructuredCompletenessOutcome\ninfo: Reference/ComplexityReduction/Problems/Karp21/SteinerTreeMembership.lean:167:0: 'ComplexityReduction.Problems.Karp21.SteinerTreeMembership.steinerTreeStructured_backendTMInNP_export' depends on axioms: [propext,\n Classical.choice,\n Quot.sound,\n Karp21.SteinerTreeMembership.steinerPathFold_tm_polytime._native.native_decide.ax_1_1]\n⚠ [4006/4025] Replayed ComplexityReduction.Protocol.Result\nwarning: Reference/ComplexityReduction/Protocol/Result.lean:171:14: unused variable `source`\n\nNote: This linter can be disabled with `set_option linter.unusedVariables false`\nwarning: Reference/ComplexityReduction/Protocol/Result.lean:171:21: unused variable `target`\n\nNote: This linter can be disabled with `set_option linter.unusedVariables false`\nwarning: Reference/ComplexityReduction/Protocol/Result.lean:172:21: unused variable `source`\n\nNote: This linter can be disabled with `set_option linter.unusedVariables false`\nwarning: Reference/ComplexityReduction/Protocol/Result.lean:172:28: unused variable `target`\n\nNote: This linter can be disabled with `set_option linter.unusedVariables false`\nwarning: Reference/ComplexityReduction/Protocol/Result.lean:174:15: unused variable `problem`\n\nNote: This linter can be disabled with `set_option linter.unusedVariables false`\nwarning: Reference/ComplexityReduction/Protocol/Result.lean:175:21: unused variable `problem`\n\nNote: This linter can be disabled with `set_option linter.unusedVariables false`\nBuild completed successfully (4025 jobs).\n",
+    "timed_out": false
+  },
+  "qualification_scope": "contract_and_isolated_gold_replay_not_multi_gap_runtime",
+  "schema_version": "hardness_np_hard_authoring_v2_contract_report_v1",
+  "stage": "G-B",
+  "suite_sha256": "e6c37b4ad314342bf556e14afea1ef2907c2384b5d4d7f6ccb03bda8ae5dfbeb",
+  "task_schema_version": "hardness_np_hard_authoring_task_v2"
+}

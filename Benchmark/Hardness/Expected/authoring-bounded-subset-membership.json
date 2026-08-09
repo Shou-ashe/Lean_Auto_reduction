@@ -1,0 +1,11 @@
+{
+  "schema_version": "hardness_benchmark_expected_v1",
+  "case_id": "authoring-bounded-subset-membership",
+  "authoritative": false,
+  "expected_lane": "typed_authoring",
+  "baseline_status": "BLOCKED",
+  "baseline_failure_code": "missing_verifier_program",
+  "final_status": "VERIFIED",
+  "final_failure_code": null,
+  "coverage": ["membership_packet", "bounded_subset", "list_nat", "native_discipline"]
+}

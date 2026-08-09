@@ -1,0 +1,7 @@
+{
+  "schema_version": "hardness_benchmark_expected_v1",
+  "case_id": "three-sat-refl",
+  "authoritative": false,
+  "final_status": "VERIFIED",
+  "coverage": ["definitional_reflexivity", "zero_route_atoms", "axiom_gate"]
+}

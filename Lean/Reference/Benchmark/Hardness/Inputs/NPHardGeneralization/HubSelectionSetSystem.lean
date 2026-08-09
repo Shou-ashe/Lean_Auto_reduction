@@ -1,0 +1,9 @@
+import Benchmark.Hardness.Inputs.NPHardGeneralization.SetSystemProgramComposition
+import Benchmark.Hardness.Inputs.NPHardGeneralization.HubSelectionSeeds
+
+namespace Benchmark.Hardness.Inputs.NPHardGeneralization.HubSelectionSetSystem
+
+abbrev target : ComplexityReduction.Encoding.PresentedProblem :=
+  Benchmark.Hardness.Inputs.NPHardGeneralization.SetSystemProgramComposition.source
+
+end Benchmark.Hardness.Inputs.NPHardGeneralization.HubSelectionSetSystem

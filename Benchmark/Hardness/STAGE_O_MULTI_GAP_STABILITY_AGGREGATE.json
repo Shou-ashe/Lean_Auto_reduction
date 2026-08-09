@@ -1,0 +1,555 @@
+{
+  "ablations": {
+    "all_runs_pass": true
+  },
+  "artifact_hash_distribution": {
+    "5d658dde5ba53a1d5fef65eb9c5ca0da4e3fc6f131a216280deb4f8b5c048348": 1,
+    "868b7aba47d51504eeee8c1367d84cb4559d47e32ba75179fcb6e8a8ddf3bfb3": 1,
+    "f027c1a2458a90687a93495f2b29ac0b9d64476ac17b89bd71311fed38c73bd6": 1
+  },
+  "lean_release_replay": {
+    "all_runs_pass": true
+  },
+  "outcome_matrix": {
+    "o-capability-consumer": [
+      {
+        "expected": true,
+        "failure_code": null,
+        "run": 1,
+        "status": "VERIFIED"
+      },
+      {
+        "expected": true,
+        "failure_code": null,
+        "run": 2,
+        "status": "VERIFIED"
+      },
+      {
+        "expected": true,
+        "failure_code": null,
+        "run": 3,
+        "status": "VERIFIED"
+      }
+    ],
+    "o-capability-producer": [
+      {
+        "expected": true,
+        "failure_code": null,
+        "run": 1,
+        "status": "VERIFIED"
+      },
+      {
+        "expected": true,
+        "failure_code": null,
+        "run": 2,
+        "status": "VERIFIED"
+      },
+      {
+        "expected": true,
+        "failure_code": null,
+        "run": 3,
+        "status": "VERIFIED"
+      }
+    ],
+    "o-core-ambiguous-auto-target": [
+      {
+        "expected": true,
+        "failure_code": null,
+        "run": 1,
+        "status": "VERIFIED"
+      },
+      {
+        "expected": true,
+        "failure_code": null,
+        "run": 2,
+        "status": "VERIFIED"
+      },
+      {
+        "expected": true,
+        "failure_code": null,
+        "run": 3,
+        "status": "VERIFIED"
+      }
+    ],
+    "o-core-ambiguous-fixed-target": [
+      {
+        "expected": true,
+        "failure_code": null,
+        "run": 1,
+        "status": "VERIFIED"
+      },
+      {
+        "expected": true,
+        "failure_code": null,
+        "run": 2,
+        "status": "VERIFIED"
+      },
+      {
+        "expected": true,
+        "failure_code": null,
+        "run": 3,
+        "status": "VERIFIED"
+      }
+    ],
+    "o-cycle-dag-blocked": [
+      {
+        "expected": true,
+        "failure_code": "certificate_dag_cycle",
+        "run": 1,
+        "status": "BLOCKED"
+      },
+      {
+        "expected": true,
+        "failure_code": "certificate_dag_cycle",
+        "run": 2,
+        "status": "BLOCKED"
+      },
+      {
+        "expected": true,
+        "failure_code": "certificate_dag_cycle",
+        "run": 3,
+        "status": "BLOCKED"
+      }
+    ],
+    "o-locally-valid-globally-disconnected": [
+      {
+        "expected": true,
+        "failure_code": "global_route_disconnected",
+        "run": 1,
+        "status": "BLOCKED"
+      },
+      {
+        "expected": true,
+        "failure_code": "global_route_disconnected",
+        "run": 2,
+        "status": "BLOCKED"
+      },
+      {
+        "expected": true,
+        "failure_code": "global_route_disconnected",
+        "run": 3,
+        "status": "BLOCKED"
+      }
+    ],
+    "o-oracle-or-axiom-candidate-rejected": [
+      {
+        "expected": true,
+        "failure_code": "oracle_or_nonstandard_axiom",
+        "run": 1,
+        "status": "BLOCKED"
+      },
+      {
+        "expected": true,
+        "failure_code": "oracle_or_nonstandard_axiom",
+        "run": 2,
+        "status": "BLOCKED"
+      },
+      {
+        "expected": true,
+        "failure_code": "oracle_or_nonstandard_axiom",
+        "run": 3,
+        "status": "BLOCKED"
+      }
+    ],
+    "o-parameterized-predicate-membership": [
+      {
+        "expected": true,
+        "failure_code": null,
+        "run": 1,
+        "status": "VERIFIED"
+      },
+      {
+        "expected": true,
+        "failure_code": null,
+        "run": 2,
+        "status": "VERIFIED"
+      },
+      {
+        "expected": true,
+        "failure_code": null,
+        "run": 3,
+        "status": "VERIFIED"
+      }
+    ],
+    "o-predicate-adapter-route": [
+      {
+        "expected": true,
+        "failure_code": null,
+        "run": 1,
+        "status": "VERIFIED"
+      },
+      {
+        "expected": true,
+        "failure_code": null,
+        "run": 2,
+        "status": "VERIFIED"
+      },
+      {
+        "expected": true,
+        "failure_code": null,
+        "run": 3,
+        "status": "VERIFIED"
+      }
+    ],
+    "o-second-gap-precondition-missing": [
+      {
+        "expected": true,
+        "failure_code": "packet_precondition_unsatisfied",
+        "run": 1,
+        "status": "BLOCKED"
+      },
+      {
+        "expected": true,
+        "failure_code": "packet_precondition_unsatisfied",
+        "run": 2,
+        "status": "BLOCKED"
+      },
+      {
+        "expected": true,
+        "failure_code": "packet_precondition_unsatisfied",
+        "run": 3,
+        "status": "BLOCKED"
+      }
+    ],
+    "o-stale-gap1-invalidates-gap2": [
+      {
+        "expected": true,
+        "failure_code": "stale_gap_dependency",
+        "run": 1,
+        "status": "BLOCKED"
+      },
+      {
+        "expected": true,
+        "failure_code": "stale_gap_dependency",
+        "run": 2,
+        "status": "BLOCKED"
+      },
+      {
+        "expected": true,
+        "failure_code": "stale_gap_dependency",
+        "run": 3,
+        "status": "BLOCKED"
+      }
+    ],
+    "o-two-gap-checker-then-membership": [
+      {
+        "expected": true,
+        "failure_code": null,
+        "run": 1,
+        "status": "VERIFIED"
+      },
+      {
+        "expected": true,
+        "failure_code": null,
+        "run": 2,
+        "status": "VERIFIED"
+      },
+      {
+        "expected": true,
+        "failure_code": null,
+        "run": 3,
+        "status": "VERIFIED"
+      }
+    ],
+    "o-two-gap-presentation-then-reduction": [
+      {
+        "expected": true,
+        "failure_code": null,
+        "run": 1,
+        "status": "VERIFIED"
+      },
+      {
+        "expected": true,
+        "failure_code": null,
+        "run": 2,
+        "status": "VERIFIED"
+      },
+      {
+        "expected": true,
+        "failure_code": null,
+        "run": 3,
+        "status": "VERIFIED"
+      }
+    ],
+    "o-type-correct-wrong-direction": [
+      {
+        "expected": true,
+        "failure_code": "wrong_direction",
+        "run": 1,
+        "status": "BLOCKED"
+      },
+      {
+        "expected": true,
+        "failure_code": "wrong_direction",
+        "run": 2,
+        "status": "BLOCKED"
+      },
+      {
+        "expected": true,
+        "failure_code": "wrong_direction",
+        "run": 3,
+        "status": "BLOCKED"
+      }
+    ],
+    "o-unpublished-cross-case-isolation": [
+      {
+        "expected": true,
+        "failure_code": "unpublished_candidate_visible",
+        "run": 1,
+        "status": "BLOCKED"
+      },
+      {
+        "expected": true,
+        "failure_code": "unpublished_candidate_visible",
+        "run": 2,
+        "status": "BLOCKED"
+      },
+      {
+        "expected": true,
+        "failure_code": "unpublished_candidate_visible",
+        "run": 3,
+        "status": "BLOCKED"
+      }
+    ],
+    "o-unsupported-checker": [
+      {
+        "expected": true,
+        "failure_code": "unsupported_checker_or_tm_packet",
+        "run": 1,
+        "status": "BLOCKED"
+      },
+      {
+        "expected": true,
+        "failure_code": "unsupported_checker_or_tm_packet",
+        "run": 2,
+        "status": "BLOCKED"
+      },
+      {
+        "expected": true,
+        "failure_code": "unsupported_checker_or_tm_packet",
+        "run": 3,
+        "status": "BLOCKED"
+      }
+    ]
+  },
+  "reuse": {
+    "all_runs_pass": true
+  },
+  "route_packet_choice_distribution": {
+    "o-capability-consumer": {
+      "sha256:30a253e5cefd5c95af4b47ac7ebb3e0babe410a7ab598d4bf421bd46323ccc45": 3
+    },
+    "o-capability-producer": {
+      "sha256:2bdd6b11621541fa6e90e8ff2cf91615701178b6e5656bbe478277dd18067db8": 3
+    },
+    "o-core-ambiguous-auto-target": {
+      "sha256:0b55efc8fdc118d95cbf24d3bcf6cec187f371880466ff799e214e876cdb386f": 3
+    },
+    "o-core-ambiguous-fixed-target": {
+      "sha256:82deac0237827862bb01f1cecd63be6df21b7787bf0ae52f08ec103e86ae73f8": 3
+    },
+    "o-cycle-dag-blocked": {
+      "BLOCKED": 3
+    },
+    "o-locally-valid-globally-disconnected": {
+      "BLOCKED": 3
+    },
+    "o-oracle-or-axiom-candidate-rejected": {
+      "BLOCKED": 3
+    },
+    "o-parameterized-predicate-membership": {
+      "sha256:e5c63c933cca132097dc4473f264884aee2bca3252597808f6594c4de0cbce95": 3
+    },
+    "o-predicate-adapter-route": {
+      "sha256:001e21a35cd473563fa5265897246ea8dd995ad157bbe81eea7b2882d3755625": 3
+    },
+    "o-second-gap-precondition-missing": {
+      "BLOCKED": 3
+    },
+    "o-stale-gap1-invalidates-gap2": {
+      "BLOCKED": 3
+    },
+    "o-two-gap-checker-then-membership": {
+      "sha256:26e2c77565373a0ee35fede057bbbe9e6caea113c8ac8576ae7c973cd9690c7f": 2,
+      "sha256:78bffc853ed7402a09a65db1184fc1ae69af709bb33e43af6da842c53257f5af": 1,
+      "sha256:ecdfcab4c72efaf6b5b940bd39e25598787f1c06662aac91bd4242e4a16c0283": 3
+    },
+    "o-two-gap-presentation-then-reduction": {
+      "sha256:073dcfb5ae27cf69d1c7deb1d2bd7aee1c89165419753a4a57a5005984459d8a": 3,
+      "sha256:53961e1150e67f9a7db129a36d5a1b046b4d24d0866d992c0897c185ab416f97": 3
+    },
+    "o-type-correct-wrong-direction": {
+      "BLOCKED": 3
+    },
+    "o-unpublished-cross-case-isolation": {
+      "BLOCKED": 3
+    },
+    "o-unsupported-checker": {
+      "BLOCKED": 3
+    }
+  },
+  "run_reports": [
+    "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/Auto_Reduction_Agent/Benchmark/Hardness/STAGE_O_MULTI_GAP_STABILITY_1_REPORT.json",
+    "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/Auto_Reduction_Agent/Benchmark/Hardness/STAGE_O_MULTI_GAP_STABILITY_2_REPORT.json",
+    "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/Auto_Reduction_Agent/Benchmark/Hardness/STAGE_O_MULTI_GAP_STABILITY_3_REPORT.json"
+  ],
+  "schema_version": "hardness_stage_o_stability_aggregate_v1",
+  "stage": "O",
+  "status": "VERIFIED",
+  "summary": {
+    "ablations_stable": true,
+    "all_reports_verified": true,
+    "case_count": 16,
+    "independent_output_roots": 3,
+    "independent_run_ids": 3,
+    "lean_release_replay_stable": true,
+    "outcomes_stable": true,
+    "reuse_stable": true,
+    "run_count": 3,
+    "typed_gap_sequences_stable": true
+  },
+  "typed_gap_sequences": {
+    "o-two-gap-checker-then-membership": [
+      {
+        "complete": true,
+        "fresh_core_resolve_count": 2,
+        "gap_ids": [
+          "sha256:1d8fd33904b7baaac0f9e5aec2ee459d272f361e54de70b4339e1440b9c99d04",
+          "sha256:a21b688d94ef7ffed995d72049017c4c990f857eb5db4539acdeceea9755d5c2"
+        ],
+        "run": 1,
+        "states": [
+          "CORE_BASELINE_BLOCKED",
+          "AUTHORING_GAP_1",
+          "GAP_1_BUNDLE_VALIDATED",
+          "GAP_1_CASE_LOCAL_PUBLISHED",
+          "FRESH_CORE_RESOLVE_1",
+          "CORE_BLOCKED_GAP_2",
+          "AUTHORING_GAP_2",
+          "GAP_2_BUNDLE_VALIDATED",
+          "FRESH_CORE_RESOLVE_2",
+          "CORE_VERIFIED",
+          "FINAL_COMBINED_LEAN",
+          "RELEASE_REPLAY"
+        ]
+      },
+      {
+        "complete": true,
+        "fresh_core_resolve_count": 2,
+        "gap_ids": [
+          "sha256:1d8fd33904b7baaac0f9e5aec2ee459d272f361e54de70b4339e1440b9c99d04",
+          "sha256:a21b688d94ef7ffed995d72049017c4c990f857eb5db4539acdeceea9755d5c2"
+        ],
+        "run": 2,
+        "states": [
+          "CORE_BASELINE_BLOCKED",
+          "AUTHORING_GAP_1",
+          "GAP_1_BUNDLE_VALIDATED",
+          "GAP_1_CASE_LOCAL_PUBLISHED",
+          "FRESH_CORE_RESOLVE_1",
+          "CORE_BLOCKED_GAP_2",
+          "AUTHORING_GAP_2",
+          "GAP_2_BUNDLE_VALIDATED",
+          "FRESH_CORE_RESOLVE_2",
+          "CORE_VERIFIED",
+          "FINAL_COMBINED_LEAN",
+          "RELEASE_REPLAY"
+        ]
+      },
+      {
+        "complete": true,
+        "fresh_core_resolve_count": 2,
+        "gap_ids": [
+          "sha256:1d8fd33904b7baaac0f9e5aec2ee459d272f361e54de70b4339e1440b9c99d04",
+          "sha256:a21b688d94ef7ffed995d72049017c4c990f857eb5db4539acdeceea9755d5c2"
+        ],
+        "run": 3,
+        "states": [
+          "CORE_BASELINE_BLOCKED",
+          "AUTHORING_GAP_1",
+          "GAP_1_BUNDLE_VALIDATED",
+          "GAP_1_CASE_LOCAL_PUBLISHED",
+          "FRESH_CORE_RESOLVE_1",
+          "CORE_BLOCKED_GAP_2",
+          "AUTHORING_GAP_2",
+          "GAP_2_BUNDLE_VALIDATED",
+          "FRESH_CORE_RESOLVE_2",
+          "CORE_VERIFIED",
+          "FINAL_COMBINED_LEAN",
+          "RELEASE_REPLAY"
+        ]
+      }
+    ],
+    "o-two-gap-presentation-then-reduction": [
+      {
+        "complete": true,
+        "fresh_core_resolve_count": 2,
+        "gap_ids": [
+          "sha256:3ef6b4f1bc6bde6b46c6534d9ca8c1628d5d5a8b2ec21e1510b5bd3b5aca1e74",
+          "sha256:e300525053c82ff491f2c500d9fe634bb92e22bcb274880e8846569e39b02f42"
+        ],
+        "run": 1,
+        "states": [
+          "CORE_BASELINE_BLOCKED",
+          "AUTHORING_GAP_1",
+          "GAP_1_BUNDLE_VALIDATED",
+          "GAP_1_CASE_LOCAL_PUBLISHED",
+          "FRESH_CORE_RESOLVE_1",
+          "CORE_BLOCKED_GAP_2",
+          "AUTHORING_GAP_2",
+          "GAP_2_BUNDLE_VALIDATED",
+          "FRESH_CORE_RESOLVE_2",
+          "CORE_VERIFIED",
+          "FINAL_COMBINED_LEAN",
+          "RELEASE_REPLAY"
+        ]
+      },
+      {
+        "complete": true,
+        "fresh_core_resolve_count": 2,
+        "gap_ids": [
+          "sha256:3ef6b4f1bc6bde6b46c6534d9ca8c1628d5d5a8b2ec21e1510b5bd3b5aca1e74",
+          "sha256:e300525053c82ff491f2c500d9fe634bb92e22bcb274880e8846569e39b02f42"
+        ],
+        "run": 2,
+        "states": [
+          "CORE_BASELINE_BLOCKED",
+          "AUTHORING_GAP_1",
+          "GAP_1_BUNDLE_VALIDATED",
+          "GAP_1_CASE_LOCAL_PUBLISHED",
+          "FRESH_CORE_RESOLVE_1",
+          "CORE_BLOCKED_GAP_2",
+          "AUTHORING_GAP_2",
+          "GAP_2_BUNDLE_VALIDATED",
+          "FRESH_CORE_RESOLVE_2",
+          "CORE_VERIFIED",
+          "FINAL_COMBINED_LEAN",
+          "RELEASE_REPLAY"
+        ]
+      },
+      {
+        "complete": true,
+        "fresh_core_resolve_count": 2,
+        "gap_ids": [
+          "sha256:3ef6b4f1bc6bde6b46c6534d9ca8c1628d5d5a8b2ec21e1510b5bd3b5aca1e74",
+          "sha256:e300525053c82ff491f2c500d9fe634bb92e22bcb274880e8846569e39b02f42"
+        ],
+        "run": 3,
+        "states": [
+          "CORE_BASELINE_BLOCKED",
+          "AUTHORING_GAP_1",
+          "GAP_1_BUNDLE_VALIDATED",
+          "GAP_1_CASE_LOCAL_PUBLISHED",
+          "FRESH_CORE_RESOLVE_1",
+          "CORE_BLOCKED_GAP_2",
+          "AUTHORING_GAP_2",
+          "GAP_2_BUNDLE_VALIDATED",
+          "FRESH_CORE_RESOLVE_2",
+          "CORE_VERIFIED",
+          "FINAL_COMBINED_LEAN",
+          "RELEASE_REPLAY"
+        ]
+      }
+    ]
+  }
+}

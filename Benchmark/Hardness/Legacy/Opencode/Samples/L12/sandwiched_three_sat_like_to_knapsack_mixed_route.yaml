@@ -1,0 +1,71 @@
+schema_version: opencode_lean_proposition_sample_file_v1
+id: sandwiched_three_sat_like_to_knapsack_mixed_route
+name: sandwiched_three_sat_like_to_knapsack_mixed_route_problem
+benchmark_level: L12
+input_language: sandwiched_three_sat_like_to_knapsack_mixed_route
+problem_family: csp_gadget_to_karp21_route_composition
+certificate_contract: lean_proposition
+route_target_policy: any
+problem_statement: "Input is a 3SAT-like CSP instance sandwiched between ignored Boolean audit fields. Prove NP membership by normalizing the public interface, using the 3SAT-like-to-3SAT gadget, then extending the route into a numeric Karp21 chain chosen from public descriptors."
+difficulty: mixed_gadget_and_route_synthesis
+difficulty_tags:
+  - csp
+  - gadget_composition
+  - numeric_target
+  - sandwiched_projection
+  - open_route_selection
+  - three_hop_reduction
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction
+
+  noncomputable section
+
+  abbrev sourceProblem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.CSP.Examples.threeSATLikeDecisionProblem
+
+  abbrev targetProblem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.Combinatorics.knapsackKarpDecisionProblem
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    { Instance := ComplexityReduction.EncodedType.prod
+        (ComplexityReduction.EncodedType.prod
+          ComplexityReduction.EncodedType.bool
+          sourceProblem.Instance)
+        (ComplexityReduction.EncodedType.prod
+          ComplexityReduction.EncodedType.bool
+          ComplexityReduction.EncodedType.bool)
+      isYes := fun p => sourceProblem.isYes p.1.2 }
+lean_target_type: |
+  ∃ normalizedProblem : ComplexityReduction.EncodedDecisionProblem,
+    ∃ routeTarget2 : ComplexityReduction.EncodedDecisionProblem,
+      ∃ _encodingBridgeCertificate :
+        ComplexityReduction.ProblemEquivM
+          ComplexityReduction.CostedPolyTimeModel
+          problem
+          normalizedProblem,
+        ∃ _sourceToSatGadget :
+          ComplexityReduction.KarpReductionM
+            ComplexityReduction.CostedPolyTimeModel
+            normalizedProblem
+            ComplexityReduction.SAT.threeSATDecisionProblem,
+          ∃ _satToIntermediateRoute :
+            ComplexityReduction.KarpReductionM
+              ComplexityReduction.CostedPolyTimeModel
+              ComplexityReduction.SAT.threeSATDecisionProblem
+              routeTarget2,
+            ∃ _intermediateToFinalRoute :
+              ComplexityReduction.KarpReductionM
+                ComplexityReduction.CostedPolyTimeModel
+                routeTarget2
+                targetProblem,
+              ComplexityReduction.PolyReducibleM
+                ComplexityReduction.CostedPolyTimeModel
+                problem
+                targetProblem ∧
+              ComplexityReduction.InNPEnc
+                ComplexityReduction.CostedPolyTimeModel
+                targetProblem ∧
+              ComplexityReduction.InNPEnc
+                ComplexityReduction.CostedPolyTimeModel
+                problem

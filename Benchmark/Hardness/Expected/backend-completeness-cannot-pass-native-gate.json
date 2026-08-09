@@ -1,0 +1,8 @@
+{
+  "schema_version": "hardness_benchmark_expected_v1",
+  "case_id": "backend-completeness-cannot-pass-native-gate",
+  "authoritative": false,
+  "final_status": "BLOCKED",
+  "final_failure_code": "missing_native_completeness",
+  "coverage": ["prove_np_complete", "backend_completeness_boundary"]
+}

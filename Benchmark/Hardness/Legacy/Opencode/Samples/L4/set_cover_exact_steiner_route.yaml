@@ -1,0 +1,34 @@
+schema_version: opencode_decision_problem_sample_file_v1
+id: set_cover_exact_steiner_route
+name: set_cover_exact_steiner_route_problem
+input_language: set_cover_network_multihop
+problem_family: set_system_network
+problem_statement: Given a finite universe, a family of subsets, and a budget k, decide whether the universe can be covered within budget.
+certificate_contract: lean_proposition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction
+
+  noncomputable section
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.Combinatorics.setCoveringDecisionProblem
+lean_target_type: |
+  ∃ routeTarget1 : ComplexityReduction.EncodedDecisionProblem,
+    routeTarget1 = ComplexityReduction.Combinatorics.exactCoverDecisionProblem ∧
+      ∃ routeTarget2 : ComplexityReduction.EncodedDecisionProblem,
+        routeTarget2 = ComplexityReduction.Combinatorics.Graph.steinerTreeDecisionProblem ∧
+          ∃ reductionStep1 :
+            ComplexityReduction.KarpReductionM ComplexityReduction.CostedPolyTimeModel problem routeTarget1,
+            ∃ reductionStep2 :
+              ComplexityReduction.KarpReductionM ComplexityReduction.CostedPolyTimeModel routeTarget1 routeTarget2,
+              ∃ composedReduction :
+                ComplexityReduction.PolyReducibleM ComplexityReduction.CostedPolyTimeModel problem routeTarget2,
+                ComplexityReduction.InNPEnc ComplexityReduction.CostedPolyTimeModel routeTarget2 ∧
+                  ComplexityReduction.InNPEnc ComplexityReduction.CostedPolyTimeModel problem
+difficulty: multihop_route
+difficulty_tags:
+- set_system
+- exact_cover
+- network
+- multihop_reduction

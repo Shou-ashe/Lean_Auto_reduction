@@ -1,0 +1,1210 @@
+{
+  "candidate_bundle_validation_count": 5,
+  "case_suite_wall_duration_seconds": 2961.611,
+  "cases": [
+    {
+      "authoring_duration_seconds": 831.026,
+      "authoring_failure_code": null,
+      "authoring_process_count": 7,
+      "authoring_report": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-typed-authoring-full-20260803-2/cases/authoring-lawful-presentation/authoring/report.json",
+      "authoring_status": "REGISTRY_REVALIDATED",
+      "baseline_duration_seconds": 461.803,
+      "baseline_failure_code": "missing_lawful_presentation",
+      "baseline_gap": {
+        "expected_capability_head": "ComplexityReduction.Encoding.StructuralRepresentationCertificate",
+        "failure_code": "missing_lawful_presentation",
+        "gap_id": "sha256:7c9742f84d2055e1d51062825ee7b28a439ef24035aaeeb3988d063f57335c47",
+        "producer": "lean_gap_classifier",
+        "reason": "lawfulPresentation",
+        "registry_fingerprint": "lean:17274660073813855033",
+        "role": "ingress",
+        "schema_version": "hardness_gap_v2",
+        "source_declaration": "Benchmark.Hardness.Inputs.Authoring.LawfulPresentation.source",
+        "source_display": "Benchmark.Hardness.Inputs.Authoring.LawfulPresentation.source",
+        "target_declaration": "Benchmark.Hardness.Inputs.Authoring.LawfulPresentation.target",
+        "target_display": "Benchmark.Hardness.Inputs.Authoring.LawfulPresentation.target"
+      },
+      "baseline_immutable": true,
+      "baseline_process_count": 3,
+      "baseline_report": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-typed-authoring-full-20260803-2/cases/authoring-lawful-presentation/baseline/report.json",
+      "baseline_status": "BLOCKED",
+      "candidate_bundle_validation": true,
+      "candidate_integrity_revalidated": true,
+      "candidate_sha256": "9d1a13ad07f8023a07922b634f54b6161b59047192ee83f204c6aad00f4a2f0a",
+      "candidate_stage_files": [
+        ".reduction-agent/deepseek-typed-authoring-full-20260803-2/cases/authoring-lawful-presentation/authoring/work/Generated/Hardness/J64ceed942200a111/LawfulPresentation.lean"
+      ],
+      "candidate_stage_sha256": [
+        "9d1a13ad07f8023a07922b634f54b6161b59047192ee83f204c6aad00f4a2f0a"
+      ],
+      "candidate_write_count": 1,
+      "case_task_wall_duration_seconds": 1298.286,
+      "certificate_dag_id": "sha256:b60a76a5dc86e2f1055655d888d920b50f57fd9a04793e6f14d15f13d174fc6f",
+      "combined_final_lean": true,
+      "compiler_insertions": [
+        "typed_gadget_shell",
+        "exact_endpoint_coercion",
+        "canonical_candidate_bundle_shell",
+        "fresh_registry_revalidation",
+        "final_request_constructor"
+      ],
+      "completed_certificate_dag_id": "sha256:e9a07686bdb3ec14aa2aa077fb90f6e505dcd8736435e624baca7745df1e7810",
+      "endpoint_mutation_count": 0,
+      "execution_layer": "optional_authoring",
+      "execution_position": 1,
+      "expected_baseline_failure_code": "missing_lawful_presentation",
+      "expected_baseline_status": "BLOCKED",
+      "final_failure_code": null,
+      "final_status": "VERIFIED",
+      "fresh_registry_revalidation": true,
+      "gap_closure_count": 1,
+      "id": "authoring-lawful-presentation",
+      "independent_release_replay": true,
+      "model_authoring_calls": [],
+      "objective": "reduce_to",
+      "objective_mutation_count": 0,
+      "packet_count": 1,
+      "packet_index_id": "sha256:333bb96fbb5d068100be848c1adf1d818dbedfe17b408dd27165b0e45d16190f",
+      "positive": true,
+      "protocol_matches_expected": true,
+      "provisional_status": "READY_FOR_COMBINED_LEAN",
+      "request": {
+        "active_node": "presentation_capability",
+        "allowed_packet_kinds": [
+          "gadget_packet"
+        ],
+        "attempt_budget": 1,
+        "authoring_mode": "deterministic-template",
+        "expected_capability_head": "ComplexityReduction.Encoding.StructuralRepresentationCertificate",
+        "model_selection_required": true,
+        "objective": "reduce_to",
+        "request_id": "sha256:17de5c8716f8e2746f426981bfa67052794d5d1fe0d98c4b54ccb1f2453a576e",
+        "required_checker_combinators": [],
+        "schema_version": "hardness_typed_authoring_request_v1",
+        "source_declaration": "Benchmark.Hardness.Inputs.Authoring.LawfulPresentation.source",
+        "target_declaration": "Benchmark.Hardness.Inputs.Authoring.LawfulPresentation.target",
+        "witness_shape": "none"
+      },
+      "request_mutation_count": 0,
+      "selected_candidate_id": "sha256:b2853882dc28b538288cd365f5fd113283c38c896f5fe4c35883671e1b908729",
+      "selected_packet_id": "sha256:eb40bddc9854c9c4539d464eb49b4077a4cf2609d3829fe6c49e076b247f57f5",
+      "selected_packet_kind": "gadget_packet",
+      "selected_template_kind": "lawful_presentation",
+      "selection_calls": [
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 3.859,
+          "finish_reason": "stop",
+          "ok": true,
+          "prompt_file": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-typed-authoring-full-20260803-2/cases/authoring-lawful-presentation/selection/round-01-prompt.json",
+          "prompt_sha256": "2ee997f56ffd9b4f608f64e3fa30a358478710a2649c23a0b4eaba3796367fc7",
+          "response_file": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-typed-authoring-full-20260803-2/cases/authoring-lawful-presentation/selection/round-01-response.json",
+          "response_sha256": "c2a39997c9a8d5c00879196e007dabe58017def3875c465da368cd63598466cc",
+          "round": 1,
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 372,
+            "completion_tokens_details": {
+              "reasoning_tokens": 158
+            },
+            "prompt_cache_hit_tokens": 3072,
+            "prompt_cache_miss_tokens": 60,
+            "prompt_tokens": 3132,
+            "prompt_tokens_details": {
+              "cached_tokens": 3072
+            },
+            "total_tokens": 3504
+          }
+        }
+      ],
+      "verification_profile": "strict-release"
+    },
+    {
+      "authoring_duration_seconds": 995.531,
+      "authoring_failure_code": null,
+      "authoring_process_count": 13,
+      "authoring_report": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-typed-authoring-full-20260803-2/cases/authoring-semantic-proof/authoring/report.json",
+      "authoring_status": "REGISTRY_REVALIDATED",
+      "baseline_duration_seconds": 461.737,
+      "baseline_failure_code": "missing_semantic_proof",
+      "baseline_gap": {
+        "expected_capability_head": "ComplexityReduction.Certificate.CertifiedReduction",
+        "failure_code": "missing_semantic_proof",
+        "gap_id": "sha256:37b552afff338d41da99a7e30826cfbe3608653fa81b66ad4626db9c79530a7d",
+        "producer": "lean_gap_classifier",
+        "reason": "semanticProof",
+        "registry_fingerprint": "lean:2493850117296416267",
+        "role": "sharedGadget",
+        "schema_version": "hardness_gap_v2",
+        "source_declaration": "Benchmark.Hardness.Inputs.ModelAuthoring.SemanticProofCore.source",
+        "source_display": "Benchmark.Hardness.Inputs.ModelAuthoring.SemanticProofCore.source",
+        "target_declaration": "Benchmark.Hardness.Inputs.ModelAuthoring.SemanticProofCore.target",
+        "target_display": "Benchmark.Hardness.Inputs.ModelAuthoring.SemanticProofCore.target"
+      },
+      "baseline_immutable": true,
+      "baseline_process_count": 3,
+      "baseline_report": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-typed-authoring-full-20260803-2/cases/authoring-semantic-proof/baseline/report.json",
+      "baseline_status": "BLOCKED",
+      "candidate_bundle_validation": true,
+      "candidate_integrity_revalidated": true,
+      "candidate_sha256": "a03861f115cef443fd997e0574c9db2ed9e183a5c44866a91b2654915effa9b7",
+      "candidate_stage_files": [
+        ".reduction-agent/deepseek-typed-authoring-full-20260803-2/cases/authoring-semantic-proof/authoring/work/Generated/Hardness/Je4352b5e186c15ef/ProgramIndexedReduction/Executable.lean",
+        ".reduction-agent/deepseek-typed-authoring-full-20260803-2/cases/authoring-semantic-proof/authoring/work/Generated/Hardness/Je4352b5e186c15ef/ProgramIndexedReduction/ExecutableDirectTM.lean",
+        ".reduction-agent/deepseek-typed-authoring-full-20260803-2/cases/authoring-semantic-proof/authoring/work/Generated/Hardness/Je4352b5e186c15ef/ProgramIndexedReduction/Primitive.lean",
+        ".reduction-agent/deepseek-typed-authoring-full-20260803-2/cases/authoring-semantic-proof/authoring/work/Generated/Hardness/Je4352b5e186c15ef/ProgramIndexedReduction/Program.lean",
+        ".reduction-agent/deepseek-typed-authoring-full-20260803-2/cases/authoring-semantic-proof/authoring/work/Generated/Hardness/Je4352b5e186c15ef/ProgramIndexedReduction/SemanticProof.lean",
+        ".reduction-agent/deepseek-typed-authoring-full-20260803-2/cases/authoring-semantic-proof/authoring/work/Generated/Hardness/Je4352b5e186c15ef/ProgramIndexedReduction/DirectTM.lean",
+        ".reduction-agent/deepseek-typed-authoring-full-20260803-2/cases/authoring-semantic-proof/authoring/work/Generated/Hardness/Je4352b5e186c15ef/ProgramIndexedReduction/Reduction.lean"
+      ],
+      "candidate_stage_sha256": [
+        "cd26b8c55f3e38e9b3580a8947e3862d379b2a99cb81286c6e70eb6f9d16c604",
+        "203369eed59aa73142018bfa9770db0614a7591ba7bcdd3f2da16f44902a6247",
+        "6cd1d4fbf71d920decf80cb899e42ed44a9453c8de6cbb897d56a5f92668dbe8",
+        "4c5821d0bfaf997b5754d3ee35c5d3f8fd8a1de6e3b6404cf7e10360b392f20a",
+        "5ad7264a77661e726a5df57fac75a6819187c60421922c862a336f0f655e3a57",
+        "8e8291a3743e0f529c8bb561f6937ff61bf491e4b9fea347885d931f7379de70",
+        "6e3418691b9bb2905a0771f1aeb5f5c562df2812b117fa7fd40b8c1aeba3cbe9"
+      ],
+      "candidate_write_count": 7,
+      "case_task_wall_duration_seconds": 1700.71,
+      "certificate_dag_id": "sha256:3db0b260df33fc6a98fa121a84ba62c12755e71d7a81d26d48d8f2ababe3e42c",
+      "combined_final_lean": true,
+      "compiler_insertions": [
+        "typed_gadget_shell",
+        "exact_endpoint_coercion",
+        "canonical_candidate_bundle_shell",
+        "fresh_registry_revalidation",
+        "final_request_constructor"
+      ],
+      "completed_certificate_dag_id": "sha256:455b7b262a50b94842afad54c7abf8ef97128800920c90e814fc8d17d5c43aa5",
+      "endpoint_mutation_count": 0,
+      "execution_layer": "optional_authoring",
+      "execution_position": 2,
+      "expected_baseline_failure_code": "missing_semantic_proof",
+      "expected_baseline_status": "BLOCKED",
+      "final_failure_code": null,
+      "final_status": "VERIFIED",
+      "fresh_registry_revalidation": true,
+      "gap_closure_count": 1,
+      "id": "authoring-semantic-proof",
+      "independent_release_replay": true,
+      "model_authoring_calls": [
+        {
+          "base_url": "https://api.deepseek.com",
+          "call": 1,
+          "called": true,
+          "diagnostics_sha256": null,
+          "duration_seconds": 235.762,
+          "editable_file": "work/Generated/Hardness/Je4352b5e186c15ef/ProgramIndexedReduction/SemanticProof.lean",
+          "error": null,
+          "finish_reason": "stop",
+          "http_attempts": 2,
+          "model": "deepseek-v4-flash",
+          "ok": true,
+          "patch_file": ".reduction-agent/deepseek-typed-authoring-full-20260803-2/cases/authoring-semantic-proof/authoring/model/call-01-patch.json",
+          "patch_sha256": "cae7ffaaf368c983984eacea1487346d96558f22f780049d3ec319555af0923e",
+          "prompt_file": ".reduction-agent/deepseek-typed-authoring-full-20260803-2/cases/authoring-semantic-proof/authoring/model/call-01-prompt.txt",
+          "prompt_sha256": "7ded8d0ede87b931f976bf02b43f7716555d2154e96d2fb630716528f42e46c7",
+          "protocol_accepted": true,
+          "response_file": ".reduction-agent/deepseek-typed-authoring-full-20260803-2/cases/authoring-semantic-proof/authoring/model/call-01-response.json",
+          "response_sha256": "3b59452f8fa44bb957447bc63caef0f295dbc1db72a5bd7a842a84c31eb33ac3",
+          "schema_version": "hardness_model_call_v1",
+          "stage": "semantic_proof",
+          "status_code": 200,
+          "task_id": "sha256:fa2df075f162ffdbdefbffe21a2c61285560ddf39b44f9ad83745c674cc9c2f0",
+          "usage": {
+            "completion_tokens": 5256,
+            "completion_tokens_details": {
+              "reasoning_tokens": 5110
+            },
+            "prompt_cache_hit_tokens": 2048,
+            "prompt_cache_miss_tokens": 70,
+            "prompt_tokens": 2118,
+            "prompt_tokens_details": {
+              "cached_tokens": 2048
+            },
+            "total_tokens": 7374
+          }
+        }
+      ],
+      "objective": "reduce_to",
+      "objective_mutation_count": 0,
+      "packet_count": 1,
+      "packet_index_id": "sha256:59827fce9834ae768fefbc417c92c9471122b55785d4c60b57f74bf40f67a7a7",
+      "positive": true,
+      "protocol_matches_expected": true,
+      "provisional_status": "READY_FOR_COMBINED_LEAN",
+      "request": {
+        "active_node": "reduction_capability",
+        "allowed_packet_kinds": [
+          "gadget_packet",
+          "tm_certificate_packet"
+        ],
+        "attempt_budget": 4,
+        "authoring_mode": "model-required",
+        "expected_capability_head": "ComplexityReduction.Certificate.CertifiedReduction",
+        "model_selection_required": true,
+        "objective": "reduce_to",
+        "request_id": "sha256:718f12aa71688c23b79a2bf7e1a0d2e3d88ff9241f27bc157aeddd4db93a718e",
+        "required_checker_combinators": [],
+        "schema_version": "hardness_typed_authoring_request_v1",
+        "source_declaration": "Benchmark.Hardness.Inputs.ModelAuthoring.SemanticProofCore.source",
+        "target_declaration": "Benchmark.Hardness.Inputs.ModelAuthoring.SemanticProofCore.target",
+        "witness_shape": "none"
+      },
+      "request_mutation_count": 0,
+      "selected_candidate_id": "sha256:dd5085d9638ee2d7a3e4ec7c0ef1c1d9ca7a43ae6f6555d835b8141966475533",
+      "selected_packet_id": "sha256:bbbb63d856fff94bebd68aa04ea481f25dce635a3b3710330e0d0382880b2810",
+      "selected_packet_kind": "gadget_packet",
+      "selected_template_kind": "program_indexed_model",
+      "selection_calls": [
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 4.45,
+          "finish_reason": "stop",
+          "ok": true,
+          "prompt_file": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-typed-authoring-full-20260803-2/cases/authoring-semantic-proof/selection/round-01-prompt.json",
+          "prompt_sha256": "77b31c0e07e4008fd0b5943e7a3f15f9493af7797b2d0e7fe7140762ee918584",
+          "response_file": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-typed-authoring-full-20260803-2/cases/authoring-semantic-proof/selection/round-01-response.json",
+          "response_sha256": "ddb33c11f98d696763746f2417b3d1a97296f73c35ef7a796db0dab0acf82cb8",
+          "round": 1,
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 486,
+            "completion_tokens_details": {
+              "reasoning_tokens": 253
+            },
+            "prompt_cache_hit_tokens": 3200,
+            "prompt_cache_miss_tokens": 14,
+            "prompt_tokens": 3214,
+            "prompt_tokens_details": {
+              "cached_tokens": 3200
+            },
+            "total_tokens": 3700
+          }
+        }
+      ],
+      "verification_profile": "strict-release"
+    },
+    {
+      "authoring_duration_seconds": 1425.076,
+      "authoring_failure_code": null,
+      "authoring_process_count": 13,
+      "authoring_report": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-typed-authoring-full-20260803-2/cases/authoring-single-edge-program/authoring/report.json",
+      "authoring_status": "REGISTRY_REVALIDATED",
+      "baseline_duration_seconds": 464.069,
+      "baseline_failure_code": "missing_reduction_capability",
+      "baseline_gap": {
+        "expected_capability_head": "ComplexityReduction.Certificate.CertifiedReduction",
+        "failure_code": "missing_reduction_capability",
+        "gap_id": "sha256:2fb184cb83818840e3c46ee2eaa8073b0dd64f01c5dc28b146e235e6c294ec66",
+        "producer": "lean_gap_classifier",
+        "reason": "reductionCapability",
+        "registry_fingerprint": "lean:2336935221772719293",
+        "role": "sharedGadget",
+        "schema_version": "hardness_gap_v2",
+        "source_declaration": "Benchmark.Hardness.Inputs.TypedAuthoring.SingleEdgeProgram.source",
+        "source_display": "Benchmark.Hardness.Inputs.TypedAuthoring.SingleEdgeProgram.source",
+        "target_declaration": "Benchmark.Hardness.Inputs.TypedAuthoring.SingleEdgeProgram.target",
+        "target_display": "Benchmark.Hardness.Inputs.TypedAuthoring.SingleEdgeProgram.target"
+      },
+      "baseline_immutable": true,
+      "baseline_process_count": 3,
+      "baseline_report": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-typed-authoring-full-20260803-2/cases/authoring-single-edge-program/baseline/report.json",
+      "baseline_status": "BLOCKED",
+      "candidate_bundle_validation": true,
+      "candidate_integrity_revalidated": true,
+      "candidate_sha256": "35d07e1dd843f4db096d155a1a8c584abc1aa78e9091aec0da00b5c135df080f",
+      "candidate_stage_files": [
+        ".reduction-agent/deepseek-typed-authoring-full-20260803-2/cases/authoring-single-edge-program/authoring/work/Generated/Hardness/Ja9330a4b9739d1da/ProgramIndexedReduction/Executable.lean",
+        ".reduction-agent/deepseek-typed-authoring-full-20260803-2/cases/authoring-single-edge-program/authoring/work/Generated/Hardness/Ja9330a4b9739d1da/ProgramIndexedReduction/ExecutableDirectTM.lean",
+        ".reduction-agent/deepseek-typed-authoring-full-20260803-2/cases/authoring-single-edge-program/authoring/work/Generated/Hardness/Ja9330a4b9739d1da/ProgramIndexedReduction/Primitive.lean",
+        ".reduction-agent/deepseek-typed-authoring-full-20260803-2/cases/authoring-single-edge-program/authoring/work/Generated/Hardness/Ja9330a4b9739d1da/ProgramIndexedReduction/Program.lean",
+        ".reduction-agent/deepseek-typed-authoring-full-20260803-2/cases/authoring-single-edge-program/authoring/work/Generated/Hardness/Ja9330a4b9739d1da/ProgramIndexedReduction/SemanticProof.lean",
+        ".reduction-agent/deepseek-typed-authoring-full-20260803-2/cases/authoring-single-edge-program/authoring/work/Generated/Hardness/Ja9330a4b9739d1da/ProgramIndexedReduction/DirectTM.lean",
+        ".reduction-agent/deepseek-typed-authoring-full-20260803-2/cases/authoring-single-edge-program/authoring/work/Generated/Hardness/Ja9330a4b9739d1da/ProgramIndexedReduction/Reduction.lean"
+      ],
+      "candidate_stage_sha256": [
+        "887c4e23fd2ade2044f3cd5030275cdcdfbb05d61727f71e6ecf68ae05934903",
+        "4fe43667e4ffe3021fba4f7039634c2bbd84b54ae295a50967ac8fa779081ee9",
+        "0296c678827f7a34611ca496435fd9ce218186aa1af87b9e10037fe9fb6be0ff",
+        "90d18057849c4927fc1ae3923d4f058b7e9e6a9033e56f6ec73b9e3e6835af87",
+        "4fa8982b0e309706dc3be67dd0e055db85369af7b9398bc9d0db703ea466dc95",
+        "89ba3273f0785b32d4cc7fd311deea1839979cbdc8db220c2eccc9f47d440cfe",
+        "66d372cde03c822e6df82d0aa5b15abcb759cf324d0daba778cd730475e2215c"
+      ],
+      "candidate_write_count": 7,
+      "case_task_wall_duration_seconds": 1896.885,
+      "certificate_dag_id": "sha256:da1ae2b956a84037aef15d1469cbfea9aaa85cd5f2cd87c0a3dc293db4e0ce57",
+      "combined_final_lean": true,
+      "compiler_insertions": [
+        "program_indexed_reduction_shell",
+        "exact_endpoint_coercion",
+        "canonical_candidate_bundle_shell",
+        "fresh_registry_revalidation",
+        "final_request_constructor"
+      ],
+      "completed_certificate_dag_id": "sha256:4e25754091188e5498893f531e774de62beba680c47814e46124e8a539f4e18c",
+      "endpoint_mutation_count": 0,
+      "execution_layer": "optional_authoring",
+      "execution_position": 3,
+      "expected_baseline_failure_code": "missing_reduction_capability",
+      "expected_baseline_status": "BLOCKED",
+      "final_failure_code": null,
+      "final_status": "VERIFIED",
+      "fresh_registry_revalidation": true,
+      "gap_closure_count": 1,
+      "id": "authoring-single-edge-program",
+      "independent_release_replay": true,
+      "model_authoring_calls": [],
+      "objective": "reduce_to",
+      "objective_mutation_count": 0,
+      "packet_count": 1,
+      "packet_index_id": "sha256:c5c8469f820f9357b83a54e119abd6220ad41a8015604dc4206883198f691959",
+      "positive": true,
+      "protocol_matches_expected": true,
+      "provisional_status": "READY_FOR_COMBINED_LEAN",
+      "request": {
+        "active_node": "reduction_capability",
+        "allowed_packet_kinds": [
+          "tm_certificate_packet"
+        ],
+        "attempt_budget": 1,
+        "authoring_mode": "deterministic-template",
+        "expected_capability_head": "ComplexityReduction.Certificate.CertifiedReduction",
+        "model_selection_required": true,
+        "objective": "reduce_to",
+        "request_id": "sha256:38a73fb023a89a7bce93e2b55cf55dcd02c1ff41ab9d14a554981aa43c9511dd",
+        "required_checker_combinators": [],
+        "schema_version": "hardness_typed_authoring_request_v1",
+        "source_declaration": "Benchmark.Hardness.Inputs.TypedAuthoring.SingleEdgeProgram.source",
+        "target_declaration": "Benchmark.Hardness.Inputs.TypedAuthoring.SingleEdgeProgram.target",
+        "witness_shape": "none"
+      },
+      "request_mutation_count": 0,
+      "selected_candidate_id": "sha256:358e4f21cdfd310ddbd6928988db94e2e0fedbab3fd21ba3b716a9ab9868b968",
+      "selected_packet_id": "sha256:265e6b1c3f8915937fd013082b5f0759db850b430e9bc6a158b5575dd0d427a1",
+      "selected_packet_kind": "tm_certificate_packet",
+      "selected_template_kind": "program_indexed_reduction",
+      "selection_calls": [
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 4.335,
+          "finish_reason": "stop",
+          "ok": true,
+          "prompt_file": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-typed-authoring-full-20260803-2/cases/authoring-single-edge-program/selection/round-01-prompt.json",
+          "prompt_sha256": "1375c818c2ce2938f22280bcdc81e85b93eb8dd2c1a1b73380b1296d95cad1a5",
+          "response_file": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-typed-authoring-full-20260803-2/cases/authoring-single-edge-program/selection/round-01-response.json",
+          "response_sha256": "bf9d132e53154af8b8773b6dca3358fb163b8125fb46e3ba9fcdd24e85e853f3",
+          "round": 1,
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 445,
+            "completion_tokens_details": {
+              "reasoning_tokens": 267
+            },
+            "prompt_cache_hit_tokens": 3200,
+            "prompt_cache_miss_tokens": 49,
+            "prompt_tokens": 3249,
+            "prompt_tokens_details": {
+              "cached_tokens": 3200
+            },
+            "total_tokens": 3694
+          }
+        }
+      ],
+      "verification_profile": "strict-release"
+    },
+    {
+      "authoring_duration_seconds": 1123.935,
+      "authoring_failure_code": null,
+      "authoring_process_count": 10,
+      "authoring_report": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-typed-authoring-full-20260803-2/cases/authoring-bounded-subset-membership/authoring/report.json",
+      "authoring_status": "REGISTRY_REVALIDATED",
+      "baseline_duration_seconds": 461.757,
+      "baseline_failure_code": "missing_verifier_program",
+      "baseline_gap": {
+        "expected_capability_head": "ComplexityReduction.Certificate.CertifiedVerifier",
+        "failure_code": "missing_verifier_program",
+        "gap_id": "sha256:d99f231ae47b4311ba54046092d4559b5a5118327867ac2132498da7d5ee4c22",
+        "producer": "lean_gap_classifier",
+        "reason": "verifierProgram",
+        "registry_fingerprint": "lean:13993273565704619393",
+        "role": "finalComposition",
+        "schema_version": "hardness_gap_v2",
+        "source_declaration": "Benchmark.Hardness.Inputs.TypedAuthoring.BoundedSubsetMembership.source",
+        "source_display": "Benchmark.Hardness.Inputs.TypedAuthoring.BoundedSubsetMembership.source",
+        "target_declaration": "Benchmark.Hardness.Inputs.TypedAuthoring.BoundedSubsetMembership.source",
+        "target_display": "Benchmark.Hardness.Inputs.TypedAuthoring.BoundedSubsetMembership.source"
+      },
+      "baseline_immutable": true,
+      "baseline_process_count": 3,
+      "baseline_report": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-typed-authoring-full-20260803-2/cases/authoring-bounded-subset-membership/baseline/report.json",
+      "baseline_status": "BLOCKED",
+      "candidate_bundle_validation": true,
+      "candidate_integrity_revalidated": true,
+      "candidate_sha256": "4ba3f0338a3010ab3f00abafe2c23d8cc742df0a33c06271df46bc0096cb5f92",
+      "candidate_stage_files": [
+        ".reduction-agent/deepseek-typed-authoring-full-20260803-2/cases/authoring-bounded-subset-membership/authoring/work/Generated/Hardness/Jd52e584be953a2e1/NativeMembership/Verifier.lean",
+        ".reduction-agent/deepseek-typed-authoring-full-20260803-2/cases/authoring-bounded-subset-membership/authoring/work/Generated/Hardness/Jd52e584be953a2e1/NativeMembership/WitnessPresentation.lean",
+        ".reduction-agent/deepseek-typed-authoring-full-20260803-2/cases/authoring-bounded-subset-membership/authoring/work/Generated/Hardness/Jd52e584be953a2e1/NativeMembership/Discipline.lean",
+        ".reduction-agent/deepseek-typed-authoring-full-20260803-2/cases/authoring-bounded-subset-membership/authoring/work/Generated/Hardness/Jd52e584be953a2e1/NativeMembership/Membership.lean"
+      ],
+      "candidate_stage_sha256": [
+        "1d4db5fc1b290052c7d0cb1d9de99bfe330b94b4b389004067e36023aec84afd",
+        "d55d67f31c160baed021499e2dbfc635c67edce16732870cee911b4e6fb02973",
+        "277d7c0980c2f7643811e6712d0c54de5f90a6a04f7a762c67567b9aac00485f",
+        "a57d405624f9160cd2c95043ebc2a0fe9f391a27f6ea80f8616e2c66c6830a7e"
+      ],
+      "candidate_write_count": 4,
+      "case_task_wall_duration_seconds": 1592.585,
+      "certificate_dag_id": "sha256:c6f336c6f4dfa79258df7b77ff8059191858a113d1d83a426ce1d9d002d9178c",
+      "combined_final_lean": true,
+      "compiler_insertions": [
+        "native_membership_shell",
+        "exact_endpoint_coercion",
+        "canonical_candidate_bundle_shell",
+        "fresh_registry_revalidation",
+        "final_request_constructor"
+      ],
+      "completed_certificate_dag_id": "sha256:09b272c1f6b7a9b662277b80be0a7ebb010ddb09326b7470d23b8f2e0de7a22a",
+      "endpoint_mutation_count": 0,
+      "execution_layer": "optional_authoring",
+      "execution_position": 4,
+      "expected_baseline_failure_code": "missing_verifier_program",
+      "expected_baseline_status": "BLOCKED",
+      "final_failure_code": null,
+      "final_status": "VERIFIED",
+      "fresh_registry_revalidation": true,
+      "gap_closure_count": 1,
+      "id": "authoring-bounded-subset-membership",
+      "independent_release_replay": true,
+      "model_authoring_calls": [],
+      "objective": "prove_in_np",
+      "objective_mutation_count": 0,
+      "packet_count": 1,
+      "packet_index_id": "sha256:492a4ad087b0726be34a2d065ac709439e042c8243546fcf4ea02c40d03a93f8",
+      "positive": true,
+      "protocol_matches_expected": true,
+      "provisional_status": "READY_FOR_COMBINED_LEAN",
+      "request": {
+        "active_node": "membership_capability",
+        "allowed_packet_kinds": [
+          "membership_packet"
+        ],
+        "attempt_budget": 1,
+        "authoring_mode": "deterministic-template",
+        "expected_capability_head": "ComplexityReduction.Certificate.NativeTMInNP",
+        "model_selection_required": true,
+        "objective": "prove_in_np",
+        "request_id": "sha256:68504cba7e70b97e235642dc534995581f164521b86e3420c4a8397faa20c7f0",
+        "required_checker_combinators": [
+          "list_nat",
+          "nodup",
+          "vertices_within_bounds",
+          "cardinality_budget",
+          "nat_budget",
+          "local_predicate"
+        ],
+        "schema_version": "hardness_typed_authoring_request_v1",
+        "source_declaration": "Benchmark.Hardness.Inputs.TypedAuthoring.BoundedSubsetMembership.source",
+        "target_declaration": "Benchmark.Hardness.Inputs.TypedAuthoring.BoundedSubsetMembership.source",
+        "witness_shape": "bounded_subset"
+      },
+      "request_mutation_count": 0,
+      "selected_candidate_id": "sha256:ad4ebce783e84df46e0747a41ed99d1371a242ec3c7a8317febce73a14f0c40b",
+      "selected_packet_id": "sha256:e26f87dfef0a8e24ca97cff2fdef79b78dba6e5c76d48ac7f07f904d0fe1c5bb",
+      "selected_packet_kind": "membership_packet",
+      "selected_template_kind": "native_membership",
+      "selection_calls": [
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 4.374,
+          "finish_reason": "stop",
+          "ok": true,
+          "prompt_file": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-typed-authoring-full-20260803-2/cases/authoring-bounded-subset-membership/selection/round-01-prompt.json",
+          "prompt_sha256": "90b674d09501cd4c799ba82f26834c83f800004f5099db4c9d9ee1bc06ba62e9",
+          "response_file": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-typed-authoring-full-20260803-2/cases/authoring-bounded-subset-membership/selection/round-01-response.json",
+          "response_sha256": "020b07a435cd55af6057dc1057bd8e65e87ea6130e788e501b0d9eee80dcf330",
+          "round": 1,
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 408,
+            "completion_tokens_details": {
+              "reasoning_tokens": 202
+            },
+            "prompt_cache_hit_tokens": 3328,
+            "prompt_cache_miss_tokens": 16,
+            "prompt_tokens": 3344,
+            "prompt_tokens_details": {
+              "cached_tokens": 3328
+            },
+            "total_tokens": 3752
+          }
+        }
+      ],
+      "verification_profile": "strict-release"
+    },
+    {
+      "authoring_duration_seconds": 1361.399,
+      "authoring_failure_code": null,
+      "authoring_process_count": 10,
+      "authoring_report": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-typed-authoring-full-20260803-2/cases/authoring-pair-list-membership/authoring/report.json",
+      "authoring_status": "REGISTRY_REVALIDATED",
+      "baseline_duration_seconds": 293.764,
+      "baseline_failure_code": "missing_checker_combinator:pair_list",
+      "baseline_gap": {
+        "expected_capability_head": "ComplexityReduction.Certificate.CertifiedVerifier",
+        "failure_code": "missing_checker_combinator:pair_list",
+        "gap_id": "sha256:78d0209e90f6e366fff14cf9c4a9c53f93d1ac179aee7ce99f96cade783a1b09",
+        "producer": "lean_gap_classifier",
+        "reason": "checkerCombinatorPairList",
+        "registry_fingerprint": "lean:5091350872653877489",
+        "role": "finalComposition",
+        "schema_version": "hardness_gap_v2",
+        "source_declaration": "Benchmark.Hardness.Inputs.TypedAuthoring.PairListMembership.source",
+        "source_display": "Benchmark.Hardness.Inputs.TypedAuthoring.PairListMembership.source",
+        "target_declaration": "Benchmark.Hardness.Inputs.TypedAuthoring.PairListMembership.source",
+        "target_display": "Benchmark.Hardness.Inputs.TypedAuthoring.PairListMembership.source"
+      },
+      "baseline_immutable": true,
+      "baseline_process_count": 3,
+      "baseline_report": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-typed-authoring-full-20260803-2/cases/authoring-pair-list-membership/baseline/report.json",
+      "baseline_status": "BLOCKED",
+      "candidate_bundle_validation": true,
+      "candidate_integrity_revalidated": true,
+      "candidate_sha256": "92a10e50c1fb25fc0e260928fbde430054ee257e375703729c3e9ec941023d9f",
+      "candidate_stage_files": [
+        ".reduction-agent/deepseek-typed-authoring-full-20260803-2/cases/authoring-pair-list-membership/authoring/work/Generated/Hardness/J6c085caaa3bf8f6a/NativeMembership/Verifier.lean",
+        ".reduction-agent/deepseek-typed-authoring-full-20260803-2/cases/authoring-pair-list-membership/authoring/work/Generated/Hardness/J6c085caaa3bf8f6a/NativeMembership/WitnessPresentation.lean",
+        ".reduction-agent/deepseek-typed-authoring-full-20260803-2/cases/authoring-pair-list-membership/authoring/work/Generated/Hardness/J6c085caaa3bf8f6a/NativeMembership/Discipline.lean",
+        ".reduction-agent/deepseek-typed-authoring-full-20260803-2/cases/authoring-pair-list-membership/authoring/work/Generated/Hardness/J6c085caaa3bf8f6a/NativeMembership/Membership.lean"
+      ],
+      "candidate_stage_sha256": [
+        "a4348e7963a42cecace2f16edd8893cc3ba8e6553f7542f4c826ffed871d03d9",
+        "5300c2ea0ceab3c1688fb0baf3c55c2dd6c99576346347b46edcf0451a345955",
+        "4758d3bd0fd090d9b6e3c23c66cc928ca6fa823fe60b3d9d8ecf862b8f8b8a2c",
+        "8340a60cde2aac8d4dfef01e78165153896b0effadcab7e1a86ba91ae4f47a56"
+      ],
+      "candidate_write_count": 4,
+      "case_task_wall_duration_seconds": 1663.285,
+      "certificate_dag_id": "sha256:93212afc7d3e266d65bdef773f978525024213cd36c31ccb37536c48c0f6b376",
+      "combined_final_lean": true,
+      "compiler_insertions": [
+        "native_membership_shell",
+        "exact_endpoint_coercion",
+        "canonical_candidate_bundle_shell",
+        "fresh_registry_revalidation",
+        "final_request_constructor"
+      ],
+      "completed_certificate_dag_id": "sha256:b200010b9db041fd28d11bcbcdb0100038c15905f5256499424a6cc9a9bc13fd",
+      "endpoint_mutation_count": 0,
+      "execution_layer": "optional_authoring",
+      "execution_position": 5,
+      "expected_baseline_failure_code": "missing_checker_combinator:pair_list",
+      "expected_baseline_status": "BLOCKED",
+      "final_failure_code": null,
+      "final_status": "VERIFIED",
+      "fresh_registry_revalidation": true,
+      "gap_closure_count": 1,
+      "id": "authoring-pair-list-membership",
+      "independent_release_replay": true,
+      "model_authoring_calls": [],
+      "objective": "prove_in_np",
+      "objective_mutation_count": 0,
+      "packet_count": 1,
+      "packet_index_id": "sha256:25cd67115d12ca7e4f4b5d42690db435c5be0e67ca178088c594bdc0440a12e4",
+      "positive": true,
+      "protocol_matches_expected": true,
+      "provisional_status": "READY_FOR_COMBINED_LEAN",
+      "request": {
+        "active_node": "membership_capability",
+        "allowed_packet_kinds": [
+          "membership_packet"
+        ],
+        "attempt_budget": 1,
+        "authoring_mode": "deterministic-template",
+        "expected_capability_head": "ComplexityReduction.Certificate.NativeTMInNP",
+        "model_selection_required": true,
+        "objective": "prove_in_np",
+        "request_id": "sha256:9fe16135113777282f3436a9debd7bc9b2e0860c6010d7a0cb0df2d21c699ff0",
+        "required_checker_combinators": [
+          "list_nat",
+          "pair_list",
+          "path_legality",
+          "disjointness",
+          "local_predicate"
+        ],
+        "schema_version": "hardness_typed_authoring_request_v1",
+        "source_declaration": "Benchmark.Hardness.Inputs.TypedAuthoring.PairListMembership.source",
+        "target_declaration": "Benchmark.Hardness.Inputs.TypedAuthoring.PairListMembership.source",
+        "witness_shape": "pair_list"
+      },
+      "request_mutation_count": 0,
+      "selected_candidate_id": "sha256:521c7f88eed88666062a54abdc1d1f649574c1da7d13132181da8accb3ca0002",
+      "selected_packet_id": "sha256:026984fe28c0d0a8c9b82b7f8b1b244981cd8fbe7814800d0e8e3fff471c915f",
+      "selected_packet_kind": "membership_packet",
+      "selected_template_kind": "native_membership",
+      "selection_calls": [
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 5.941,
+          "finish_reason": "stop",
+          "ok": true,
+          "prompt_file": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-typed-authoring-full-20260803-2/cases/authoring-pair-list-membership/selection/round-01-prompt.json",
+          "prompt_sha256": "972c86c835d76a245fdf46a3515da5c729f917d8d107a8c1d6bc8581ecc3a23d",
+          "response_file": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-typed-authoring-full-20260803-2/cases/authoring-pair-list-membership/selection/round-01-response.json",
+          "response_sha256": "ef706672dce57976c415f5d88ef85f9195741d4353153c1f8e34f1416107266b",
+          "round": 1,
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 758,
+            "completion_tokens_details": {
+              "reasoning_tokens": 551
+            },
+            "prompt_cache_hit_tokens": 3200,
+            "prompt_cache_miss_tokens": 100,
+            "prompt_tokens": 3300,
+            "prompt_tokens_details": {
+              "cached_tokens": 3200
+            },
+            "total_tokens": 4058
+          }
+        }
+      ],
+      "verification_profile": "strict-release"
+    },
+    {
+      "authoring_duration_seconds": 0.0,
+      "authoring_process_count": 0,
+      "baseline_duration_seconds": 300.439,
+      "baseline_failure_code": "missing_direct_tm",
+      "baseline_gap": {
+        "expected_capability_head": "ComplexityReduction.TMPolyTimeMap",
+        "failure_code": "missing_direct_tm",
+        "gap_id": "sha256:5560f5002134bc6447bd43bee31b4a969c2bf94cd8277b38ffbadc0e992b62c9",
+        "producer": "lean_gap_classifier",
+        "reason": "directTM",
+        "registry_fingerprint": "lean:4955317478644833254",
+        "role": "sharedGadget",
+        "schema_version": "hardness_gap_v2",
+        "source_declaration": "Benchmark.Hardness.Inputs.Authoring.MissingDirectTM.source",
+        "source_display": "Benchmark.Hardness.Inputs.Authoring.MissingDirectTM.source",
+        "target_declaration": "Benchmark.Hardness.Inputs.Authoring.MissingDirectTM.target",
+        "target_display": "Benchmark.Hardness.Inputs.Authoring.MissingDirectTM.target"
+      },
+      "baseline_immutable": true,
+      "baseline_process_count": 3,
+      "baseline_report": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-typed-authoring-full-20260803-2/cases/authoring-missing-direct-tm/baseline/report.json",
+      "baseline_status": "BLOCKED",
+      "candidate_write_count": 0,
+      "case_task_wall_duration_seconds": 300.983,
+      "certificate_dag_id": "sha256:c5ba435a1d7bcef984ae86139537c97093971548e60f3e122d17940e34b5554c",
+      "endpoint_mutation_count": 0,
+      "execution_layer": "optional_authoring",
+      "execution_position": 6,
+      "expected_baseline_failure_code": "missing_direct_tm",
+      "expected_baseline_status": "BLOCKED",
+      "final_failure_code": "missing_direct_tm",
+      "final_status": "BLOCKED",
+      "gap_closure_count": 0,
+      "id": "authoring-missing-direct-tm",
+      "model_authoring_calls": [],
+      "objective": "reduce_to",
+      "objective_mutation_count": 0,
+      "packet_count": 0,
+      "packet_index_id": "sha256:4d995a551a678d591c72d6cefb663df9486f7adca7c145a46eb5e3c161d243ce",
+      "positive": false,
+      "pre_model_blocked": true,
+      "protocol_matches_expected": true,
+      "request": {
+        "active_node": "reduction_capability",
+        "allowed_packet_kinds": [
+          "tm_certificate_packet"
+        ],
+        "attempt_budget": 1,
+        "authoring_mode": "deterministic-template",
+        "expected_capability_head": "ComplexityReduction.Certificate.CertifiedReduction",
+        "model_selection_required": false,
+        "objective": "reduce_to",
+        "request_id": "sha256:b565e5a75cde19086c6a8e93937098cbdfa1f14cc1e1bcc78d7a0e63a2a77c42",
+        "required_checker_combinators": [],
+        "schema_version": "hardness_typed_authoring_request_v1",
+        "source_declaration": "Benchmark.Hardness.Inputs.Authoring.MissingDirectTM.source",
+        "target_declaration": "Benchmark.Hardness.Inputs.Authoring.MissingDirectTM.target",
+        "witness_shape": "none"
+      },
+      "request_mutation_count": 0,
+      "selection_calls": [],
+      "verification_profile": "strict-release"
+    },
+    {
+      "authoring_duration_seconds": 0.0,
+      "authoring_process_count": 0,
+      "baseline_duration_seconds": 317.002,
+      "baseline_failure_code": "missing_checker_combinator:unsupported_local_checker",
+      "baseline_gap": {
+        "expected_capability_head": "ComplexityReduction.Certificate.CertifiedVerifier",
+        "failure_code": "missing_checker_combinator:unsupported_local_checker",
+        "gap_id": "sha256:d2e188db0849921c41f61d3d84e316f8ec5cf89b8e063b293411d840b4b7f4bf",
+        "producer": "lean_gap_classifier",
+        "reason": "checkerCombinatorUnsupported",
+        "registry_fingerprint": "lean:127519291920402735",
+        "role": "finalComposition",
+        "schema_version": "hardness_gap_v2",
+        "source_declaration": "Benchmark.Hardness.Inputs.TypedAuthoring.UnsupportedChecker.source",
+        "source_display": "Benchmark.Hardness.Inputs.TypedAuthoring.UnsupportedChecker.source",
+        "target_declaration": "Benchmark.Hardness.Inputs.TypedAuthoring.UnsupportedChecker.source",
+        "target_display": "Benchmark.Hardness.Inputs.TypedAuthoring.UnsupportedChecker.source"
+      },
+      "baseline_immutable": true,
+      "baseline_process_count": 3,
+      "baseline_report": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-typed-authoring-full-20260803-2/cases/authoring-unsupported-checker/baseline/report.json",
+      "baseline_status": "BLOCKED",
+      "candidate_write_count": 0,
+      "case_task_wall_duration_seconds": 317.56,
+      "certificate_dag_id": "sha256:5bcdff8df318fe524e0cdb5badc68dc25a1789d27f67f0b50649c1a4b21bea70",
+      "endpoint_mutation_count": 0,
+      "execution_layer": "optional_authoring",
+      "execution_position": 7,
+      "expected_baseline_failure_code": "missing_checker_combinator:unsupported_local_checker",
+      "expected_baseline_status": "BLOCKED",
+      "final_failure_code": "missing_checker_combinator:unsupported_local_checker",
+      "final_status": "BLOCKED",
+      "gap_closure_count": 0,
+      "id": "authoring-unsupported-checker",
+      "model_authoring_calls": [],
+      "objective": "prove_in_np",
+      "objective_mutation_count": 0,
+      "packet_count": 0,
+      "packet_index_id": "sha256:f43a0646e4b8a1bc3393caa334b8ad4fbb05e135be15abe8c7b9efbd24a048b4",
+      "positive": false,
+      "pre_model_blocked": true,
+      "protocol_matches_expected": true,
+      "request": {
+        "active_node": "membership_capability",
+        "allowed_packet_kinds": [
+          "membership_packet"
+        ],
+        "attempt_budget": 1,
+        "authoring_mode": "deterministic-template",
+        "expected_capability_head": "ComplexityReduction.Certificate.NativeTMInNP",
+        "model_selection_required": false,
+        "objective": "prove_in_np",
+        "request_id": "sha256:019e2ab5920efebcd1ce622f9b1a113849a1327f130605a9a0d531fc8bb4692c",
+        "required_checker_combinators": [
+          "unsupported_local_checker"
+        ],
+        "schema_version": "hardness_typed_authoring_request_v1",
+        "source_declaration": "Benchmark.Hardness.Inputs.TypedAuthoring.UnsupportedChecker.source",
+        "target_declaration": "Benchmark.Hardness.Inputs.TypedAuthoring.UnsupportedChecker.source",
+        "witness_shape": "hypergraph_steiner"
+      },
+      "request_mutation_count": 0,
+      "selection_calls": [],
+      "verification_profile": "strict-release"
+    },
+    {
+      "adversarial_rejections": [
+        {
+          "code": "endpoint_mismatch",
+          "mutation": "endpoint_mismatch"
+        },
+        {
+          "code": "wrong_direction",
+          "mutation": "wrong_direction"
+        },
+        {
+          "code": "oracle_import_forbidden",
+          "mutation": "oracle_import_forbidden"
+        },
+        {
+          "code": "nonstandard_axiom_forbidden",
+          "mutation": "nonstandard_axiom_forbidden"
+        }
+      ],
+      "authoring_duration_seconds": 0.0,
+      "authoring_process_count": 0,
+      "baseline_duration_seconds": 408.617,
+      "baseline_failure_code": "missing_reduction_capability",
+      "baseline_gap": {
+        "expected_capability_head": "ComplexityReduction.Certificate.CertifiedReduction",
+        "failure_code": "missing_reduction_capability",
+        "gap_id": "sha256:be0c86a3ce2430275d29de7f7cdf0cbfb592c6d4d3be33dbe5c46108d471bcd9",
+        "producer": "lean_gap_classifier",
+        "reason": "reductionCapability",
+        "registry_fingerprint": "lean:13484541577274745610",
+        "role": "sharedGadget",
+        "schema_version": "hardness_gap_v2",
+        "source_declaration": "Benchmark.Hardness.Inputs.TypedAuthoring.WrongEndpointOrAxiom.source",
+        "source_display": "Benchmark.Hardness.Inputs.TypedAuthoring.WrongEndpointOrAxiom.source",
+        "target_declaration": "Benchmark.Hardness.Inputs.TypedAuthoring.WrongEndpointOrAxiom.target",
+        "target_display": "Benchmark.Hardness.Inputs.TypedAuthoring.WrongEndpointOrAxiom.target"
+      },
+      "baseline_immutable": true,
+      "baseline_process_count": 3,
+      "baseline_report": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-typed-authoring-full-20260803-2/cases/authoring-wrong-endpoint-or-axiom/baseline/report.json",
+      "baseline_status": "BLOCKED",
+      "candidate_write_count": 0,
+      "case_task_wall_duration_seconds": 409.123,
+      "certificate_dag_id": "sha256:b1203c0e76e58df78e93157c20cf3495861e19c626febc627d94c7c3e4854922",
+      "endpoint_mutation_count": 0,
+      "execution_layer": "optional_authoring",
+      "execution_position": 8,
+      "expected_baseline_failure_code": "missing_reduction_capability",
+      "expected_baseline_status": "BLOCKED",
+      "final_failure_code": "candidate_packet_rejected",
+      "final_status": "BLOCKED",
+      "gap_closure_count": 0,
+      "id": "authoring-wrong-endpoint-or-axiom",
+      "model_authoring_calls": [],
+      "objective": "reduce_to",
+      "objective_mutation_count": 0,
+      "packet_count": 1,
+      "packet_index_id": "sha256:ef153ff02469f37fb6cd692b5e642d1f12c3ddd4d4e8b3c0157ecd4cda6ce519",
+      "positive": false,
+      "pre_model_blocked": true,
+      "protocol_matches_expected": true,
+      "request": {
+        "active_node": "reduction_capability",
+        "allowed_packet_kinds": [
+          "tm_certificate_packet"
+        ],
+        "attempt_budget": 1,
+        "authoring_mode": "deterministic-template",
+        "expected_capability_head": "ComplexityReduction.Certificate.CertifiedReduction",
+        "model_selection_required": false,
+        "objective": "reduce_to",
+        "request_id": "sha256:6c34351c6460769bf3c15a55b0a03fc17776574e5d5cf6478b017a20f144f523",
+        "required_checker_combinators": [],
+        "schema_version": "hardness_typed_authoring_request_v1",
+        "source_declaration": "Benchmark.Hardness.Inputs.TypedAuthoring.WrongEndpointOrAxiom.source",
+        "target_declaration": "Benchmark.Hardness.Inputs.TypedAuthoring.WrongEndpointOrAxiom.target",
+        "witness_shape": "none"
+      },
+      "request_mutation_count": 0,
+      "selection_calls": [],
+      "verification_profile": "strict-release"
+    }
+  ],
+  "combined_lean_path": {
+    "copied_file_count": 46,
+    "identical_duplicate_count": 0,
+    "path": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-typed-authoring-full-20260803-2/combined-lean-path",
+    "work_root_count": 5
+  },
+  "combined_lean_path_error": null,
+  "configured_jobs": 4,
+  "endpoint_mutation_count": 0,
+  "final_active_case_count": 0,
+  "final_artifact_file": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-typed-authoring-full-20260803-2/TypedAuthoringFinal.lean",
+  "final_artifact_sha256": "4b9f7efc79b973e9b7d14b36168632b30883781743f46586cd389715d28a5bf9",
+  "final_combined_lean": {
+    "command": [
+      "lake",
+      "env",
+      "lean",
+      "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-typed-authoring-full-20260803-2/TypedAuthoringFinal.lean"
+    ],
+    "duration_seconds": 168.2,
+    "exit_code": 0,
+    "stderr": "",
+    "stdout": "",
+    "timed_out": false
+  },
+  "finished_at": "2026-08-03T06:49:48.580998+00:00",
+  "finite_witness_registry": {
+    "combinators": [
+      {
+        "category": "witness_shape",
+        "combinator_id": "sha256:66c7dc0ccc7a0e265856543aa940f1da67d280472ac9f3d4293eab98bf5e7109",
+        "lean_declaration": "ComplexityReduction.Agent.Hardness.FiniteWitness.natListPresentation",
+        "name": "list_nat",
+        "producer": "stage_m_finite_witness_registry",
+        "witness_shapes": [
+          "bounded_subset",
+          "pair_list",
+          "list_nat"
+        ]
+      },
+      {
+        "category": "subset_constraint",
+        "combinator_id": "sha256:6be9f0865c0206b040db06c101716a5e435c166c47077861534b07bd41705b98",
+        "lean_declaration": "List.Nodup",
+        "name": "nodup",
+        "producer": "stage_m_finite_witness_registry",
+        "witness_shapes": [
+          "bounded_subset"
+        ]
+      },
+      {
+        "category": "subset_constraint",
+        "combinator_id": "sha256:350d8da09da3c38b4e46f3de7df3c2582a88b58dc63d598b7863641efa3bbadc",
+        "lean_declaration": "ComplexityReduction.Agent.Hardness.FiniteWitness.VerticesWithinBounds",
+        "name": "vertices_within_bounds",
+        "producer": "stage_m_finite_witness_registry",
+        "witness_shapes": [
+          "bounded_subset",
+          "pair_list"
+        ]
+      },
+      {
+        "category": "budget",
+        "combinator_id": "sha256:afc1247217b8f67d54747cd6d64ec1edf008884152b4b729e89b2d5e17238fef",
+        "lean_declaration": "ComplexityReduction.Agent.Hardness.FiniteWitness.cardinalityBudgetChecker",
+        "name": "cardinality_budget",
+        "producer": "stage_m_finite_witness_registry",
+        "witness_shapes": [
+          "bounded_subset"
+        ]
+      },
+      {
+        "category": "witness_shape",
+        "combinator_id": "sha256:1b91516f46e62fbffa534a161c7f3a5722e51b240c4ab3fe23a8b1f9be2c68e5",
+        "lean_declaration": "ComplexityReduction.Agent.Hardness.FiniteWitness.pairListView",
+        "name": "pair_list",
+        "producer": "stage_m_finite_witness_registry",
+        "witness_shapes": [
+          "pair_list"
+        ]
+      },
+      {
+        "category": "local_graph_checker",
+        "combinator_id": "sha256:4a69d1be0e61554fab345254cdea02063051fc29f852c0b03176a5b1c49a117a",
+        "lean_declaration": "ComplexityReduction.Agent.Hardness.FiniteWitness.adjacencyChecker",
+        "name": "edge",
+        "producer": "stage_m_finite_witness_registry",
+        "witness_shapes": [
+          "bounded_subset",
+          "pair_list",
+          "list_nat"
+        ]
+      },
+      {
+        "category": "local_graph_checker",
+        "combinator_id": "sha256:590662ec1cd03a634847762b263526442d06b188b5f039f3f1952fe05662338a",
+        "lean_declaration": "ComplexityReduction.Agent.Hardness.FiniteWitness.adjacencyChecker",
+        "name": "adjacency",
+        "producer": "stage_m_finite_witness_registry",
+        "witness_shapes": [
+          "bounded_subset",
+          "pair_list",
+          "list_nat"
+        ]
+      },
+      {
+        "category": "local_graph_checker",
+        "combinator_id": "sha256:ff021eab2e8ea606fdb6fa6dfaeb69537a4123b7cae87e7e9d3dd70caa6705db",
+        "lean_declaration": "ComplexityReduction.Agent.Hardness.FiniteWitness.coverChecker",
+        "name": "cover",
+        "producer": "stage_m_finite_witness_registry",
+        "witness_shapes": [
+          "bounded_subset"
+        ]
+      },
+      {
+        "category": "local_graph_checker",
+        "combinator_id": "sha256:66a89896819b98b7b2ca33598a14d1579aa1f67928d69eccb203eaef8ef865ee",
+        "lean_declaration": "ComplexityReduction.Agent.Hardness.FiniteWitness.coloringChecker",
+        "name": "coloring",
+        "producer": "stage_m_finite_witness_registry",
+        "witness_shapes": [
+          "list_nat"
+        ]
+      },
+      {
+        "category": "local_graph_checker",
+        "combinator_id": "sha256:418caf80259adb77c7c01070bf1963eb5dffd61015e49a98782c9159bbcb2491",
+        "lean_declaration": "ComplexityReduction.Agent.Hardness.FiniteWitness.pathLegalityChecker",
+        "name": "path_legality",
+        "producer": "stage_m_finite_witness_registry",
+        "witness_shapes": [
+          "pair_list",
+          "list_nat"
+        ]
+      },
+      {
+        "category": "local_graph_checker",
+        "combinator_id": "sha256:195f645db071df2e93b7727ecc8d10806af8511eabb700c72b30c6e653c436e4",
+        "lean_declaration": "ComplexityReduction.Agent.Hardness.FiniteWitness.pairListDisjointChecker",
+        "name": "disjointness",
+        "producer": "stage_m_finite_witness_registry",
+        "witness_shapes": [
+          "pair_list"
+        ]
+      },
+      {
+        "category": "budget",
+        "combinator_id": "sha256:a4e7b89e83a85fba31dd7467365f3fe26233fd99a0dca28a3ccac500583ca49f",
+        "lean_declaration": "ComplexityReduction.Agent.Hardness.FiniteWitness.listSum",
+        "name": "list_sum",
+        "producer": "stage_m_finite_witness_registry",
+        "witness_shapes": [
+          "bounded_subset",
+          "pair_list",
+          "list_nat"
+        ]
+      },
+      {
+        "category": "budget",
+        "combinator_id": "sha256:876bcf8e43182e3582cb41a3d3dbf3d882257dc029b3229320974fc608c9f12b",
+        "lean_declaration": "ComplexityReduction.Agent.Hardness.FiniteWitness.natBudgetChecker",
+        "name": "nat_budget",
+        "producer": "stage_m_finite_witness_registry",
+        "witness_shapes": [
+          "bounded_subset",
+          "pair_list",
+          "list_nat"
+        ]
+      },
+      {
+        "category": "budget",
+        "combinator_id": "sha256:800aafad3c59a77b330c25a1fe5c8debc0f147513d51057e3340d2e6ded11877",
+        "lean_declaration": "ComplexityReduction.Agent.Hardness.FiniteWitness.intBudgetChecker",
+        "name": "int_budget",
+        "producer": "stage_m_finite_witness_registry",
+        "witness_shapes": [
+          "bounded_subset",
+          "pair_list",
+          "list_nat"
+        ]
+      },
+      {
+        "category": "local_predicate",
+        "combinator_id": "sha256:3ea48dc780a4ac4f4a8b88de0420aca7a0e669e0c8896e63642c7dc2312ba9d8",
+        "lean_declaration": "ComplexityReduction.Agent.Hardness.FiniteWitness.localPredicateChecker",
+        "name": "local_predicate",
+        "producer": "stage_m_finite_witness_registry",
+        "witness_shapes": [
+          "bounded_subset",
+          "pair_list",
+          "list_nat"
+        ]
+      }
+    ],
+    "registry_id": "sha256:8508b44fa07b9e89a12c7ff2dfc59251abd109ae4dcbb347b70852ecff0a04d1",
+    "schema_version": "hardness_finite_witness_registry_v1"
+  },
+  "fresh_registry_revalidation_count": 5,
+  "gap_closure_count": 5,
+  "gates": {
+    "five_bundle_validations": true,
+    "five_fresh_registry_revalidations": true,
+    "jobs_within_limit": true,
+    "negative_3_of_3": true,
+    "no_active_case_leak": true,
+    "observed_parallelism": true,
+    "one_combined_final_lean": true,
+    "one_gap_per_positive": true,
+    "one_release_replay": true,
+    "positive_5_of_5": true,
+    "protocol_8_of_8": true,
+    "real_api_used": true,
+    "three_pre_model_negatives": true,
+    "zero_endpoint_mutations": true,
+    "zero_objective_mutations": true,
+    "zero_request_mutations": true
+  },
+  "model_configuration": {
+    "api_key_configured": true,
+    "base_url": "https://api.deepseek.com",
+    "max_retries": 2,
+    "max_tokens": 16384,
+    "model": "deepseek-v4-flash",
+    "temperature": 0.0,
+    "timeout_seconds": 600
+  },
+  "negative_correct_count": 3,
+  "objective_mutation_count": 0,
+  "observed_max_case_concurrency": 4,
+  "output_root": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-typed-authoring-full-20260803-2",
+  "positive_verified_count": 5,
+  "pre_model_block_count": 3,
+  "process_counts": {
+    "authoring_local": 53,
+    "core_baseline": 24,
+    "final_combined_lean": 1,
+    "release_replay": 1,
+    "setup_build": 1
+  },
+  "protocol_expected_count": 8,
+  "published": true,
+  "real_deepseek": true,
+  "real_http_call_count": 6,
+  "release_replay": {
+    "command": [
+      "lake",
+      "env",
+      "lean",
+      "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-typed-authoring-full-20260803-2/TypedAuthoringFinal.lean"
+    ],
+    "duration_seconds": 172.897,
+    "exit_code": 0,
+    "stderr": "",
+    "stdout": "",
+    "timed_out": false
+  },
+  "request_mutation_count": 0,
+  "run_label": "stage-m-typed-authoring-full-real-deepseek-20260803-2",
+  "schema_version": "hardness_typed_authoring_report_v1",
+  "setup_build": {
+    "command": [
+      "lake",
+      "build",
+      "ComplexityReduction.Agent.Hardness.Runtime",
+      "Benchmark.Hardness.Inputs.Authoring.LawfulPresentation",
+      "Benchmark.Hardness.Inputs.Authoring.MissingDirectTM",
+      "Benchmark.Hardness.Inputs.ModelAuthoring.SemanticProof",
+      "Benchmark.Hardness.Inputs.TypedAuthoring.BoundedSubsetMembership",
+      "Benchmark.Hardness.Inputs.TypedAuthoring.PairListMembership",
+      "Benchmark.Hardness.Inputs.TypedAuthoring.SingleEdgeProgram",
+      "Benchmark.Hardness.Inputs.TypedAuthoring.UnsupportedChecker",
+      "Benchmark.Hardness.Inputs.TypedAuthoring.WrongEndpointOrAxiom",
+      "ComplexityReduction.Agent.Hardness.FiniteWitness",
+      "ComplexityReduction.Agent.Hardness.FiniteWitnessNative",
+      "ComplexityReduction.Agent.Hardness.Runtime"
+    ],
+    "duration_seconds": 83.879,
+    "exit_code": 0,
+    "stderr": "",
+    "stdout": "\u2139 [3417/3522] Replayed ComplexityReduction.Legacy.ComplexityReduction.Core.ReductionComposition\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Core/ReductionComposition.lean:68:0: ComplexityReduction.TMKarpReduction.toTMPolyReducible {A B : EncodedDecisionProblem} (r : TMKarpReduction A B) :\n  TMPolyReducible A B\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Core/ReductionComposition.lean:69:0: ComplexityReduction.composeTMKarp {A B C : EncodedDecisionProblem} (rAB : TMPolyReducible A B)\n  (rBC : TMPolyReducible B C) : TMPolyReducible A C\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Core/ReductionComposition.lean:70:0: ComplexityReduction.liftNPCompleteAlongReduction {K L : EncodedDecisionProblem} (hK : TMNPCompleteEnc K)\n  (rKL : TMPolyReducible K L) (hL : TMInNP L) : TMNPCompleteEnc L\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Core/ReductionComposition.lean:71:0: ComplexityReduction.transferTMNPComplete {A B : EncodedDecisionProblem} (rAB : TMPolyReducible A B)\n  (_rBA : TMPolyReducible B A) (hA : TMNPCompleteEnc A) (hBmem : TMInNP B) : TMNPCompleteEnc B\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Core/ReductionComposition.lean:72:0: ComplexityReduction.reduceViaEncodingBridge {A B C : EncodedDecisionProblem} (encode : TMKarpReduction A B)\n  (hard : TMPolyReducible B C) : TMPolyReducible A C\n\u2139 [3577/3684] Replayed ComplexityReduction.Legacy.ComplexityReduction.Bridges.TMEncodingDiscipline\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/TMEncodingDiscipline.lean:87:0: ComplexityReduction.SAT.TMVerifierEncodingDiscipline {L : EncodedDecisionProblem} (V : TMVerifier L) : Type\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/TMEncodingDiscipline.lean:88:0: ComplexityReduction.SAT.TMVerifierEncodingDiscipline.ofCheckedSuffixDecoder {L : EncodedDecisionProblem}\n  {V : TMVerifier L} (D : TMVerifierXOnlyCheckedSuffixDecoder V) : TMVerifierEncodingDiscipline V\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/TMEncodingDiscipline.lean:89:0: ComplexityReduction.SAT.TMVerifierEncodingDiscipline.toCheckedSuffixDecoder {L : EncodedDecisionProblem}\n  {V : TMVerifier L} (D : TMVerifierEncodingDiscipline V) : TMVerifierXOnlyCheckedSuffixDecoder V\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/TMEncodingDiscipline.lean:90:0: ComplexityReduction.SAT.TMVerifierEncodingDiscipline.toCheckedSuffixValidity {L : EncodedDecisionProblem}\n  {V : TMVerifier L} (D : TMVerifierEncodingDiscipline V) : TMVerifierXOnlyCheckedSuffixValidity V\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/TMEncodingDiscipline.lean:91:0: ComplexityReduction.SAT.UniformTMVerifierEncodingDiscipline : Prop\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/TMEncodingDiscipline.lean:92:0: ComplexityReduction.SAT.uniformCheckedSuffixValidityOfEncodingDiscipline\n  (hDiscipline : UniformTMVerifierEncodingDiscipline) {L : EncodedDecisionProblem} (V : TMVerifier L) :\n  TMVerifierXOnlyCheckedSuffixValidity V\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/TMEncodingDiscipline.lean:93:0: ComplexityReduction.SAT.standardTMCookLevinTheoremOfEncodingDiscipline\n  (hSplit : TMPolyTimeMap cnfStructuredEncodedType threeSATDecisionProblem.Instance CNF.splitToThreeCNF)\n  (hDiscipline : UniformTMVerifierEncodingDiscipline) : TMCookLevinTheorem\n\u26a0 [3748/3892] Replayed ComplexityReduction.Legacy.ComplexityReduction.Karp21.Knapsack.StructuredTM.UnaryToBinary\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/Knapsack/StructuredTM/UnaryToBinary.lean:132:29: This simp argument is unused:\n  unaryIntScanAccEncodedType\n\nHint: Omit it from the simp argument list.\n  simp [unaryIntScanToInt, u\u0335n\u0335a\u0335r\u0335y\u0335I\u0335n\u0335t\u0335S\u0335c\u0335a\u0335n\u0335A\u0335c\u0335c\u0335E\u0335n\u0335c\u0335o\u0335d\u0335e\u0335d\u0335T\u0335y\u0335p\u0335e\u0335,\u0335 \u0335EncodedType.prod, EncodedType.bool, EncodedType.binaryInt,\n  \u0332  \u0332 \u0332 \u0332 \u0332 \u0332unaryIntScanAccToBinaryIntKeep]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/Knapsack/StructuredTM/UnaryToBinary.lean:132:57: This simp argument is unused:\n  EncodedType.prod\n\nHint: Omit it from the simp argument list.\n  simp [unaryIntScanToInt, unaryIntScanAccEncodedType, E\u0335n\u0335c\u0335o\u0335d\u0335e\u0335d\u0335T\u0335y\u0335p\u0335e\u0335.\u0335p\u0335r\u0335o\u0335d\u0335,\u0335EncodedType.bool, EncodedType.binaryInt,\n  \u0332  \u0332 \u0332 \u0332 \u0332 \u0332unaryIntScanAccToBinaryIntKeep]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/Knapsack/StructuredTM/UnaryToBinary.lean:133:6: This simp argument is unused:\n  EncodedType.bool\n\nHint: Omit it from the simp argument list.\n  simp [unaryIntScanToInt, unaryIntScanAccEncodedType, EncodedType.prod, E\u0335n\u0335c\u0335o\u0335d\u0335e\u0335d\u0335T\u0335y\u0335p\u0335e\u0335.\u0335b\u0335o\u0335o\u0335l\u0335,\u0335 \u0335EncodedType.binaryInt,\n  \u0332  \u0332 \u0332 \u0332 \u0332 \u0332unaryIntScanAccToBinaryIntKeep]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\n\u26a0 [3775/3937] Replayed ComplexityReduction.Legacy.ComplexityReduction.SAT.CookLevin.XOnlyFiniteBoolSuffixDecoderTM\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/XOnlyFiniteBoolSuffixDecoderTM.lean:168:52: This simp argument is unused:\n  ih\n\nHint: Omit it from the simp argument list.\n  simp [tmVerifierFiniteBoolCertificateSymbols, i\u0335h\u0335,\u0335 \u0335Nat.succ_mul]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/XOnlyFiniteBoolSuffixDecoderTM.lean:555:12: This simp argument is unused:\n  List.getElem?_map\n\nHint: Omit it from the simp argument list.\n  simp [L\u0335i\u0335s\u0335t\u0335.\u0335g\u0335e\u0335t\u0335E\u0335l\u0335e\u0335m\u0335?\u0335_\u0335m\u0335a\u0335p\u0335,\u0335 \u0335hiSuffix]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/XOnlyFiniteBoolSuffixDecoderTM.lean:561:12: This simp argument is unused:\n  List.getElem?_map\n\nHint: Omit it from the simp argument list.\n  simp [L\u0335i\u0335s\u0335t\u0335.\u0335g\u0335e\u0335t\u0335E\u0335l\u0335e\u0335m\u0335?\u0335_\u0335m\u0335a\u0335p\u0335,\u0335 \u0335hiSymbols]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/XOnlyFiniteBoolSuffixDecoderTM.lean:842:6: try 'simp' instead of 'simpa'\n\nNote: This linter can be disabled with `set_option linter.unnecessarySimpa false`\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/XOnlyFiniteBoolSuffixDecoderTM.lean:1319:24: This simp argument is unused:\n  hDrop\n\nHint: Omit it from the simp argument list.\n  simp [h\u0335D\u0335r\u0335o\u0335p\u0335,\u0335 \u0335tmVerifierFiniteBoolChoicePrefixDecode, hEmpty]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/XOnlyFiniteBoolSuffixDecoderTM.lean:1321:24: This simp argument is unused:\n  hDrop\n\nHint: Omit it from the simp argument list.\n  simp [h\u0335D\u0335r\u0335o\u0335p\u0335,\u0335 \u0335tmVerifierFiniteBoolChoicePrefixDecode, hEmpty]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/XOnlyFiniteBoolSuffixDecoderTM.lean:1390:26: This simp argument is unused:\n  hDrop\n\nHint: Omit it from the simp argument list.\n  simp [\u0335h\u0335D\u0335r\u0335o\u0335p\u0335,\u0335 \u0335t\u0335m\u0335V\u0335e\u0335r\u0335i\u0335f\u0335i\u0335e\u0335r\u0335F\u0335i\u0335n\u0335i\u0335t\u0335e\u0335B\u0335o\u0335o\u0335l\u0335C\u0335h\u0335o\u0335i\u0335c\u0335e\u0335P\u0335r\u0335e\u0335f\u0335i\u0335x\u0335D\u0335e\u0335c\u0335o\u0335d\u0335e\u0335,\u0335[\u0332t\u0332m\u0332V\u0332e\u0332r\u0332i\u0332f\u0332i\u0332e\u0332r\u0332F\u0332i\u0332n\u0332i\u0332t\u0332e\u0332B\u0332o\u0332o\u0332l\u0332C\u0332h\u0332o\u0332i\u0332c\u0332e\u0332P\u0332r\u0332e\u0332f\u0332i\u0332x\u0332D\u0332e\u0332c\u0332o\u0332d\u0332e\u0332,\u0332 hEmpty, hFalse, hDelimiter,\n  \u0332  \u0332 \u0332 \u0332 \u0332 \u0332 \u0332 \u0332 \u0332 \u0332 \u0332 \u0332 \u0332 \u0332 \u0332 \u0332 \u0332 \u0332 \u0332 \u0332 \u0332 \u0332hRestDecode]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/XOnlyFiniteBoolSuffixDecoderTM.lean:1465:26: This simp argument is unused:\n  hDrop\n\nHint: Omit it from the simp argument list.\n  simp [\u0335h\u0335D\u0335r\u0335o\u0335p\u0335,\u0335 \u0335t\u0335m\u0335V\u0335e\u0335r\u0335i\u0335f\u0335i\u0335e\u0335r\u0335F\u0335i\u0335n\u0335i\u0335t\u0335e\u0335B\u0335o\u0335o\u0335l\u0335C\u0335h\u0335o\u0335i\u0335c\u0335e\u0335P\u0335r\u0335e\u0335f\u0335i\u0335x\u0335D\u0335e\u0335c\u0335o\u0335d\u0335e\u0335,\u0335[\u0332t\u0332m\u0332V\u0332e\u0332r\u0332i\u0332f\u0332i\u0332e\u0332r\u0332F\u0332i\u0332n\u0332i\u0332t\u0332e\u0332B\u0332o\u0332o\u0332l\u0332C\u0332h\u0332o\u0332i\u0332c\u0332e\u0332P\u0332r\u0332e\u0332f\u0332i\u0332x\u0332D\u0332e\u0332c\u0332o\u0332d\u0332e\u0332,\u0332 hEmpty, hFalse, hTrue, hDelimiter,\n  \u0332  \u0332 \u0332 \u0332 \u0332 \u0332 \u0332 \u0332 \u0332 \u0332 \u0332 \u0332 \u0332 \u0332 \u0332 \u0332 \u0332 \u0332 \u0332 \u0332 \u0332 \u0332hRestDecode]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\n\u26a0 [3778/3937] Replayed ComplexityReduction.Legacy.ComplexityReduction.SAT.CookLevin.XOnlyNatListSuffixDecoderTM\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/XOnlyNatListSuffixDecoderTM.lean:408:28: This simp argument is unused:\n  tmVerifierNatListChoicePrefixDecode\n\nHint: Omit it from the simp argument list.\n  simp [\u0335t\u0335m\u0335V\u0335e\u0335r\u0335i\u0335f\u0335i\u0335e\u0335r\u0335N\u0335a\u0335t\u0335L\u0335i\u0335s\u0335t\u0335C\u0335h\u0335o\u0335i\u0335c\u0335e\u0335P\u0335r\u0335e\u0335f\u0335i\u0335x\u0335D\u0335e\u0335c\u0335o\u0335d\u0335e\u0335,\u0335 \u0335h\u0335E\u0335m\u0335p\u0335t\u0335y\u0335,\u0335[\u0332h\u0332E\u0332m\u0332p\u0332t\u0332y\u0332,\u0332 hTrue, hFalse, hDelimiter, hRest] at hDecode\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/XOnlyNatListSuffixDecoderTM.lean:426:24: This simp argument is unused:\n  List.map_append\n\nHint: Omit it from the simp argument list.\n  simp [tmVerifierNatListCertificateSymbols, tmVerifierInputRightSymbol,\u0335\n  \u0335 \u0335 \u0335 \u0335 \u0335 \u0335 \u0335 \u0335 \u0335 \u0335 \u0335 \u0335 \u0335 \u0335 \u0335 \u0335 \u0335 \u0335 \u0335 \u0335 \u0335 \u0335 \u0335 \u0335 \u0335L\u0335i\u0335s\u0335t\u0335.\u0335m\u0335a\u0335p\u0335_\u0335a\u0335p\u0335p\u0335e\u0335n\u0335d\u0335]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/XOnlyNatListSuffixDecoderTM.lean:468:22: This simp argument is unused:\n  tmVerifierNatListChoicePrefixDecodeNat\n\nHint: Omit it from the simp argument list.\n  simp [\u0335t\u0335m\u0335V\u0335e\u0335r\u0335i\u0335f\u0335i\u0335e\u0335r\u0335N\u0335a\u0335t\u0335L\u0335i\u0335s\u0335t\u0335C\u0335h\u0335o\u0335i\u0335c\u0335e\u0335P\u0335r\u0335e\u0335f\u0335i\u0335x\u0335D\u0335e\u0335c\u0335o\u0335d\u0335e\u0335N\u0335a\u0335t\u0335,\u0335 \u0335h\u0335E\u0335m\u0335p\u0335t\u0335y\u0335,\u0335[\u0332h\u0332E\u0332m\u0332p\u0332t\u0332y\u0332,\u0332 hTrue, hFalse] at hDecode\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/XOnlyNatListSuffixDecoderTM.lean:478:28: This simp argument is unused:\n  tmVerifierNatListChoicePrefixDecodeNat\n\nHint: Omit it from the simp argument list.\n  simp [\u0335t\u0335m\u0335V\u0335e\u0335r\u0335i\u0335f\u0335i\u0335e\u0335r\u0335N\u0335a\u0335t\u0335L\u0335i\u0335s\u0335t\u0335C\u0335h\u0335o\u0335i\u0335c\u0335e\u0335P\u0335r\u0335e\u0335f\u0335i\u0335x\u0335D\u0335e\u0335c\u0335o\u0335d\u0335e\u0335N\u0335a\u0335t\u0335,\u0335 \u0335h\u0335E\u0335m\u0335p\u0335t\u0335y\u0335,\u0335[\u0332h\u0332E\u0332m\u0332p\u0332t\u0332y\u0332,\u0332 hTrue, hFalse, hDelimiter, hRest] at hDecode\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/XOnlyNatListSuffixDecoderTM.lean:497:24: This simp argument is unused:\n  tmVerifierNatListChoicePrefixDecodeNat\n\nHint: Omit it from the simp argument list.\n  simp [\u0335t\u0335m\u0335V\u0335e\u0335r\u0335i\u0335f\u0335i\u0335e\u0335r\u0335N\u0335a\u0335t\u0335L\u0335i\u0335s\u0335t\u0335C\u0335h\u0335o\u0335i\u0335c\u0335e\u0335P\u0335r\u0335e\u0335f\u0335i\u0335x\u0335D\u0335e\u0335c\u0335o\u0335d\u0335e\u0335N\u0335a\u0335t\u0335,\u0335 \u0335h\u0335E\u0335m\u0335p\u0335t\u0335y\u0335,\u0335[\u0332h\u0332E\u0332m\u0332p\u0332t\u0332y\u0332,\u0332 hTrue, hFalse, hDelimiter] at hDecode\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/XOnlyNatListSuffixDecoderTM.lean:499:18: This simp argument is unused:\n  tmVerifierNatListChoicePrefixDecodeNat\n\nHint: Omit it from the simp argument list.\n  simp [\u0335t\u0335m\u0335V\u0335e\u0335r\u0335i\u0335f\u0335i\u0335e\u0335r\u0335N\u0335a\u0335t\u0335L\u0335i\u0335s\u0335t\u0335C\u0335h\u0335o\u0335i\u0335c\u0335e\u0335P\u0335r\u0335e\u0335f\u0335i\u0335x\u0335D\u0335e\u0335c\u0335o\u0335d\u0335e\u0335N\u0335a\u0335t\u0335,\u0335 \u0335h\u0335E\u0335m\u0335p\u0335t\u0335y\u0335,\u0335[\u0332h\u0332E\u0332m\u0332p\u0332t\u0332y\u0332,\u0332 hTrue, hFalse] at hDecode\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\n\u2139 [3793/3950] Replayed ComplexityReduction.Legacy.ComplexityReduction.Bridges.TMEncodingDisciplineTemplates\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/TMEncodingDisciplineTemplates.lean:190:0: ComplexityReduction.SAT.TMVerifierEncodingDiscipline.ofFiniteBoolCertificate {L : EncodedDecisionProblem}\n  (V : TMVerifier L) (bitSymbol : Bool \u2192 V.Cert.Symbol) (delimiterSymbol : V.Cert.Symbol)\n  (D : TMVerifierXOnlyEncodedSuffixDecoder V) (certOfBits : List Bool \u2192 V.Cert.Carrier)\n  (bitsOfCert : V.Cert.Carrier \u2192 List Bool)\n  (certOfBits_suffix_eq :\n    \u2200 (bits : List Bool),\n      tmVerifierCertificateInputSuffixEncoded V (certOfBits bits) =\n        List.map (fun s \u21a6 some (Sum.inr s)) (tmVerifierFiniteBoolCertificateSymbols bitSymbol delimiterSymbol bits))\n  (cert_suffix_eq :\n    \u2200 (c : V.Cert.Carrier),\n      tmVerifierCertificateInputSuffixEncoded V c =\n        List.map (fun s \u21a6 some (Sum.inr s))\n          (tmVerifierFiniteBoolCertificateSymbols bitSymbol delimiterSymbol (bitsOfCert c))) :\n  TMVerifierEncodingDiscipline V\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/TMEncodingDisciplineTemplates.lean:191:0: ComplexityReduction.SAT.TMVerifierEncodingDiscipline.ofBoolListCertificate {L : EncodedDecisionProblem}\n  (V : TMVerifier L) (bitSymbol : Bool \u2192 V.Cert.Symbol) (delimiterSymbol : V.Cert.Symbol)\n  (D : TMVerifierXOnlyEncodedSuffixDecoder V) (certOfBits : List Bool \u2192 V.Cert.Carrier)\n  (bitsOfCert : V.Cert.Carrier \u2192 List Bool)\n  (certOfBits_suffix_eq :\n    \u2200 (bits : List Bool),\n      tmVerifierCertificateInputSuffixEncoded V (certOfBits bits) =\n        List.map (fun s \u21a6 some (Sum.inr s)) (tmVerifierFiniteBoolCertificateSymbols bitSymbol delimiterSymbol bits))\n  (cert_suffix_eq :\n    \u2200 (c : V.Cert.Carrier),\n      tmVerifierCertificateInputSuffixEncoded V c =\n        List.map (fun s \u21a6 some (Sum.inr s))\n          (tmVerifierFiniteBoolCertificateSymbols bitSymbol delimiterSymbol (bitsOfCert c))) :\n  TMVerifierEncodingDiscipline V\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/TMEncodingDisciplineTemplates.lean:192:0: ComplexityReduction.SAT.TMVerifierEncodingDiscipline.ofNatListCertificate {L : EncodedDecisionProblem}\n  (V : TMVerifier L) (trueSymbol falseSymbol delimiterSymbol : V.Cert.Symbol) (hTrueFalse : trueSymbol \u2260 falseSymbol)\n  (hTrueDelimiter : trueSymbol \u2260 delimiterSymbol) (hFalseDelimiter : falseSymbol \u2260 delimiterSymbol)\n  (D : TMVerifierXOnlyEncodedSuffixDecoder V) (certOfNats : List \u2115 \u2192 V.Cert.Carrier)\n  (natsOfCert : V.Cert.Carrier \u2192 List \u2115)\n  (certOfNats_suffix_eq :\n    \u2200 (xs : List \u2115),\n      tmVerifierCertificateInputSuffixEncoded V (certOfNats xs) =\n        List.map tmVerifierInputRightSymbol\n          (tmVerifierNatListCertificateSymbols trueSymbol falseSymbol delimiterSymbol xs))\n  (cert_suffix_eq :\n    \u2200 (c : V.Cert.Carrier),\n      tmVerifierCertificateInputSuffixEncoded V c =\n        List.map tmVerifierInputRightSymbol\n          (tmVerifierNatListCertificateSymbols trueSymbol falseSymbol delimiterSymbol (natsOfCert c))) :\n  TMVerifierEncodingDiscipline V\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/TMEncodingDisciplineTemplates.lean:193:0: ComplexityReduction.SAT.TMVerifierEncodingDiscipline.ofFinListCertificate {_arity : \u2115} {L : EncodedDecisionProblem}\n  (V : TMVerifier L) (trueSymbol falseSymbol delimiterSymbol : V.Cert.Symbol) (hTrueFalse : trueSymbol \u2260 falseSymbol)\n  (hTrueDelimiter : trueSymbol \u2260 delimiterSymbol) (hFalseDelimiter : falseSymbol \u2260 delimiterSymbol)\n  (D : TMVerifierXOnlyEncodedSuffixDecoder V) (certOfNats : List \u2115 \u2192 V.Cert.Carrier)\n  (natsOfCert : V.Cert.Carrier \u2192 List \u2115)\n  (certOfNats_suffix_eq :\n    \u2200 (xs : List \u2115),\n      tmVerifierCertificateInputSuffixEncoded V (certOfNats xs) =\n        List.map tmVerifierInputRightSymbol\n          (tmVerifierNatListCertificateSymbols trueSymbol falseSymbol delimiterSymbol xs))\n  (cert_suffix_eq :\n    \u2200 (c : V.Cert.Carrier),\n      tmVerifierCertificateInputSuffixEncoded V c =\n        List.map tmVerifierInputRightSymbol\n          (tmVerifierNatListCertificateSymbols trueSymbol falseSymbol delimiterSymbol (natsOfCert c))) :\n  TMVerifierEncodingDiscipline V\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/TMEncodingDisciplineTemplates.lean:194:0: ComplexityReduction.SAT.TMVerifierEncodingDiscipline.ofAssignmentCertificate {L : EncodedDecisionProblem}\n  (V : TMVerifier L) (bitSymbol : Bool \u2192 V.Cert.Symbol) (delimiterSymbol : V.Cert.Symbol)\n  (D : TMVerifierXOnlyEncodedSuffixDecoder V) (certOfBits : List Bool \u2192 V.Cert.Carrier)\n  (bitsOfCert : V.Cert.Carrier \u2192 List Bool)\n  (certOfBits_suffix_eq :\n    \u2200 (bits : List Bool),\n      tmVerifierCertificateInputSuffixEncoded V (certOfBits bits) =\n        List.map (fun s \u21a6 some (Sum.\n... output trimmed ...\nSystemMembership.lean:86:0: ComplexityReduction.Karp21.exactCoverStructured_TMInNP : TMInNP Combinatorics.exactCoverStructuredDecisionProblem\n\u2139 [3910/3989] Replayed ComplexityReduction.Problems.Karp21.KnapsackNativeVerifier\ninfo: Reference/ComplexityReduction/Problems/Karp21/KnapsackNativeVerifier.lean:443:0: 'ComplexityReduction.Problems.Karp21.KnapsackNativeVerifier.StandardBinary.foldAcc_tm_polytime' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\ninfo: Reference/ComplexityReduction/Problems/Karp21/KnapsackNativeVerifier.lean:444:0: 'ComplexityReduction.Problems.Karp21.KnapsackNativeVerifier.StandardBinary.finiteVerify_tm_polytime' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\ninfo: Reference/ComplexityReduction/Problems/Karp21/KnapsackNativeVerifier.lean:445:0: 'ComplexityReduction.Problems.Karp21.KnapsackNativeVerifier.structuredChecker_directTM' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\ninfo: Reference/ComplexityReduction/Problems/Karp21/KnapsackNativeVerifier.lean:446:0: 'ComplexityReduction.Problems.Karp21.KnapsackNativeVerifier.structuredVerifier' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\ninfo: Reference/ComplexityReduction/Problems/Karp21/KnapsackNativeVerifier.lean:447:0: 'ComplexityReduction.Problems.Karp21.KnapsackNativeVerifier.structuredCheckedDecoderDiscipline' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\ninfo: Reference/ComplexityReduction/Problems/Karp21/KnapsackNativeVerifier.lean:448:0: 'ComplexityReduction.Problems.Karp21.KnapsackNativeVerifier.structuredNativeCapability' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n\u2139 [3913/3989] Replayed ComplexityReduction.Problems.Karp21.SetSystemHittingSetMembership\ninfo: Reference/ComplexityReduction/Problems/Karp21/SetSystemHittingSetMembership.lean:130:0: ComplexityReduction.Problems.Karp21.SetSystemHittingSetMembership.hittingSetStructured_backendTMInNP_export :\n  TMInNP Presentation.SetSystem.hittingSetStructuredProblem.toEncodedDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/SetSystemHittingSetMembership.lean:131:0: ComplexityReduction.Problems.Karp21.SetSystemHittingSetMembership.hittingSetStructured_backendTMInNP :\n  BackendTMInNP Presentation.SetSystem.hittingSetStructuredProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/SetSystemHittingSetMembership.lean:132:0: ComplexityReduction.Karp21.hittingSetStructured_TMInNP : TMInNP Combinatorics.hittingSetStructuredDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/SetSystemHittingSetMembership.lean:133:0: ComplexityReduction.Problems.Karp21.SetSystemHittingSetMembership.hittingSetStructured_nativeMembershipOutcome :\n  HittingSetStructuredNativeMembershipOutcome\ninfo: Reference/ComplexityReduction/Problems/Karp21/SetSystemHittingSetMembership.lean:134:0: ComplexityReduction.Problems.Karp21.SetSystemHittingSetMembership.hittingSetStructured_completenessOutcome :\n  HittingSetStructuredCompletenessOutcome\n\u2139 [3914/3989] Replayed ComplexityReduction.Problems.Karp21.SteinerTreeMembership\ninfo: Reference/ComplexityReduction/Problems/Karp21/SteinerTreeMembership.lean:132:0: ComplexityReduction.Problems.Karp21.SteinerTreeMembership.steinerTreeStructured_backendTMInNP_export :\n  TMInNP Presentation.SteinerTree.structuredProblem.toEncodedDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/SteinerTreeMembership.lean:133:0: ComplexityReduction.Problems.Karp21.SteinerTreeMembership.steinerTreeStructured_backendTMInNP :\n  BackendTMInNP Presentation.SteinerTree.structuredProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/SteinerTreeMembership.lean:134:0: ComplexityReduction.Karp21.SteinerTreeMembership.steinerTreeStructured_TMInNP :\n  TMInNP Combinatorics.Graph.steinerTreeStructuredDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/SteinerTreeMembership.lean:135:0: ComplexityReduction.Problems.Karp21.SteinerTreeMembership.steinerTreeStructured_nativeMembershipOutcome :\n  SteinerTreeStructuredNativeMembershipOutcome\ninfo: Reference/ComplexityReduction/Problems/Karp21/SteinerTreeMembership.lean:136:0: ComplexityReduction.Problems.Karp21.SteinerTreeMembership.steinerTreeStructured_completenessOutcome :\n  SteinerTreeStructuredCompletenessOutcome\ninfo: Reference/ComplexityReduction/Problems/Karp21/SteinerTreeMembership.lean:167:0: 'ComplexityReduction.Problems.Karp21.SteinerTreeMembership.steinerTreeStructured_backendTMInNP_export' depends on axioms: [propext,\n Classical.choice,\n Quot.sound,\n Karp21.SteinerTreeMembership.steinerPathFold_tm_polytime._native.native_decide.ax_1_1]\n\u2139 [3930/3992] Replayed ComplexityReduction.Problems.Karp21.ChromaticMembership\ninfo: Reference/ComplexityReduction/Problems/Karp21/ChromaticMembership.lean:135:0: ComplexityReduction.Problems.Karp21.ChromaticMembership.chromaticNumberStructured_backendTMInNP_export :\n  TMInNP Presentation.ChromaticNumber.structuredProblem.toEncodedDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/ChromaticMembership.lean:136:0: ComplexityReduction.Problems.Karp21.ChromaticMembership.chromaticNumberStructured_backendTMInNP :\n  BackendTMInNP Presentation.ChromaticNumber.structuredProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/ChromaticMembership.lean:137:0: ComplexityReduction.Karp21.chromaticNumberStructured_TMInNP :\n  TMInNP Combinatorics.Graph.chromaticNumberStructuredDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/ChromaticMembership.lean:138:0: ComplexityReduction.Problems.Karp21.ChromaticMembership.chromaticNumberStructured_nativeMembershipOutcome :\n  ChromaticNumberStructuredNativeMembershipOutcome\ninfo: Reference/ComplexityReduction/Problems/Karp21/ChromaticMembership.lean:139:0: ComplexityReduction.Problems.Karp21.ChromaticMembership.chromaticNumberStructured_completenessOutcome :\n  ChromaticNumberStructuredCompletenessOutcome\n\u26a0 [3939/3992] Replayed ComplexityReduction.Agent.Hardness.Authoring\nwarning: Reference/ComplexityReduction/Agent/Hardness/Authoring.lean:162:2: 'change source.accepts input \u2194 target.accepts (program.run input)' tactic does nothing\n\nNote: This linter can be disabled with `set_option linter.unusedTactic false`\n\u2139 [3951/4004] Replayed ComplexityReduction.Problems.Karp21.CliqueNativeVerifier\ninfo: Reference/ComplexityReduction/Problems/Karp21/CliqueNativeVerifier.lean:228:0: 'ComplexityReduction.Problems.Karp21.CliqueNativeVerifier.checker_directTM' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\ninfo: Reference/ComplexityReduction/Problems/Karp21/CliqueNativeVerifier.lean:229:0: 'ComplexityReduction.Problems.Karp21.CliqueNativeVerifier.verifier' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\ninfo: Reference/ComplexityReduction/Problems/Karp21/CliqueNativeVerifier.lean:230:0: 'ComplexityReduction.Problems.Karp21.CliqueNativeVerifier.checkedDecoderDiscipline' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\ninfo: Reference/ComplexityReduction/Problems/Karp21/CliqueNativeVerifier.lean:231:0: 'ComplexityReduction.Problems.Karp21.CliqueNativeVerifier.nativeCapability' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n\u2139 [3952/4004] Replayed ComplexityReduction.Problems.Karp21.GraphMembership\ninfo: Reference/ComplexityReduction/Problems/Karp21/GraphMembership.lean:224:0: ComplexityReduction.Problems.Karp21.GraphMembership.cliqueStructured_backendTMInNP_export :\n  TMInNP GraphAtoms.cliqueStructuredProblem.toEncodedDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/GraphMembership.lean:225:0: ComplexityReduction.Problems.Karp21.GraphMembership.cliqueStructured_backendTMInNP :\n  BackendTMInNP GraphAtoms.cliqueStructuredProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/GraphMembership.lean:226:0: ComplexityReduction.Karp21.cliqueStructured_TMInNP : TMInNP Combinatorics.Graph.cliqueStructuredDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/GraphMembership.lean:227:0: ComplexityReduction.Problems.Karp21.GraphMembership.cliqueStructured_backendMembershipOutcome :\n  CliqueStructuredBackendMembershipOutcome\ninfo: Reference/ComplexityReduction/Problems/Karp21/GraphMembership.lean:228:0: ComplexityReduction.Problems.Karp21.GraphMembership.cliqueStructured_nativeMembershipOutcome :\n  CliqueStructuredNativeMembershipOutcome\ninfo: Reference/ComplexityReduction/Problems/Karp21/GraphMembership.lean:229:0: ComplexityReduction.Problems.Karp21.GraphMembership.cliqueStructured_completenessOutcome :\n  CliqueStructuredCompletenessOutcome\ninfo: Reference/ComplexityReduction/Problems/Karp21/GraphMembership.lean:230:0: ComplexityReduction.Problems.Karp21.GraphMembership.cliqueStructured_nativeCapability_exactComponents\n  (capability : NativeVerifierCapability GraphAtoms.cliqueStructuredProblem) :\n  \u2203 verifier discipline, capability = NativeVerifierCapability.mk verifier discipline \u2227 \u22ef = \u22ef\ninfo: Reference/ComplexityReduction/Problems/Karp21/GraphMembership.lean:231:0: ComplexityReduction.Problems.Karp21.GraphMembership.cliqueStructured_nativeCapability_exactDisciplineProvenance\n  (capability : NativeVerifierCapability GraphAtoms.cliqueStructuredProblem) :\n  \u2203 backendDiscipline, capability.discipline.basis = VerifierEncodingDisciplineBasis.checkedDecoder backendDiscipline\n\u2139 [3967/4011] Replayed ComplexityReduction.Problems.Karp21.MaxCutMembership\ninfo: Reference/ComplexityReduction/Problems/Karp21/MaxCutMembership.lean:133:0: ComplexityReduction.Problems.Karp21.MaxCutMembership.maxCutStructured_backendTMInNP_export :\n  TMInNP Presentation.MaxCut.structuredProblem.toEncodedDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/MaxCutMembership.lean:134:0: ComplexityReduction.Problems.Karp21.MaxCutMembership.maxCutStructured_backendTMInNP :\n  BackendTMInNP Presentation.MaxCut.structuredProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/MaxCutMembership.lean:135:0: ComplexityReduction.Karp21.maxCutStructured_TMInNP : TMInNP Combinatorics.Graph.maxCutStructuredDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/MaxCutMembership.lean:136:0: ComplexityReduction.Problems.Karp21.MaxCutMembership.maxCutStructured_nativeMembershipOutcome :\n  MaxCutStructuredNativeMembershipOutcome\ninfo: Reference/ComplexityReduction/Problems/Karp21/MaxCutMembership.lean:137:0: ComplexityReduction.Problems.Karp21.MaxCutMembership.maxCutStructured_completenessOutcome :\n  MaxCutStructuredCompletenessOutcome\ninfo: Reference/ComplexityReduction/Problems/Karp21/MaxCutMembership.lean:167:0: 'ComplexityReduction.Problems.Karp21.MaxCutMembership.maxCutStructured_backendTMInNP_export' depends on axioms: [propext,\n Classical.choice,\n Quot.sound,\n Karp21.MaxCut.maxCutEdgeCountFold_tm_polytime._native.native_decide.ax_1_1]\n\u26a0 [3969/4011] Replayed ComplexityReduction.Protocol.Result\nwarning: Reference/ComplexityReduction/Protocol/Result.lean:171:14: unused variable `source`\n\nNote: This linter can be disabled with `set_option linter.unusedVariables false`\nwarning: Reference/ComplexityReduction/Protocol/Result.lean:171:21: unused variable `target`\n\nNote: This linter can be disabled with `set_option linter.unusedVariables false`\nwarning: Reference/ComplexityReduction/Protocol/Result.lean:172:21: unused variable `source`\n\nNote: This linter can be disabled with `set_option linter.unusedVariables false`\nwarning: Reference/ComplexityReduction/Protocol/Result.lean:172:28: unused variable `target`\n\nNote: This linter can be disabled with `set_option linter.unusedVariables false`\nwarning: Reference/ComplexityReduction/Protocol/Result.lean:174:15: unused variable `problem`\n\nNote: This linter can be disabled with `set_option linter.unusedVariables false`\nwarning: Reference/ComplexityReduction/Protocol/Result.lean:175:21: unused variable `problem`\n\nNote: This linter can be disabled with `set_option linter.unusedVariables false`\n\u2139 [3979/4013] Replayed ComplexityReduction.Problems.Karp21.CNFMembership\ninfo: Reference/ComplexityReduction/Problems/Karp21/CNFMembership.lean:248:0: ComplexityReduction.Problems.Karp21.CNFMembership.structured_backendTMInNP_export :\n  TMInNP Presentation.Satisfiability.structuredProblem.toEncodedDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/CNFMembership.lean:249:0: ComplexityReduction.Problems.Karp21.CNFMembership.structured_backendTMInNP :\n  BackendTMInNP Presentation.Satisfiability.structuredProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/CNFMembership.lean:250:0: ComplexityReduction.Problems.Karp21.CNFMembership.structuredVerifier :\n  CertifiedVerifier Presentation.Satisfiability.structuredProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/CNFMembership.lean:251:0: ComplexityReduction.Problems.Karp21.CNFMembership.structuredNativeVerifierOutcome :\n  Protocol.TrustedNativeVerifierOutcome Presentation.Satisfiability.structuredProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/CNFMembership.lean:252:0: ComplexityReduction.Karp21.satisfiabilityStructured_TMInNP : TMInNP Karp21.satisfiabilityStructuredDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/CNFMembership.lean:282:0: 'ComplexityReduction.Problems.Karp21.CNFMembership.structuredCheckerPrimitive_directTM' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\ninfo: Reference/ComplexityReduction/Problems/Karp21/CNFMembership.lean:283:0: 'ComplexityReduction.Problems.Karp21.CNFMembership.structuredVerifier' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\ninfo: Reference/ComplexityReduction/Problems/Karp21/CNFMembership.lean:284:0: 'ComplexityReduction.Problems.Karp21.CNFMembership.structuredVerifier_structuralEvidence_remains_blocked' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n\u2139 [3997/4013] Replayed ComplexityReduction.Problems.Karp21.NumericMembership\ninfo: Reference/ComplexityReduction/Problems/Karp21/NumericMembership.lean:237:0: ComplexityReduction.Problems.Karp21.NumericMembership.knapsackStructured_backendTMInNP_export :\n  TMInNP Presentation.Knapsack.structuredProblem.toEncodedDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/NumericMembership.lean:238:0: ComplexityReduction.Problems.Karp21.NumericMembership.knapsackStructured_backendTMInNP :\n  BackendTMInNP Presentation.Knapsack.structuredProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/NumericMembership.lean:239:0: ComplexityReduction.Karp21.knapsackStructured_TMInNP : TMInNP Combinatorics.knapsackStructuredDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/NumericMembership.lean:240:0: ComplexityReduction.Problems.Karp21.NumericMembership.knapsackStructured_backendMembershipOutcome :\n  KnapsackStructuredBackendMembershipOutcome\ninfo: Reference/ComplexityReduction/Problems/Karp21/NumericMembership.lean:241:0: ComplexityReduction.Problems.Karp21.NumericMembership.knapsackStructured_nativeMembershipOutcome :\n  KnapsackStructuredNativeMembershipOutcome\ninfo: Reference/ComplexityReduction/Problems/Karp21/NumericMembership.lean:242:0: ComplexityReduction.Problems.Karp21.NumericMembership.knapsackStructured_completenessOutcome :\n  KnapsackStructuredCompletenessOutcome\ninfo: Reference/ComplexityReduction/Problems/Karp21/NumericMembership.lean:243:0: ComplexityReduction.Problems.Karp21.NumericMembership.knapsackStructured_nativeCapability_exactComponents\n  (capability : NativeVerifierCapability Presentation.Knapsack.structuredProblem) :\n  \u2203 verifier discipline, capability = NativeVerifierCapability.mk verifier discipline \u2227 \u22ef = \u22ef\ninfo: Reference/ComplexityReduction/Problems/Karp21/NumericMembership.lean:244:0: ComplexityReduction.Problems.Karp21.NumericMembership.knapsackStructured_nativeCapability_exactDisciplineProvenance\n  (capability : NativeVerifierCapability Presentation.Knapsack.structuredProblem) :\n  \u2203 backendDiscipline, capability.discipline.basis = VerifierEncodingDisciplineBasis.checkedDecoder backendDiscipline\nBuild completed successfully (4013 jobs).\n",
+    "timed_out": false
+  },
+  "setup_build_wall_duration_seconds": 83.879,
+  "stage": "M",
+  "started_at": "2026-08-03T05:54:54.251630+00:00",
+  "status": "VERIFIED",
+  "suite_file": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/Auto_Reduction_Agent/Benchmark/Hardness/Suites/typed_authoring.json",
+  "suite_id": "typed-authoring",
+  "suite_sha256": "f4096941bc262fd3c771afdd92613305bc0482eca12b299c33a1f0c06575ce76",
+  "usage": {
+    "combined": {
+      "completion_tokens": 7725,
+      "prompt_cache_hit_tokens": 18048,
+      "prompt_cache_miss_tokens": 309,
+      "prompt_tokens": 18357,
+      "total_tokens": 26082
+    },
+    "model_authoring": {
+      "completion_tokens": 5256,
+      "prompt_cache_hit_tokens": 2048,
+      "prompt_cache_miss_tokens": 70,
+      "prompt_tokens": 2118,
+      "total_tokens": 7374
+    },
+    "packet_selection": {
+      "completion_tokens": 2469,
+      "prompt_cache_hit_tokens": 16000,
+      "prompt_cache_miss_tokens": 239,
+      "prompt_tokens": 16239,
+      "total_tokens": 18708
+    }
+  },
+  "wall_duration_seconds": 3386.587
+}

@@ -1,0 +1,22 @@
+schema_version: opencode_decision_problem_sample_file_v1
+id: set_packing
+name: set_packing_problem
+input_language: set_packing
+problem_family: set_system
+problem_statement: Given a family of finite sets and an integer k, decide whether at least k pairwise disjoint sets can be chosen.
+certificate_contract: lean_proposition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction
+
+  noncomputable section
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.Combinatorics.setPackingDecisionProblem
+lean_target_type: |
+  ComplexityReduction.InNPEnc ComplexityReduction.CostedPolyTimeModel problem
+difficulty: medium
+difficulty_tags:
+- set_system
+- disjointness_witness
+- cardinality_bound

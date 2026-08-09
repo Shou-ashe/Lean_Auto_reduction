@@ -1,0 +1,8 @@
+{
+  "schema_version": "hardness_benchmark_expected_v1",
+  "case_id": "knapsack-native-cook-levin",
+  "authoritative": false,
+  "enabled": true,
+  "min_agent_phase": 2,
+  "final_status": "VERIFIED"
+}

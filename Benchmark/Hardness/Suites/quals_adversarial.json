@@ -1,0 +1,242 @@
+{
+  "schema_version": "hardness_benchmark_suite_v1",
+  "suite_id": "quals-adversarial",
+  "description": "Stage-N N-C fail-closed exact-endpoint, one-way reduction, missing-reduction, and missing-membership variants.",
+  "cases": [
+    {
+      "id": "spring2015-exactly-one-neighbor-missing-membership",
+      "module": "Benchmark.Hardness.Inputs.Quals.Spring2015ExactlyOneNeighborMissingMembership",
+      "source": "Benchmark.Hardness.Inputs.Quals.Spring2015ExactlyOneNeighborMissingMembership.problem",
+      "membership": null,
+      "target": null,
+      "objective": "prove_np_complete",
+      "target_policy": "open",
+      "planner": "deterministic",
+      "execution_layer": "core_reuse",
+      "verification_profile": "core",
+      "evaluation_lane": "quals_adversarial",
+      "enabled": true,
+      "min_agent_phase": 14,
+      "authoring_policy": {"enabled": false, "mode": "disabled"},
+      "expected": {
+        "baseline_status": "BLOCKED",
+        "baseline_failure_code": "missing_native_membership",
+        "final_status": "BLOCKED",
+        "final_failure_code": "missing_native_membership"
+      },
+      "coverage": {
+        "formalization_case_id": "spring2015-exactly-one-neighbor-formalization",
+        "negative_class": "missing_membership",
+        "required_gap_reason": "nativeMembership",
+        "forbid_model_call": true,
+        "maximum_authoring_attempts": 0
+      },
+      "resources": {"lean_timeout_seconds": 1800, "max_model_calls": 1},
+      "tags": ["stage-n", "n-a", "quals", "missing-membership", "negative"],
+      "group_id": "stage-n-b-adversarial",
+      "family_id": "graph-local-witness"
+    },
+    {
+      "id": "spring2015-exactly-one-neighbor-reversed-reduction",
+      "module": "Benchmark.Hardness.Inputs.Quals.Spring2015ExactlyOneNeighborReversedReduction",
+      "source": "Benchmark.Hardness.Inputs.Quals.Spring2015ExactlyOneNeighborReversedReduction.source",
+      "membership": null,
+      "target": "Benchmark.Hardness.Inputs.Quals.Spring2015ExactlyOneNeighborReversedReduction.target",
+      "objective": "reduce_to",
+      "target_policy": "fixed",
+      "planner": "deterministic",
+      "execution_layer": "core_reuse",
+      "verification_profile": "core",
+      "evaluation_lane": "quals_adversarial",
+      "enabled": true,
+      "min_agent_phase": 14,
+      "authoring_policy": {"enabled": false, "mode": "disabled"},
+      "expected": {
+        "baseline_status": "BLOCKED",
+        "baseline_failure_code": "no_registry_path",
+        "final_status": "BLOCKED",
+        "final_failure_code": "no_registry_path"
+      },
+      "coverage": {
+        "formalization_case_id": "spring2015-exactly-one-neighbor-formalization",
+        "negative_class": "reversed_reduction",
+        "required_gap_reason": "noRegistryPath",
+        "opposite_direction_declaration": "Benchmark.Hardness.Inputs.Quals.Spring2015ExactlyOneNeighborReversedReduction.forwardOnly",
+        "forbid_model_call": true,
+        "maximum_authoring_attempts": 0
+      },
+      "resources": {"lean_timeout_seconds": 1800, "max_model_calls": 1},
+      "tags": ["stage-n", "n-a", "quals", "wrong-direction", "negative"],
+      "group_id": "stage-n-b-adversarial",
+      "family_id": "graph-local-witness"
+    },
+    {
+      "id": "spring2015-exactly-one-neighbor-wrong-endpoint",
+      "module": "Benchmark.Hardness.Inputs.Quals.Spring2015ExactlyOneNeighborWrongEndpoint",
+      "source": "Benchmark.Hardness.Inputs.Quals.Spring2015ExactlyOneNeighborWrongEndpoint.problem",
+      "membership": null,
+      "target": null,
+      "objective": "prove_np_complete",
+      "target_policy": "open",
+      "planner": "deterministic",
+      "execution_layer": "core_reuse",
+      "verification_profile": "core",
+      "evaluation_lane": "quals_adversarial",
+      "enabled": true,
+      "min_agent_phase": 14,
+      "authoring_policy": {"enabled": false, "mode": "disabled"},
+      "expected": {
+        "baseline_status": "BLOCKED",
+        "baseline_failure_code": "missing_native_membership",
+        "final_status": "BLOCKED",
+        "final_failure_code": "missing_native_membership"
+      },
+      "coverage": {
+        "formalization_case_id": "spring2015-exactly-one-neighbor-formalization",
+        "negative_class": "wrong_endpoint",
+        "required_gap_reason": "nativeMembership",
+        "foreign_template_endpoint": "Benchmark.Hardness.Inputs.Quals.Spring2015ExactlyOneNeighbor.problem",
+        "require_zero_exact_authoring_templates": true,
+        "forbid_model_call": true,
+        "maximum_authoring_attempts": 0
+      },
+      "resources": {"lean_timeout_seconds": 1800, "max_model_calls": 1},
+      "tags": ["stage-n", "n-a", "quals", "wrong-endpoint", "negative"],
+      "group_id": "stage-n-b-adversarial",
+      "family_id": "graph-local-witness"
+    },
+    {
+      "id": "uiuc2022-seeing-set-missing-reduction",
+      "module": "Benchmark.Hardness.Inputs.Quals.UIUC2022SeeingSetMissingReduction",
+      "source": "Benchmark.Hardness.Inputs.Quals.UIUC2022SeeingSetMissingReduction.source",
+      "membership": null,
+      "target": "Benchmark.Hardness.Inputs.Quals.UIUC2022SeeingSetMissingReduction.target",
+      "objective": "reduce_to",
+      "target_policy": "fixed",
+      "planner": "deterministic",
+      "execution_layer": "core_reuse",
+      "verification_profile": "core",
+      "evaluation_lane": "quals_adversarial",
+      "enabled": true,
+      "min_agent_phase": 14,
+      "authoring_policy": {"enabled": false, "mode": "disabled"},
+      "expected": {
+        "baseline_status": "BLOCKED",
+        "baseline_failure_code": "no_registry_path",
+        "final_status": "BLOCKED",
+        "final_failure_code": "no_registry_path"
+      },
+      "coverage": {
+        "formalization_case_id": "uiuc2022-seeing-set-formalization",
+        "negative_class": "missing_reduction",
+        "required_gap_reason": "noRegistryPath",
+        "require_zero_exact_authoring_templates": true,
+        "forbid_model_call": true,
+        "maximum_authoring_attempts": 0
+      },
+      "resources": {"lean_timeout_seconds": 1800, "max_model_calls": 1},
+      "tags": ["stage-n", "n-b", "quals", "seeing-set", "missing-reduction", "negative"],
+      "group_id": "stage-n-b-adversarial",
+      "family_id": "directed-weighted-reachability"
+    },
+    {
+      "id": "fall2016-node-deletion-bipartite-missing-membership",
+      "module": "Benchmark.Hardness.Inputs.Quals.Fall2016NodeDeletionBipartiteMissingMembership",
+      "source": "Benchmark.Hardness.Inputs.Quals.Fall2016NodeDeletionBipartiteMissingMembership.problem",
+      "membership": null,
+      "target": null,
+      "objective": "prove_np_complete",
+      "target_policy": "open",
+      "planner": "deterministic",
+      "execution_layer": "core_reuse",
+      "verification_profile": "core",
+      "evaluation_lane": "quals_adversarial",
+      "enabled": true,
+      "min_agent_phase": 14,
+      "authoring_policy": {"enabled": false, "mode": "disabled"},
+      "expected": {
+        "baseline_status": "BLOCKED",
+        "baseline_failure_code": "missing_native_membership",
+        "final_status": "BLOCKED",
+        "final_failure_code": "missing_native_membership"
+      },
+      "coverage": {
+        "formalization_case_id": "fall2016-node-deletion-bipartite-formalization",
+        "negative_class": "missing_membership",
+        "required_gap_reason": "nativeMembership",
+        "forbid_model_call": true,
+        "maximum_authoring_attempts": 0
+      },
+      "resources": {"lean_timeout_seconds": 1800, "max_model_calls": 1},
+      "tags": ["stage-n", "n-b", "quals", "node-deletion", "missing-membership", "negative"],
+      "group_id": "stage-n-b-adversarial",
+      "family_id": "graph-deletion-coloring"
+    },
+    {
+      "id": "fall2014-most-neighbors-missing-membership",
+      "module": "Benchmark.Hardness.Inputs.Quals.Fall2014MostNeighborsMissingMembership",
+      "source": "Benchmark.Hardness.Inputs.Quals.Fall2014MostNeighborsMissingMembership.problem",
+      "membership": null,
+      "target": null,
+      "objective": "prove_np_complete",
+      "target_policy": "open",
+      "planner": "deterministic",
+      "execution_layer": "core_reuse",
+      "verification_profile": "core",
+      "evaluation_lane": "quals_adversarial",
+      "enabled": true,
+      "min_agent_phase": 14,
+      "authoring_policy": {"enabled": false, "mode": "disabled"},
+      "expected": {
+        "baseline_status": "BLOCKED",
+        "baseline_failure_code": "missing_native_membership",
+        "final_status": "BLOCKED",
+        "final_failure_code": "missing_native_membership"
+      },
+      "coverage": {
+        "formalization_case_id": "fall2014-most-neighbors-formalization",
+        "negative_class": "missing_membership",
+        "required_gap_reason": "nativeMembership",
+        "forbid_model_call": true,
+        "maximum_authoring_attempts": 0
+      },
+      "resources": {"lean_timeout_seconds": 1800, "max_model_calls": 1},
+      "tags": ["stage-n", "n-c", "quals", "most-neighbors", "missing-membership", "negative"],
+      "group_id": "stage-n-c-adversarial",
+      "family_id": "external-neighborhood"
+    },
+    {
+      "id": "uiuc2020-two-disjoint-bounded-paths-missing-membership",
+      "module": "Benchmark.Hardness.Inputs.Quals.UIUC2020TwoDisjointBoundedPathsMissingMembership",
+      "source": "Benchmark.Hardness.Inputs.Quals.UIUC2020TwoDisjointBoundedPathsMissingMembership.problem",
+      "membership": null,
+      "target": null,
+      "objective": "prove_np_complete",
+      "target_policy": "open",
+      "planner": "deterministic",
+      "execution_layer": "core_reuse",
+      "verification_profile": "core",
+      "evaluation_lane": "quals_adversarial",
+      "enabled": true,
+      "min_agent_phase": 14,
+      "authoring_policy": {"enabled": false, "mode": "disabled"},
+      "expected": {
+        "baseline_status": "BLOCKED",
+        "baseline_failure_code": "missing_native_membership",
+        "final_status": "BLOCKED",
+        "final_failure_code": "missing_native_membership"
+      },
+      "coverage": {
+        "formalization_case_id": "uiuc2020-two-disjoint-bounded-paths-formalization",
+        "negative_class": "missing_membership",
+        "required_gap_reason": "nativeMembership",
+        "forbid_model_call": true,
+        "maximum_authoring_attempts": 0
+      },
+      "resources": {"lean_timeout_seconds": 1800, "max_model_calls": 1},
+      "tags": ["stage-n", "n-c", "quals", "two-disjoint-bounded-paths", "missing-membership", "negative"],
+      "group_id": "stage-n-c-adversarial",
+      "family_id": "directed-costed-pair-path"
+    }
+  ]
+}

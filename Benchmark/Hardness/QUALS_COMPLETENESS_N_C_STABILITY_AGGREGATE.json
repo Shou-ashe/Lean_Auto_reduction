@@ -1,0 +1,1129 @@
+{
+  "schema_version": "hardness_quals_completeness_stability_aggregate_v1",
+  "status": "VERIFIED",
+  "stage": "N",
+  "milestone": "N-C",
+  "model": "deepseek-v4-flash",
+  "base_url": "https://api.deepseek.com",
+  "requirements": {
+    "independent_full_runs": 3,
+    "fresh_output_directory_per_run": true,
+    "resume_used": false,
+    "replayed_model_answers": false,
+    "primary_verified_per_run": 5,
+    "adversarial_correct_per_run": 7,
+    "protocol_expected_per_run": 12,
+    "real_http_calls_per_run": 5,
+    "gates_passed_per_run": 18,
+    "final_lean_processes_per_run": 1,
+    "release_replays_per_run": 1
+  },
+  "official_run": {
+    "role": "official",
+    "report": "Benchmark/Hardness/QUALS_COMPLETENESS_N_C_REPORT.json",
+    "report_sha256": "cae7ff28309da2e8c84eea77915a07dd92c818794621410a93b32b62654e1b1f",
+    "run_label": "stage-n-c-official-real-deepseek-20260804",
+    "output_root": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-quals-n-c-official-20260804",
+    "status": "VERIFIED",
+    "started_at": "2026-08-04T06:03:47.635074+00:00",
+    "finished_at": "2026-08-04T07:11:55.311246+00:00",
+    "model": "deepseek-v4-flash",
+    "base_url": "https://api.deepseek.com",
+    "primary_verified": 5,
+    "adversarial_correct": 7,
+    "protocol_expected": 12,
+    "gates_passed": 18,
+    "gate_count": 18,
+    "real_http_calls": 5,
+    "http_ok": 5,
+    "replayed_response_count": 0,
+    "selection_evidence": [
+      {
+        "case_id": "spring2015-exactly-one-neighbor",
+        "called": true,
+        "ok": true,
+        "status_code": 200,
+        "replayed": false,
+        "attempts": 1,
+        "prompt_sha256": "bb3f83963cf062b9cd4ae33eb8f64a7b09b2d5e29eed72157ed5b263aa5fe69d",
+        "response_sha256": "2b2c2181df99ffe3371252fbca49b5c58bff347de9f0df4d13c74eadfb82a709",
+        "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-quals-n-c-official-20260804/cases/spring2015-exactly-one-neighbor/selection/round-01-response.json",
+        "usage": {
+          "completion_tokens": 405,
+          "completion_tokens_details": {
+            "reasoning_tokens": 199
+          },
+          "prompt_cache_hit_tokens": 0,
+          "prompt_cache_miss_tokens": 3097,
+          "prompt_tokens": 3097,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          },
+          "total_tokens": 3502
+        }
+      },
+      {
+        "case_id": "uiuc2022-seeing-set",
+        "called": true,
+        "ok": true,
+        "status_code": 200,
+        "replayed": false,
+        "attempts": 1,
+        "prompt_sha256": "212134bd3e97797a811f7aa10a2cb6bb12df5400cafb59ed4be5b57e7803551d",
+        "response_sha256": "4b1c351973f099ff56e92705efa420f71a8c2360d2d0afa06ab06dc84aa08bc8",
+        "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-quals-n-c-official-20260804/cases/uiuc2022-seeing-set/selection/round-01-response.json",
+        "usage": {
+          "completion_tokens": 401,
+          "completion_tokens_details": {
+            "reasoning_tokens": 187
+          },
+          "prompt_cache_hit_tokens": 0,
+          "prompt_cache_miss_tokens": 3001,
+          "prompt_tokens": 3001,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          },
+          "total_tokens": 3402
+        }
+      },
+      {
+        "case_id": "fall2016-node-deletion-bipartite",
+        "called": true,
+        "ok": true,
+        "status_code": 200,
+        "replayed": false,
+        "attempts": 1,
+        "prompt_sha256": "5fe6b584b38ff7205a41789bc7d1fee4ab10e1aac2caa4cc0154850b51e5dcf3",
+        "response_sha256": "1ef8fc42a185e02c4149b1ef15634f70fdb7012b361b1fe12677484f8a846b3f",
+        "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-quals-n-c-official-20260804/cases/fall2016-node-deletion-bipartite/selection/round-01-response.json",
+        "usage": {
+          "completion_tokens": 364,
+          "completion_tokens_details": {
+            "reasoning_tokens": 153
+          },
+          "prompt_cache_hit_tokens": 0,
+          "prompt_cache_miss_tokens": 3025,
+          "prompt_tokens": 3025,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          },
+          "total_tokens": 3389
+        }
+      },
+      {
+        "case_id": "fall2014-most-neighbors",
+        "called": true,
+        "ok": true,
+        "status_code": 200,
+        "replayed": false,
+        "attempts": 1,
+        "prompt_sha256": "76a7fe517b37003712f42260d9a53960798439f540babc9c25a150dc3fcdbd7a",
+        "response_sha256": "64cae705a0a3d9f9bf10be5089bedd779dd5f950d5adc33a01680c38cfb90602",
+        "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-quals-n-c-official-20260804/cases/fall2014-most-neighbors/selection/round-01-response.json",
+        "usage": {
+          "completion_tokens": 417,
+          "completion_tokens_details": {
+            "reasoning_tokens": 225
+          },
+          "prompt_cache_hit_tokens": 0,
+          "prompt_cache_miss_tokens": 3065,
+          "prompt_tokens": 3065,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          },
+          "total_tokens": 3482
+        }
+      },
+      {
+        "case_id": "uiuc2020-two-disjoint-bounded-paths",
+        "called": true,
+        "ok": true,
+        "status_code": 200,
+        "replayed": false,
+        "attempts": 1,
+        "prompt_sha256": "f6b018239b4e5b8c0d55615be1e9728e9c884eff26b1732fbc514bd902487385",
+        "response_sha256": "a5a01699427346df8c8cd3954540d3c7143f6702d6218b4fa70400c740a360f5",
+        "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-quals-n-c-official-20260804/cases/uiuc2020-two-disjoint-bounded-paths/selection/round-01-response.json",
+        "usage": {
+          "completion_tokens": 471,
+          "completion_tokens_details": {
+            "reasoning_tokens": 276
+          },
+          "prompt_cache_hit_tokens": 256,
+          "prompt_cache_miss_tokens": 2824,
+          "prompt_tokens": 3080,
+          "prompt_tokens_details": {
+            "cached_tokens": 256
+          },
+          "total_tokens": 3551
+        }
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 15268,
+      "completion_tokens": 2058,
+      "total_tokens": 17326,
+      "prompt_cache_hit_tokens": 256,
+      "prompt_cache_miss_tokens": 15012
+    },
+    "wall_duration_seconds": 4084.936,
+    "final_lean": {
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-quals-n-c-official-20260804/QualsCompletenessFinal.lean"
+      ],
+      "duration_seconds": 190.397,
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "",
+      "timed_out": false
+    },
+    "release_replay": {
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-quals-n-c-official-20260804/QualsCompletenessFinal.lean"
+      ],
+      "duration_seconds": 188.509,
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "",
+      "timed_out": false
+    },
+    "process_counts": {
+      "authoring_local": 53,
+      "core_baseline": 36,
+      "final_combined_lean": 1,
+      "formalization": 1,
+      "release_replay": 1,
+      "setup_build": 1
+    },
+    "suite_hashes": {
+      "adversarial": "5dcee943883b18d75ae67ef9a34fa10f5965d46e65700d5bbcc4d53889d8ebc3",
+      "completeness": "24f0fae7f6597bd2a41b40f605c008b8f1c7b1a67692c330a5e0a5564326e71c",
+      "formalization": "c3a97ea2b864201c5fbc2cb2d69a9b5fdd8b7f39b5c7ee1ae73d136daa3870d4"
+    },
+    "final_artifact_sha256": "295b3f984b95b21fc032121614706f2719fd93abadd63903d6ad89bf47d56d49",
+    "candidate_sha256": {
+      "spring2015-exactly-one-neighbor": "59802ee81b3215493c4133b1ea5e7558e112caa52d560d238db7472e2a8b474e",
+      "uiuc2022-seeing-set": "f53f3bba942aeae7316f78fa9bd459bc833696bf8ea85b255b26c56ddc2e0d8d",
+      "fall2016-node-deletion-bipartite": "8899fa442ca7c2275fc67f8c9892189c78e0bdd107d3f2f5254c111ad3d7c7ea",
+      "fall2014-most-neighbors": "ad113c3dd2cc5b433c7b6d410271a73bc545a9a30a029a409c1b2ead150b3d9d",
+      "uiuc2020-two-disjoint-bounded-paths": "e38910482f38c6da954dc5c5c90d22f702b3e80c36a7a133ebdc7d7f0245d36d"
+    },
+    "candidate_stage_sha256": {
+      "spring2015-exactly-one-neighbor": [
+        "fd20534e8bde25faf3963042181cdc3bc2b78e32270f893308ae423fa92f25e7",
+        "1180843795f2e9dfe0c8fef8512d4f5171dca71543bda81f4eac89249727cd0b",
+        "8ad660ccf84452d0224d829a349e832d0b2342984bb59eb8921d7691838cc2a9",
+        "0a5c8b402fd194dd45e85ad65f6afa96e2c4d40c0dd1f2767c5418185e15c481"
+      ],
+      "uiuc2022-seeing-set": [
+        "c8c0f6f839535499c898f1972fe0cb3c9bc153fe13d5bf8187f9e555ed2db56a",
+        "06c1e8c585c2ea5359632dce8e27e900d5fa1567703b0d639cf4fe5fae441afd",
+        "f97b775b24cf563eeb764ad14adab6e7f72e83150f77af35c3773b1f5ef99d3a",
+        "8bbc686a33b8d255626c827a8bdec3211ff4eed673a5efe1cb55e860867b3ac0",
+        "afc3e2f2d42b21b4ba6a1baa1c18aacd5c0d460818b5a946f76618f408665519",
+        "6bce2eb4ca40ac0172af269fd7690299405dbf0dab83aa7cf993d2d254f0d831",
+        "20defb9d85a3ade1c5e2fb1c7fa7efa111c014a9d091da4b23ff2ea866eb671f"
+      ],
+      "fall2016-node-deletion-bipartite": [
+        "16597ed504066cbddde3ef40f9b31c10fa3d74d9fbdea71cf7a4dd06746bb42f",
+        "389c9d3077526a9cd7e24e8ac36d2ca14e6a8675c993767b05966195bc154496",
+        "855514e901c75d6a494b46784bc02c88f6bae8f188984557c146412fe0faddb2",
+        "5ddf5821d3a9d0d636d6b21c686052f03141ab1d3793b724d53e21b982dbb716"
+      ],
+      "fall2014-most-neighbors": [
+        "1a425da7039d512fa68737ebd43e6928a3cd831f2554906274d73cf474b5e8c9",
+        "a53d42aa5e51bebfd31e0f4ba4bd7c9e326a83efd0d4b62c26eed00f959115e9",
+        "44ab223b131d7c2068b00188237eb9b351ab4fab01315a0e523189145f79bbc7",
+        "cd4e166882854e3532783f255e92a3a24d9aa2f44c8c269ac67735a97af72698"
+      ],
+      "uiuc2020-two-disjoint-bounded-paths": [
+        "364bd3716db6000b144383837b328541846d2907b545c791f2257892b7713cfe",
+        "6df459f694c885652abac28c234755d100eda93e0db8460712fb4fd6a9a424d6",
+        "8706900346b04a2024fd3ac61243266fdaf230c83dafc438bbb3c59157bbfa4f",
+        "024f035eb03ed63a644aec359619583ed9018b6224de3e7f35fb012c17b0307b"
+      ]
+    },
+    "failure_reason_distribution": {
+      "missing_native_membership": 5,
+      "no_registry_path": 2
+    },
+    "positive_failure_reason_distribution": {}
+  },
+  "runs": [
+    {
+      "role": "stability_1",
+      "report": "Benchmark/Hardness/QUALS_COMPLETENESS_N_C_STABILITY_1_REPORT.json",
+      "report_sha256": "f9a67d1b5eafafcc8c99e6abed85de01d9422d588a7fccea58db9f839efd3e24",
+      "run_label": "stage-n-c-stability-1b-real-deepseek-20260804",
+      "output_root": "/mnt/d/学习资料/ai/auto_reduction_agent/.reduction-agent/deepseek-quals-n-c-stability-1b-20260804",
+      "status": "VERIFIED",
+      "started_at": "2026-08-04T08:13:39.316813+00:00",
+      "finished_at": "2026-08-04T09:13:58.704793+00:00",
+      "model": "deepseek-v4-flash",
+      "base_url": "https://api.deepseek.com",
+      "primary_verified": 5,
+      "adversarial_correct": 7,
+      "protocol_expected": 12,
+      "gates_passed": 18,
+      "gate_count": 18,
+      "real_http_calls": 5,
+      "http_ok": 5,
+      "replayed_response_count": 0,
+      "selection_evidence": [
+        {
+          "case_id": "spring2015-exactly-one-neighbor",
+          "called": true,
+          "ok": true,
+          "status_code": 200,
+          "replayed": false,
+          "attempts": 1,
+          "prompt_sha256": "bb3f83963cf062b9cd4ae33eb8f64a7b09b2d5e29eed72157ed5b263aa5fe69d",
+          "response_sha256": "32762eb3e8faac90c910c3de53b409d5c6d82938c906a6b592ad7767070bd8ef",
+          "response_file": ".reduction-agent/deepseek-quals-n-c-stability-1b-20260804/cases/spring2015-exactly-one-neighbor/selection/round-01-response.json",
+          "usage": {
+            "completion_tokens": 405,
+            "completion_tokens_details": {
+              "reasoning_tokens": 189
+            },
+            "prompt_cache_hit_tokens": 3072,
+            "prompt_cache_miss_tokens": 25,
+            "prompt_tokens": 3097,
+            "prompt_tokens_details": {
+              "cached_tokens": 3072
+            },
+            "total_tokens": 3502
+          }
+        },
+        {
+          "case_id": "uiuc2022-seeing-set",
+          "called": true,
+          "ok": true,
+          "status_code": 200,
+          "replayed": false,
+          "attempts": 1,
+          "prompt_sha256": "212134bd3e97797a811f7aa10a2cb6bb12df5400cafb59ed4be5b57e7803551d",
+          "response_sha256": "86e2385ef260a41eabb59a4378f6d2eb1a68e392f5ee1cb69f18b0c84d1d89a7",
+          "response_file": ".reduction-agent/deepseek-quals-n-c-stability-1b-20260804/cases/uiuc2022-seeing-set/selection/round-01-response.json",
+          "usage": {
+            "completion_tokens": 310,
+            "completion_tokens_details": {
+              "reasoning_tokens": 91
+            },
+            "prompt_cache_hit_tokens": 2944,
+            "prompt_cache_miss_tokens": 57,
+            "prompt_tokens": 3001,
+            "prompt_tokens_details": {
+              "cached_tokens": 2944
+            },
+            "total_tokens": 3311
+          }
+        },
+        {
+          "case_id": "fall2016-node-deletion-bipartite",
+          "called": true,
+          "ok": true,
+          "status_code": 200,
+          "replayed": false,
+          "attempts": 1,
+          "prompt_sha256": "5fe6b584b38ff7205a41789bc7d1fee4ab10e1aac2caa4cc0154850b51e5dcf3",
+          "response_sha256": "d9873b4a1a0dced5a98f0275fe76cf8d320150d57d1dcfc8f89c8f428d51b893",
+          "response_file": ".reduction-agent/deepseek-quals-n-c-stability-1b-20260804/cases/fall2016-node-deletion-bipartite/selection/round-01-response.json",
+          "usage": {
+            "completion_tokens": 490,
+            "completion_tokens_details": {
+              "reasoning_tokens": 290
+            },
+            "prompt_cache_hit_tokens": 2944,
+            "prompt_cache_miss_tokens": 81,
+            "prompt_tokens": 3025,
+            "prompt_tokens_details": {
+              "cached_tokens": 2944
+            },
+            "total_tokens": 3515
+          }
+        },
+        {
+          "case_id": "fall2014-most-neighbors",
+          "called": true,
+          "ok": true,
+          "status_code": 200,
+          "replayed": false,
+          "attempts": 1,
+          "prompt_sha256": "76a7fe517b37003712f42260d9a53960798439f540babc9c25a150dc3fcdbd7a",
+          "response_sha256": "ae32446e3112687e429b453bd52ac9d9a51111319d1ba111ac1cdc8377042c5c",
+          "response_file": ".reduction-agent/deepseek-quals-n-c-stability-1b-20260804/cases/fall2014-most-neighbors/selection/round-01-response.json",
+          "usage": {
+            "completion_tokens": 409,
+            "completion_tokens_details": {
+              "reasoning_tokens": 208
+            },
+            "prompt_cache_hit_tokens": 2944,
+            "prompt_cache_miss_tokens": 121,
+            "prompt_tokens": 3065,
+            "prompt_tokens_details": {
+              "cached_tokens": 2944
+            },
+            "total_tokens": 3474
+          }
+        },
+        {
+          "case_id": "uiuc2020-two-disjoint-bounded-paths",
+          "called": true,
+          "ok": true,
+          "status_code": 200,
+          "replayed": false,
+          "attempts": 1,
+          "prompt_sha256": "f6b018239b4e5b8c0d55615be1e9728e9c884eff26b1732fbc514bd902487385",
+          "response_sha256": "002dae3f1c3efec6b9dadbe983ef05532b20cf43da88163c0eaa879a65541827",
+          "response_file": ".reduction-agent/deepseek-quals-n-c-stability-1b-20260804/cases/uiuc2020-two-disjoint-bounded-paths/selection/round-01-response.json",
+          "usage": {
+            "completion_tokens": 426,
+            "completion_tokens_details": {
+              "reasoning_tokens": 222
+            },
+            "prompt_cache_hit_tokens": 3072,
+            "prompt_cache_miss_tokens": 8,
+            "prompt_tokens": 3080,
+            "prompt_tokens_details": {
+              "cached_tokens": 3072
+            },
+            "total_tokens": 3506
+          }
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 15268,
+        "completion_tokens": 2040,
+        "total_tokens": 17308,
+        "prompt_cache_hit_tokens": 14976,
+        "prompt_cache_miss_tokens": 292
+      },
+      "wall_duration_seconds": 3345.202,
+      "final_lean": {
+        "command": [
+          "lake",
+          "env",
+          "lean",
+          "/mnt/d/学习资料/ai/auto_reduction_agent/.reduction-agent/deepseek-quals-n-c-stability-1b-20260804/QualsCompletenessFinal.lean"
+        ],
+        "duration_seconds": 149.058,
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": "",
+        "timed_out": false
+      },
+      "release_replay": {
+        "command": [
+          "lake",
+          "env",
+          "lean",
+          "/mnt/d/学习资料/ai/auto_reduction_agent/.reduction-agent/deepseek-quals-n-c-stability-1b-20260804/QualsCompletenessFinal.lean"
+        ],
+        "duration_seconds": 151.568,
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": "",
+        "timed_out": false
+      },
+      "process_counts": {
+        "authoring_local": 53,
+        "core_baseline": 36,
+        "final_combined_lean": 1,
+        "formalization": 1,
+        "release_replay": 1,
+        "setup_build": 1
+      },
+      "suite_hashes": {
+        "adversarial": "5dcee943883b18d75ae67ef9a34fa10f5965d46e65700d5bbcc4d53889d8ebc3",
+        "completeness": "24f0fae7f6597bd2a41b40f605c008b8f1c7b1a67692c330a5e0a5564326e71c",
+        "formalization": "c3a97ea2b864201c5fbc2cb2d69a9b5fdd8b7f39b5c7ee1ae73d136daa3870d4"
+      },
+      "final_artifact_sha256": "295b3f984b95b21fc032121614706f2719fd93abadd63903d6ad89bf47d56d49",
+      "candidate_sha256": {
+        "spring2015-exactly-one-neighbor": "59802ee81b3215493c4133b1ea5e7558e112caa52d560d238db7472e2a8b474e",
+        "uiuc2022-seeing-set": "f53f3bba942aeae7316f78fa9bd459bc833696bf8ea85b255b26c56ddc2e0d8d",
+        "fall2016-node-deletion-bipartite": "8899fa442ca7c2275fc67f8c9892189c78e0bdd107d3f2f5254c111ad3d7c7ea",
+        "fall2014-most-neighbors": "ad113c3dd2cc5b433c7b6d410271a73bc545a9a30a029a409c1b2ead150b3d9d",
+        "uiuc2020-two-disjoint-bounded-paths": "e38910482f38c6da954dc5c5c90d22f702b3e80c36a7a133ebdc7d7f0245d36d"
+      },
+      "candidate_stage_sha256": {
+        "spring2015-exactly-one-neighbor": [
+          "fd20534e8bde25faf3963042181cdc3bc2b78e32270f893308ae423fa92f25e7",
+          "1180843795f2e9dfe0c8fef8512d4f5171dca71543bda81f4eac89249727cd0b",
+          "8ad660ccf84452d0224d829a349e832d0b2342984bb59eb8921d7691838cc2a9",
+          "0a5c8b402fd194dd45e85ad65f6afa96e2c4d40c0dd1f2767c5418185e15c481"
+        ],
+        "uiuc2022-seeing-set": [
+          "c8c0f6f839535499c898f1972fe0cb3c9bc153fe13d5bf8187f9e555ed2db56a",
+          "06c1e8c585c2ea5359632dce8e27e900d5fa1567703b0d639cf4fe5fae441afd",
+          "f97b775b24cf563eeb764ad14adab6e7f72e83150f77af35c3773b1f5ef99d3a",
+          "8bbc686a33b8d255626c827a8bdec3211ff4eed673a5efe1cb55e860867b3ac0",
+          "afc3e2f2d42b21b4ba6a1baa1c18aacd5c0d460818b5a946f76618f408665519",
+          "6bce2eb4ca40ac0172af269fd7690299405dbf0dab83aa7cf993d2d254f0d831",
+          "20defb9d85a3ade1c5e2fb1c7fa7efa111c014a9d091da4b23ff2ea866eb671f"
+        ],
+        "fall2016-node-deletion-bipartite": [
+          "16597ed504066cbddde3ef40f9b31c10fa3d74d9fbdea71cf7a4dd06746bb42f",
+          "389c9d3077526a9cd7e24e8ac36d2ca14e6a8675c993767b05966195bc154496",
+          "855514e901c75d6a494b46784bc02c88f6bae8f188984557c146412fe0faddb2",
+          "5ddf5821d3a9d0d636d6b21c686052f03141ab1d3793b724d53e21b982dbb716"
+        ],
+        "fall2014-most-neighbors": [
+          "1a425da7039d512fa68737ebd43e6928a3cd831f2554906274d73cf474b5e8c9",
+          "a53d42aa5e51bebfd31e0f4ba4bd7c9e326a83efd0d4b62c26eed00f959115e9",
+          "44ab223b131d7c2068b00188237eb9b351ab4fab01315a0e523189145f79bbc7",
+          "cd4e166882854e3532783f255e92a3a24d9aa2f44c8c269ac67735a97af72698"
+        ],
+        "uiuc2020-two-disjoint-bounded-paths": [
+          "364bd3716db6000b144383837b328541846d2907b545c791f2257892b7713cfe",
+          "6df459f694c885652abac28c234755d100eda93e0db8460712fb4fd6a9a424d6",
+          "8706900346b04a2024fd3ac61243266fdaf230c83dafc438bbb3c59157bbfa4f",
+          "024f035eb03ed63a644aec359619583ed9018b6224de3e7f35fb012c17b0307b"
+        ]
+      },
+      "failure_reason_distribution": {
+        "missing_native_membership": 5,
+        "no_registry_path": 2
+      },
+      "positive_failure_reason_distribution": {}
+    },
+    {
+      "role": "stability_2",
+      "report": "Benchmark/Hardness/QUALS_COMPLETENESS_N_C_STABILITY_2_REPORT.json",
+      "report_sha256": "91cacae578e6d61b9034d1ac76e4b8178929f672f58dc94511437f62c2c1bffc",
+      "run_label": "stage-n-c-stability-2-real-deepseek-20260804",
+      "output_root": "/mnt/d/学习资料/ai/auto_reduction_agent/.reduction-agent/deepseek-quals-n-c-stability-2-20260804",
+      "status": "VERIFIED",
+      "started_at": "2026-08-04T09:14:49.164084+00:00",
+      "finished_at": "2026-08-04T10:12:42.178832+00:00",
+      "model": "deepseek-v4-flash",
+      "base_url": "https://api.deepseek.com",
+      "primary_verified": 5,
+      "adversarial_correct": 7,
+      "protocol_expected": 12,
+      "gates_passed": 18,
+      "gate_count": 18,
+      "real_http_calls": 5,
+      "http_ok": 5,
+      "replayed_response_count": 0,
+      "selection_evidence": [
+        {
+          "case_id": "spring2015-exactly-one-neighbor",
+          "called": true,
+          "ok": true,
+          "status_code": 200,
+          "replayed": false,
+          "attempts": 1,
+          "prompt_sha256": "bb3f83963cf062b9cd4ae33eb8f64a7b09b2d5e29eed72157ed5b263aa5fe69d",
+          "response_sha256": "4026b420ffcd7b94405def9cd6a4d7dfb61af094394ec98662174daadac97a9b",
+          "response_file": ".reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/spring2015-exactly-one-neighbor/selection/round-01-response.json",
+          "usage": {
+            "completion_tokens": 327,
+            "completion_tokens_details": {
+              "reasoning_tokens": 106
+            },
+            "prompt_cache_hit_tokens": 3072,
+            "prompt_cache_miss_tokens": 25,
+            "prompt_tokens": 3097,
+            "prompt_tokens_details": {
+              "cached_tokens": 3072
+            },
+            "total_tokens": 3424
+          }
+        },
+        {
+          "case_id": "uiuc2022-seeing-set",
+          "called": true,
+          "ok": true,
+          "status_code": 200,
+          "replayed": false,
+          "attempts": 1,
+          "prompt_sha256": "212134bd3e97797a811f7aa10a2cb6bb12df5400cafb59ed4be5b57e7803551d",
+          "response_sha256": "8ecea009b8492dcac23a95d7961da6a06f0983fe6a44bc9d3d723d77d35aa14f",
+          "response_file": ".reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/uiuc2022-seeing-set/selection/round-01-response.json",
+          "usage": {
+            "completion_tokens": 887,
+            "completion_tokens_details": {
+              "reasoning_tokens": 686
+            },
+            "prompt_cache_hit_tokens": 2944,
+            "prompt_cache_miss_tokens": 57,
+            "prompt_tokens": 3001,
+            "prompt_tokens_details": {
+              "cached_tokens": 2944
+            },
+            "total_tokens": 3888
+          }
+        },
+        {
+          "case_id": "fall2016-node-deletion-bipartite",
+          "called": true,
+          "ok": true,
+          "status_code": 200,
+          "replayed": false,
+          "attempts": 1,
+          "prompt_sha256": "5fe6b584b38ff7205a41789bc7d1fee4ab10e1aac2caa4cc0154850b51e5dcf3",
+          "response_sha256": "4f8ad76b63074298c2e7e122f93aff6b84eeab31ae406caed06b02f57b8a84ca",
+          "response_file": ".reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/fall2016-node-deletion-bipartite/selection/round-01-response.json",
+          "usage": {
+            "completion_tokens": 656,
+            "completion_tokens_details": {
+              "reasoning_tokens": 429
+            },
+            "prompt_cache_hit_tokens": 2944,
+            "prompt_cache_miss_tokens": 81,
+            "prompt_tokens": 3025,
+            "prompt_tokens_details": {
+              "cached_tokens": 2944
+            },
+            "total_tokens": 3681
+          }
+        },
+        {
+          "case_id": "fall2014-most-neighbors",
+          "called": true,
+          "ok": true,
+          "status_code": 200,
+          "replayed": false,
+          "attempts": 1,
+          "prompt_sha256": "76a7fe517b37003712f42260d9a53960798439f540babc9c25a150dc3fcdbd7a",
+          "response_sha256": "c8083eb538fa7679d07d863a3a6d5f32f885c1721d0d980f802019881f9f3a52",
+          "response_file": ".reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/fall2014-most-neighbors/selection/round-01-response.json",
+          "usage": {
+            "completion_tokens": 318,
+            "completion_tokens_details": {
+              "reasoning_tokens": 116
+            },
+            "prompt_cache_hit_tokens": 2944,
+            "prompt_cache_miss_tokens": 121,
+            "prompt_tokens": 3065,
+            "prompt_tokens_details": {
+              "cached_tokens": 2944
+            },
+            "total_tokens": 3383
+          }
+        },
+        {
+          "case_id": "uiuc2020-two-disjoint-bounded-paths",
+          "called": true,
+          "ok": true,
+          "status_code": 200,
+          "replayed": false,
+          "attempts": 1,
+          "prompt_sha256": "f6b018239b4e5b8c0d55615be1e9728e9c884eff26b1732fbc514bd902487385",
+          "response_sha256": "1a61d48eb66c9c1ee06b9c396e42a3a74f7db37848e412d7d24b1b770fd164e4",
+          "response_file": ".reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/uiuc2020-two-disjoint-bounded-paths/selection/round-01-response.json",
+          "usage": {
+            "completion_tokens": 479,
+            "completion_tokens_details": {
+              "reasoning_tokens": 284
+            },
+            "prompt_cache_hit_tokens": 3072,
+            "prompt_cache_miss_tokens": 8,
+            "prompt_tokens": 3080,
+            "prompt_tokens_details": {
+              "cached_tokens": 3072
+            },
+            "total_tokens": 3559
+          }
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 15268,
+        "completion_tokens": 2667,
+        "total_tokens": 17935,
+        "prompt_cache_hit_tokens": 14976,
+        "prompt_cache_miss_tokens": 292
+      },
+      "wall_duration_seconds": 3169.693,
+      "final_lean": {
+        "command": [
+          "lake",
+          "env",
+          "lean",
+          "/mnt/d/学习资料/ai/auto_reduction_agent/.reduction-agent/deepseek-quals-n-c-stability-2-20260804/QualsCompletenessFinal.lean"
+        ],
+        "duration_seconds": 155.055,
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": "",
+        "timed_out": false
+      },
+      "release_replay": {
+        "command": [
+          "lake",
+          "env",
+          "lean",
+          "/mnt/d/学习资料/ai/auto_reduction_agent/.reduction-agent/deepseek-quals-n-c-stability-2-20260804/QualsCompletenessFinal.lean"
+        ],
+        "duration_seconds": 170.161,
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": "",
+        "timed_out": false
+      },
+      "process_counts": {
+        "authoring_local": 53,
+        "core_baseline": 36,
+        "final_combined_lean": 1,
+        "formalization": 1,
+        "release_replay": 1,
+        "setup_build": 1
+      },
+      "suite_hashes": {
+        "adversarial": "5dcee943883b18d75ae67ef9a34fa10f5965d46e65700d5bbcc4d53889d8ebc3",
+        "completeness": "24f0fae7f6597bd2a41b40f605c008b8f1c7b1a67692c330a5e0a5564326e71c",
+        "formalization": "c3a97ea2b864201c5fbc2cb2d69a9b5fdd8b7f39b5c7ee1ae73d136daa3870d4"
+      },
+      "final_artifact_sha256": "295b3f984b95b21fc032121614706f2719fd93abadd63903d6ad89bf47d56d49",
+      "candidate_sha256": {
+        "spring2015-exactly-one-neighbor": "59802ee81b3215493c4133b1ea5e7558e112caa52d560d238db7472e2a8b474e",
+        "uiuc2022-seeing-set": "f53f3bba942aeae7316f78fa9bd459bc833696bf8ea85b255b26c56ddc2e0d8d",
+        "fall2016-node-deletion-bipartite": "8899fa442ca7c2275fc67f8c9892189c78e0bdd107d3f2f5254c111ad3d7c7ea",
+        "fall2014-most-neighbors": "ad113c3dd2cc5b433c7b6d410271a73bc545a9a30a029a409c1b2ead150b3d9d",
+        "uiuc2020-two-disjoint-bounded-paths": "e38910482f38c6da954dc5c5c90d22f702b3e80c36a7a133ebdc7d7f0245d36d"
+      },
+      "candidate_stage_sha256": {
+        "spring2015-exactly-one-neighbor": [
+          "fd20534e8bde25faf3963042181cdc3bc2b78e32270f893308ae423fa92f25e7",
+          "1180843795f2e9dfe0c8fef8512d4f5171dca71543bda81f4eac89249727cd0b",
+          "8ad660ccf84452d0224d829a349e832d0b2342984bb59eb8921d7691838cc2a9",
+          "0a5c8b402fd194dd45e85ad65f6afa96e2c4d40c0dd1f2767c5418185e15c481"
+        ],
+        "uiuc2022-seeing-set": [
+          "c8c0f6f839535499c898f1972fe0cb3c9bc153fe13d5bf8187f9e555ed2db56a",
+          "06c1e8c585c2ea5359632dce8e27e900d5fa1567703b0d639cf4fe5fae441afd",
+          "f97b775b24cf563eeb764ad14adab6e7f72e83150f77af35c3773b1f5ef99d3a",
+          "8bbc686a33b8d255626c827a8bdec3211ff4eed673a5efe1cb55e860867b3ac0",
+          "afc3e2f2d42b21b4ba6a1baa1c18aacd5c0d460818b5a946f76618f408665519",
+          "6bce2eb4ca40ac0172af269fd7690299405dbf0dab83aa7cf993d2d254f0d831",
+          "20defb9d85a3ade1c5e2fb1c7fa7efa111c014a9d091da4b23ff2ea866eb671f"
+        ],
+        "fall2016-node-deletion-bipartite": [
+          "16597ed504066cbddde3ef40f9b31c10fa3d74d9fbdea71cf7a4dd06746bb42f",
+          "389c9d3077526a9cd7e24e8ac36d2ca14e6a8675c993767b05966195bc154496",
+          "855514e901c75d6a494b46784bc02c88f6bae8f188984557c146412fe0faddb2",
+          "5ddf5821d3a9d0d636d6b21c686052f03141ab1d3793b724d53e21b982dbb716"
+        ],
+        "fall2014-most-neighbors": [
+          "1a425da7039d512fa68737ebd43e6928a3cd831f2554906274d73cf474b5e8c9",
+          "a53d42aa5e51bebfd31e0f4ba4bd7c9e326a83efd0d4b62c26eed00f959115e9",
+          "44ab223b131d7c2068b00188237eb9b351ab4fab01315a0e523189145f79bbc7",
+          "cd4e166882854e3532783f255e92a3a24d9aa2f44c8c269ac67735a97af72698"
+        ],
+        "uiuc2020-two-disjoint-bounded-paths": [
+          "364bd3716db6000b144383837b328541846d2907b545c791f2257892b7713cfe",
+          "6df459f694c885652abac28c234755d100eda93e0db8460712fb4fd6a9a424d6",
+          "8706900346b04a2024fd3ac61243266fdaf230c83dafc438bbb3c59157bbfa4f",
+          "024f035eb03ed63a644aec359619583ed9018b6224de3e7f35fb012c17b0307b"
+        ]
+      },
+      "failure_reason_distribution": {
+        "missing_native_membership": 5,
+        "no_registry_path": 2
+      },
+      "positive_failure_reason_distribution": {}
+    },
+    {
+      "role": "stability_3",
+      "report": "Benchmark/Hardness/QUALS_COMPLETENESS_N_C_STABILITY_3_REPORT.json",
+      "report_sha256": "c384bf7ef15a6a2cfb93d3d5655143917e75b572a21442b1c6dfcb2d47fff441",
+      "run_label": "stage-n-c-stability-3-real-deepseek-20260804",
+      "output_root": "/mnt/d/学习资料/ai/auto_reduction_agent/.reduction-agent/deepseek-quals-n-c-stability-3-20260804",
+      "status": "VERIFIED",
+      "started_at": "2026-08-04T10:13:48.588650+00:00",
+      "finished_at": "2026-08-04T11:12:27.739155+00:00",
+      "model": "deepseek-v4-flash",
+      "base_url": "https://api.deepseek.com",
+      "primary_verified": 5,
+      "adversarial_correct": 7,
+      "protocol_expected": 12,
+      "gates_passed": 18,
+      "gate_count": 18,
+      "real_http_calls": 5,
+      "http_ok": 5,
+      "replayed_response_count": 0,
+      "selection_evidence": [
+        {
+          "case_id": "spring2015-exactly-one-neighbor",
+          "called": true,
+          "ok": true,
+          "status_code": 200,
+          "replayed": false,
+          "attempts": 1,
+          "prompt_sha256": "bb3f83963cf062b9cd4ae33eb8f64a7b09b2d5e29eed72157ed5b263aa5fe69d",
+          "response_sha256": "3e179bc7206fea066c5cbfe1ffbf3a6d66dba6cdeef7736227aff839f0e20d4f",
+          "response_file": ".reduction-agent/deepseek-quals-n-c-stability-3-20260804/cases/spring2015-exactly-one-neighbor/selection/round-01-response.json",
+          "usage": {
+            "completion_tokens": 772,
+            "completion_tokens_details": {
+              "reasoning_tokens": 565
+            },
+            "prompt_cache_hit_tokens": 3072,
+            "prompt_cache_miss_tokens": 25,
+            "prompt_tokens": 3097,
+            "prompt_tokens_details": {
+              "cached_tokens": 3072
+            },
+            "total_tokens": 3869
+          }
+        },
+        {
+          "case_id": "uiuc2022-seeing-set",
+          "called": true,
+          "ok": true,
+          "status_code": 200,
+          "replayed": false,
+          "attempts": 1,
+          "prompt_sha256": "212134bd3e97797a811f7aa10a2cb6bb12df5400cafb59ed4be5b57e7803551d",
+          "response_sha256": "cdabe8c56fe44911860ebb29080f4b0a3996fe0b4dddc7007e302d59cbaec390",
+          "response_file": ".reduction-agent/deepseek-quals-n-c-stability-3-20260804/cases/uiuc2022-seeing-set/selection/round-01-response.json",
+          "usage": {
+            "completion_tokens": 560,
+            "completion_tokens_details": {
+              "reasoning_tokens": 349
+            },
+            "prompt_cache_hit_tokens": 2944,
+            "prompt_cache_miss_tokens": 57,
+            "prompt_tokens": 3001,
+            "prompt_tokens_details": {
+              "cached_tokens": 2944
+            },
+            "total_tokens": 3561
+          }
+        },
+        {
+          "case_id": "fall2016-node-deletion-bipartite",
+          "called": true,
+          "ok": true,
+          "status_code": 200,
+          "replayed": false,
+          "attempts": 1,
+          "prompt_sha256": "5fe6b584b38ff7205a41789bc7d1fee4ab10e1aac2caa4cc0154850b51e5dcf3",
+          "response_sha256": "1937a6f4ab3b8b35f6792c8d916a285f63a3ec5ec33901be98b5405dbb344d64",
+          "response_file": ".reduction-agent/deepseek-quals-n-c-stability-3-20260804/cases/fall2016-node-deletion-bipartite/selection/round-01-response.json",
+          "usage": {
+            "completion_tokens": 330,
+            "completion_tokens_details": {
+              "reasoning_tokens": 122
+            },
+            "prompt_cache_hit_tokens": 2944,
+            "prompt_cache_miss_tokens": 81,
+            "prompt_tokens": 3025,
+            "prompt_tokens_details": {
+              "cached_tokens": 2944
+            },
+            "total_tokens": 3355
+          }
+        },
+        {
+          "case_id": "fall2014-most-neighbors",
+          "called": true,
+          "ok": true,
+          "status_code": 200,
+          "replayed": false,
+          "attempts": 1,
+          "prompt_sha256": "76a7fe517b37003712f42260d9a53960798439f540babc9c25a150dc3fcdbd7a",
+          "response_sha256": "412de1a675601e185841e02a88be2d03485c2e71a0e5659718ba067464717867",
+          "response_file": ".reduction-agent/deepseek-quals-n-c-stability-3-20260804/cases/fall2014-most-neighbors/selection/round-01-response.json",
+          "usage": {
+            "completion_tokens": 464,
+            "completion_tokens_details": {
+              "reasoning_tokens": 278
+            },
+            "prompt_cache_hit_tokens": 2944,
+            "prompt_cache_miss_tokens": 121,
+            "prompt_tokens": 3065,
+            "prompt_tokens_details": {
+              "cached_tokens": 2944
+            },
+            "total_tokens": 3529
+          }
+        },
+        {
+          "case_id": "uiuc2020-two-disjoint-bounded-paths",
+          "called": true,
+          "ok": true,
+          "status_code": 200,
+          "replayed": false,
+          "attempts": 1,
+          "prompt_sha256": "f6b018239b4e5b8c0d55615be1e9728e9c884eff26b1732fbc514bd902487385",
+          "response_sha256": "003e83d2d54cf12519837cb8e779c0a04c858a8faacbe8e25ba0b70d440e932b",
+          "response_file": ".reduction-agent/deepseek-quals-n-c-stability-3-20260804/cases/uiuc2020-two-disjoint-bounded-paths/selection/round-01-response.json",
+          "usage": {
+            "completion_tokens": 303,
+            "completion_tokens_details": {
+              "reasoning_tokens": 101
+            },
+            "prompt_cache_hit_tokens": 3072,
+            "prompt_cache_miss_tokens": 8,
+            "prompt_tokens": 3080,
+            "prompt_tokens_details": {
+              "cached_tokens": 3072
+            },
+            "total_tokens": 3383
+          }
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 15268,
+        "completion_tokens": 2429,
+        "total_tokens": 17697,
+        "prompt_cache_hit_tokens": 14976,
+        "prompt_cache_miss_tokens": 292
+      },
+      "wall_duration_seconds": 3206.462,
+      "final_lean": {
+        "command": [
+          "lake",
+          "env",
+          "lean",
+          "/mnt/d/学习资料/ai/auto_reduction_agent/.reduction-agent/deepseek-quals-n-c-stability-3-20260804/QualsCompletenessFinal.lean"
+        ],
+        "duration_seconds": 153.451,
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": "",
+        "timed_out": false
+      },
+      "release_replay": {
+        "command": [
+          "lake",
+          "env",
+          "lean",
+          "/mnt/d/学习资料/ai/auto_reduction_agent/.reduction-agent/deepseek-quals-n-c-stability-3-20260804/QualsCompletenessFinal.lean"
+        ],
+        "duration_seconds": 158.191,
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": "",
+        "timed_out": false
+      },
+      "process_counts": {
+        "authoring_local": 53,
+        "core_baseline": 36,
+        "final_combined_lean": 1,
+        "formalization": 1,
+        "release_replay": 1,
+        "setup_build": 1
+      },
+      "suite_hashes": {
+        "adversarial": "5dcee943883b18d75ae67ef9a34fa10f5965d46e65700d5bbcc4d53889d8ebc3",
+        "completeness": "24f0fae7f6597bd2a41b40f605c008b8f1c7b1a67692c330a5e0a5564326e71c",
+        "formalization": "c3a97ea2b864201c5fbc2cb2d69a9b5fdd8b7f39b5c7ee1ae73d136daa3870d4"
+      },
+      "final_artifact_sha256": "295b3f984b95b21fc032121614706f2719fd93abadd63903d6ad89bf47d56d49",
+      "candidate_sha256": {
+        "spring2015-exactly-one-neighbor": "59802ee81b3215493c4133b1ea5e7558e112caa52d560d238db7472e2a8b474e",
+        "uiuc2022-seeing-set": "f53f3bba942aeae7316f78fa9bd459bc833696bf8ea85b255b26c56ddc2e0d8d",
+        "fall2016-node-deletion-bipartite": "8899fa442ca7c2275fc67f8c9892189c78e0bdd107d3f2f5254c111ad3d7c7ea",
+        "fall2014-most-neighbors": "ad113c3dd2cc5b433c7b6d410271a73bc545a9a30a029a409c1b2ead150b3d9d",
+        "uiuc2020-two-disjoint-bounded-paths": "e38910482f38c6da954dc5c5c90d22f702b3e80c36a7a133ebdc7d7f0245d36d"
+      },
+      "candidate_stage_sha256": {
+        "spring2015-exactly-one-neighbor": [
+          "fd20534e8bde25faf3963042181cdc3bc2b78e32270f893308ae423fa92f25e7",
+          "1180843795f2e9dfe0c8fef8512d4f5171dca71543bda81f4eac89249727cd0b",
+          "8ad660ccf84452d0224d829a349e832d0b2342984bb59eb8921d7691838cc2a9",
+          "0a5c8b402fd194dd45e85ad65f6afa96e2c4d40c0dd1f2767c5418185e15c481"
+        ],
+        "uiuc2022-seeing-set": [
+          "c8c0f6f839535499c898f1972fe0cb3c9bc153fe13d5bf8187f9e555ed2db56a",
+          "06c1e8c585c2ea5359632dce8e27e900d5fa1567703b0d639cf4fe5fae441afd",
+          "f97b775b24cf563eeb764ad14adab6e7f72e83150f77af35c3773b1f5ef99d3a",
+          "8bbc686a33b8d255626c827a8bdec3211ff4eed673a5efe1cb55e860867b3ac0",
+          "afc3e2f2d42b21b4ba6a1baa1c18aacd5c0d460818b5a946f76618f408665519",
+          "6bce2eb4ca40ac0172af269fd7690299405dbf0dab83aa7cf993d2d254f0d831",
+          "20defb9d85a3ade1c5e2fb1c7fa7efa111c014a9d091da4b23ff2ea866eb671f"
+        ],
+        "fall2016-node-deletion-bipartite": [
+          "16597ed504066cbddde3ef40f9b31c10fa3d74d9fbdea71cf7a4dd06746bb42f",
+          "389c9d3077526a9cd7e24e8ac36d2ca14e6a8675c993767b05966195bc154496",
+          "855514e901c75d6a494b46784bc02c88f6bae8f188984557c146412fe0faddb2",
+          "5ddf5821d3a9d0d636d6b21c686052f03141ab1d3793b724d53e21b982dbb716"
+        ],
+        "fall2014-most-neighbors": [
+          "1a425da7039d512fa68737ebd43e6928a3cd831f2554906274d73cf474b5e8c9",
+          "a53d42aa5e51bebfd31e0f4ba4bd7c9e326a83efd0d4b62c26eed00f959115e9",
+          "44ab223b131d7c2068b00188237eb9b351ab4fab01315a0e523189145f79bbc7",
+          "cd4e166882854e3532783f255e92a3a24d9aa2f44c8c269ac67735a97af72698"
+        ],
+        "uiuc2020-two-disjoint-bounded-paths": [
+          "364bd3716db6000b144383837b328541846d2907b545c791f2257892b7713cfe",
+          "6df459f694c885652abac28c234755d100eda93e0db8460712fb4fd6a9a424d6",
+          "8706900346b04a2024fd3ac61243266fdaf230c83dafc438bbb3c59157bbfa4f",
+          "024f035eb03ed63a644aec359619583ed9018b6224de3e7f35fb012c17b0307b"
+        ]
+      },
+      "failure_reason_distribution": {
+        "missing_native_membership": 5,
+        "no_registry_path": 2
+      },
+      "positive_failure_reason_distribution": {}
+    }
+  ],
+  "aggregate": {
+    "run_count": 3,
+    "case_executions": 36,
+    "primary_verified": 15,
+    "adversarial_correct": 21,
+    "protocol_expected": 36,
+    "gates_passed": 54,
+    "real_http_calls": 15,
+    "http_ok": 15,
+    "replayed_response_count": 0,
+    "usage": {
+      "prompt_tokens": 45804,
+      "completion_tokens": 7136,
+      "total_tokens": 52940,
+      "prompt_cache_hit_tokens": 44928,
+      "prompt_cache_miss_tokens": 876
+    },
+    "wall_duration_seconds": 9721.357,
+    "process_counts": {
+      "authoring_local": 159,
+      "core_baseline": 108,
+      "final_combined_lean": 3,
+      "formalization": 3,
+      "release_replay": 3,
+      "setup_build": 3
+    },
+    "failure_reason_distribution": {
+      "missing_native_membership": 15,
+      "no_registry_path": 6
+    },
+    "positive_failure_reason_distribution": {}
+  },
+  "independence_evidence": {
+    "unique_run_label_count": 3,
+    "unique_output_root_count": 3,
+    "unique_report_sha256_count": 3,
+    "unique_response_file_count": 15,
+    "called_response_count": 15,
+    "replayed_response_count": 0
+  },
+  "artifact_hash_analysis": {
+    "report_sha256": [
+      "f9a67d1b5eafafcc8c99e6abed85de01d9422d588a7fccea58db9f839efd3e24",
+      "91cacae578e6d61b9034d1ac76e4b8178929f672f58dc94511437f62c2c1bffc",
+      "c384bf7ef15a6a2cfb93d3d5655143917e75b572a21442b1c6dfcb2d47fff441"
+    ],
+    "unique_report_sha256_count": 3,
+    "final_artifact_sha256": [
+      "295b3f984b95b21fc032121614706f2719fd93abadd63903d6ad89bf47d56d49",
+      "295b3f984b95b21fc032121614706f2719fd93abadd63903d6ad89bf47d56d49",
+      "295b3f984b95b21fc032121614706f2719fd93abadd63903d6ad89bf47d56d49"
+    ],
+    "unique_final_artifact_sha256_count": 1,
+    "final_artifact_identical_across_runs": true,
+    "candidate_sha256_by_case": {
+      "fall2014-most-neighbors": {
+        "values": [
+          "ad113c3dd2cc5b433c7b6d410271a73bc545a9a30a029a409c1b2ead150b3d9d",
+          "ad113c3dd2cc5b433c7b6d410271a73bc545a9a30a029a409c1b2ead150b3d9d",
+          "ad113c3dd2cc5b433c7b6d410271a73bc545a9a30a029a409c1b2ead150b3d9d"
+        ],
+        "unique_count": 1,
+        "identical_across_runs": true
+      },
+      "fall2016-node-deletion-bipartite": {
+        "values": [
+          "8899fa442ca7c2275fc67f8c9892189c78e0bdd107d3f2f5254c111ad3d7c7ea",
+          "8899fa442ca7c2275fc67f8c9892189c78e0bdd107d3f2f5254c111ad3d7c7ea",
+          "8899fa442ca7c2275fc67f8c9892189c78e0bdd107d3f2f5254c111ad3d7c7ea"
+        ],
+        "unique_count": 1,
+        "identical_across_runs": true
+      },
+      "spring2015-exactly-one-neighbor": {
+        "values": [
+          "59802ee81b3215493c4133b1ea5e7558e112caa52d560d238db7472e2a8b474e",
+          "59802ee81b3215493c4133b1ea5e7558e112caa52d560d238db7472e2a8b474e",
+          "59802ee81b3215493c4133b1ea5e7558e112caa52d560d238db7472e2a8b474e"
+        ],
+        "unique_count": 1,
+        "identical_across_runs": true
+      },
+      "uiuc2020-two-disjoint-bounded-paths": {
+        "values": [
+          "e38910482f38c6da954dc5c5c90d22f702b3e80c36a7a133ebdc7d7f0245d36d",
+          "e38910482f38c6da954dc5c5c90d22f702b3e80c36a7a133ebdc7d7f0245d36d",
+          "e38910482f38c6da954dc5c5c90d22f702b3e80c36a7a133ebdc7d7f0245d36d"
+        ],
+        "unique_count": 1,
+        "identical_across_runs": true
+      },
+      "uiuc2022-seeing-set": {
+        "values": [
+          "f53f3bba942aeae7316f78fa9bd459bc833696bf8ea85b255b26c56ddc2e0d8d",
+          "f53f3bba942aeae7316f78fa9bd459bc833696bf8ea85b255b26c56ddc2e0d8d",
+          "f53f3bba942aeae7316f78fa9bd459bc833696bf8ea85b255b26c56ddc2e0d8d"
+        ],
+        "unique_count": 1,
+        "identical_across_runs": true
+      }
+    },
+    "response_sha256_by_case": {
+      "fall2014-most-neighbors": {
+        "values": [
+          "ae32446e3112687e429b453bd52ac9d9a51111319d1ba111ac1cdc8377042c5c",
+          "c8083eb538fa7679d07d863a3a6d5f32f885c1721d0d980f802019881f9f3a52",
+          "412de1a675601e185841e02a88be2d03485c2e71a0e5659718ba067464717867"
+        ],
+        "unique_count": 3
+      },
+      "fall2016-node-deletion-bipartite": {
+        "values": [
+          "d9873b4a1a0dced5a98f0275fe76cf8d320150d57d1dcfc8f89c8f428d51b893",
+          "4f8ad76b63074298c2e7e122f93aff6b84eeab31ae406caed06b02f57b8a84ca",
+          "1937a6f4ab3b8b35f6792c8d916a285f63a3ec5ec33901be98b5405dbb344d64"
+        ],
+        "unique_count": 3
+      },
+      "spring2015-exactly-one-neighbor": {
+        "values": [
+          "32762eb3e8faac90c910c3de53b409d5c6d82938c906a6b592ad7767070bd8ef",
+          "4026b420ffcd7b94405def9cd6a4d7dfb61af094394ec98662174daadac97a9b",
+          "3e179bc7206fea066c5cbfe1ffbf3a6d66dba6cdeef7736227aff839f0e20d4f"
+        ],
+        "unique_count": 3
+      },
+      "uiuc2020-two-disjoint-bounded-paths": {
+        "values": [
+          "002dae3f1c3efec6b9dadbe983ef05532b20cf43da88163c0eaa879a65541827",
+          "1a61d48eb66c9c1ee06b9c396e42a3a74f7db37848e412d7d24b1b770fd164e4",
+          "003e83d2d54cf12519837cb8e779c0a04c858a8faacbe8e25ba0b70d440e932b"
+        ],
+        "unique_count": 3
+      },
+      "uiuc2022-seeing-set": {
+        "values": [
+          "86e2385ef260a41eabb59a4378f6d2eb1a68e392f5ee1cb69f18b0c84d1d89a7",
+          "8ecea009b8492dcac23a95d7961da6a06f0983fe6a44bc9d3d723d77d35aa14f",
+          "cdabe8c56fe44911860ebb29080f4b0a3996fe0b4dddc7007e302d59cbaec390"
+        ],
+        "unique_count": 3
+      }
+    }
+  },
+  "excluded_attempts": [
+    {
+      "report": ".reduction-agent/deepseek-quals-n-c-stability-1-20260804/report.json",
+      "report_sha256": "4a46048aeedd1d183df8537d7f473f3f96e48f7f5491103de3c4e1264a7ef378",
+      "run_label": "stage-n-c-stability-1-real-deepseek-20260804",
+      "output_root": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-quals-n-c-stability-1-20260804",
+      "status": "RUNNING",
+      "started_at": "2026-08-04T07:13:09.152895+00:00",
+      "finished_at": null,
+      "counted": false,
+      "reason": "non_verified_or_incomplete_run_excluded_from_stability_count"
+    }
+  ],
+  "validation_errors": []
+}

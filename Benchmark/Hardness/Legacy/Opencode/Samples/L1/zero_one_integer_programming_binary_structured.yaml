@@ -1,0 +1,26 @@
+schema_version: opencode_decision_problem_sample_file_v1
+id: zero_one_integer_programming_binary_structured
+name: zero_one_integer_programming_binary_structured_problem
+input_language: zero_one_integer_programming_binary_structured_encoding
+problem_family: integer_programming
+problem_statement: Given a binary-numeric finite encoding of linear integer inequalities over Boolean variables, decide whether some 0-1 assignment satisfies every inequality.
+certificate_contract: lean_proposition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction.Karp21.PackagedCatalog
+
+  noncomputable section
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.Combinatorics.zeroOneIntegerProgrammingBinaryStructuredDecisionProblem
+lean_target_type: |
+  ComplexityReduction.SAT.TMInNPWithCheckedSuffixDecoder problem ∧
+    ComplexityReduction.TMInNP problem
+difficulty: challenge
+difficulty_tags:
+- integer_programming
+- binary_numeric_encoding
+- checked_suffix_decoder
+- tm_np_membership
+- assignment_witness
+- exact_binding

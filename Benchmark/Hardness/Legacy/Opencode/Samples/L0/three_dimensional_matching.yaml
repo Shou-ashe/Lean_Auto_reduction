@@ -1,0 +1,22 @@
+schema_version: opencode_decision_problem_sample_file_v1
+id: three_dimensional_matching
+name: three_dimensional_matching_problem
+input_language: three_dimensional_matching
+problem_family: matching
+problem_statement: Given three finite parts X, Y, Z, a set of triples in X times Y times Z, and an integer k, decide whether there are at least k pairwise disjoint triples.
+certificate_contract: lean_proposition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction
+
+  noncomputable section
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.Combinatorics.threeDimensionalMatchingDecisionProblem
+lean_target_type: |
+  ComplexityReduction.InNPEnc ComplexityReduction.CostedPolyTimeModel problem
+difficulty: hard
+difficulty_tags:
+- matching
+- tuple_encoding
+- pairwise_disjointness

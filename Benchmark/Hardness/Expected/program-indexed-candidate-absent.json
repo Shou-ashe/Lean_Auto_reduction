@@ -1,0 +1,8 @@
+{
+  "schema_version": "hardness_benchmark_expected_v1",
+  "case_id": "program-indexed-candidate-absent",
+  "authoritative": false,
+  "final_status": "BLOCKED",
+  "final_failure_code": "missing_semantic_proof",
+  "coverage": ["candidate_deletion", "typed_blocker_restore", "resume_integrity"]
+}

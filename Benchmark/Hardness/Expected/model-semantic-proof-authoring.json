@@ -1,0 +1,11 @@
+{
+  "schema_version": "hardness_benchmark_expected_v1",
+  "case_id": "model-semantic-proof-authoring",
+  "authoritative": false,
+  "expected_lane": "model_synthesis",
+  "expected_baseline_blocker": "missing_semantic_proof",
+  "expected_final_status": "VERIFIED",
+  "requires_real_model_call": true,
+  "requires_hidden_gold_isolation": true,
+  "notes": "Observational coverage metadata only; Lean reconstructs and audits the final exact request."
+}

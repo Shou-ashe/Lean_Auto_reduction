@@ -1,0 +1,167 @@
+{
+  "schema_version": "hardness_main_h_c_full_report_v1",
+  "stage": "H-C",
+  "generated_at": "2026-08-08T19:39:40+08:00",
+  "passed": true,
+  "source_control": {
+    "git_available": false,
+    "reason": "workspace .git directory contains no readable repository metadata; source hashes are authoritative",
+    "tested_active_plan_sha256": "898deb0e445e53265b81c71d7d46a3eb664c05509a2fa1461dc9b5036762473a",
+    "completed_active_plan_sha256": "0e723320d11ea633dff477a9d4a2fd8ab9ec208cee7a0e349b940587ac635f46",
+    "source_sha256": {
+      "scripts/prove_np_hard.py": "46f19b608f6b49f83d8c0b09197e0ed36127c3c6cf8a4d9ee65da6f4e3f66dff",
+      "scripts/run_np_hard_h_c_heldout.py": "0febe4b0e04bbaed346bd0c9b2c2f75b4e160c79cb8fc1e3e505c137c4630065",
+      "agent/hardness/np_hard_orchestrator.py": "776c07fd3eb73d260d6ef9da1f17ad9fd5605bd783ff6e93fcf9dd2f2ebe8c72",
+      "agent/hardness/np_hard_authoring.py": "f32197c5c59eb090352c1f8d77540654d92020d220e2739f2b7ed349a59fcd1b",
+      "agent/hardness/np_hard_authoring_planner.py": "2bad40dbd525cdf39d2dc75ba1d26f1bfc2c2a297fccb09e676591cdd0b6b2bc",
+      "agent/hardness/np_hard_gap_runtime.py": "8aadf4ab6034959c2e633e3f58ca091b2723ff30cafc26b2e024ddec3a34d8e8",
+      "agent/hardness/np_hard_release_benchmark.py": "c52424a3c77f31ceac91a0e29165375fb8f4697e19338f9e3fb488091709fd52",
+      "Lean/Reference/ComplexityReduction/Agent/Hardness/AuthoringPlanner.lean": "4bf616c6e34ba22a3896a149de207b43e81d81270e7be984f2103e48fe9a9731",
+      "Lean/Reference/ComplexityReduction/Agent/Hardness/Gap.lean": "f11bf83633093ed1ed05cfd3d277af49ddc81ac72b2a55f17e84298b987fcee5",
+      "tests/test_hardness_np_hard_authoring_planner_v2.py": "52f2ceebf3abe41769fbc85242649de888a66d56449972dc33af2730ce133123",
+      "tests/test_hardness_np_hard_open_world_catalog.py": "9f46b08264791d39a6f5e1c84c69362a3aa0da24ae18159fb07a6b613fe39e8a",
+      "Lean/Reference/Benchmark/Hardness/Inputs/HCCrossModule/Problem.lean": "7274fe69f295a0c1e1a9207a1101265ef5d4037479bfb97f085dc997c1444f2e",
+      "Lean/Reference/Benchmark/Hardness/Inputs/HCCrossModule/Adapters.lean": "5409aaa657110374322567a51ca7161b746867f392465284f50f8b673987a8b5",
+      "Lean/Reference/Benchmark/Hardness/Inputs/HCCrossModule/Specification.lean": "b2fcc0266e1c78c73ae2a7e38e8c4841f2200d2a9fa112187c4e32a8c6c7cae5",
+      "Lean/Reference/Benchmark/Hardness/Inputs/HCCrossModule/Entry.lean": "ddd99f1a51f18511ca625b63d209c0bd2887af9c9edf74cfc689db6d57ae653d"
+    }
+  },
+  "lean": {
+    "toolchain": "leanprover/lean4:v4.29.0",
+    "toolchain_file_sha256": "651c8accb402b0c071cd336e9d3dc0a55516b1bfb434ddc4801f14936785b1d2",
+    "lake_manifest_sha256": "7b9ebbed765572606d98ef3e13b2a3036325a9d5bd860a111bdd73db1104aec7"
+  },
+  "model": {
+    "provider": "DeepSeek",
+    "base_url": "https://api.deepseek.com",
+    "model": "deepseek-chat",
+    "temperature": 0.0,
+    "max_retries": 0,
+    "credentials_recorded": false
+  },
+  "gates": {
+    "related_test_suite": {
+      "passed": true,
+      "test_count": 64,
+      "failed": 0,
+      "duration_seconds": 461.24
+    },
+    "full_test_suite": {
+      "passed": true,
+      "test_count": 691,
+      "failed": 0,
+      "duration_seconds": 466.07
+    },
+    "offline_release_contract": {
+      "passed": true,
+      "output_dir": "tmp/h-c-offline-20260808-v1",
+      "report_file": "Benchmark/Hardness/NP_HARD_RELEASE_OFFLINE_REPORT.json",
+      "report_sha256": "ede227f25b7c534a4937e6abb771b10b6bfa9cec9cba6864f5b2fad9550b0044",
+      "case_count": 12,
+      "existing_route_verified": 5,
+      "authoring_public_blockers_confirmed": 5,
+      "safety_negative_count": 2,
+      "gold_compile_count": 5,
+      "replay_verified_count": 5,
+      "fresh_core_rediscovery_count": 12,
+      "independent_replay_count": 5,
+      "worker_fallback_count": 0
+    },
+    "main_benchmark_45": {
+      "passed": true,
+      "output_dir": "tmp/h-c-main45-real-deepseek-chat-20260808-v1",
+      "report_file": "tmp/h-c-main45-real-deepseek-chat-20260808-v1/report.json",
+      "report_sha256": "4405b88f413a9b02522ce3fe4645b14f9ad6f07cbf1e185cc63b2d46a5aa6285",
+      "executed": 45,
+      "matched": 45,
+      "failed": 0,
+      "real_api_calls": 1,
+      "http_ok_count": 1,
+      "token_usage": {
+        "prompt_tokens": 2024,
+        "completion_tokens": 155,
+        "total_tokens": 2179,
+        "prompt_cache_hit_tokens": 1920,
+        "prompt_cache_miss_tokens": 104
+      },
+      "kernel_replay_axiom_audit_passed": true
+    },
+    "release_stability_3_rounds": {
+      "passed": true,
+      "output_dir": "tmp/h-c-release-stability-real-20260808-v1",
+      "report_file": "Benchmark/Hardness/NP_HARD_RELEASE_STABILITY_AGGREGATE.json",
+      "report_sha256": "e3da9098a9916a54182be47b0b2433065be329a626492070ead5013864f6bd28",
+      "round_count": 3,
+      "executed": 36,
+      "matched": 36,
+      "real_api_calls": 36,
+      "model_authoring_verified": 15,
+      "existing_route_model_calls": 0,
+      "safety_negatives_matched": 6,
+      "deletion_audit_count": 15,
+      "worker_fallback_count": 0,
+      "token_usage": {
+        "prompt_tokens": 109425,
+        "completion_tokens": 7659,
+        "total_tokens": 117084,
+        "prompt_cache_hit_tokens": 77440,
+        "prompt_cache_miss_tokens": 31985
+      }
+    },
+    "held_out_production_entry": {
+      "passed": true,
+      "output_dir": "tmp/h-c-heldout-real-20260808-v1",
+      "report_file": "Benchmark/Hardness/NP_HARD_H_C_HELDOUT_REPORT.json",
+      "report_sha256": "409873622134121d1ac6e97f4ef89ee7ed318d74622bdb13871838417b3bf0e3",
+      "executed": 1,
+      "verified": 1,
+      "planner_model_calls": 0,
+      "planned_node_count": 2,
+      "discovered_route_node_count": 1,
+      "discovered_program_module_count": 2,
+      "real_api_calls": 2,
+      "http_ok_count": 2,
+      "deletion_audit_node_count": 2,
+      "worker_fallback_count": 0,
+      "token_usage": {
+        "prompt_tokens": 6939,
+        "completion_tokens": 384,
+        "total_tokens": 7323,
+        "prompt_cache_hit_tokens": 1152,
+        "prompt_cache_miss_tokens": 5787
+      }
+    }
+  },
+  "audit_notes": {
+    "production_planner_input": [
+      "module",
+      "problem",
+      "budgets"
+    ],
+    "suite_authored_task_passed_to_orchestrator": false,
+    "planner_model_calls": 0,
+    "catalog_authority": "Lean elaboration over the full content-addressed import dependency closure",
+    "catalog_cache_bound_to": [
+      "source closure",
+      "Lean toolchain",
+      "lake manifest"
+    ],
+    "covered_problem_families": [
+      "SAT/CSP",
+      "graph",
+      "set-system",
+      "numeric"
+    ],
+    "cross_module_multihop_verified": true,
+    "stable_blockers_verified": [
+      "ambiguous_authoring_hub",
+      "authoring_plan_missing_capability",
+      "wrong_direction_only",
+      "authoring_catalog_dependency_stale"
+    ],
+    "held_out_planner_special_case": false,
+    "prompt_contains_api_credentials": false,
+    "planner_outputs_content_addressed": true,
+    "raw_model_outputs_retained_in_fresh_output_directories": true
+  }
+}

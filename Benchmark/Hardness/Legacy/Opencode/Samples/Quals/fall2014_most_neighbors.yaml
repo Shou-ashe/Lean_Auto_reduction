@@ -1,0 +1,56 @@
+schema_version: opencode_decision_problem_sample_file_v1
+id: fall2014_most_neighbors
+name: fall2014_most_neighbors_problem
+input_language: most_neighbors_external_boundary
+problem_family: graph
+problem_statement: |
+  UW-Madison Theory Qual, Fall 2014, Problem 1 (decision variant). Given an
+  undirected graph G = (V, E) and an integer k, decide whether there is a set
+  S subset of V whose external neighborhood has size at least k, that is, the
+  number of vertices outside S that have at least one neighbor in S is at
+  least k. The optimization version (maximize the external neighborhood) is
+  the Most Neighbors problem; prove that this decision problem is NP-complete.
+certificate_contract: lean_proposition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction
+
+  noncomputable section
+
+  structure MostNeighborsInput where
+    graph : ComplexityReduction.Combinatorics.Graph.GraphInput
+    k : Nat
+    deriving Repr
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    { Instance := ComplexityReduction.EncodedType.raw MostNeighborsInput
+      isYes := fun I =>
+        ∃ S : List Nat,
+          S.Nodup ∧
+            ComplexityReduction.Combinatorics.Graph.VerticesWithinBounds I.graph S ∧
+            ∃ outside : List Nat,
+              outside.Nodup ∧
+                ComplexityReduction.Combinatorics.Graph.VerticesWithinBounds I.graph outside ∧
+                I.k ≤ outside.length ∧
+                (∀ v ∈ outside, v ∉ S ∧
+                  ∃ u ∈ S, ComplexityReduction.Combinatorics.Graph.HasUndirectedEdge I.graph u v) }
+lean_target_type: |
+  ComplexityReduction.NPCompleteEnc ComplexityReduction.CostedPolyTimeModel problem
+expected:
+  phase1:
+    outcome: typed_missing_obligation
+    certificate_tracks:
+      lower_bound: typed_missing_obligation
+      membership: typed_missing_obligation
+      npcomplete: typed_missing_obligation
+    missing_obligations:
+    - missing_source_view_bridge
+    - missing_target_bridge
+    - missing_membership_packet
+difficulty: quals_reduction
+difficulty_tags:
+- graph
+- np_complete
+- external_neighborhood
+- real_exam
+- uw_madison_quals

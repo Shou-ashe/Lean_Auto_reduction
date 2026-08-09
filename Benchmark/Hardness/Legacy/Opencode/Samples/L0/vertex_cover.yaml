@@ -1,0 +1,22 @@
+schema_version: opencode_decision_problem_sample_file_v1
+id: vertex_cover
+name: vertex_cover_problem
+input_language: vertex_cover
+problem_family: graph
+problem_statement: Given an undirected graph G and an integer k, decide whether there is a set of at most k vertices incident to every edge.
+certificate_contract: lean_proposition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction
+
+  noncomputable section
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.Combinatorics.Graph.vertexCoverDecisionProblem
+lean_target_type: |
+  ComplexityReduction.InNPEnc ComplexityReduction.CostedPolyTimeModel problem
+difficulty: medium
+difficulty_tags:
+- graph
+- subset_witness
+- universal_edge_check

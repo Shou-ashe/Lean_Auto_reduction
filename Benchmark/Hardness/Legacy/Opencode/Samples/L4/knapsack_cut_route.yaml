@@ -1,0 +1,35 @@
+schema_version: opencode_decision_problem_sample_file_v1
+id: knapsack_cut_route
+name: knapsack_cut_route_problem
+input_language: knapsack_cut_multihop
+problem_family: numeric_graph
+problem_statement: Given item weights and values, a capacity, and a target value, decide whether a subset satisfies the knapsack constraints.
+certificate_contract: lean_proposition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction
+
+  noncomputable section
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.Combinatorics.knapsackKarpDecisionProblem
+lean_target_type: |
+  ∃ routeTarget1 : ComplexityReduction.EncodedDecisionProblem,
+    routeTarget1 = ComplexityReduction.Combinatorics.partitionDecisionProblem ∧
+      ∃ routeTarget2 : ComplexityReduction.EncodedDecisionProblem,
+        routeTarget2 = ComplexityReduction.Combinatorics.Graph.maxCutDecisionProblem ∧
+          ∃ reductionStep1 :
+            ComplexityReduction.KarpReductionM ComplexityReduction.CostedPolyTimeModel problem routeTarget1,
+            ∃ reductionStep2 :
+              ComplexityReduction.KarpReductionM ComplexityReduction.CostedPolyTimeModel routeTarget1 routeTarget2,
+              ∃ composedReduction :
+                ComplexityReduction.PolyReducibleM ComplexityReduction.CostedPolyTimeModel problem routeTarget2,
+                ComplexityReduction.InNPEnc ComplexityReduction.CostedPolyTimeModel routeTarget2 ∧
+                  ComplexityReduction.InNPEnc ComplexityReduction.CostedPolyTimeModel problem
+difficulty: multihop_route
+difficulty_tags:
+- numeric
+- graph
+- partition
+- max_cut
+- multihop_reduction

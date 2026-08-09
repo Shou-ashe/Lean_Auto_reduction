@@ -1,0 +1,44 @@
+schema_version: opencode_lean_proposition_sample_file_v1
+id: sandwiched_knapsack_local_adapter
+name: sandwiched_knapsack_local_adapter_problem
+benchmark_level: L8
+input_language: sandwiched_knapsack_local_adapter_interface
+problem_family: numeric_interface
+certificate_contract: lean_proposition
+problem_statement: "Input is packaged as (ignored audit bit, (standard Karp-style Knapsack instance, ignored checksum bit)). Decide whether the Knapsack instance is accepting. Certify NP membership by writing a local adapter proof from this sandwiched interface to the standard Knapsack problem, then use local library evidence for the target."
+difficulty: local_adapter_authoring
+difficulty_tags: [numeric, local_helper, nonidentity_map, sandwiched_projection]
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction
+
+  noncomputable section
+
+  abbrev localAdapterTarget : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.Combinatorics.knapsackKarpDecisionProblem
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    { Instance := ComplexityReduction.EncodedType.prod
+        ComplexityReduction.EncodedType.bool
+        (ComplexityReduction.EncodedType.prod
+          localAdapterTarget.Instance
+          ComplexityReduction.EncodedType.bool)
+      isYes := fun p => localAdapterTarget.isYes p.2.1 }
+lean_target_type: |
+  (∀ x : problem.Instance.Carrier,
+      problem.isYes x ↔ localAdapterTarget.isYes x.2.1) ∧
+    ∃ _localAdapterReduction :
+      ComplexityReduction.KarpReductionM
+        ComplexityReduction.CostedPolyTimeModel
+        problem
+        localAdapterTarget,
+      ComplexityReduction.PolyReducibleM
+        ComplexityReduction.CostedPolyTimeModel
+        problem
+        localAdapterTarget ∧
+      ComplexityReduction.InNPEnc
+        ComplexityReduction.CostedPolyTimeModel
+        localAdapterTarget ∧
+      ComplexityReduction.InNPEnc
+        ComplexityReduction.CostedPolyTimeModel
+        problem

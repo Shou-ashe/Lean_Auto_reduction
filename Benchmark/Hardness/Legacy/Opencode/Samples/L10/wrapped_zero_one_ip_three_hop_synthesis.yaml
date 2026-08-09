@@ -1,0 +1,70 @@
+schema_version: opencode_lean_proposition_sample_file_v1
+id: wrapped_zero_one_ip_three_hop_synthesis
+name: wrapped_zero_one_ip_three_hop_synthesis_problem
+benchmark_level: L10
+input_language: wrapped_zero_one_ip_three_hop_synthesis
+problem_family: numeric_graph_open_route_synthesis
+certificate_contract: lean_proposition
+route_target_policy: any
+problem_statement: "Input is a 0-1 Integer Programming instance inside a product interface with ignored Boolean audit fields. Prove NP membership by normalizing the public interface and synthesizing a three-hop Karp reduction route through locally available NP targets. The benchmark does not prescribe the intermediate or final route targets."
+difficulty: open_three_hop_synthesis
+difficulty_tags:
+  - integer_programming
+  - numeric_target
+  - graph_target
+  - nested_projection
+  - open_route_selection
+  - three_hop_reduction
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction
+
+  noncomputable section
+
+  abbrev sourceProblem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.Combinatorics.zeroOneIntegerProgrammingDecisionProblem
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    { Instance := ComplexityReduction.EncodedType.prod
+        (ComplexityReduction.EncodedType.prod
+          sourceProblem.Instance
+          ComplexityReduction.EncodedType.bool)
+        (ComplexityReduction.EncodedType.prod
+          ComplexityReduction.EncodedType.bool
+          ComplexityReduction.EncodedType.bool)
+      isYes := fun p => sourceProblem.isYes p.1.1 }
+lean_target_type: |
+  ∃ normalizedProblem : ComplexityReduction.EncodedDecisionProblem,
+    ∃ routeTarget1 : ComplexityReduction.EncodedDecisionProblem,
+      ∃ routeTarget2 : ComplexityReduction.EncodedDecisionProblem,
+        ∃ routeTarget3 : ComplexityReduction.EncodedDecisionProblem,
+          ∃ _encodingBridgeCertificate :
+            ComplexityReduction.ProblemEquivM
+              ComplexityReduction.CostedPolyTimeModel
+              problem
+              normalizedProblem,
+            ∃ _reductionStep1 :
+              ComplexityReduction.KarpReductionM
+                ComplexityReduction.CostedPolyTimeModel
+                normalizedProblem
+                routeTarget1,
+              ∃ _reductionStep2 :
+                ComplexityReduction.KarpReductionM
+                  ComplexityReduction.CostedPolyTimeModel
+                  routeTarget1
+                  routeTarget2,
+                ∃ _reductionStep3 :
+                  ComplexityReduction.KarpReductionM
+                    ComplexityReduction.CostedPolyTimeModel
+                    routeTarget2
+                    routeTarget3,
+                  ComplexityReduction.PolyReducibleM
+                    ComplexityReduction.CostedPolyTimeModel
+                    problem
+                    routeTarget3 ∧
+                  ComplexityReduction.InNPEnc
+                    ComplexityReduction.CostedPolyTimeModel
+                    routeTarget3 ∧
+                  ComplexityReduction.InNPEnc
+                    ComplexityReduction.CostedPolyTimeModel
+                    problem

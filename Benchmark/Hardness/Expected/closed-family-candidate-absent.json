@@ -1,0 +1,14 @@
+{
+  "schema_version": "hardness_benchmark_expected_v1",
+  "case_id": "closed-family-candidate-absent",
+  "authoritative": false,
+  "final_status": "BLOCKED",
+  "final_failure_code": "unresolved_family_premise",
+  "gap_reason": "unresolvedFamilyPremise",
+  "coverage": [
+    "same_job_resume",
+    "candidate_removed_from_active_workspace",
+    "typed_blocker_restored",
+    "stale_olean_not_reused"
+  ]
+}

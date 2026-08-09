@@ -1,0 +1,30 @@
+schema_version: opencode_decision_problem_sample_file_v1
+id: exact_cover_steiner_textbook_adapter
+name: exact_cover_steiner_textbook_adapter_problem
+input_language: exact_cover_textbook_steiner_adapter
+problem_family: set_system_network
+problem_statement: Given a finite set system, decide whether there is an exact cover.
+certificate_contract: lean_proposition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction
+
+  noncomputable section
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.Combinatorics.exactCoverDecisionProblem
+lean_target_type: |
+  ∃ textbookTarget : ComplexityReduction.EncodedDecisionProblem,
+    textbookTarget = ComplexityReduction.Combinatorics.Graph.steinerTreeDecisionProblem ∧
+      ∃ textbookReductionCertificate :
+        ComplexityReduction.KarpReductionM ComplexityReduction.CostedPolyTimeModel problem textbookTarget,
+        ∃ textbookRouteCertificate :
+          ComplexityReduction.PolyReducibleM ComplexityReduction.CostedPolyTimeModel problem textbookTarget,
+          ComplexityReduction.InNPEnc ComplexityReduction.CostedPolyTimeModel textbookTarget ∧
+            ComplexityReduction.InNPEnc ComplexityReduction.CostedPolyTimeModel problem
+difficulty: textbook_adapter
+difficulty_tags:
+- exact_cover
+- steiner_tree
+- textbook_construction
+- karp_reduction

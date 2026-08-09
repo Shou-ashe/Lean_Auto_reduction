@@ -1,0 +1,58 @@
+schema_version: opencode_decision_problem_sample_file_v1
+id: fall2016_node_deletion_bipartite
+name: fall2016_node_deletion_bipartite_problem
+input_language: node_deletion_bipartite_budget
+problem_family: graph
+problem_statement: |
+  UW-Madison Theory Qual, Fall 2016, Problem 1. For a graph G and a subset of
+  nodes S, let G \ S denote the subgraph obtained when S and all of its
+  incident edges are removed from G. Given a graph G = (V, E) and an integer
+  k, decide whether there is a subset S subset of V with |S| <= k such that
+  G \ S is bipartite. Prove that this Node-Deletion Problem is NP-complete.
+  (The exam states it for graphs of maximum degree 3 and permits using the
+  fact that MAX-CUT is NP-complete on degree-3 graphs.)
+certificate_contract: lean_proposition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction
+
+  noncomputable section
+
+  structure NodeDeletionBipartiteInput where
+    graph : ComplexityReduction.Combinatorics.Graph.GraphInput
+    k : Nat
+    deriving Repr
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    { Instance := ComplexityReduction.EncodedType.raw NodeDeletionBipartiteInput
+      isYes := fun I =>
+        ∃ S : List Nat,
+          S.Nodup ∧
+            ComplexityReduction.Combinatorics.Graph.VerticesWithinBounds I.graph S ∧
+            S.length ≤ I.k ∧
+            ∃ color : Nat → Bool,
+              ∀ u v : Nat, u ∉ S → v ∉ S →
+                ComplexityReduction.Combinatorics.Graph.HasUndirectedEdge I.graph u v →
+                  color u ≠ color v }
+lean_target_type: |
+  ComplexityReduction.NPCompleteEnc ComplexityReduction.CostedPolyTimeModel problem
+expected:
+  phase1:
+    outcome: typed_missing_obligation
+    certificate_tracks:
+      lower_bound: typed_missing_obligation
+      membership: typed_missing_obligation
+      npcomplete: typed_missing_obligation
+    missing_obligations:
+    - missing_route_edge
+    - missing_target_bridge
+    - missing_membership_packet
+difficulty: quals_reduction
+difficulty_tags:
+- graph
+- np_complete
+- node_deletion
+- bipartite
+- max_cut_source
+- real_exam
+- uw_madison_quals

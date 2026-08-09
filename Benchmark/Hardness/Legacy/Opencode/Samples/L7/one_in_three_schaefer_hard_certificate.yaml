@@ -1,0 +1,28 @@
+schema_version: opencode_decision_problem_sample_file_v1
+id: one_in_three_schaefer_hard_certificate
+name: one_in_three_schaefer_hard_certificate_problem
+input_language: schaefer_one_in_three_relation_language
+problem_family: boolean_csp_schaefer
+problem_statement: Given an instance over the fixed Boolean relation language with one ternary relation that accepts exactly the assignments with one true variable, decide whether all constraints can be simultaneously satisfied.
+certificate_contract: lean_proposition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction
+
+  noncomputable section
+
+  abbrev cspLanguage : ComplexityReduction.CSP.BoolLanguage :=
+    ComplexityReduction.CSP.Examples.oneInThreeLanguage
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.Schaefer.satSDecisionProblem cspLanguage
+lean_target_type: |
+  ∃ hardCertificate :
+    ComplexityReduction.Schaefer.Hardness.HardRelationCertificate cspLanguage,
+    ComplexityReduction.NPCompleteEnc ComplexityReduction.CostedPolyTimeModel problem
+difficulty: schaefer_hard_side
+difficulty_tags:
+- csp
+- schaefer
+- finite_boolean_language
+- hard_side_certificate

@@ -1,0 +1,7 @@
+{
+  "schema_version": "hardness_benchmark_expected_v1",
+  "case_id": "three-sat-explicit-suffix",
+  "authoritative": false,
+  "final_status": "VERIFIED",
+  "coverage": ["fixed_distinct_native_target", "nonempty_route", "axiom_gate"]
+}

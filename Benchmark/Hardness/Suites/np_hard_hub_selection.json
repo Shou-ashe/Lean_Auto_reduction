@@ -1,0 +1,68 @@
+{
+  "schema_version": "hardness_np_hard_hub_selection_suite_v1",
+  "suite_id": "np_hard_hub_selection_v1",
+  "objective": "prove_np_hard",
+  "direction": "hardness_seed_to_problem",
+  "cases": [
+    {
+      "id": "hub-selection-graph",
+      "module": "Benchmark.Hardness.Inputs.NPHardGeneralization.HubSelectionGraph",
+      "problem": "Benchmark.Hardness.Inputs.NPHardGeneralization.HubSelectionGraph.target",
+      "expected_probe_failure": "no_forward_path_from_hardness_seed",
+      "expected_seed_count": 5,
+      "expected_selected_seed": "ComplexityReduction.Problems.Karp21.GraphAtoms.cliqueStructuredProblem",
+      "profiles": {
+        "ComplexityReduction.Problems.Karp21.GraphAtoms.cliqueStructuredProblem": ["authorable_gap", 1, "semantic-proof", 4, 0, 1, "semantic_proof"],
+        "ComplexityReduction.Presentation.SetSystem.exactCoverStructuredProblem": ["authorable_gap", 1, "program-composition", 0, 0, 1, "program_composition"],
+        "ComplexityReduction.Certificate.NativeCookLevin.canonicalThreeSAT": ["authorable_gap", 1, "program-synthesis", 0, 0, 1, "program_synthesis"],
+        "ComplexityReduction.Problems.Karp21.GraphAtoms.vertexCoverStructuredProblem": ["authorable_gap", 2, "semantic-proof", 0, 0, 2, "semantic_proof"],
+        "ComplexityReduction.Presentation.ZeroOneIP.structuredProblem": ["authorable_gap", 2, "program-composition", 0, 0, 2, "program_composition"]
+      }
+    },
+    {
+      "id": "hub-selection-set-system",
+      "module": "Benchmark.Hardness.Inputs.NPHardGeneralization.HubSelectionSetSystem",
+      "problem": "Benchmark.Hardness.Inputs.NPHardGeneralization.HubSelectionSetSystem.target",
+      "expected_probe_failure": "no_forward_path_from_hardness_seed",
+      "expected_seed_count": 5,
+      "expected_selected_seed": "ComplexityReduction.Presentation.SetSystem.exactCoverStructuredProblem",
+      "profiles": {
+        "ComplexityReduction.Presentation.SetSystem.exactCoverStructuredProblem": ["authorable_gap", 1, "semantic-proof", 3, 0, 1, "semantic_proof"],
+        "ComplexityReduction.Problems.Karp21.GraphAtoms.cliqueStructuredProblem": ["authorable_gap", 1, "program-composition", 0, 0, 1, "program_composition"],
+        "ComplexityReduction.Certificate.NativeCookLevin.canonicalThreeSAT": ["authorable_gap", 1, "program-synthesis", 0, 0, 1, "program_synthesis"],
+        "ComplexityReduction.Problems.Karp21.GraphAtoms.vertexCoverStructuredProblem": ["authorable_gap", 2, "semantic-proof", 0, 0, 2, "semantic_proof"],
+        "ComplexityReduction.Presentation.ZeroOneIP.structuredProblem": ["authorable_gap", 2, "program-composition", 0, 0, 2, "program_composition"]
+      }
+    },
+    {
+      "id": "hub-selection-numeric",
+      "module": "Benchmark.Hardness.Inputs.NPHardGeneralization.HubSelectionNumeric",
+      "problem": "Benchmark.Hardness.Inputs.NPHardGeneralization.HubSelectionNumeric.target",
+      "expected_probe_failure": "no_forward_path_from_hardness_seed",
+      "expected_seed_count": 5,
+      "expected_selected_seed": "ComplexityReduction.Presentation.ZeroOneIP.structuredProblem",
+      "profiles": {
+        "ComplexityReduction.Presentation.ZeroOneIP.structuredProblem": ["authorable_gap", 1, "semantic-proof", 5, 0, 1, "semantic_proof"],
+        "ComplexityReduction.Problems.Karp21.GraphAtoms.vertexCoverStructuredProblem": ["authorable_gap", 1, "program-composition", 0, 0, 1, "program_composition"],
+        "ComplexityReduction.Certificate.NativeCookLevin.canonicalThreeSAT": ["authorable_gap", 1, "program-synthesis", 0, 0, 1, "program_synthesis"],
+        "ComplexityReduction.Problems.Karp21.GraphAtoms.cliqueStructuredProblem": ["authorable_gap", 2, "semantic-proof", 0, 0, 2, "semantic_proof"],
+        "ComplexityReduction.Presentation.SetSystem.exactCoverStructuredProblem": ["authorable_gap", 2, "program-composition", 0, 0, 2, "program_composition"]
+      }
+    },
+    {
+      "id": "hub-selection-reverse-only",
+      "module": "Benchmark.Hardness.Inputs.NPHardGeneralization.HubSelectionReverseOnly",
+      "problem": "Benchmark.Hardness.Inputs.NPHardGeneralization.HubSelectionReverseOnly.target",
+      "expected_probe_failure": "wrong_direction_only",
+      "expected_seed_count": 5,
+      "expected_selected_seed": null,
+      "profiles": {
+        "ComplexityReduction.Presentation.SetSystem.exactCoverStructuredProblem": ["reverse_only", 0, "unsupported", 0, 0, 0, null],
+        "ComplexityReduction.Presentation.ZeroOneIP.structuredProblem": ["reverse_only", 0, "unsupported", 0, 0, 0, null],
+        "ComplexityReduction.Certificate.NativeCookLevin.canonicalThreeSAT": ["reverse_only", 0, "unsupported", 0, 0, 0, null],
+        "ComplexityReduction.Problems.Karp21.GraphAtoms.cliqueStructuredProblem": ["reverse_only", 0, "unsupported", 0, 0, 0, null],
+        "ComplexityReduction.Problems.Karp21.GraphAtoms.vertexCoverStructuredProblem": ["reverse_only", 0, "unsupported", 0, 0, 0, null]
+      }
+    }
+  ]
+}

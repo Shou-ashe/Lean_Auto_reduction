@@ -1,0 +1,137 @@
+{
+  "schema_version": "hardness_benchmark_suite_v1",
+  "suite_id": "completeness",
+  "description": "Phase 6 exact and transported native completeness, target-membership gating, directionality, and backend-head rejection.",
+  "cases": [
+    {
+      "id": "exact-registered-three-sat-completeness",
+      "module": "Benchmark.Hardness.Inputs.Completeness.RegisteredThreeSAT",
+      "source": "Benchmark.Hardness.Inputs.Completeness.RegisteredThreeSAT.source",
+      "membership": null,
+      "target": null,
+      "objective": "prove_np_complete",
+      "target_policy": "open",
+      "planner": "deterministic",
+      "enabled": true,
+      "min_agent_phase": 6,
+      "authoring_policy": {"enabled": false},
+      "expected": {
+        "final_status": "VERIFIED",
+        "final_failure_code": null
+      },
+      "coverage": {
+        "required_evidence_kind": "registered_completeness",
+        "required_completeness_declaration": "ComplexityReduction.Certificate.NativeCookLevin.canonicalThreeSATNativeCompleteness",
+        "required_hub_declaration": "Benchmark.Hardness.Inputs.Completeness.RegisteredThreeSAT.source",
+        "minimum_route_atoms": 0,
+        "maximum_route_atoms": 0
+      },
+      "resources": {"lean_timeout_seconds": 600, "max_model_calls": 1},
+      "tags": ["phase-6", "completeness", "registered", "three-sat"],
+      "group_id": "phase6-completeness"
+    },
+    {
+      "id": "three-sat-to-clique-transported-completeness",
+      "module": "Benchmark.Hardness.Inputs.Completeness.TransportedClique",
+      "source": "Benchmark.Hardness.Inputs.Completeness.TransportedClique.source",
+      "membership": null,
+      "target": null,
+      "objective": "prove_np_complete",
+      "target_policy": "open",
+      "planner": "deterministic",
+      "enabled": true,
+      "min_agent_phase": 6,
+      "authoring_policy": {"enabled": false},
+      "expected": {
+        "final_status": "VERIFIED",
+        "final_failure_code": null
+      },
+      "coverage": {
+        "required_evidence_kind": "transported_completeness",
+        "required_completeness_declaration": "ComplexityReduction.Certificate.NativeCookLevin.canonicalThreeSATNativeCompleteness",
+        "required_hub_declaration": "ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem",
+        "required_capability_role": "sharedGadget",
+        "minimum_route_atoms": 1,
+        "maximum_route_atoms": 1
+      },
+      "resources": {"lean_timeout_seconds": 600, "max_model_calls": 1},
+      "tags": ["phase-6", "completeness", "transport", "forward-path", "clique"],
+      "group_id": "phase6-completeness"
+    },
+    {
+      "id": "completeness-target-missing-membership",
+      "module": "Benchmark.Hardness.Inputs.Completeness.MissingTargetMembership",
+      "source": "Benchmark.Hardness.Inputs.Completeness.MissingTargetMembership.source",
+      "membership": null,
+      "target": null,
+      "objective": "prove_np_complete",
+      "target_policy": "open",
+      "planner": "deterministic",
+      "enabled": true,
+      "min_agent_phase": 6,
+      "authoring_policy": {"enabled": false},
+      "expected": {
+        "final_status": "BLOCKED",
+        "final_failure_code": "missing_native_membership"
+      },
+      "coverage": {
+        "required_blocker": "missing_native_membership",
+        "required_gap_reason": "nativeMembership",
+        "required_expected_capability_head": "ComplexityReduction.Certificate.NativeTMInNP"
+      },
+      "resources": {"lean_timeout_seconds": 600, "max_model_calls": 1},
+      "tags": ["phase-6", "completeness", "membership-gate", "negative"],
+      "group_id": "phase6-completeness"
+    },
+    {
+      "id": "completeness-wrong-direction",
+      "module": "Benchmark.Hardness.Inputs.Completeness.WrongDirection",
+      "source": "Benchmark.Hardness.Inputs.Completeness.WrongDirection.source",
+      "membership": null,
+      "target": null,
+      "objective": "prove_np_complete",
+      "target_policy": "open",
+      "planner": "deterministic",
+      "enabled": true,
+      "min_agent_phase": 6,
+      "authoring_policy": {"enabled": false},
+      "expected": {
+        "final_status": "BLOCKED",
+        "final_failure_code": "missing_native_completeness"
+      },
+      "coverage": {
+        "required_blocker": "missing_native_completeness",
+        "required_gap_reason": "nativeCompleteness",
+        "required_expected_capability_head": "ComplexityReduction.Certificate.NativeTMNPComplete"
+      },
+      "resources": {"lean_timeout_seconds": 600, "max_model_calls": 1},
+      "tags": ["phase-6", "completeness", "directionality", "target-to-three-sat", "negative"],
+      "group_id": "phase6-completeness"
+    },
+    {
+      "id": "backend-completeness-cannot-pass-native-gate",
+      "module": "Benchmark.Hardness.Inputs.Completeness.BackendCompletenessOnly",
+      "source": "Benchmark.Hardness.Inputs.Completeness.BackendCompletenessOnly.source",
+      "membership": null,
+      "target": null,
+      "objective": "prove_np_complete",
+      "target_policy": "open",
+      "planner": "deterministic",
+      "enabled": true,
+      "min_agent_phase": 6,
+      "authoring_policy": {"enabled": false},
+      "expected": {
+        "final_status": "BLOCKED",
+        "final_failure_code": "missing_native_completeness"
+      },
+      "coverage": {
+        "required_blocker": "missing_native_completeness",
+        "required_gap_reason": "nativeCompleteness",
+        "required_expected_capability_head": "ComplexityReduction.Certificate.NativeTMNPComplete"
+      },
+      "resources": {"lean_timeout_seconds": 600, "max_model_calls": 1},
+      "tags": ["phase-6", "completeness", "backend-boundary", "negative", "adversarial"],
+      "group_id": "phase6-completeness"
+    }
+  ]
+}

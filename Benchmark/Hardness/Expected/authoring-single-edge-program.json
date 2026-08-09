@@ -1,0 +1,11 @@
+{
+  "schema_version": "hardness_benchmark_expected_v1",
+  "case_id": "authoring-single-edge-program",
+  "authoritative": false,
+  "expected_lane": "typed_authoring",
+  "baseline_status": "BLOCKED",
+  "baseline_failure_code": "missing_reduction_capability",
+  "final_status": "VERIFIED",
+  "final_failure_code": null,
+  "coverage": ["reduction_capability", "tm_certificate_packet", "single_edge"]
+}

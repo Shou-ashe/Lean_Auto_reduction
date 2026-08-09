@@ -1,0 +1,63 @@
+schema_version: opencode_lean_proposition_sample_file_v1
+id: sandwiched_one_in_three_roundtrip_composed_gadget
+name: sandwiched_one_in_three_roundtrip_composed_gadget_problem
+benchmark_level: L11
+input_language: sandwiched_one_in_three_roundtrip_composed_gadget
+problem_family: csp_gadget_composition
+certificate_contract: lean_proposition
+route_target_policy: specified_in_problem_statement
+problem_statement: "Input is a one-in-three CSP instance sandwiched between two ignored Boolean audit fields. Prove NP membership by normalizing the public interface and synthesizing a round-trip CSP gadget route from one-in-three CSP through 3-SAT back into one-in-three CSP."
+difficulty: composed_gadget_synthesis
+difficulty_tags:
+  - csp
+  - gadget_composition
+  - bridge_authoring
+  - two_step_gadget_route
+  - descriptor_composition
+  - roundtrip_gadget
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction
+
+  noncomputable section
+
+  abbrev sourceProblem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.CSP.Examples.oneInThreeDecisionProblem
+
+  abbrev targetProblem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.CSP.Examples.oneInThreeDecisionProblem
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    { Instance := ComplexityReduction.EncodedType.prod
+        (ComplexityReduction.EncodedType.prod
+          ComplexityReduction.EncodedType.bool
+          sourceProblem.Instance)
+        ComplexityReduction.EncodedType.bool
+      isYes := fun p => sourceProblem.isYes p.1.2 }
+lean_target_type: |
+  ∃ normalizedProblem : ComplexityReduction.EncodedDecisionProblem,
+    ∃ _encodingBridgeCertificate :
+      ComplexityReduction.ProblemEquivM
+        ComplexityReduction.CostedPolyTimeModel
+        problem
+        normalizedProblem,
+      ∃ _sourceToPivotGadget :
+        ComplexityReduction.KarpReductionM
+          ComplexityReduction.CostedPolyTimeModel
+          normalizedProblem
+          ComplexityReduction.SAT.threeSATDecisionProblem,
+        ∃ _pivotToTargetGadget :
+          ComplexityReduction.KarpReductionM
+            ComplexityReduction.CostedPolyTimeModel
+            ComplexityReduction.SAT.threeSATDecisionProblem
+            targetProblem,
+          ComplexityReduction.PolyReducibleM
+            ComplexityReduction.CostedPolyTimeModel
+            problem
+            targetProblem ∧
+          ComplexityReduction.InNPEnc
+            ComplexityReduction.CostedPolyTimeModel
+            targetProblem ∧
+          ComplexityReduction.InNPEnc
+            ComplexityReduction.CostedPolyTimeModel
+            problem

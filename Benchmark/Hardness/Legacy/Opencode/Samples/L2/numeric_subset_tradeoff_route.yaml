@@ -1,0 +1,29 @@
+schema_version: opencode_decision_problem_sample_file_v1
+id: numeric_subset_tradeoff_route
+name: numeric_subset_tradeoff_route_problem
+input_language: numeric_subset_selection_route_composition
+problem_family: numeric
+problem_statement: Given item weights, item values, a capacity bound, and a target value, decide whether there is a subset of items whose total weight is at most the capacity and whose total value is at least the target.
+certificate_contract: lean_proposition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction
+
+  noncomputable section
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.Combinatorics.knapsackKarpDecisionProblem
+lean_target_type: |
+  ∃ routeTarget : ComplexityReduction.EncodedDecisionProblem,
+    routeTarget = ComplexityReduction.Combinatorics.partitionDecisionProblem ∧
+      ∃ reductionCertificate :
+        ComplexityReduction.KarpReductionM ComplexityReduction.CostedPolyTimeModel problem routeTarget,
+        ComplexityReduction.InNPEnc ComplexityReduction.CostedPolyTimeModel routeTarget ∧
+          ComplexityReduction.InNPEnc ComplexityReduction.CostedPolyTimeModel problem
+route_target_policy: any
+difficulty: route_composition
+difficulty_tags:
+- numeric
+- karp21_route
+- route_certificate
+- reduction_to_known_np_target

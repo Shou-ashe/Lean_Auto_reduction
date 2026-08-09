@@ -1,0 +1,100 @@
+schema_version: opencode_lean_proposition_sample_file_v1
+id: left_sandwiched_dual_horn3_vertex_knapsack_stacked_forked_route
+name: left_sandwiched_dual_horn3_vertex_knapsack_stacked_forked_route_problem
+benchmark_level: L15
+input_language: left_sandwiched_dual_horn3_vertex_knapsack_stacked_forked_route
+problem_family: stacked_bridge_forked_mixed_gadget_route_composition
+certificate_contract: lean_proposition
+route_target_policy: any
+problem_statement: "Input is a dual-Horn-3 CSP instance buried inside a left-sandwiched public product interface. Prove NP membership by composing two public normalization bridges, using the dual-Horn-3-to-3SAT gadget, and then assembling independent vertex-cover and knapsack tails from the shared 3-SAT pivot."
+difficulty: stacked_bridge_forked_mixed_gadget_route_synthesis
+difficulty_tags:
+  - csp
+  - stacked_bridge
+  - gadget_composition
+  - forked_route
+  - dual_target
+  - sandwiched_projection
+  - graph_target
+  - numeric_target
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction
+
+  noncomputable section
+
+  abbrev sourceProblem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.CSP.Examples.dualHorn3DecisionProblem
+
+  abbrev graphTargetProblem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.Combinatorics.Graph.vertexCoverDecisionProblem
+
+  abbrev numericTargetProblem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.Combinatorics.knapsackKarpDecisionProblem
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    { Instance := ComplexityReduction.EncodedType.prod
+        (ComplexityReduction.EncodedType.prod
+          ComplexityReduction.EncodedType.bool
+          (ComplexityReduction.EncodedType.prod
+            sourceProblem.Instance
+            ComplexityReduction.EncodedType.bool))
+        ComplexityReduction.EncodedType.bool
+      isYes := fun p => sourceProblem.isYes p.1.2.1 }
+lean_target_type: |
+  ∃ bridgeProblem : ComplexityReduction.EncodedDecisionProblem,
+    ∃ normalizedProblem : ComplexityReduction.EncodedDecisionProblem,
+      ∃ graphRouteTarget : ComplexityReduction.EncodedDecisionProblem,
+        ∃ numericRouteTarget : ComplexityReduction.EncodedDecisionProblem,
+          ∃ _outerBridgeCertificate :
+            ComplexityReduction.ProblemEquivM
+              ComplexityReduction.CostedPolyTimeModel
+              problem
+              bridgeProblem,
+            ∃ _innerBridgeCertificate :
+              ComplexityReduction.ProblemEquivM
+                ComplexityReduction.CostedPolyTimeModel
+                bridgeProblem
+                normalizedProblem,
+              ∃ _sourceToSatGadget :
+                ComplexityReduction.KarpReductionM
+                  ComplexityReduction.CostedPolyTimeModel
+                  normalizedProblem
+                  ComplexityReduction.SAT.threeSATDecisionProblem,
+                ∃ _satToGraphRoute :
+                  ComplexityReduction.KarpReductionM
+                    ComplexityReduction.CostedPolyTimeModel
+                    ComplexityReduction.SAT.threeSATDecisionProblem
+                    graphRouteTarget,
+                  ∃ _graphToFinalRoute :
+                    ComplexityReduction.KarpReductionM
+                      ComplexityReduction.CostedPolyTimeModel
+                      graphRouteTarget
+                      graphTargetProblem,
+                    ∃ _satToNumericRoute :
+                      ComplexityReduction.KarpReductionM
+                        ComplexityReduction.CostedPolyTimeModel
+                        ComplexityReduction.SAT.threeSATDecisionProblem
+                        numericRouteTarget,
+                      ∃ _numericToFinalRoute :
+                        ComplexityReduction.KarpReductionM
+                          ComplexityReduction.CostedPolyTimeModel
+                          numericRouteTarget
+                          numericTargetProblem,
+                        ComplexityReduction.PolyReducibleM
+                          ComplexityReduction.CostedPolyTimeModel
+                          problem
+                          graphTargetProblem ∧
+                        ComplexityReduction.PolyReducibleM
+                          ComplexityReduction.CostedPolyTimeModel
+                          problem
+                          numericTargetProblem ∧
+                        ComplexityReduction.InNPEnc
+                          ComplexityReduction.CostedPolyTimeModel
+                          graphTargetProblem ∧
+                        ComplexityReduction.InNPEnc
+                          ComplexityReduction.CostedPolyTimeModel
+                          numericTargetProblem ∧
+                        ComplexityReduction.InNPEnc
+                          ComplexityReduction.CostedPolyTimeModel
+                          problem

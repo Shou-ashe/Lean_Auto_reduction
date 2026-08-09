@@ -1,0 +1,311 @@
+{
+  "schema_version": "hardness_benchmark_suite_v1",
+  "suite_id": "quals-completeness",
+  "description": "Stage-N N-C exact Quals primary requests: four NP-completeness cases and one explicitly hardness-only fixed reduction.",
+  "cases": [
+    {
+      "id": "spring2015-exactly-one-neighbor",
+      "module": "Benchmark.Hardness.Inputs.Quals.Spring2015ExactlyOneNeighbor",
+      "source": "Benchmark.Hardness.Inputs.Quals.Spring2015ExactlyOneNeighbor.problem",
+      "membership": null,
+      "target": null,
+      "objective": "prove_np_complete",
+      "target_policy": "open",
+      "planner": "deterministic",
+      "execution_layer": "optional_authoring",
+      "verification_profile": "strict-release",
+      "evaluation_lane": "quals_completeness",
+      "enabled": true,
+      "min_agent_phase": 14,
+      "authoring_policy": {
+        "enabled": true,
+        "mode": "deterministic-template",
+        "attempt_budget": 1
+      },
+      "typed_authoring": {
+        "schema_version": "hardness_typed_authoring_request_v1",
+        "active_node": "membership_capability",
+        "expected_capability_head": "ComplexityReduction.Certificate.NativeTMInNP",
+        "allowed_packet_kinds": ["membership_packet"],
+        "required_checker_combinators": [
+          "list_nat",
+          "nodup",
+          "vertices_within_bounds",
+          "adjacency",
+          "nat_budget",
+          "local_predicate"
+        ],
+        "witness_shape": "list_nat",
+        "model_selection_required": true
+      },
+      "expected": {
+        "baseline_status": "BLOCKED",
+        "baseline_failure_code": "missing_native_membership",
+        "final_status": "VERIFIED",
+        "final_failure_code": null
+      },
+      "coverage": {
+        "formalization_case_id": "spring2015-exactly-one-neighbor-formalization",
+        "required_gap_reason": "nativeMembership",
+        "required_packet_kind": "membership_packet",
+        "required_authoring_template": "native_membership",
+        "expected_gap_closure_count": 1,
+        "capability_tracks": ["lower_bound", "membership", "completeness"],
+        "unseen_exact_endpoint": true,
+        "new_reduction_edge_expected": false,
+        "finite_witness_membership_expected": true
+      },
+      "resources": {
+        "lean_timeout_seconds": 1800,
+        "model_timeout_seconds": 300,
+        "model_max_tokens": 8192,
+        "max_model_calls": 2
+      },
+      "tags": ["stage-n", "n-a", "quals", "spring2015", "exactly-one-neighbor", "positive"],
+      "group_id": "stage-n-b-primary",
+      "family_id": "graph-local-witness"
+    },
+    {
+      "id": "uiuc2022-seeing-set",
+      "module": "Benchmark.Hardness.Inputs.Quals.UIUC2022SeeingSet",
+      "source": "Benchmark.Hardness.Inputs.Quals.UIUC2022SeeingSet.source",
+      "membership": null,
+      "target": "Benchmark.Hardness.Inputs.Quals.UIUC2022SeeingSet.target",
+      "objective": "reduce_to",
+      "target_policy": "fixed",
+      "planner": "deterministic",
+      "execution_layer": "optional_authoring",
+      "verification_profile": "strict-release",
+      "evaluation_lane": "quals_completeness",
+      "enabled": true,
+      "min_agent_phase": 14,
+      "authoring_policy": {
+        "enabled": true,
+        "mode": "deterministic-template",
+        "attempt_budget": 1
+      },
+      "typed_authoring": {
+        "schema_version": "hardness_typed_authoring_request_v1",
+        "active_node": "reduction_capability",
+        "expected_capability_head": "ComplexityReduction.Certificate.CertifiedReduction",
+        "allowed_packet_kinds": ["tm_certificate_packet"],
+        "required_checker_combinators": [],
+        "witness_shape": "none",
+        "model_selection_required": true
+      },
+      "expected": {
+        "baseline_status": "BLOCKED",
+        "baseline_failure_code": "no_registry_path",
+        "final_status": "VERIFIED",
+        "final_failure_code": null
+      },
+      "coverage": {
+        "formalization_case_id": "uiuc2022-seeing-set-formalization",
+        "required_gap_reason": "noRegistryPath",
+        "required_packet_kind": "tm_certificate_packet",
+        "required_authoring_template": "program_indexed_reduction",
+        "expected_gap_closure_count": 1,
+        "capability_tracks": ["lower_bound", "membership", "completeness"],
+        "unseen_exact_endpoint": true,
+        "new_reduction_edge_expected": true,
+        "finite_witness_membership_expected": false,
+        "hardness_only": true
+      },
+      "resources": {
+        "lean_timeout_seconds": 1800,
+        "model_timeout_seconds": 300,
+        "model_max_tokens": 8192,
+        "max_model_calls": 2
+      },
+      "tags": ["stage-n", "n-b", "quals", "uiuc2022", "seeing-set", "hardness-only", "positive"],
+      "group_id": "stage-n-b-primary",
+      "family_id": "directed-weighted-reachability"
+    },
+    {
+      "id": "fall2016-node-deletion-bipartite",
+      "module": "Benchmark.Hardness.Inputs.Quals.Fall2016NodeDeletionBipartite",
+      "source": "Benchmark.Hardness.Inputs.Quals.Fall2016NodeDeletionBipartite.problem",
+      "membership": null,
+      "target": null,
+      "objective": "prove_np_complete",
+      "target_policy": "open",
+      "planner": "deterministic",
+      "execution_layer": "optional_authoring",
+      "verification_profile": "strict-release",
+      "evaluation_lane": "quals_completeness",
+      "enabled": true,
+      "min_agent_phase": 14,
+      "authoring_policy": {
+        "enabled": true,
+        "mode": "deterministic-template",
+        "attempt_budget": 1
+      },
+      "typed_authoring": {
+        "schema_version": "hardness_typed_authoring_request_v1",
+        "active_node": "membership_capability",
+        "expected_capability_head": "ComplexityReduction.Certificate.NativeTMInNP",
+        "allowed_packet_kinds": ["membership_packet"],
+        "required_checker_combinators": [
+          "list_nat",
+          "adjacency",
+          "coloring",
+          "deletion_coloring",
+          "nat_budget",
+          "local_predicate"
+        ],
+        "witness_shape": "deletion_coloring",
+        "model_selection_required": true
+      },
+      "expected": {
+        "baseline_status": "BLOCKED",
+        "baseline_failure_code": "missing_native_membership",
+        "final_status": "VERIFIED",
+        "final_failure_code": null
+      },
+      "coverage": {
+        "formalization_case_id": "fall2016-node-deletion-bipartite-formalization",
+        "required_gap_reason": "nativeMembership",
+        "required_packet_kind": "membership_packet",
+        "required_authoring_template": "native_membership",
+        "expected_gap_closure_count": 1,
+        "capability_tracks": ["lower_bound", "membership", "completeness"],
+        "unseen_exact_endpoint": true,
+        "new_reduction_edge_expected": false,
+        "finite_witness_membership_expected": true
+      },
+      "resources": {
+        "lean_timeout_seconds": 1800,
+        "model_timeout_seconds": 300,
+        "model_max_tokens": 8192,
+        "max_model_calls": 2
+      },
+      "tags": ["stage-n", "n-b", "quals", "fall2016", "node-deletion", "bipartite", "positive"],
+      "group_id": "stage-n-b-primary",
+      "family_id": "graph-deletion-coloring"
+    },
+    {
+      "id": "fall2014-most-neighbors",
+      "module": "Benchmark.Hardness.Inputs.Quals.Fall2014MostNeighbors",
+      "source": "Benchmark.Hardness.Inputs.Quals.Fall2014MostNeighbors.problem",
+      "membership": null,
+      "target": null,
+      "objective": "prove_np_complete",
+      "target_policy": "open",
+      "planner": "deterministic",
+      "execution_layer": "optional_authoring",
+      "verification_profile": "strict-release",
+      "evaluation_lane": "quals_completeness",
+      "enabled": true,
+      "min_agent_phase": 14,
+      "authoring_policy": {
+        "enabled": true,
+        "mode": "deterministic-template",
+        "attempt_budget": 1
+      },
+      "typed_authoring": {
+        "schema_version": "hardness_typed_authoring_request_v1",
+        "active_node": "membership_capability",
+        "expected_capability_head": "ComplexityReduction.Certificate.NativeTMInNP",
+        "allowed_packet_kinds": ["membership_packet"],
+        "required_checker_combinators": [
+          "list_nat",
+          "adjacency",
+          "external_neighborhood",
+          "nat_budget",
+          "local_predicate"
+        ],
+        "witness_shape": "list_nat",
+        "model_selection_required": true
+      },
+      "expected": {
+        "baseline_status": "BLOCKED",
+        "baseline_failure_code": "missing_native_membership",
+        "final_status": "VERIFIED",
+        "final_failure_code": null
+      },
+      "coverage": {
+        "formalization_case_id": "fall2014-most-neighbors-formalization",
+        "required_gap_reason": "nativeMembership",
+        "required_packet_kind": "membership_packet",
+        "required_authoring_template": "native_membership",
+        "expected_gap_closure_count": 1,
+        "capability_tracks": ["lower_bound", "membership", "completeness"],
+        "unseen_exact_endpoint": true,
+        "new_reduction_edge_expected": false,
+        "finite_witness_membership_expected": true
+      },
+      "resources": {
+        "lean_timeout_seconds": 1800,
+        "model_timeout_seconds": 300,
+        "model_max_tokens": 8192,
+        "max_model_calls": 2
+      },
+      "tags": ["stage-n", "n-c", "quals", "fall2014", "most-neighbors", "positive"],
+      "group_id": "stage-n-c-primary",
+      "family_id": "external-neighborhood"
+    },
+    {
+      "id": "uiuc2020-two-disjoint-bounded-paths",
+      "module": "Benchmark.Hardness.Inputs.Quals.UIUC2020TwoDisjointBoundedPaths",
+      "source": "Benchmark.Hardness.Inputs.Quals.UIUC2020TwoDisjointBoundedPaths.problem",
+      "membership": null,
+      "target": null,
+      "objective": "prove_np_complete",
+      "target_policy": "open",
+      "planner": "deterministic",
+      "execution_layer": "optional_authoring",
+      "verification_profile": "strict-release",
+      "evaluation_lane": "quals_completeness",
+      "enabled": true,
+      "min_agent_phase": 14,
+      "authoring_policy": {
+        "enabled": true,
+        "mode": "deterministic-template",
+        "attempt_budget": 1
+      },
+      "typed_authoring": {
+        "schema_version": "hardness_typed_authoring_request_v1",
+        "active_node": "membership_capability",
+        "expected_capability_head": "ComplexityReduction.Certificate.NativeTMInNP",
+        "allowed_packet_kinds": ["membership_packet"],
+        "required_checker_combinators": [
+          "list_nat",
+          "pair_list",
+          "edge_index_path",
+          "binary_path_cost",
+          "disjointness",
+          "nat_budget",
+          "local_predicate"
+        ],
+        "witness_shape": "pair_list",
+        "model_selection_required": true
+      },
+      "expected": {
+        "baseline_status": "BLOCKED",
+        "baseline_failure_code": "missing_native_membership",
+        "final_status": "VERIFIED",
+        "final_failure_code": null
+      },
+      "coverage": {
+        "formalization_case_id": "uiuc2020-two-disjoint-bounded-paths-formalization",
+        "required_gap_reason": "nativeMembership",
+        "required_packet_kind": "membership_packet",
+        "required_authoring_template": "native_membership",
+        "expected_gap_closure_count": 1,
+        "capability_tracks": ["lower_bound", "membership", "completeness"],
+        "unseen_exact_endpoint": true,
+        "new_reduction_edge_expected": false,
+        "finite_witness_membership_expected": true
+      },
+      "resources": {
+        "lean_timeout_seconds": 1800,
+        "model_timeout_seconds": 300,
+        "model_max_tokens": 8192,
+        "max_model_calls": 2
+      },
+      "tags": ["stage-n", "n-c", "quals", "uiuc2020", "two-disjoint-bounded-paths", "positive"],
+      "group_id": "stage-n-c-primary",
+      "family_id": "directed-costed-pair-path"
+    }
+  ]
+}

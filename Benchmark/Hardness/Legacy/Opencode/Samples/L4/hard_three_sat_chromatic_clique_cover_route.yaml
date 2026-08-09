@@ -1,0 +1,34 @@
+schema_version: opencode_decision_problem_sample_file_v1
+id: hard_three_sat_chromatic_clique_cover_route
+name: hard_three_sat_chromatic_clique_cover_route_problem
+input_language: three_sat_multihop_clique_cover
+problem_family: sat_graph
+problem_statement: Given a 3SAT instance, decide whether it is satisfiable.
+certificate_contract: lean_proposition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction
+
+  noncomputable section
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.SAT.threeSATDecisionProblem
+lean_target_type: |
+  ∃ routeTarget1 : ComplexityReduction.EncodedDecisionProblem,
+    routeTarget1 = ComplexityReduction.Combinatorics.Graph.chromaticNumberDecisionProblem ∧
+      ∃ routeTarget2 : ComplexityReduction.EncodedDecisionProblem,
+        routeTarget2 = ComplexityReduction.Combinatorics.Graph.cliqueCoverDecisionProblem ∧
+          ∃ reductionStep1 :
+            ComplexityReduction.KarpReductionM ComplexityReduction.CostedPolyTimeModel problem routeTarget1,
+            ∃ reductionStep2 :
+              ComplexityReduction.KarpReductionM ComplexityReduction.CostedPolyTimeModel routeTarget1 routeTarget2,
+              ∃ composedReduction :
+                ComplexityReduction.PolyReducibleM ComplexityReduction.CostedPolyTimeModel problem routeTarget2,
+                ComplexityReduction.InNPEnc ComplexityReduction.CostedPolyTimeModel routeTarget2 ∧
+                  ComplexityReduction.InNPEnc ComplexityReduction.CostedPolyTimeModel problem
+difficulty: multihop_route_hard
+difficulty_tags:
+- sat
+- graph
+- multihop_reduction
+- route_composition

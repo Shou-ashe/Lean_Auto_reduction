@@ -1,0 +1,22 @@
+schema_version: opencode_decision_problem_sample_file_v1
+id: feedback_arc_set
+name: feedback_arc_set_problem
+input_language: feedback_arc_set
+problem_family: directed_graph
+problem_statement: Given a directed graph and an integer k, decide whether deleting at most k arcs leaves an acyclic directed graph.
+certificate_contract: lean_proposition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction
+
+  noncomputable section
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.Combinatorics.Graph.feedbackArcSetDecisionProblem
+lean_target_type: |
+  ComplexityReduction.InNPEnc ComplexityReduction.CostedPolyTimeModel problem
+difficulty: hard
+difficulty_tags:
+- directed_graph
+- edge_deletion_witness
+- acyclicity_check

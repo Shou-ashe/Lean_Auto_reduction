@@ -1,0 +1,22 @@
+schema_version: opencode_decision_problem_sample_file_v1
+id: exact_cover
+name: exact_cover_problem
+input_language: exact_cover
+problem_family: set_system
+problem_statement: Given a finite universe and a family of subsets, decide whether some subfamily covers every universe element exactly once.
+certificate_contract: lean_proposition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction
+
+  noncomputable section
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.Combinatorics.exactCoverDecisionProblem
+lean_target_type: |
+  ComplexityReduction.InNPEnc ComplexityReduction.CostedPolyTimeModel problem
+difficulty: hard
+difficulty_tags:
+- set_system
+- exact_cover
+- multiplicity_check

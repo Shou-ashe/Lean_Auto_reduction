@@ -1,0 +1,95 @@
+{
+  "schema_version": "hardness_ir_feasibility_baseline_v1",
+  "recorded_at": "2026-07-29",
+  "authoritative": false,
+  "ir_architecture": "canonical_typed_hub",
+  "inventory_scope": "registered_type_validated_certificate_edges",
+  "command": [
+    "python3",
+    "scripts/run_hardness_benchmark.py",
+    "--suite",
+    "ir-feasibility",
+    "--jobs",
+    "1"
+  ],
+  "toolchain": "leanprover/lean4:v4.29.0",
+  "registry_fingerprint": "lean:12857104236525396136",
+  "typed_inventory": {
+    "entry_count": 37,
+    "capability_counts": {
+      "certified_equiv": 1,
+      "certified_reduction": 36
+    },
+    "role_counts": {
+      "egress": 3,
+      "finalComposition": 12,
+      "ingress": 10,
+      "sharedGadget": 10,
+      "unannotated": 2
+    }
+  },
+  "catalogs": {
+    "flat_api": {
+      "catalog_id": "sha256:3a9b241de3225f3945d0e34581094ae4d50bdc78f6682fed6c3c7ecf9d561881",
+      "agent_interface_count": 13,
+      "semantic_atomic_interface_count": 1
+    },
+    "ir_components": {
+      "catalog_id": "sha256:cbf0a82561df999e6eab16bc7ebe7660a196da4af2f0ef06736f6d10274bf103",
+      "agent_interface_count": 25,
+      "semantic_atomic_interface_count": 25
+    }
+  },
+  "matched_pairs": [
+    {
+      "matched_pair_id": "graph-to-role-graph",
+      "family_id": "graph-role-graph",
+      "both_verified": true,
+      "flat_api": {
+        "route_atoms": [
+          "ComplexityReduction.Routes.GraphToRoleGraph.finalRoute"
+        ],
+        "route_roles": ["finalComposition"],
+        "artifact_sha256": "b5c99ad426672d29b9138f453b9fd64c633879d4917233bd0f2f2e9ca6553123"
+      },
+      "ir_components": {
+        "route_atoms": [
+          "ComplexityReduction.Domain.GraphToGraphIRAdapter.sourceAdapter",
+          "ComplexityReduction.Domain.GraphIRRoleAssignmentGadget.sharedGadget"
+        ],
+        "route_roles": ["ingress", "sharedGadget"],
+        "artifact_sha256": "1936d7f36d6eba4bd67dbab7174afe8e29d0d60affbd40bb2bbfe279fe2f1818"
+      }
+    }
+  ],
+  "metrics": {
+    "matched_pair_both_verified_rate": 1.0,
+    "agent_interface_compression_ratio": -0.923077,
+    "route_atom_overhead": 1.0,
+    "ir_component_reuse_factor": 0.5
+  },
+  "performance_seconds": {
+    "suite_preflight": 156.988,
+    "flat_api": {
+      "input_gate": 137.791,
+      "probe": 135.875,
+      "registry_revalidation": 133.104,
+      "artifact": 131.667,
+      "deterministic_replay": 148.497
+    },
+    "ir_components": {
+      "input_gate": 139.166,
+      "probe": 131.025,
+      "registry_revalidation": 131.812,
+      "artifact": 139.625,
+      "deterministic_replay": 152.337
+    }
+  },
+  "source_report_sha256": "50dc16301389a6e485c8a22e3a233c071f43007ddee1f6280fe57d08090ab512",
+  "limitations": [
+    "The inventory does not yet include unregistered typed declarations.",
+    "Catalog counts are global production counts rather than family-aware slices.",
+    "The flat facade matrix is incomplete, so the compression value is only a baseline.",
+    "Final-facade provenance is not yet expanded into semantic atomic leaves."
+  ]
+}

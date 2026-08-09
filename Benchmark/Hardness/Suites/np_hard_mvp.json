@@ -1,0 +1,73 @@
+{
+  "schema_version": "hardness_np_hard_mvp_suite_v1",
+  "suite_id": "np_hard_mvp",
+  "description": "Existing-route native NP-hardness positives and typed directionality blockers.",
+  "cases": [
+    {
+      "id": "np-hard-canonical-three-sat",
+      "module": "Benchmark.Hardness.Inputs.Completeness.RegisteredThreeSAT",
+      "problem": "Benchmark.Hardness.Inputs.Completeness.RegisteredThreeSAT.source",
+      "expected_status": "VERIFIED",
+      "expected_failure_code": null,
+      "expected_evidence_kind": "transported_hardness",
+      "minimum_route_atoms": 0,
+      "maximum_route_atoms": 0,
+      "tags": ["positive", "zero-path", "native-completeness-seed"]
+    },
+    {
+      "id": "np-hard-three-sat-to-clique",
+      "module": "Benchmark.Hardness.Inputs.Completeness.TransportedClique",
+      "problem": "Benchmark.Hardness.Inputs.Completeness.TransportedClique.source",
+      "expected_status": "VERIFIED",
+      "expected_failure_code": null,
+      "expected_evidence_kind": "transported_hardness",
+      "minimum_route_atoms": 1,
+      "maximum_route_atoms": 1,
+      "tags": ["positive", "existing-route", "clique"]
+    },
+    {
+      "id": "np-hard-without-target-membership",
+      "module": "Benchmark.Hardness.Inputs.Completeness.MissingTargetMembership",
+      "problem": "Benchmark.Hardness.Inputs.Completeness.MissingTargetMembership.source",
+      "expected_status": "VERIFIED",
+      "expected_failure_code": null,
+      "expected_evidence_kind": "transported_hardness",
+      "minimum_route_atoms": 1,
+      "maximum_route_atoms": 1,
+      "tags": ["positive", "membership-not-required", "existing-route"]
+    },
+    {
+      "id": "np-hard-three-sat-to-vertex-cover",
+      "module": "ComplexityReduction.Problems.Karp21.GraphAtoms",
+      "problem": "ComplexityReduction.Problems.Karp21.GraphAtoms.vertexCoverStructuredProblem",
+      "expected_status": "VERIFIED",
+      "expected_failure_code": null,
+      "expected_evidence_kind": "transported_hardness",
+      "minimum_route_atoms": 2,
+      "maximum_route_atoms": 2,
+      "tags": ["positive", "multi-edge", "vertex-cover"]
+    },
+    {
+      "id": "np-hard-reverse-only",
+      "module": "Benchmark.Hardness.Inputs.Completeness.WrongDirection",
+      "problem": "Benchmark.Hardness.Inputs.Completeness.WrongDirection.source",
+      "expected_status": "BLOCKED",
+      "expected_failure_code": "wrong_direction_only",
+      "expected_evidence_kind": null,
+      "minimum_route_atoms": null,
+      "maximum_route_atoms": null,
+      "tags": ["negative", "directionality", "reverse-only"]
+    },
+    {
+      "id": "np-hard-no-forward-path",
+      "module": "Benchmark.Hardness.Inputs.Membership.DeterministicAuthoring",
+      "problem": "Benchmark.Hardness.Inputs.Membership.DeterministicAuthoring.source",
+      "expected_status": "BLOCKED",
+      "expected_failure_code": "no_forward_path_from_hardness_seed",
+      "expected_evidence_kind": null,
+      "minimum_route_atoms": null,
+      "maximum_route_atoms": null,
+      "tags": ["negative", "no-forward-path", "authoring-disabled"]
+    }
+  ]
+}

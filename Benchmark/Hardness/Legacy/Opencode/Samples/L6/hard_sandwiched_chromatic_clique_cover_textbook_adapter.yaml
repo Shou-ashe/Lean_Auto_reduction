@@ -1,0 +1,38 @@
+schema_version: opencode_decision_problem_sample_file_v1
+id: hard_sandwiched_chromatic_clique_cover_textbook_adapter
+name: hard_sandwiched_chromatic_clique_cover_textbook_adapter_problem
+input_language: sandwiched_chromatic_textbook_clique_cover_adapter
+problem_family: graph_interface
+problem_statement: Input is packaged as (ignored audit bit, (standard Chromatic Number instance, ignored checksum bit)). Decide whether the Chromatic Number instance is accepting.
+certificate_contract: lean_proposition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction
+
+  noncomputable section
+
+  abbrev sourceProblem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.Combinatorics.Graph.chromaticNumberDecisionProblem
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    { Instance := ComplexityReduction.EncodedType.prod
+        ComplexityReduction.EncodedType.bool
+        (ComplexityReduction.EncodedType.prod
+          sourceProblem.Instance
+          ComplexityReduction.EncodedType.bool)
+      isYes := fun p => sourceProblem.isYes p.2.1 }
+lean_target_type: |
+  ∃ textbookTarget : ComplexityReduction.EncodedDecisionProblem,
+    textbookTarget = ComplexityReduction.Combinatorics.Graph.cliqueCoverDecisionProblem ∧
+      ∃ textbookReductionCertificate :
+        ComplexityReduction.KarpReductionM ComplexityReduction.CostedPolyTimeModel problem textbookTarget,
+        ∃ textbookRouteCertificate :
+          ComplexityReduction.PolyReducibleM ComplexityReduction.CostedPolyTimeModel problem textbookTarget,
+          ComplexityReduction.InNPEnc ComplexityReduction.CostedPolyTimeModel textbookTarget ∧
+            ComplexityReduction.InNPEnc ComplexityReduction.CostedPolyTimeModel problem
+difficulty: textbook_adapter_hard
+difficulty_tags:
+- graph
+- nonidentity_adapter
+- sandwiched_projection
+- textbook_construction

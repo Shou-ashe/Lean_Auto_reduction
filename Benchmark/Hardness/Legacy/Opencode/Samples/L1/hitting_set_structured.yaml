@@ -1,0 +1,26 @@
+schema_version: opencode_decision_problem_sample_file_v1
+id: hitting_set_structured
+name: hitting_set_structured_problem
+input_language: hitting_set_structured_encoding
+problem_family: set_system
+problem_statement: Given a finitely encoded family of finite subsets of a numbered universe and a budget k, decide whether there is a list of at most k universe elements that intersects every listed set.
+certificate_contract: lean_proposition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction.Karp21.PackagedCatalog
+
+  noncomputable section
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.Combinatorics.hittingSetStructuredDecisionProblem
+lean_target_type: |
+  ComplexityReduction.SAT.TMInNPWithCheckedSuffixDecoder problem ∧
+    ComplexityReduction.TMInNP problem
+difficulty: challenge
+difficulty_tags:
+- set_system
+- structured_encoding
+- checked_suffix_decoder
+- tm_np_membership
+- hitting_witness
+- exact_binding

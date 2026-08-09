@@ -1,0 +1,11 @@
+{
+  "schema_version": "hardness_benchmark_expected_v1",
+  "case_id": "authoring-wrong-endpoint-or-axiom",
+  "authoritative": false,
+  "expected_lane": "typed_authoring",
+  "baseline_status": "BLOCKED",
+  "baseline_failure_code": "missing_reduction_capability",
+  "final_status": "BLOCKED",
+  "final_failure_code": "candidate_packet_rejected",
+  "coverage": ["endpoint_mismatch", "wrong_direction", "oracle_import", "axiom_gate"]
+}

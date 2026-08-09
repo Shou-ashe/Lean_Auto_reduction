@@ -1,0 +1,39 @@
+schema_version: opencode_decision_problem_sample_file_v1
+id: hard_nested_vertex_cover_set_covering_textbook_adapter
+name: hard_nested_vertex_cover_set_covering_textbook_adapter_problem
+input_language: nested_vertex_cover_textbook_set_covering_adapter
+problem_family: graph_set_system_interface
+problem_statement: Input is packaged as ((standard Vertex Cover instance, ignored phase bit), ignored checksum bit). Decide whether the Vertex Cover instance is accepting.
+certificate_contract: lean_proposition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction
+
+  noncomputable section
+
+  abbrev sourceProblem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.Combinatorics.Graph.vertexCoverDecisionProblem
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    { Instance := ComplexityReduction.EncodedType.prod
+        (ComplexityReduction.EncodedType.prod
+          sourceProblem.Instance
+          ComplexityReduction.EncodedType.bool)
+        ComplexityReduction.EncodedType.bool
+      isYes := fun p => sourceProblem.isYes p.1.1 }
+lean_target_type: |
+  ∃ textbookTarget : ComplexityReduction.EncodedDecisionProblem,
+    textbookTarget = ComplexityReduction.Combinatorics.setCoveringDecisionProblem ∧
+      ∃ textbookReductionCertificate :
+        ComplexityReduction.KarpReductionM ComplexityReduction.CostedPolyTimeModel problem textbookTarget,
+        ∃ textbookRouteCertificate :
+          ComplexityReduction.PolyReducibleM ComplexityReduction.CostedPolyTimeModel problem textbookTarget,
+          ComplexityReduction.InNPEnc ComplexityReduction.CostedPolyTimeModel textbookTarget ∧
+            ComplexityReduction.InNPEnc ComplexityReduction.CostedPolyTimeModel problem
+difficulty: textbook_adapter_hard
+difficulty_tags:
+- graph
+- set_system
+- nonidentity_adapter
+- nested_projection
+- textbook_construction

@@ -1,0 +1,22 @@
+schema_version: opencode_decision_problem_sample_file_v1
+id: clique
+name: clique_problem
+input_language: clique
+problem_family: graph
+problem_statement: Given an undirected graph G and an integer k, decide whether G contains a clique of size at least k.
+certificate_contract: lean_proposition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction
+
+  noncomputable section
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.Combinatorics.Graph.cliqueDecisionProblem
+lean_target_type: |
+  ComplexityReduction.InNPEnc ComplexityReduction.CostedPolyTimeModel problem
+difficulty: easy
+difficulty_tags:
+- graph
+- subset_witness
+- cardinality_bound

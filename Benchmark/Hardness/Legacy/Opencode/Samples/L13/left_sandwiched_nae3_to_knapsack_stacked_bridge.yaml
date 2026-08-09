@@ -1,0 +1,77 @@
+schema_version: opencode_lean_proposition_sample_file_v1
+id: left_sandwiched_nae3_to_knapsack_stacked_bridge
+name: left_sandwiched_nae3_to_knapsack_stacked_bridge_problem
+benchmark_level: L13
+input_language: left_sandwiched_nae3_to_knapsack_stacked_bridge
+problem_family: stacked_bridge_mixed_gadget_route_composition
+certificate_contract: lean_proposition
+route_target_policy: any
+problem_statement: "Input is a NAE-3SAT CSP instance nested inside a left product and a trailing audit flag. Prove NP membership by composing two normalization bridges, using the NAE-3SAT-to-3SAT gadget, then extending the route through a numeric Karp21 target chain chosen from public descriptors."
+difficulty: stacked_bridge_mixed_gadget_route_synthesis
+difficulty_tags:
+  - csp
+  - stacked_bridge
+  - gadget_composition
+  - numeric_target
+  - nested_projection
+  - three_hop_reduction
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction
+
+  noncomputable section
+
+  abbrev sourceProblem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.CSP.Examples.notAllEqual3DecisionProblem
+
+  abbrev targetProblem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.Combinatorics.knapsackKarpDecisionProblem
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    { Instance := ComplexityReduction.EncodedType.prod
+        (ComplexityReduction.EncodedType.prod
+          ComplexityReduction.EncodedType.bool
+          (ComplexityReduction.EncodedType.prod
+            sourceProblem.Instance
+            ComplexityReduction.EncodedType.bool))
+        ComplexityReduction.EncodedType.bool
+      isYes := fun p => sourceProblem.isYes p.1.2.1 }
+lean_target_type: |
+  ∃ bridgeProblem : ComplexityReduction.EncodedDecisionProblem,
+    ∃ normalizedProblem : ComplexityReduction.EncodedDecisionProblem,
+      ∃ routeTarget2 : ComplexityReduction.EncodedDecisionProblem,
+        ∃ _outerBridgeCertificate :
+          ComplexityReduction.ProblemEquivM
+            ComplexityReduction.CostedPolyTimeModel
+            problem
+            bridgeProblem,
+          ∃ _innerBridgeCertificate :
+            ComplexityReduction.ProblemEquivM
+              ComplexityReduction.CostedPolyTimeModel
+              bridgeProblem
+              normalizedProblem,
+            ∃ _sourceToSatGadget :
+              ComplexityReduction.KarpReductionM
+                ComplexityReduction.CostedPolyTimeModel
+                normalizedProblem
+                ComplexityReduction.SAT.threeSATDecisionProblem,
+              ∃ _satToIntermediateRoute :
+                ComplexityReduction.KarpReductionM
+                  ComplexityReduction.CostedPolyTimeModel
+                  ComplexityReduction.SAT.threeSATDecisionProblem
+                  routeTarget2,
+                ∃ _intermediateToFinalRoute :
+                  ComplexityReduction.KarpReductionM
+                    ComplexityReduction.CostedPolyTimeModel
+                    routeTarget2
+                    targetProblem,
+                  ComplexityReduction.PolyReducibleM
+                    ComplexityReduction.CostedPolyTimeModel
+                    problem
+                    targetProblem ∧
+                  ComplexityReduction.InNPEnc
+                    ComplexityReduction.CostedPolyTimeModel
+                    targetProblem ∧
+                  ComplexityReduction.InNPEnc
+                    ComplexityReduction.CostedPolyTimeModel
+                    problem

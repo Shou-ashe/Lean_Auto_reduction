@@ -1,0 +1,29 @@
+schema_version: opencode_decision_problem_sample_file_v1
+id: exact_cover_route
+name: exact_cover_route_problem
+input_language: exact_cover_route_composition
+problem_family: set_system
+problem_statement: Given a finite universe and a family of subsets, decide whether there is a subfamily that covers every universe element exactly once.
+certificate_contract: lean_proposition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction
+
+  noncomputable section
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.Combinatorics.exactCoverDecisionProblem
+lean_target_type: |
+  ∃ routeTarget : ComplexityReduction.EncodedDecisionProblem,
+    routeTarget = ComplexityReduction.Combinatorics.threeDimensionalMatchingDecisionProblem ∧
+      ∃ reductionCertificate :
+        ComplexityReduction.KarpReductionM ComplexityReduction.CostedPolyTimeModel problem routeTarget,
+        ComplexityReduction.InNPEnc ComplexityReduction.CostedPolyTimeModel routeTarget ∧
+          ComplexityReduction.InNPEnc ComplexityReduction.CostedPolyTimeModel problem
+route_target_policy: any
+difficulty: route_composition
+difficulty_tags:
+- set_system
+- karp21_route
+- route_certificate
+- exact_cover

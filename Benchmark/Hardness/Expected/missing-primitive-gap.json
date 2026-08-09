@@ -1,0 +1,8 @@
+{
+  "schema_version": "hardness_benchmark_expected_v1",
+  "case_id": "missing-primitive-gap",
+  "authoritative": false,
+  "final_status": "BLOCKED",
+  "final_failure_code": "missing_primitive",
+  "gap_reason": "primitive"
+}

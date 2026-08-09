@@ -1,0 +1,8 @@
+{
+  "schema_version": "hardness_benchmark_expected_v1",
+  "case_id": "completeness-target-missing-membership",
+  "authoritative": false,
+  "final_status": "BLOCKED",
+  "final_failure_code": "missing_native_membership",
+  "coverage": ["prove_np_complete", "target_membership_gate"]
+}

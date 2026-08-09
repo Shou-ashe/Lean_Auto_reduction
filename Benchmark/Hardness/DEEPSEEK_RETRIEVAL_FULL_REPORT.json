@@ -1,0 +1,2581 @@
+{
+  "benchmark": {
+    "benchmark_id": "hardness-agent-e2e",
+    "case_ids": [
+      "graph-to-role-graph-flat",
+      "graph-to-role-graph-ir",
+      "structured-cnf-to-csp-flat",
+      "structured-cnf-to-csp-ir",
+      "two-cnf-to-csp-flat",
+      "two-cnf-to-csp-ir",
+      "three-sat-to-csp-flat",
+      "three-sat-to-csp-ir",
+      "exact-cover-to-eon-flat",
+      "exact-cover-to-eon-ir",
+      "modified-exact-cover-to-eon-flat",
+      "modified-exact-cover-to-eon-ir"
+    ],
+    "execution_count": 12,
+    "matched_pair_count": 6
+  },
+  "calls": {
+    "api_calls_this_run": 25,
+    "called": 25,
+    "completed": 12,
+    "duration_seconds": 127.122,
+    "expected": 12,
+    "http_ok": 25,
+    "model_case_count": 12,
+    "protocol_accepted": 12,
+    "usage": {
+      "completion_tokens": 16443,
+      "prompt_cache_hit_tokens": 8064,
+      "prompt_cache_miss_tokens": 58427,
+      "prompt_tokens": 66491,
+      "total_tokens": 82934
+    }
+  },
+  "cases": [
+    {
+      "agent_interface_count": 28,
+      "api_call_count": 2,
+      "attempts": 2,
+      "called_this_run": true,
+      "catalog_id": "sha256:abecb40b1ac7222475262e915a530b0382a8517f446fc710723929947314af10",
+      "catalog_mode": "flat_api",
+      "duration_seconds": 10.429,
+      "family_id": "graph-role-graph",
+      "finish_reason": "stop",
+      "http_ok": true,
+      "http_ok_count": 2,
+      "id": "graph-to-role-graph-flat",
+      "lean_term": "ComplexityReduction.Certificate.CertifiedPath.step ComplexityReduction.Routes.GraphToRoleGraph.finalRoute",
+      "lean_term_normalized": false,
+      "lean_term_sha256": "77438494115877063a056116631c64934b24c77f3334b8b4bc7af682a5dda9ee",
+      "lean_verified": true,
+      "matched_pair_id": "graph-to-role-graph",
+      "model_called": true,
+      "model_error": null,
+      "model_lean_term": "ComplexityReduction.Certificate.CertifiedPath.step ComplexityReduction.Routes.GraphToRoleGraph.finalRoute",
+      "model_rounds": [
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 4.349,
+          "finish_reason": "stop",
+          "http_ok": true,
+          "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/graph-to-role-graph-flat/round-01-prompt.json",
+          "prompt_sha256": "22b963c9655991d9f257ed3c78a0b8d70817cf31aa28a33fc68d67bcad5b991f",
+          "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/graph-to-role-graph-flat/round-01-response.json",
+          "response_sha256": "f39f54bdfe46cc7b5712a51494c9a249216e80eb50a598b6bdeb45452b45caed",
+          "round": 1,
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 462,
+            "completion_tokens_details": {
+              "reasoning_tokens": 313
+            },
+            "prompt_cache_hit_tokens": 256,
+            "prompt_cache_miss_tokens": 2044,
+            "prompt_tokens": 2300,
+            "prompt_tokens_details": {
+              "cached_tokens": 256
+            },
+            "total_tokens": 2762
+          }
+        },
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 6.08,
+          "finish_reason": "stop",
+          "http_ok": true,
+          "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/graph-to-role-graph-flat/round-02-prompt.json",
+          "prompt_sha256": "a4c8d18db126213bbf79165c8052dba24558b0ea93d225cfa8e93fdd0be8cfb1",
+          "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/graph-to-role-graph-flat/round-02-response.json",
+          "response_sha256": "978a3f66392dd45cea56b0adf18fb3c498f5784a5544df5829e8c1160ac1741f",
+          "round": 2,
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 786,
+            "completion_tokens_details": {
+              "reasoning_tokens": 643
+            },
+            "prompt_cache_hit_tokens": 384,
+            "prompt_cache_miss_tokens": 2162,
+            "prompt_tokens": 2546,
+            "prompt_tokens_details": {
+              "cached_tokens": 384
+            },
+            "total_tokens": 3332
+          }
+        }
+      ],
+      "plan": {
+        "catalog_id": "sha256:abecb40b1ac7222475262e915a530b0382a8517f446fc710723929947314af10",
+        "extensions": {},
+        "goal_id": null,
+        "metadata": {
+          "adapted_from": "existing_reduction_codegen_response_v1"
+        },
+        "objective": "reduce_to",
+        "outputs": [
+          {
+            "declaration_name": null,
+            "expected_type": "ComplexityReduction.Certificate.CertifiedPath Benchmark.Hardness.Inputs.IRFeasibility.Graph.GraphToRoleGraph.source Benchmark.Hardness.Inputs.IRFeasibility.Graph.GraphToRoleGraph.target",
+            "extensions": {},
+            "lean_code": "ComplexityReduction.Certificate.CertifiedPath.step ComplexityReduction.Routes.GraphToRoleGraph.finalRoute",
+            "metadata": {},
+            "output_id": "selected_path",
+            "output_kind": "lean.term",
+            "producer_steps": [
+              "s1"
+            ],
+            "schema_version": "hardness_plan_output_v1"
+          }
+        ],
+        "plan_id": "sha256:626dc467d834f516971324d118f3d813b29b5e5cd58deeee09b70107b31e972b",
+        "registry_fingerprint": "lean:6968748221575336597",
+        "schema_version": "hardness_plan_v1",
+        "source_declaration": "Benchmark.Hardness.Inputs.IRFeasibility.Graph.GraphToRoleGraph.source",
+        "steps": [
+          {
+            "action_kind": "reuse.certified_reduction",
+            "argument_declarations": [],
+            "capability_kind": "certified_reduction",
+            "declaration": "ComplexityReduction.Routes.GraphToRoleGraph.finalRoute",
+            "depends_on": [],
+            "expected_type": null,
+            "extensions": {},
+            "input_handles": [],
+            "output_handles": [],
+            "parameters": {},
+            "role": "finalComposition",
+            "schema_version": "hardness_plan_step_v1",
+            "source_fingerprint": null,
+            "step_id": "s1",
+            "target_fingerprint": null
+          }
+        ],
+        "target_declaration": "Benchmark.Hardness.Inputs.IRFeasibility.Graph.GraphToRoleGraph.target"
+      },
+      "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/graph-to-role-graph-flat/prompt.json",
+      "prompt_sha256": "a4c8d18db126213bbf79165c8052dba24558b0ea93d225cfa8e93fdd0be8cfb1",
+      "protocol_accepted": true,
+      "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/graph-to-role-graph-flat/response.json",
+      "response_sha256": "978a3f66392dd45cea56b0adf18fb3c498f5784a5544df5829e8c1160ac1741f",
+      "retrieval_trace": [
+        {
+          "model_turn": 1,
+          "new_declarations": [
+            "ComplexityReduction.Routes.GraphToRoleGraph.finalRoute"
+          ],
+          "reason": "Navigation hints indicate a single finalComposition edge from the source node to the target node in ComplexityReduction.Routes.GraphToRoleGraph. Searching with exact node IDs and namespace/role to retrieve that theorem.",
+          "returned_declarations": [
+            "ComplexityReduction.Routes.GraphToRoleGraph.finalRoute"
+          ],
+          "round": 1,
+          "searches": [
+            {
+              "limit": 8,
+              "namespace_prefixes": [
+                "ComplexityReduction.Routes.GraphToRoleGraph"
+              ],
+              "roles": [
+                "finalComposition"
+              ],
+              "source_node_ids": [
+                "lean-whnf:3795151338"
+              ],
+              "target_node_ids": [
+                "lean-whnf:3035114805"
+              ],
+              "terms": [
+                "GraphToRoleGraph"
+              ]
+            }
+          ],
+          "status": "search_completed"
+        }
+      ],
+      "retrieved_declarations": [
+        "ComplexityReduction.Routes.GraphToRoleGraph.finalRoute"
+      ],
+      "selected_declarations": [
+        "ComplexityReduction.Routes.GraphToRoleGraph.finalRoute"
+      ],
+      "source_node_id": "lean-whnf:3795151338",
+      "status_code": 200,
+      "target_node_id": "lean-whnf:3035114805",
+      "usage": {
+        "completion_tokens": 1248,
+        "prompt_cache_hit_tokens": 640,
+        "prompt_cache_miss_tokens": 4206,
+        "prompt_tokens": 4846,
+        "total_tokens": 6094
+      }
+    },
+    {
+      "agent_interface_count": 50,
+      "api_call_count": 2,
+      "attempts": 2,
+      "called_this_run": true,
+      "catalog_id": "sha256:e92b731d265084786c2016ca6a7e9abf5fb2bc1e40c904fddf98ae217038a44b",
+      "catalog_mode": "ir_components",
+      "duration_seconds": 8.604,
+      "family_id": "graph-role-graph",
+      "finish_reason": "stop",
+      "http_ok": true,
+      "http_ok_count": 2,
+      "id": "graph-to-role-graph-ir",
+      "lean_term": "ComplexityReduction.Certificate.CertifiedPath.cons (ComplexityReduction.Certificate.CertifiedPath.step ComplexityReduction.Domain.GraphToGraphIRAdapter.sourceAdapter) ComplexityReduction.Domain.GraphIRRoleAssignmentGadget.sharedGadget",
+      "lean_term_normalized": false,
+      "lean_term_sha256": "2c4c1a74ca4d4a1b468611b48dbee714b9e7055ac129b749f9e21e91fbcf4e53",
+      "lean_verified": true,
+      "matched_pair_id": "graph-to-role-graph",
+      "model_called": true,
+      "model_error": null,
+      "model_lean_term": "ComplexityReduction.Certificate.CertifiedPath.cons (ComplexityReduction.Certificate.CertifiedPath.step ComplexityReduction.Domain.GraphToGraphIRAdapter.sourceAdapter) ComplexityReduction.Domain.GraphIRRoleAssignmentGadget.sharedGadget",
+      "model_rounds": [
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 4.009,
+          "finish_reason": "stop",
+          "http_ok": true,
+          "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/graph-to-role-graph-ir/round-01-prompt.json",
+          "prompt_sha256": "95d6c95f173cd355351215bc4f820cbb5d19c22606c451559b2176dec78c92c0",
+          "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/graph-to-role-graph-ir/round-01-response.json",
+          "response_sha256": "fe2bf7a304d17bd0ef32fd26632c128381838b8687cf344360740d8123355fcf",
+          "round": 1,
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 544,
+            "completion_tokens_details": {
+              "reasoning_tokens": 320
+            },
+            "prompt_cache_hit_tokens": 256,
+            "prompt_cache_miss_tokens": 2046,
+            "prompt_tokens": 2302,
+            "prompt_tokens_details": {
+              "cached_tokens": 256
+            },
+            "total_tokens": 2846
+          }
+        },
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 4.595,
+          "finish_reason": "stop",
+          "http_ok": true,
+          "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/graph-to-role-graph-ir/round-02-prompt.json",
+          "prompt_sha256": "85da72680169b9ecfd56719f7b0173d7a3e2a61fb786cb717aec2d0be3c118c7",
+          "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/graph-to-role-graph-ir/round-02-response.json",
+          "response_sha256": "cfe2446f5b90eeea6c2640575c85038be084af0a5ad1153a0746ec2ece9bf413",
+          "round": 2,
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 570,
+            "completion_tokens_details": {
+              "reasoning_tokens": 364
+            },
+            "prompt_cache_hit_tokens": 384,
+            "prompt_cache_miss_tokens": 2438,
+            "prompt_tokens": 2822,
+            "prompt_tokens_details": {
+              "cached_tokens": 384
+            },
+            "total_tokens": 3392
+          }
+        }
+      ],
+      "plan": {
+        "catalog_id": "sha256:e92b731d265084786c2016ca6a7e9abf5fb2bc1e40c904fddf98ae217038a44b",
+        "extensions": {},
+        "goal_id": null,
+        "metadata": {
+          "adapted_from": "existing_reduction_codegen_response_v1"
+        },
+        "objective": "reduce_to",
+        "outputs": [
+          {
+            "declaration_name": null,
+            "expected_type": "ComplexityReduction.Certificate.CertifiedPath Benchmark.Hardness.Inputs.IRFeasibility.Graph.GraphToRoleGraph.source Benchmark.Hardness.Inputs.IRFeasibility.Graph.GraphToRoleGraph.target",
+            "extensions": {},
+            "lean_code": "ComplexityReduction.Certificate.CertifiedPath.cons (ComplexityReduction.Certificate.CertifiedPath.step ComplexityReduction.Domain.GraphToGraphIRAdapter.sourceAdapter) ComplexityReduction.Domain.GraphIRRoleAssignmentGadget.sharedGadget",
+            "metadata": {},
+            "output_id": "selected_path",
+            "output_kind": "lean.term",
+            "producer_steps": [
+              "s1",
+              "s2"
+            ],
+            "schema_version": "hardness_plan_output_v1"
+          }
+        ],
+        "plan_id": "sha256:e1d1115135d87a65697f15c26c926061bd0cfe82747587fa20912e67902c40ba",
+        "registry_fingerprint": "lean:6968748221575336597",
+        "schema_version": "hardness_plan_v1",
+        "source_declaration": "Benchmark.Hardness.Inputs.IRFeasibility.Graph.GraphToRoleGraph.source",
+        "steps": [
+          {
+            "action_kind": "reuse.certified_reduction",
+            "argument_declarations": [],
+            "capability_kind": "certified_reduction",
+            "declaration": "ComplexityReduction.Domain.GraphToGraphIRAdapter.sourceAdapter",
+            "depends_on": [],
+            "expected_type": null,
+            "extensions": {},
+            "input_handles": [],
+            "output_handles": [],
+            "parameters": {},
+            "role": "ingress",
+            "schema_version": "hardness_plan_step_v1",
+            "source_fingerprint": null,
+            "step_id": "s1",
+            "target_fingerprint": null
+          },
+          {
+            "action_kind": "reuse.certified_reduction",
+            "argument_declarations": [],
+            "capability_kind": "certified_reduction",
+            "declaration": "ComplexityReduction.Domain.GraphIRRoleAssignmentGadget.sharedGadget",
+            "depends_on": [
+              "s1"
+            ],
+            "expected_type": null,
+            "extensions": {},
+            "input_handles": [],
+            "output_handles": [],
+            "parameters": {},
+            "role": "sharedGadget",
+            "schema_version": "hardness_plan_step_v1",
+            "source_fingerprint": null,
+            "step_id": "s2",
+            "target_fingerprint": null
+          }
+        ],
+        "target_declaration": "Benchmark.Hardness.Inputs.IRFeasibility.Graph.GraphToRoleGraph.target"
+      },
+      "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/graph-to-role-graph-ir/prompt.json",
+      "prompt_sha256": "85da72680169b9ecfd56719f7b0173d7a3e2a61fb786cb717aec2d0be3c118c7",
+      "protocol_accepted": true,
+      "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/graph-to-role-graph-ir/response.json",
+      "response_sha256": "cfe2446f5b90eeea6c2640575c85038be084af0a5ad1153a0746ec2ece9bf413",
+      "retrieval_trace": [
+        {
+          "model_turn": 1,
+          "new_declarations": [
+            "ComplexityReduction.Domain.GraphToGraphIRAdapter.sourceAdapter",
+            "ComplexityReduction.Domain.GraphIRRoleAssignmentGadget.sharedGadget"
+          ],
+          "reason": "The navigation hints suggest a two-edge path: an ingress from the frontier to an intermediate node, then a sharedGadget from that intermediate to the target. I am searching for both edges to obtain their declarations.",
+          "returned_declarations": [
+            "ComplexityReduction.Domain.GraphToGraphIRAdapter.sourceAdapter",
+            "ComplexityReduction.Domain.GraphIRRoleAssignmentGadget.sharedGadget"
+          ],
+          "round": 1,
+          "searches": [
+            {
+              "limit": 8,
+              "namespace_prefixes": [
+                "ComplexityReduction.Domain.GraphToGraphIRAdapter"
+              ],
+              "roles": [
+                "ingress"
+              ],
+              "source_node_ids": [
+                "lean-whnf:3795151338"
+              ],
+              "target_node_ids": [
+                "lean-whnf:4279020117"
+              ],
+              "terms": []
+            },
+            {
+              "limit": 8,
+              "namespace_prefixes": [
+                "ComplexityReduction.Domain.GraphIRRoleAssignmentGadget"
+              ],
+              "roles": [
+                "sharedGadget"
+              ],
+              "source_node_ids": [
+                "lean-whnf:4279020117"
+              ],
+              "target_node_ids": [
+                "lean-whnf:3035114805"
+              ],
+              "terms": []
+            }
+          ],
+          "status": "search_completed"
+        }
+      ],
+      "retrieved_declarations": [
+        "ComplexityReduction.Domain.GraphToGraphIRAdapter.sourceAdapter",
+        "ComplexityReduction.Domain.GraphIRRoleAssignmentGadget.sharedGadget"
+      ],
+      "selected_declarations": [
+        "ComplexityReduction.Domain.GraphToGraphIRAdapter.sourceAdapter",
+        "ComplexityReduction.Domain.GraphIRRoleAssignmentGadget.sharedGadget"
+      ],
+      "source_node_id": "lean-whnf:3795151338",
+      "status_code": 200,
+      "target_node_id": "lean-whnf:3035114805",
+      "usage": {
+        "completion_tokens": 1114,
+        "prompt_cache_hit_tokens": 640,
+        "prompt_cache_miss_tokens": 4484,
+        "prompt_tokens": 5124,
+        "total_tokens": 6238
+      }
+    },
+    {
+      "agent_interface_count": 28,
+      "api_call_count": 2,
+      "attempts": 2,
+      "called_this_run": true,
+      "catalog_id": "sha256:abecb40b1ac7222475262e915a530b0382a8517f446fc710723929947314af10",
+      "catalog_mode": "flat_api",
+      "duration_seconds": 8.898,
+      "family_id": "clause-csp",
+      "finish_reason": "stop",
+      "http_ok": true,
+      "http_ok_count": 2,
+      "id": "structured-cnf-to-csp-flat",
+      "lean_term": "ComplexityReduction.Certificate.CertifiedPath.step ComplexityReduction.Routes.ClauseToCSP.finalRoute",
+      "lean_term_normalized": false,
+      "lean_term_sha256": "30f378c7ac9603356d4ca415894057d6a52c1049374a90dfb7acd5352258ad6e",
+      "lean_verified": true,
+      "matched_pair_id": "structured-cnf-to-csp",
+      "model_called": true,
+      "model_error": null,
+      "model_lean_term": "ComplexityReduction.Certificate.CertifiedPath.step ComplexityReduction.Routes.ClauseToCSP.finalRoute",
+      "model_rounds": [
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 2.899,
+          "finish_reason": "stop",
+          "http_ok": true,
+          "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/structured-cnf-to-csp-flat/round-01-prompt.json",
+          "prompt_sha256": "fd964487f2190ae8d4487c51be070b03b9a714a69943858e0e32002683b2db66",
+          "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/structured-cnf-to-csp-flat/round-01-response.json",
+          "response_sha256": "54fd95f6686e70b358e409053266d211b16cf2a14761bf0289d9caee6cb16ea5",
+          "round": 1,
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 334,
+            "completion_tokens_details": {
+              "reasoning_tokens": 190
+            },
+            "prompt_cache_hit_tokens": 256,
+            "prompt_cache_miss_tokens": 2281,
+            "prompt_tokens": 2537,
+            "prompt_tokens_details": {
+              "cached_tokens": 256
+            },
+            "total_tokens": 2871
+          }
+        },
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 5.999,
+          "finish_reason": "stop",
+          "http_ok": true,
+          "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/structured-cnf-to-csp-flat/round-02-prompt.json",
+          "prompt_sha256": "2d3cd9ab78994e6afeab6b43c283957d332cf47899b68cb81c9eeb6df95bfb32",
+          "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/structured-cnf-to-csp-flat/round-02-response.json",
+          "response_sha256": "cb8332b5a1139694a7e1b6f09d9069d3c416f5ed31a29cc0d52209f172e3eb85",
+          "round": 2,
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 809,
+            "completion_tokens_details": {
+              "reasoning_tokens": 677
+            },
+            "prompt_cache_hit_tokens": 384,
+            "prompt_cache_miss_tokens": 2328,
+            "prompt_tokens": 2712,
+            "prompt_tokens_details": {
+              "cached_tokens": 384
+            },
+            "total_tokens": 3521
+          }
+        }
+      ],
+      "plan": {
+        "catalog_id": "sha256:abecb40b1ac7222475262e915a530b0382a8517f446fc710723929947314af10",
+        "extensions": {},
+        "goal_id": null,
+        "metadata": {
+          "adapted_from": "existing_reduction_codegen_response_v1"
+        },
+        "objective": "reduce_to",
+        "outputs": [
+          {
+            "declaration_name": null,
+            "expected_type": "ComplexityReduction.Certificate.CertifiedPath Benchmark.Hardness.Inputs.IRFeasibility.Clause.ClauseToCSP.structuredCNFSource Benchmark.Hardness.Inputs.IRFeasibility.Clause.ClauseToCSP.target",
+            "extensions": {},
+            "lean_code": "ComplexityReduction.Certificate.CertifiedPath.step ComplexityReduction.Routes.ClauseToCSP.finalRoute",
+            "metadata": {},
+            "output_id": "selected_path",
+            "output_kind": "lean.term",
+            "producer_steps": [
+              "s1"
+            ],
+            "schema_version": "hardness_plan_output_v1"
+          }
+        ],
+        "plan_id": "sha256:3599ca6afaf102b47e55f9d4e1e98fae67f1b16c5eb552421d327b37586265ae",
+        "registry_fingerprint": "lean:6968748221575336597",
+        "schema_version": "hardness_plan_v1",
+        "source_declaration": "Benchmark.Hardness.Inputs.IRFeasibility.Clause.ClauseToCSP.structuredCNFSource",
+        "steps": [
+          {
+            "action_kind": "reuse.certified_reduction",
+            "argument_declarations": [],
+            "capability_kind": "certified_reduction",
+            "declaration": "ComplexityReduction.Routes.ClauseToCSP.finalRoute",
+            "depends_on": [],
+            "expected_type": null,
+            "extensions": {},
+            "input_handles": [],
+            "output_handles": [],
+            "parameters": {},
+            "role": "finalComposition",
+            "schema_version": "hardness_plan_step_v1",
+            "source_fingerprint": null,
+            "step_id": "s1",
+            "target_fingerprint": null
+          }
+        ],
+        "target_declaration": "Benchmark.Hardness.Inputs.IRFeasibility.Clause.ClauseToCSP.target"
+      },
+      "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/structured-cnf-to-csp-flat/prompt.json",
+      "prompt_sha256": "2d3cd9ab78994e6afeab6b43c283957d332cf47899b68cb81c9eeb6df95bfb32",
+      "protocol_accepted": true,
+      "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/structured-cnf-to-csp-flat/response.json",
+      "response_sha256": "cb8332b5a1139694a7e1b6f09d9069d3c416f5ed31a29cc0d52209f172e3eb85",
+      "retrieval_trace": [
+        {
+          "model_turn": 1,
+          "new_declarations": [
+            "ComplexityReduction.Routes.ClauseToCSP.finalRoute"
+          ],
+          "reason": "The navigation hints indicate a single finalComposition declaration from the source node to the target node in ComplexityReduction.Routes.ClauseToCSP. We need to retrieve it to confirm the complete path.",
+          "returned_declarations": [
+            "ComplexityReduction.Routes.ClauseToCSP.finalRoute"
+          ],
+          "round": 1,
+          "searches": [
+            {
+              "limit": 8,
+              "namespace_prefixes": [
+                "ComplexityReduction.Routes.ClauseToCSP"
+              ],
+              "roles": [
+                "finalComposition"
+              ],
+              "source_node_ids": [
+                "lean-whnf:2026920832"
+              ],
+              "target_node_ids": [
+                "lean-whnf:3004686514"
+              ],
+              "terms": []
+            }
+          ],
+          "status": "search_completed"
+        }
+      ],
+      "retrieved_declarations": [
+        "ComplexityReduction.Routes.ClauseToCSP.finalRoute"
+      ],
+      "selected_declarations": [
+        "ComplexityReduction.Routes.ClauseToCSP.finalRoute"
+      ],
+      "source_node_id": "lean-whnf:2026920832",
+      "status_code": 200,
+      "target_node_id": "lean-whnf:3004686514",
+      "usage": {
+        "completion_tokens": 1143,
+        "prompt_cache_hit_tokens": 640,
+        "prompt_cache_miss_tokens": 4609,
+        "prompt_tokens": 5249,
+        "total_tokens": 6392
+      }
+    },
+    {
+      "agent_interface_count": 50,
+      "api_call_count": 3,
+      "attempts": 3,
+      "called_this_run": true,
+      "catalog_id": "sha256:e92b731d265084786c2016ca6a7e9abf5fb2bc1e40c904fddf98ae217038a44b",
+      "catalog_mode": "ir_components",
+      "duration_seconds": 15.83,
+      "family_id": "clause-csp",
+      "finish_reason": "stop",
+      "http_ok": true,
+      "http_ok_count": 3,
+      "id": "structured-cnf-to-csp-ir",
+      "lean_term": "ComplexityReduction.Certificate.CertifiedPath.cons (ComplexityReduction.Certificate.CertifiedPath.step ComplexityReduction.Domain.CNFToThreeSATStandardTM.sharedGadget) ComplexityReduction.Domain.ThreeSATToThreeSATLikeStandardTM.sharedGadget",
+      "lean_term_normalized": false,
+      "lean_term_sha256": "3164b2f8044688dc87e1886f6e061d17dae14ca1ce5e87de4d2f8c2d4f92a938",
+      "lean_verified": true,
+      "matched_pair_id": "structured-cnf-to-csp",
+      "model_called": true,
+      "model_error": null,
+      "model_lean_term": "ComplexityReduction.Certificate.CertifiedPath.cons (ComplexityReduction.Certificate.CertifiedPath.step ComplexityReduction.Domain.CNFToThreeSATStandardTM.sharedGadget) ComplexityReduction.Domain.ThreeSATToThreeSATLikeStandardTM.sharedGadget",
+      "model_rounds": [
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 4.287,
+          "finish_reason": "stop",
+          "http_ok": true,
+          "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/structured-cnf-to-csp-ir/round-01-prompt.json",
+          "prompt_sha256": "d492a0ef91ff8e9ec29fccaa39adaab2cfa23c8dea6ec89f15097b23c847b46d",
+          "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/structured-cnf-to-csp-ir/round-01-response.json",
+          "response_sha256": "e21fa4bd72eb3bd128426ef0c9cfa953b240cc6b41c619711d34a060179acb76",
+          "round": 1,
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 545,
+            "completion_tokens_details": {
+              "reasoning_tokens": 319
+            },
+            "prompt_cache_hit_tokens": 256,
+            "prompt_cache_miss_tokens": 2236,
+            "prompt_tokens": 2492,
+            "prompt_tokens_details": {
+              "cached_tokens": 256
+            },
+            "total_tokens": 3037
+          }
+        },
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 5.318,
+          "finish_reason": "stop",
+          "http_ok": true,
+          "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/structured-cnf-to-csp-ir/round-02-prompt.json",
+          "prompt_sha256": "916b235f86cb7cc69e70245c0cc07e168fa81a0c52720d538a7c20e8f913e476",
+          "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/structured-cnf-to-csp-ir/round-02-response.json",
+          "response_sha256": "f8c5cbccfaa145cc5baf9c8bc17897dc4118c4ef32809a514a9bd08941dc2af8",
+          "round": 2,
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 736,
+            "completion_tokens_details": {
+              "reasoning_tokens": 524
+            },
+            "prompt_cache_hit_tokens": 384,
+            "prompt_cache_miss_tokens": 2174,
+            "prompt_tokens": 2558,
+            "prompt_tokens_details": {
+              "cached_tokens": 384
+            },
+            "total_tokens": 3294
+          }
+        },
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 6.225,
+          "finish_reason": "stop",
+          "http_ok": true,
+          "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/structured-cnf-to-csp-ir/round-03-prompt.json",
+          "prompt_sha256": "49a02f99ea057d38126630d4fe97e7d9e9d3adfb47bea568d4b18c3feb4084d3",
+          "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/structured-cnf-to-csp-ir/round-03-response.json",
+          "response_sha256": "a4d2a14e1404b5caf35abbc3317cdf86f9d3717082d3b84173098d64f307ccc1",
+          "round": 3,
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 854,
+            "completion_tokens_details": {
+              "reasoning_tokens": 680
+            },
+            "prompt_cache_hit_tokens": 384,
+            "prompt_cache_miss_tokens": 2590,
+            "prompt_tokens": 2974,
+            "prompt_tokens_details": {
+              "cached_tokens": 384
+            },
+            "total_tokens": 3828
+          }
+        }
+      ],
+      "plan": {
+        "catalog_id": "sha256:e92b731d265084786c2016ca6a7e9abf5fb2bc1e40c904fddf98ae217038a44b",
+        "extensions": {},
+        "goal_id": null,
+        "metadata": {
+          "adapted_from": "existing_reduction_codegen_response_v1"
+        },
+        "objective": "reduce_to",
+        "outputs": [
+          {
+            "declaration_name": null,
+            "expected_type": "ComplexityReduction.Certificate.CertifiedPath Benchmark.Hardness.Inputs.IRFeasibility.Clause.ClauseToCSP.structuredCNFSource Benchmark.Hardness.Inputs.IRFeasibility.Clause.ClauseToCSP.target",
+            "extensions": {},
+            "lean_code": "ComplexityReduction.Certificate.CertifiedPath.cons (ComplexityReduction.Certificate.CertifiedPath.step ComplexityReduction.Domain.CNFToThreeSATStandardTM.sharedGadget) ComplexityReduction.Domain.ThreeSATToThreeSATLikeStandardTM.sharedGadget",
+            "metadata": {},
+            "output_id": "selected_path",
+            "output_kind": "lean.term",
+            "producer_steps": [
+              "s1",
+              "s2"
+            ],
+            "schema_version": "hardness_plan_output_v1"
+          }
+        ],
+        "plan_id": "sha256:5823ad1bfe3fe094a3df9417340ca52eec1c8261de3f3f7115be3a7d1b886e14",
+        "registry_fingerprint": "lean:6968748221575336597",
+        "schema_version": "hardness_plan_v1",
+        "source_declaration": "Benchmark.Hardness.Inputs.IRFeasibility.Clause.ClauseToCSP.structuredCNFSource",
+        "steps": [
+          {
+            "action_kind": "reuse.certified_reduction",
+            "argument_declarations": [],
+            "capability_kind": "certified_reduction",
+            "declaration": "ComplexityReduction.Domain.CNFToThreeSATStandardTM.sharedGadget",
+            "depends_on": [],
+            "expected_type": null,
+            "extensions": {},
+            "input_handles": [],
+            "output_handles": [],
+            "parameters": {},
+            "role": "sharedGadget",
+            "schema_version": "hardness_plan_step_v1",
+            "source_fingerprint": null,
+            "step_id": "s1",
+            "target_fingerprint": null
+          },
+          {
+            "action_kind": "reuse.certified_reduction",
+            "argument_declarations": [],
+            "capability_kind": "certified_reduction",
+            "declaration": "ComplexityReduction.Domain.ThreeSATToThreeSATLikeStandardTM.sharedGadget",
+            "depends_on": [
+              "s1"
+            ],
+            "expected_type": null,
+            "extensions": {},
+            "input_handles": [],
+            "output_handles": [],
+            "parameters": {},
+            "role": "sharedGadget",
+            "schema_version": "hardness_plan_step_v1",
+            "source_fingerprint": null,
+            "step_id": "s2",
+            "target_fingerprint": null
+          }
+        ],
+        "target_declaration": "Benchmark.Hardness.Inputs.IRFeasibility.Clause.ClauseToCSP.target"
+      },
+      "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/structured-cnf-to-csp-ir/prompt.json",
+      "prompt_sha256": "49a02f99ea057d38126630d4fe97e7d9e9d3adfb47bea568d4b18c3feb4084d3",
+      "protocol_accepted": true,
+      "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/structured-cnf-to-csp-ir/response.json",
+      "response_sha256": "a4d2a14e1404b5caf35abbc3317cdf86f9d3717082d3b84173098d64f307ccc1",
+      "retrieval_trace": [
+        {
+          "model_turn": 1,
+          "status": "rejected_model_action",
+          "validation_error": "must retrieve real declarations before finishing; search the namespace transitions shown in navigation_hints"
+        },
+        {
+          "model_turn": 2,
+          "new_declarations": [
+            "ComplexityReduction.Domain.CNFToThreeSATStandardTM.sharedGadget",
+            "ComplexityReduction.Domain.ThreeSATToThreeSATLikeStandardTM.sharedGadget"
+          ],
+          "reason": "Search for the two transitions that can connect source node 2026920832 to target node 3004686514: CNFToThreeSATStandardTM and ThreeSATToThreeSATLikeStandardTM.",
+          "returned_declarations": [
+            "ComplexityReduction.Domain.CNFToThreeSATStandardTM.sharedGadget",
+            "ComplexityReduction.Domain.ThreeSATToThreeSATLikeStandardTM.sharedGadget"
+          ],
+          "round": 1,
+          "searches": [
+            {
+              "limit": 8,
+              "namespace_prefixes": [
+                "ComplexityReduction.Domain.CNFToThreeSATStandardTM"
+              ],
+              "roles": [
+                "sharedGadget"
+              ],
+              "source_node_ids": [
+                "lean-whnf:2026920832"
+              ],
+              "target_node_ids": [
+                "lean-whnf:3345706844"
+              ],
+              "terms": []
+            },
+            {
+              "limit": 8,
+              "namespace_prefixes": [
+                "ComplexityReduction.Domain.ThreeSATToThreeSATLikeStandardTM"
+              ],
+              "roles": [
+                "sharedGadget"
+              ],
+              "source_node_ids": [
+                "lean-whnf:3345706844"
+              ],
+              "target_node_ids": [
+                "lean-whnf:3004686514"
+              ],
+              "terms": []
+            }
+          ],
+          "status": "search_completed"
+        }
+      ],
+      "retrieved_declarations": [
+        "ComplexityReduction.Domain.CNFToThreeSATStandardTM.sharedGadget",
+        "ComplexityReduction.Domain.ThreeSATToThreeSATLikeStandardTM.sharedGadget"
+      ],
+      "selected_declarations": [
+        "ComplexityReduction.Domain.CNFToThreeSATStandardTM.sharedGadget",
+        "ComplexityReduction.Domain.ThreeSATToThreeSATLikeStandardTM.sharedGadget"
+      ],
+      "source_node_id": "lean-whnf:2026920832",
+      "status_code": 200,
+      "target_node_id": "lean-whnf:3004686514",
+      "usage": {
+        "completion_tokens": 2135,
+        "prompt_cache_hit_tokens": 1024,
+        "prompt_cache_miss_tokens": 7000,
+        "prompt_tokens": 8024,
+        "total_tokens": 10159
+      }
+    },
+    {
+      "agent_interface_count": 28,
+      "api_call_count": 2,
+      "attempts": 2,
+      "called_this_run": true,
+      "catalog_id": "sha256:abecb40b1ac7222475262e915a530b0382a8517f446fc710723929947314af10",
+      "catalog_mode": "flat_api",
+      "duration_seconds": 7.041,
+      "family_id": "clause-csp",
+      "finish_reason": "stop",
+      "http_ok": true,
+      "http_ok_count": 2,
+      "id": "two-cnf-to-csp-flat",
+      "lean_term": "ComplexityReduction.Certificate.CertifiedPath.step ComplexityReduction.Routes.ClauseToCSP.IngressAdapters.twoCNFToCSPRoute",
+      "lean_term_normalized": false,
+      "lean_term_sha256": "b61ca45e8aa53cf365744502064199aafe2fa60f294a1cacbc9bced8ff00efe3",
+      "lean_verified": true,
+      "matched_pair_id": "two-cnf-to-csp",
+      "model_called": true,
+      "model_error": null,
+      "model_lean_term": "ComplexityReduction.Certificate.CertifiedPath.step ComplexityReduction.Routes.ClauseToCSP.IngressAdapters.twoCNFToCSPRoute",
+      "model_rounds": [
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 3.735,
+          "finish_reason": "stop",
+          "http_ok": true,
+          "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/two-cnf-to-csp-flat/round-01-prompt.json",
+          "prompt_sha256": "4bd78cfd56a78a82cb8248bd059a28afe8a1e46e16daf66910b6cffdf497ef84",
+          "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/two-cnf-to-csp-flat/round-01-response.json",
+          "response_sha256": "9941f67ca0c10c379eec0d7cf5318c0ab8599acd7497fe0c0a6755493fd938b7",
+          "round": 1,
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 449,
+            "completion_tokens_details": {
+              "reasoning_tokens": 326
+            },
+            "prompt_cache_hit_tokens": 256,
+            "prompt_cache_miss_tokens": 2255,
+            "prompt_tokens": 2511,
+            "prompt_tokens_details": {
+              "cached_tokens": 256
+            },
+            "total_tokens": 2960
+          }
+        },
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 3.306,
+          "finish_reason": "stop",
+          "http_ok": true,
+          "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/two-cnf-to-csp-flat/round-02-prompt.json",
+          "prompt_sha256": "ee0b1872d4bf2d15e2702ba9388adf6561d777028507cd5a90fe35b37408cbfe",
+          "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/two-cnf-to-csp-flat/round-02-response.json",
+          "response_sha256": "8b7f2ad4f1639e4a13efc663e07f2a7e0e32b53466b2de88f4b30011502e25a9",
+          "round": 2,
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 453,
+            "completion_tokens_details": {
+              "reasoning_tokens": 365
+            },
+            "prompt_cache_hit_tokens": 384,
+            "prompt_cache_miss_tokens": 2384,
+            "prompt_tokens": 2768,
+            "prompt_tokens_details": {
+              "cached_tokens": 384
+            },
+            "total_tokens": 3221
+          }
+        }
+      ],
+      "plan": {
+        "catalog_id": "sha256:abecb40b1ac7222475262e915a530b0382a8517f446fc710723929947314af10",
+        "extensions": {},
+        "goal_id": null,
+        "metadata": {
+          "adapted_from": "existing_reduction_codegen_response_v1"
+        },
+        "objective": "reduce_to",
+        "outputs": [
+          {
+            "declaration_name": null,
+            "expected_type": "ComplexityReduction.Certificate.CertifiedPath Benchmark.Hardness.Inputs.IRFeasibility.Clause.ClauseToCSP.twoCNFSource Benchmark.Hardness.Inputs.IRFeasibility.Clause.ClauseToCSP.target",
+            "extensions": {},
+            "lean_code": "ComplexityReduction.Certificate.CertifiedPath.step ComplexityReduction.Routes.ClauseToCSP.IngressAdapters.twoCNFToCSPRoute",
+            "metadata": {},
+            "output_id": "selected_path",
+            "output_kind": "lean.term",
+            "producer_steps": [
+              "s1"
+            ],
+            "schema_version": "hardness_plan_output_v1"
+          }
+        ],
+        "plan_id": "sha256:c4ad81d67a0e03da80cb745d984b232a2cc73ed1cbc4352cc0888245cfdce6b6",
+        "registry_fingerprint": "lean:6968748221575336597",
+        "schema_version": "hardness_plan_v1",
+        "source_declaration": "Benchmark.Hardness.Inputs.IRFeasibility.Clause.ClauseToCSP.twoCNFSource",
+        "steps": [
+          {
+            "action_kind": "reuse.certified_reduction",
+            "argument_declarations": [],
+            "capability_kind": "certified_reduction",
+            "declaration": "ComplexityReduction.Routes.ClauseToCSP.IngressAdapters.twoCNFToCSPRoute",
+            "depends_on": [],
+            "expected_type": null,
+            "extensions": {},
+            "input_handles": [],
+            "output_handles": [],
+            "parameters": {},
+            "role": "finalComposition",
+            "schema_version": "hardness_plan_step_v1",
+            "source_fingerprint": null,
+            "step_id": "s1",
+            "target_fingerprint": null
+          }
+        ],
+        "target_declaration": "Benchmark.Hardness.Inputs.IRFeasibility.Clause.ClauseToCSP.target"
+      },
+      "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/two-cnf-to-csp-flat/prompt.json",
+      "prompt_sha256": "ee0b1872d4bf2d15e2702ba9388adf6561d777028507cd5a90fe35b37408cbfe",
+      "protocol_accepted": true,
+      "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/two-cnf-to-csp-flat/response.json",
+      "response_sha256": "8b7f2ad4f1639e4a13efc663e07f2a7e0e32b53466b2de88f4b30011502e25a9",
+      "retrieval_trace": [
+        {
+          "model_turn": 1,
+          "new_declarations": [
+            "ComplexityReduction.Routes.ClauseToCSP.IngressAdapters.twoCNFToCSPRoute"
+          ],
+          "reason": "Search for a direct edge from the frontier node to the target node in the namespace indicated by navigation hints.",
+          "returned_declarations": [
+            "ComplexityReduction.Routes.ClauseToCSP.IngressAdapters.twoCNFToCSPRoute"
+          ],
+          "round": 1,
+          "searches": [
+            {
+              "limit": 8,
+              "namespace_prefixes": [
+                "ComplexityReduction.Routes.ClauseToCSP.IngressAdapters"
+              ],
+              "roles": [
+                "finalComposition"
+              ],
+              "source_node_ids": [
+                "lean-whnf:2127219011"
+              ],
+              "target_node_ids": [
+                "lean-whnf:3004686514"
+              ],
+              "terms": []
+            }
+          ],
+          "status": "search_completed"
+        }
+      ],
+      "retrieved_declarations": [
+        "ComplexityReduction.Routes.ClauseToCSP.IngressAdapters.twoCNFToCSPRoute"
+      ],
+      "selected_declarations": [
+        "ComplexityReduction.Routes.ClauseToCSP.IngressAdapters.twoCNFToCSPRoute"
+      ],
+      "source_node_id": "lean-whnf:2127219011",
+      "status_code": 200,
+      "target_node_id": "lean-whnf:3004686514",
+      "usage": {
+        "completion_tokens": 902,
+        "prompt_cache_hit_tokens": 640,
+        "prompt_cache_miss_tokens": 4639,
+        "prompt_tokens": 5279,
+        "total_tokens": 6181
+      }
+    },
+    {
+      "agent_interface_count": 50,
+      "api_call_count": 2,
+      "attempts": 2,
+      "called_this_run": true,
+      "catalog_id": "sha256:e92b731d265084786c2016ca6a7e9abf5fb2bc1e40c904fddf98ae217038a44b",
+      "catalog_mode": "ir_components",
+      "duration_seconds": 8.528,
+      "family_id": "clause-csp",
+      "finish_reason": "stop",
+      "http_ok": true,
+      "http_ok_count": 2,
+      "id": "two-cnf-to-csp-ir",
+      "lean_term": "ComplexityReduction.Certificate.CertifiedPath.cons (ComplexityReduction.Certificate.CertifiedPath.step ComplexityReduction.Routes.ClauseToCSP.IngressAdapters.twoCNFIngress) ComplexityReduction.Domain.ThreeSATToThreeSATLikeStandardTM.sharedGadget",
+      "lean_term_normalized": false,
+      "lean_term_sha256": "5ad2810e94b6b5076a39dda2719096ade6e2b1d4c72b01523ec9debc95a2c713",
+      "lean_verified": true,
+      "matched_pair_id": "two-cnf-to-csp",
+      "model_called": true,
+      "model_error": null,
+      "model_lean_term": "ComplexityReduction.Certificate.CertifiedPath.cons (ComplexityReduction.Certificate.CertifiedPath.step ComplexityReduction.Routes.ClauseToCSP.IngressAdapters.twoCNFIngress) ComplexityReduction.Domain.ThreeSATToThreeSATLikeStandardTM.sharedGadget",
+      "model_rounds": [
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 4.298,
+          "finish_reason": "stop",
+          "http_ok": true,
+          "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/two-cnf-to-csp-ir/round-01-prompt.json",
+          "prompt_sha256": "8e97505698e954fbe87f8d3e954712cdcf516039e2ded39a935579772b6b7f66",
+          "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/two-cnf-to-csp-ir/round-01-response.json",
+          "response_sha256": "6d01a527f9e184ac8c4d72e6c226ef46728ef9a0642fbf1ee3067f6a0b04ee8f",
+          "round": 1,
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 594,
+            "completion_tokens_details": {
+              "reasoning_tokens": 370
+            },
+            "prompt_cache_hit_tokens": 256,
+            "prompt_cache_miss_tokens": 2162,
+            "prompt_tokens": 2418,
+            "prompt_tokens_details": {
+              "cached_tokens": 256
+            },
+            "total_tokens": 3012
+          }
+        },
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 4.23,
+          "finish_reason": "stop",
+          "http_ok": true,
+          "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/two-cnf-to-csp-ir/round-02-prompt.json",
+          "prompt_sha256": "d772308bf8f31c209726dfa7af3226559f9a513723326387590648989cc1e9ca",
+          "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/two-cnf-to-csp-ir/round-02-response.json",
+          "response_sha256": "7100703379bba7bdea8dd6632f3e0e0d0cc81e9f2d42c5ea0a737cd9549368e4",
+          "round": 2,
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 622,
+            "completion_tokens_details": {
+              "reasoning_tokens": 481
+            },
+            "prompt_cache_hit_tokens": 384,
+            "prompt_cache_miss_tokens": 2598,
+            "prompt_tokens": 2982,
+            "prompt_tokens_details": {
+              "cached_tokens": 384
+            },
+            "total_tokens": 3604
+          }
+        }
+      ],
+      "plan": {
+        "catalog_id": "sha256:e92b731d265084786c2016ca6a7e9abf5fb2bc1e40c904fddf98ae217038a44b",
+        "extensions": {},
+        "goal_id": null,
+        "metadata": {
+          "adapted_from": "existing_reduction_codegen_response_v1"
+        },
+        "objective": "reduce_to",
+        "outputs": [
+          {
+            "declaration_name": null,
+            "expected_type": "ComplexityReduction.Certificate.CertifiedPath Benchmark.Hardness.Inputs.IRFeasibility.Clause.ClauseToCSP.twoCNFSource Benchmark.Hardness.Inputs.IRFeasibility.Clause.ClauseToCSP.target",
+            "extensions": {},
+            "lean_code": "ComplexityReduction.Certificate.CertifiedPath.cons (ComplexityReduction.Certificate.CertifiedPath.step ComplexityReduction.Routes.ClauseToCSP.IngressAdapters.twoCNFIngress) ComplexityReduction.Domain.ThreeSATToThreeSATLikeStandardTM.sharedGadget",
+            "metadata": {},
+            "output_id": "selected_path",
+            "output_kind": "lean.term",
+            "producer_steps": [
+              "s1",
+              "s2"
+            ],
+            "schema_version": "hardness_plan_output_v1"
+          }
+        ],
+        "plan_id": "sha256:2a484ba1e2e8c098da3fe5cd92a0377d47a188941aa2b5ca2577e7a5f189724d",
+        "registry_fingerprint": "lean:6968748221575336597",
+        "schema_version": "hardness_plan_v1",
+        "source_declaration": "Benchmark.Hardness.Inputs.IRFeasibility.Clause.ClauseToCSP.twoCNFSource",
+        "steps": [
+          {
+            "action_kind": "reuse.certified_reduction",
+            "argument_declarations": [],
+            "capability_kind": "certified_reduction",
+            "declaration": "ComplexityReduction.Routes.ClauseToCSP.IngressAdapters.twoCNFIngress",
+            "depends_on": [],
+            "expected_type": null,
+            "extensions": {},
+            "input_handles": [],
+            "output_handles": [],
+            "parameters": {},
+            "role": "ingress",
+            "schema_version": "hardness_plan_step_v1",
+            "source_fingerprint": null,
+            "step_id": "s1",
+            "target_fingerprint": null
+          },
+          {
+            "action_kind": "reuse.certified_reduction",
+            "argument_declarations": [],
+            "capability_kind": "certified_reduction",
+            "declaration": "ComplexityReduction.Domain.ThreeSATToThreeSATLikeStandardTM.sharedGadget",
+            "depends_on": [
+              "s1"
+            ],
+            "expected_type": null,
+            "extensions": {},
+            "input_handles": [],
+            "output_handles": [],
+            "parameters": {},
+            "role": "sharedGadget",
+            "schema_version": "hardness_plan_step_v1",
+            "source_fingerprint": null,
+            "step_id": "s2",
+            "target_fingerprint": null
+          }
+        ],
+        "target_declaration": "Benchmark.Hardness.Inputs.IRFeasibility.Clause.ClauseToCSP.target"
+      },
+      "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/two-cnf-to-csp-ir/prompt.json",
+      "prompt_sha256": "d772308bf8f31c209726dfa7af3226559f9a513723326387590648989cc1e9ca",
+      "protocol_accepted": true,
+      "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/two-cnf-to-csp-ir/response.json",
+      "response_sha256": "7100703379bba7bdea8dd6632f3e0e0d0cc81e9f2d42c5ea0a737cd9549368e4",
+      "retrieval_trace": [
+        {
+          "model_turn": 1,
+          "new_declarations": [
+            "ComplexityReduction.Routes.ClauseToCSP.IngressAdapters.twoCNFIngress",
+            "ComplexityReduction.Domain.ThreeSATToThreeSATLikeStandardTM.sharedGadget"
+          ],
+          "reason": "The frontier node is the source, and we see an ingress adapter from the source to node 3345706844, and a sharedGadget from that node to the target. We need to retrieve the exact theorem declarations for these two edges.",
+          "returned_declarations": [
+            "ComplexityReduction.Routes.ClauseToCSP.IngressAdapters.twoCNFIngress",
+            "ComplexityReduction.Domain.ThreeSATToThreeSATLikeStandardTM.sharedGadget"
+          ],
+          "round": 1,
+          "searches": [
+            {
+              "limit": 8,
+              "namespace_prefixes": [
+                "ComplexityReduction.Routes.ClauseToCSP.IngressAdapters"
+              ],
+              "roles": [
+                "ingress"
+              ],
+              "source_node_ids": [
+                "lean-whnf:2127219011"
+              ],
+              "target_node_ids": [
+                "lean-whnf:3345706844"
+              ],
+              "terms": []
+            },
+            {
+              "limit": 8,
+              "namespace_prefixes": [
+                "ComplexityReduction.Domain.ThreeSATToThreeSATLikeStandardTM"
+              ],
+              "roles": [
+                "sharedGadget"
+              ],
+              "source_node_ids": [
+                "lean-whnf:3345706844"
+              ],
+              "target_node_ids": [
+                "lean-whnf:3004686514"
+              ],
+              "terms": []
+            }
+          ],
+          "status": "search_completed"
+        }
+      ],
+      "retrieved_declarations": [
+        "ComplexityReduction.Routes.ClauseToCSP.IngressAdapters.twoCNFIngress",
+        "ComplexityReduction.Domain.ThreeSATToThreeSATLikeStandardTM.sharedGadget"
+      ],
+      "selected_declarations": [
+        "ComplexityReduction.Routes.ClauseToCSP.IngressAdapters.twoCNFIngress",
+        "ComplexityReduction.Domain.ThreeSATToThreeSATLikeStandardTM.sharedGadget"
+      ],
+      "source_node_id": "lean-whnf:2127219011",
+      "status_code": 200,
+      "target_node_id": "lean-whnf:3004686514",
+      "usage": {
+        "completion_tokens": 1216,
+        "prompt_cache_hit_tokens": 640,
+        "prompt_cache_miss_tokens": 4760,
+        "prompt_tokens": 5400,
+        "total_tokens": 6616
+      }
+    },
+    {
+      "agent_interface_count": 28,
+      "api_call_count": 2,
+      "attempts": 2,
+      "called_this_run": true,
+      "catalog_id": "sha256:abecb40b1ac7222475262e915a530b0382a8517f446fc710723929947314af10",
+      "catalog_mode": "flat_api",
+      "duration_seconds": 7.767,
+      "family_id": "clause-csp",
+      "finish_reason": "stop",
+      "http_ok": true,
+      "http_ok_count": 2,
+      "id": "three-sat-to-csp-flat",
+      "lean_term": "ComplexityReduction.Certificate.CertifiedPath.step ComplexityReduction.Routes.ClauseToCSP.IngressAdapters.threeSATToCSPRoute",
+      "lean_term_normalized": false,
+      "lean_term_sha256": "262582403d7b850d977cd6daeb824793dd0163f55617626525d1d92207767adb",
+      "lean_verified": true,
+      "matched_pair_id": "three-sat-to-csp",
+      "model_called": true,
+      "model_error": null,
+      "model_lean_term": "ComplexityReduction.Certificate.CertifiedPath.step ComplexityReduction.Routes.ClauseToCSP.IngressAdapters.threeSATToCSPRoute",
+      "model_rounds": [
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 3.852,
+          "finish_reason": "stop",
+          "http_ok": true,
+          "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/three-sat-to-csp-flat/round-01-prompt.json",
+          "prompt_sha256": "0f9a335b0ff851645379174c419f214310461c599d1fef2bba683e9163901722",
+          "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/three-sat-to-csp-flat/round-01-response.json",
+          "response_sha256": "002f3604c06463a5bb918c375a9e85028966a5204fde71113ec9112afe094a31",
+          "round": 1,
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 436,
+            "completion_tokens_details": {
+              "reasoning_tokens": 279
+            },
+            "prompt_cache_hit_tokens": 256,
+            "prompt_cache_miss_tokens": 2483,
+            "prompt_tokens": 2739,
+            "prompt_tokens_details": {
+              "cached_tokens": 256
+            },
+            "total_tokens": 3175
+          }
+        },
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 3.915,
+          "finish_reason": "stop",
+          "http_ok": true,
+          "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/three-sat-to-csp-flat/round-02-prompt.json",
+          "prompt_sha256": "59a72c361025f002fa4456dce966e3f282868c3fd87a8ec89ed924e2060dfe8a",
+          "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/three-sat-to-csp-flat/round-02-response.json",
+          "response_sha256": "9c4e2792242965f5135fa4ceb52be42f1e57e4684f716ac68d9c8b0608af3d2f",
+          "round": 2,
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 466,
+            "completion_tokens_details": {
+              "reasoning_tokens": 335
+            },
+            "prompt_cache_hit_tokens": 384,
+            "prompt_cache_miss_tokens": 2403,
+            "prompt_tokens": 2787,
+            "prompt_tokens_details": {
+              "cached_tokens": 384
+            },
+            "total_tokens": 3253
+          }
+        }
+      ],
+      "plan": {
+        "catalog_id": "sha256:abecb40b1ac7222475262e915a530b0382a8517f446fc710723929947314af10",
+        "extensions": {},
+        "goal_id": null,
+        "metadata": {
+          "adapted_from": "existing_reduction_codegen_response_v1"
+        },
+        "objective": "reduce_to",
+        "outputs": [
+          {
+            "declaration_name": null,
+            "expected_type": "ComplexityReduction.Certificate.CertifiedPath Benchmark.Hardness.Inputs.IRFeasibility.Clause.ClauseToCSP.threeSATSource Benchmark.Hardness.Inputs.IRFeasibility.Clause.ClauseToCSP.target",
+            "extensions": {},
+            "lean_code": "ComplexityReduction.Certificate.CertifiedPath.step ComplexityReduction.Routes.ClauseToCSP.IngressAdapters.threeSATToCSPRoute",
+            "metadata": {},
+            "output_id": "selected_path",
+            "output_kind": "lean.term",
+            "producer_steps": [
+              "s1"
+            ],
+            "schema_version": "hardness_plan_output_v1"
+          }
+        ],
+        "plan_id": "sha256:47b639cc439e20c16d0f4ebc092fcd3e38bc3cce1a119182b78dddaaf47843c6",
+        "registry_fingerprint": "lean:6968748221575336597",
+        "schema_version": "hardness_plan_v1",
+        "source_declaration": "Benchmark.Hardness.Inputs.IRFeasibility.Clause.ClauseToCSP.threeSATSource",
+        "steps": [
+          {
+            "action_kind": "reuse.certified_reduction",
+            "argument_declarations": [],
+            "capability_kind": "certified_reduction",
+            "declaration": "ComplexityReduction.Routes.ClauseToCSP.IngressAdapters.threeSATToCSPRoute",
+            "depends_on": [],
+            "expected_type": null,
+            "extensions": {},
+            "input_handles": [],
+            "output_handles": [],
+            "parameters": {},
+            "role": "finalComposition",
+            "schema_version": "hardness_plan_step_v1",
+            "source_fingerprint": null,
+            "step_id": "s1",
+            "target_fingerprint": null
+          }
+        ],
+        "target_declaration": "Benchmark.Hardness.Inputs.IRFeasibility.Clause.ClauseToCSP.target"
+      },
+      "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/three-sat-to-csp-flat/prompt.json",
+      "prompt_sha256": "59a72c361025f002fa4456dce966e3f282868c3fd87a8ec89ed924e2060dfe8a",
+      "protocol_accepted": true,
+      "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/three-sat-to-csp-flat/response.json",
+      "response_sha256": "9c4e2792242965f5135fa4ceb52be42f1e57e4684f716ac68d9c8b0608af3d2f",
+      "retrieval_trace": [
+        {
+          "model_turn": 1,
+          "new_declarations": [
+            "ComplexityReduction.Routes.ClauseToCSP.IngressAdapters.threeSATToCSPRoute"
+          ],
+          "reason": "There is a single outgoing finalComposition from the frontier node to the target node in ComplexityReduction.Routes.ClauseToCSP.IngressAdapters. Searching for that declaration.",
+          "returned_declarations": [
+            "ComplexityReduction.Routes.ClauseToCSP.IngressAdapters.threeSATToCSPRoute"
+          ],
+          "round": 1,
+          "searches": [
+            {
+              "limit": 1,
+              "namespace_prefixes": [
+                "ComplexityReduction.Routes.ClauseToCSP.IngressAdapters"
+              ],
+              "roles": [
+                "finalComposition"
+              ],
+              "source_node_ids": [
+                "lean-whnf:3345706844"
+              ],
+              "target_node_ids": [
+                "lean-whnf:3004686514"
+              ],
+              "terms": [
+                "ClauseToCSP",
+                "threeSATSource"
+              ]
+            }
+          ],
+          "status": "search_completed"
+        }
+      ],
+      "retrieved_declarations": [
+        "ComplexityReduction.Routes.ClauseToCSP.IngressAdapters.threeSATToCSPRoute"
+      ],
+      "selected_declarations": [
+        "ComplexityReduction.Routes.ClauseToCSP.IngressAdapters.threeSATToCSPRoute"
+      ],
+      "source_node_id": "lean-whnf:3345706844",
+      "status_code": 200,
+      "target_node_id": "lean-whnf:3004686514",
+      "usage": {
+        "completion_tokens": 902,
+        "prompt_cache_hit_tokens": 640,
+        "prompt_cache_miss_tokens": 4886,
+        "prompt_tokens": 5526,
+        "total_tokens": 6428
+      }
+    },
+    {
+      "agent_interface_count": 50,
+      "api_call_count": 2,
+      "attempts": 2,
+      "called_this_run": true,
+      "catalog_id": "sha256:e92b731d265084786c2016ca6a7e9abf5fb2bc1e40c904fddf98ae217038a44b",
+      "catalog_mode": "ir_components",
+      "duration_seconds": 8.689,
+      "family_id": "clause-csp",
+      "finish_reason": "stop",
+      "http_ok": true,
+      "http_ok_count": 2,
+      "id": "three-sat-to-csp-ir",
+      "lean_term": "ComplexityReduction.Certificate.CertifiedPath.step ComplexityReduction.Domain.ThreeSATToThreeSATLikeStandardTM.sharedGadget",
+      "lean_term_normalized": false,
+      "lean_term_sha256": "f2db03baa44cfc4e62ddd29c6d92bf6a7899f1c0c27e13cd2675c54cb475b26c",
+      "lean_verified": true,
+      "matched_pair_id": "three-sat-to-csp",
+      "model_called": true,
+      "model_error": null,
+      "model_lean_term": "ComplexityReduction.Certificate.CertifiedPath.step ComplexityReduction.Domain.ThreeSATToThreeSATLikeStandardTM.sharedGadget",
+      "model_rounds": [
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 3.6,
+          "finish_reason": "stop",
+          "http_ok": true,
+          "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/three-sat-to-csp-ir/round-01-prompt.json",
+          "prompt_sha256": "40bde152d632ddbd1ac7fc6346c59002796bdfbc346318cab6b25cfbb729e8ac",
+          "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/three-sat-to-csp-ir/round-01-response.json",
+          "response_sha256": "b781f4e02e9435d41eae6c0f4427d76cc1aac87a1fcbd7aac938287302f96ceb",
+          "round": 1,
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 442,
+            "completion_tokens_details": {
+              "reasoning_tokens": 292
+            },
+            "prompt_cache_hit_tokens": 256,
+            "prompt_cache_miss_tokens": 2413,
+            "prompt_tokens": 2669,
+            "prompt_tokens_details": {
+              "cached_tokens": 256
+            },
+            "total_tokens": 3111
+          }
+        },
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 5.089,
+          "finish_reason": "stop",
+          "http_ok": true,
+          "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/three-sat-to-csp-ir/round-02-prompt.json",
+          "prompt_sha256": "c93da06b4d782e6a9e4dfa20f5ea9a09b0478d1bb54c527a3fa61997d9258912",
+          "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/three-sat-to-csp-ir/round-02-response.json",
+          "response_sha256": "b55a05c8b976643fb7984de2a074a49f9daaa02c8067d9a543a393eead963ccd",
+          "round": 2,
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 628,
+            "completion_tokens_details": {
+              "reasoning_tokens": 523
+            },
+            "prompt_cache_hit_tokens": 384,
+            "prompt_cache_miss_tokens": 2243,
+            "prompt_tokens": 2627,
+            "prompt_tokens_details": {
+              "cached_tokens": 384
+            },
+            "total_tokens": 3255
+          }
+        }
+      ],
+      "plan": {
+        "catalog_id": "sha256:e92b731d265084786c2016ca6a7e9abf5fb2bc1e40c904fddf98ae217038a44b",
+        "extensions": {},
+        "goal_id": null,
+        "metadata": {
+          "adapted_from": "existing_reduction_codegen_response_v1"
+        },
+        "objective": "reduce_to",
+        "outputs": [
+          {
+            "declaration_name": null,
+            "expected_type": "ComplexityReduction.Certificate.CertifiedPath Benchmark.Hardness.Inputs.IRFeasibility.Clause.ClauseToCSP.threeSATSource Benchmark.Hardness.Inputs.IRFeasibility.Clause.ClauseToCSP.target",
+            "extensions": {},
+            "lean_code": "ComplexityReduction.Certificate.CertifiedPath.step ComplexityReduction.Domain.ThreeSATToThreeSATLikeStandardTM.sharedGadget",
+            "metadata": {},
+            "output_id": "selected_path",
+            "output_kind": "lean.term",
+            "producer_steps": [
+              "s1"
+            ],
+            "schema_version": "hardness_plan_output_v1"
+          }
+        ],
+        "plan_id": "sha256:369a2a66a367e5f91d1d49a84a03dee4974134f7a8539ea24a2ad54b3c08682c",
+        "registry_fingerprint": "lean:6968748221575336597",
+        "schema_version": "hardness_plan_v1",
+        "source_declaration": "Benchmark.Hardness.Inputs.IRFeasibility.Clause.ClauseToCSP.threeSATSource",
+        "steps": [
+          {
+            "action_kind": "reuse.certified_reduction",
+            "argument_declarations": [],
+            "capability_kind": "certified_reduction",
+            "declaration": "ComplexityReduction.Domain.ThreeSATToThreeSATLikeStandardTM.sharedGadget",
+            "depends_on": [],
+            "expected_type": null,
+            "extensions": {},
+            "input_handles": [],
+            "output_handles": [],
+            "parameters": {},
+            "role": "sharedGadget",
+            "schema_version": "hardness_plan_step_v1",
+            "source_fingerprint": null,
+            "step_id": "s1",
+            "target_fingerprint": null
+          }
+        ],
+        "target_declaration": "Benchmark.Hardness.Inputs.IRFeasibility.Clause.ClauseToCSP.target"
+      },
+      "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/three-sat-to-csp-ir/prompt.json",
+      "prompt_sha256": "c93da06b4d782e6a9e4dfa20f5ea9a09b0478d1bb54c527a3fa61997d9258912",
+      "protocol_accepted": true,
+      "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/three-sat-to-csp-ir/response.json",
+      "response_sha256": "b55a05c8b976643fb7984de2a074a49f9daaa02c8067d9a543a393eead963ccd",
+      "retrieval_trace": [
+        {
+          "model_turn": 1,
+          "new_declarations": [
+            "ComplexityReduction.Domain.ThreeSATToThreeSATLikeStandardTM.sharedGadget"
+          ],
+          "reason": "The navigation hints show a direct sharedGadget from the source node to the target node in the namespace ComplexityReduction.Domain.ThreeSATToThreeSATLikeStandardTM. Searching with exact node IDs will retrieve the declaration.",
+          "returned_declarations": [
+            "ComplexityReduction.Domain.ThreeSATToThreeSATLikeStandardTM.sharedGadget"
+          ],
+          "round": 1,
+          "searches": [
+            {
+              "limit": 8,
+              "namespace_prefixes": [
+                "ComplexityReduction.Domain.ThreeSATToThreeSATLikeStandardTM"
+              ],
+              "roles": [
+                "sharedGadget"
+              ],
+              "source_node_ids": [
+                "lean-whnf:3345706844"
+              ],
+              "target_node_ids": [
+                "lean-whnf:3004686514"
+              ],
+              "terms": []
+            }
+          ],
+          "status": "search_completed"
+        }
+      ],
+      "retrieved_declarations": [
+        "ComplexityReduction.Domain.ThreeSATToThreeSATLikeStandardTM.sharedGadget"
+      ],
+      "selected_declarations": [
+        "ComplexityReduction.Domain.ThreeSATToThreeSATLikeStandardTM.sharedGadget"
+      ],
+      "source_node_id": "lean-whnf:3345706844",
+      "status_code": 200,
+      "target_node_id": "lean-whnf:3004686514",
+      "usage": {
+        "completion_tokens": 1070,
+        "prompt_cache_hit_tokens": 640,
+        "prompt_cache_miss_tokens": 4656,
+        "prompt_tokens": 5296,
+        "total_tokens": 6366
+      }
+    },
+    {
+      "agent_interface_count": 28,
+      "api_call_count": 2,
+      "attempts": 2,
+      "called_this_run": true,
+      "catalog_id": "sha256:abecb40b1ac7222475262e915a530b0382a8517f446fc710723929947314af10",
+      "catalog_mode": "flat_api",
+      "duration_seconds": 10.397,
+      "family_id": "incidence-eon",
+      "finish_reason": "stop",
+      "http_ok": true,
+      "http_ok_count": 2,
+      "id": "exact-cover-to-eon-flat",
+      "lean_term": "ComplexityReduction.Certificate.CertifiedPath.step ComplexityReduction.Routes.IncidenceToRoleGraph.originalRoute",
+      "lean_term_normalized": false,
+      "lean_term_sha256": "2246e7d09fafca3018d7bd3ad8f2d4c5ef12e138f7c9a8de4d17f34c972ea92f",
+      "lean_verified": true,
+      "matched_pair_id": "exact-cover-to-eon",
+      "model_called": true,
+      "model_error": null,
+      "model_lean_term": "ComplexityReduction.Certificate.CertifiedPath.step ComplexityReduction.Routes.IncidenceToRoleGraph.originalRoute",
+      "model_rounds": [
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 5.476,
+          "finish_reason": "stop",
+          "http_ok": true,
+          "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/exact-cover-to-eon-flat/round-01-prompt.json",
+          "prompt_sha256": "1c7fcd696b1cbc4af0e9cf9ce888743d1ff7da635e793e9d8bad5a122f15e725",
+          "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/exact-cover-to-eon-flat/round-01-response.json",
+          "response_sha256": "c4c0cf29f41907f5bf5254d8a49e08f746db856bf7eab03aff871fcf9610bc80",
+          "round": 1,
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 659,
+            "completion_tokens_details": {
+              "reasoning_tokens": 522
+            },
+            "prompt_cache_hit_tokens": 256,
+            "prompt_cache_miss_tokens": 2224,
+            "prompt_tokens": 2480,
+            "prompt_tokens_details": {
+              "cached_tokens": 256
+            },
+            "total_tokens": 3139
+          }
+        },
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 4.921,
+          "finish_reason": "stop",
+          "http_ok": true,
+          "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/exact-cover-to-eon-flat/round-02-prompt.json",
+          "prompt_sha256": "1eb2c5ef4c27c92c6f4ffd16bc5a41ae6dcd43f59dba54f92cc6f686d710561c",
+          "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/exact-cover-to-eon-flat/round-02-response.json",
+          "response_sha256": "730e3da68298e26fe32db61adc141404bc21ce6f4b7288facc33b669d7c20e3d",
+          "round": 2,
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 578,
+            "completion_tokens_details": {
+              "reasoning_tokens": 518
+            },
+            "prompt_cache_hit_tokens": 384,
+            "prompt_cache_miss_tokens": 2270,
+            "prompt_tokens": 2654,
+            "prompt_tokens_details": {
+              "cached_tokens": 384
+            },
+            "total_tokens": 3232
+          }
+        }
+      ],
+      "plan": {
+        "catalog_id": "sha256:abecb40b1ac7222475262e915a530b0382a8517f446fc710723929947314af10",
+        "extensions": {},
+        "goal_id": null,
+        "metadata": {
+          "adapted_from": "existing_reduction_codegen_response_v1"
+        },
+        "objective": "reduce_to",
+        "outputs": [
+          {
+            "declaration_name": null,
+            "expected_type": "ComplexityReduction.Certificate.CertifiedPath Benchmark.Hardness.Inputs.IRFeasibility.Incidence.IncidenceToEON.originalSource Benchmark.Hardness.Inputs.IRFeasibility.Incidence.IncidenceToEON.target",
+            "extensions": {},
+            "lean_code": "ComplexityReduction.Certificate.CertifiedPath.step ComplexityReduction.Routes.IncidenceToRoleGraph.originalRoute",
+            "metadata": {},
+            "output_id": "selected_path",
+            "output_kind": "lean.term",
+            "producer_steps": [
+              "s1"
+            ],
+            "schema_version": "hardness_plan_output_v1"
+          }
+        ],
+        "plan_id": "sha256:a7d590359a4eaf0ff7b0bfc7f7f01e9ca66200ca4020dc672393f74943585c51",
+        "registry_fingerprint": "lean:6968748221575336597",
+        "schema_version": "hardness_plan_v1",
+        "source_declaration": "Benchmark.Hardness.Inputs.IRFeasibility.Incidence.IncidenceToEON.originalSource",
+        "steps": [
+          {
+            "action_kind": "reuse.certified_reduction",
+            "argument_declarations": [],
+            "capability_kind": "certified_reduction",
+            "declaration": "ComplexityReduction.Routes.IncidenceToRoleGraph.originalRoute",
+            "depends_on": [],
+            "expected_type": null,
+            "extensions": {},
+            "input_handles": [],
+            "output_handles": [],
+            "parameters": {},
+            "role": "finalComposition",
+            "schema_version": "hardness_plan_step_v1",
+            "source_fingerprint": null,
+            "step_id": "s1",
+            "target_fingerprint": null
+          }
+        ],
+        "target_declaration": "Benchmark.Hardness.Inputs.IRFeasibility.Incidence.IncidenceToEON.target"
+      },
+      "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/exact-cover-to-eon-flat/prompt.json",
+      "prompt_sha256": "1eb2c5ef4c27c92c6f4ffd16bc5a41ae6dcd43f59dba54f92cc6f686d710561c",
+      "protocol_accepted": true,
+      "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/exact-cover-to-eon-flat/response.json",
+      "response_sha256": "730e3da68298e26fe32db61adc141404bc21ce6f4b7288facc33b669d7c20e3d",
+      "retrieval_trace": [
+        {
+          "model_turn": 1,
+          "new_declarations": [
+            "ComplexityReduction.Routes.IncidenceToRoleGraph.originalRoute"
+          ],
+          "reason": "The navigation hints show an outgoing finalComposition edge from the frontier node (source) to the target node in namespace ComplexityReduction.Routes.IncidenceToRoleGraph. I need to retrieve that single declaration to complete the path.",
+          "returned_declarations": [
+            "ComplexityReduction.Routes.IncidenceToRoleGraph.originalRoute"
+          ],
+          "round": 1,
+          "searches": [
+            {
+              "limit": 8,
+              "namespace_prefixes": [
+                "ComplexityReduction.Routes.IncidenceToRoleGraph"
+              ],
+              "roles": [
+                "finalComposition"
+              ],
+              "source_node_ids": [
+                "lean-whnf:3058223938"
+              ],
+              "target_node_ids": [
+                "lean-whnf:3633361078"
+              ],
+              "terms": []
+            }
+          ],
+          "status": "search_completed"
+        }
+      ],
+      "retrieved_declarations": [
+        "ComplexityReduction.Routes.IncidenceToRoleGraph.originalRoute"
+      ],
+      "selected_declarations": [
+        "ComplexityReduction.Routes.IncidenceToRoleGraph.originalRoute"
+      ],
+      "source_node_id": "lean-whnf:3058223938",
+      "status_code": 200,
+      "target_node_id": "lean-whnf:3633361078",
+      "usage": {
+        "completion_tokens": 1237,
+        "prompt_cache_hit_tokens": 640,
+        "prompt_cache_miss_tokens": 4494,
+        "prompt_tokens": 5134,
+        "total_tokens": 6371
+      }
+    },
+    {
+      "agent_interface_count": 50,
+      "api_call_count": 2,
+      "attempts": 2,
+      "called_this_run": true,
+      "catalog_id": "sha256:e92b731d265084786c2016ca6a7e9abf5fb2bc1e40c904fddf98ae217038a44b",
+      "catalog_mode": "ir_components",
+      "duration_seconds": 19.87,
+      "family_id": "incidence-eon",
+      "finish_reason": "stop",
+      "http_ok": true,
+      "http_ok_count": 2,
+      "id": "exact-cover-to-eon-ir",
+      "lean_term": "ComplexityReduction.Certificate.CertifiedPath.cons (ComplexityReduction.Certificate.CertifiedPath.step ComplexityReduction.Domain.SetSystemToIncidenceAdapter.sourceAdapter) ComplexityReduction.Domain.IncidenceToExactlyOneNeighborGadget.sharedGadget",
+      "lean_term_normalized": false,
+      "lean_term_sha256": "a39a398952fbd423f17c28155a1b28b4b1ab738bdeb6cd818d6994672a7374e0",
+      "lean_verified": true,
+      "matched_pair_id": "exact-cover-to-eon",
+      "model_called": true,
+      "model_error": null,
+      "model_lean_term": "ComplexityReduction.Certificate.CertifiedPath.cons (ComplexityReduction.Certificate.CertifiedPath.step ComplexityReduction.Domain.SetSystemToIncidenceAdapter.sourceAdapter) ComplexityReduction.Domain.IncidenceToExactlyOneNeighborGadget.sharedGadget",
+      "model_rounds": [
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 4.966,
+          "finish_reason": "stop",
+          "http_ok": true,
+          "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/exact-cover-to-eon-ir/round-01-prompt.json",
+          "prompt_sha256": "cea1a04ee5e9f4f43e68878245aa4eae8e2f54aebafd3b49e4aa50d45abbb4f4",
+          "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/exact-cover-to-eon-ir/round-01-response.json",
+          "response_sha256": "00a6a3dd1542874a3ac568e79b29b3564a955d0727c690a0ec7d7a99402fea96",
+          "round": 1,
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 714,
+            "completion_tokens_details": {
+              "reasoning_tokens": 495
+            },
+            "prompt_cache_hit_tokens": 256,
+            "prompt_cache_miss_tokens": 2229,
+            "prompt_tokens": 2485,
+            "prompt_tokens_details": {
+              "cached_tokens": 256
+            },
+            "total_tokens": 3199
+          }
+        },
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 14.904,
+          "finish_reason": "stop",
+          "http_ok": true,
+          "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/exact-cover-to-eon-ir/round-02-prompt.json",
+          "prompt_sha256": "b34e26e9b284001f7ce1bc344ab95bec33d9ebcfa3c256581c75f3c5e6060221",
+          "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/exact-cover-to-eon-ir/round-02-response.json",
+          "response_sha256": "4e779415f55fc32214ecab151c26a2922f8ed6c03ec043fc3226ffe78f590c47",
+          "round": 2,
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 2013,
+            "completion_tokens_details": {
+              "reasoning_tokens": 1830
+            },
+            "prompt_cache_hit_tokens": 384,
+            "prompt_cache_miss_tokens": 2564,
+            "prompt_tokens": 2948,
+            "prompt_tokens_details": {
+              "cached_tokens": 384
+            },
+            "total_tokens": 4961
+          }
+        }
+      ],
+      "plan": {
+        "catalog_id": "sha256:e92b731d265084786c2016ca6a7e9abf5fb2bc1e40c904fddf98ae217038a44b",
+        "extensions": {},
+        "goal_id": null,
+        "metadata": {
+          "adapted_from": "existing_reduction_codegen_response_v1"
+        },
+        "objective": "reduce_to",
+        "outputs": [
+          {
+            "declaration_name": null,
+            "expected_type": "ComplexityReduction.Certificate.CertifiedPath Benchmark.Hardness.Inputs.IRFeasibility.Incidence.IncidenceToEON.originalSource Benchmark.Hardness.Inputs.IRFeasibility.Incidence.IncidenceToEON.target",
+            "extensions": {},
+            "lean_code": "ComplexityReduction.Certificate.CertifiedPath.cons (ComplexityReduction.Certificate.CertifiedPath.step ComplexityReduction.Domain.SetSystemToIncidenceAdapter.sourceAdapter) ComplexityReduction.Domain.IncidenceToExactlyOneNeighborGadget.sharedGadget",
+            "metadata": {},
+            "output_id": "selected_path",
+            "output_kind": "lean.term",
+            "producer_steps": [
+              "s1",
+              "s2"
+            ],
+            "schema_version": "hardness_plan_output_v1"
+          }
+        ],
+        "plan_id": "sha256:16d0b30b50219a439a93b4b201a2000e9acee5cb18e7212bccc141909ebdf839",
+        "registry_fingerprint": "lean:6968748221575336597",
+        "schema_version": "hardness_plan_v1",
+        "source_declaration": "Benchmark.Hardness.Inputs.IRFeasibility.Incidence.IncidenceToEON.originalSource",
+        "steps": [
+          {
+            "action_kind": "reuse.certified_reduction",
+            "argument_declarations": [],
+            "capability_kind": "certified_reduction",
+            "declaration": "ComplexityReduction.Domain.SetSystemToIncidenceAdapter.sourceAdapter",
+            "depends_on": [],
+            "expected_type": null,
+            "extensions": {},
+            "input_handles": [],
+            "output_handles": [],
+            "parameters": {},
+            "role": "ingress",
+            "schema_version": "hardness_plan_step_v1",
+            "source_fingerprint": null,
+            "step_id": "s1",
+            "target_fingerprint": null
+          },
+          {
+            "action_kind": "reuse.certified_reduction",
+            "argument_declarations": [],
+            "capability_kind": "certified_reduction",
+            "declaration": "ComplexityReduction.Domain.IncidenceToExactlyOneNeighborGadget.sharedGadget",
+            "depends_on": [
+              "s1"
+            ],
+            "expected_type": null,
+            "extensions": {},
+            "input_handles": [],
+            "output_handles": [],
+            "parameters": {},
+            "role": "sharedGadget",
+            "schema_version": "hardness_plan_step_v1",
+            "source_fingerprint": null,
+            "step_id": "s2",
+            "target_fingerprint": null
+          }
+        ],
+        "target_declaration": "Benchmark.Hardness.Inputs.IRFeasibility.Incidence.IncidenceToEON.target"
+      },
+      "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/exact-cover-to-eon-ir/prompt.json",
+      "prompt_sha256": "b34e26e9b284001f7ce1bc344ab95bec33d9ebcfa3c256581c75f3c5e6060221",
+      "protocol_accepted": true,
+      "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/exact-cover-to-eon-ir/response.json",
+      "response_sha256": "4e779415f55fc32214ecab151c26a2922f8ed6c03ec043fc3226ffe78f590c47",
+      "retrieval_trace": [
+        {
+          "model_turn": 1,
+          "new_declarations": [
+            "ComplexityReduction.Domain.SetSystemToIncidenceAdapter.sourceAdapter",
+            "ComplexityReduction.Domain.IncidenceToExactlyOneNeighborGadget.sharedGadget"
+          ],
+          "reason": "Need to find the ingress from SetSystem to Incidence and the sharedGadget from Incidence to ExactlyOneNeighbor to form a complete path from source node to target node.",
+          "returned_declarations": [
+            "ComplexityReduction.Domain.SetSystemToIncidenceAdapter.sourceAdapter",
+            "ComplexityReduction.Domain.IncidenceToExactlyOneNeighborGadget.sharedGadget"
+          ],
+          "round": 1,
+          "searches": [
+            {
+              "limit": 8,
+              "namespace_prefixes": [
+                "ComplexityReduction.Domain.SetSystemToIncidenceAdapter"
+              ],
+              "roles": [
+                "ingress"
+              ],
+              "source_node_ids": [
+                "lean-whnf:3058223938"
+              ],
+              "target_node_ids": [
+                "lean-whnf:1302285965"
+              ],
+              "terms": []
+            },
+            {
+              "limit": 8,
+              "namespace_prefixes": [
+                "ComplexityReduction.Domain.IncidenceToExactlyOneNeighborGadget"
+              ],
+              "roles": [
+                "sharedGadget"
+              ],
+              "source_node_ids": [
+                "lean-whnf:1302285965"
+              ],
+              "target_node_ids": [
+                "lean-whnf:3633361078"
+              ],
+              "terms": []
+            }
+          ],
+          "status": "search_completed"
+        }
+      ],
+      "retrieved_declarations": [
+        "ComplexityReduction.Domain.SetSystemToIncidenceAdapter.sourceAdapter",
+        "ComplexityReduction.Domain.IncidenceToExactlyOneNeighborGadget.sharedGadget"
+      ],
+      "selected_declarations": [
+        "ComplexityReduction.Domain.SetSystemToIncidenceAdapter.sourceAdapter",
+        "ComplexityReduction.Domain.IncidenceToExactlyOneNeighborGadget.sharedGadget"
+      ],
+      "source_node_id": "lean-whnf:3058223938",
+      "status_code": 200,
+      "target_node_id": "lean-whnf:3633361078",
+      "usage": {
+        "completion_tokens": 2727,
+        "prompt_cache_hit_tokens": 640,
+        "prompt_cache_miss_tokens": 4793,
+        "prompt_tokens": 5433,
+        "total_tokens": 8160
+      }
+    },
+    {
+      "agent_interface_count": 28,
+      "api_call_count": 2,
+      "attempts": 2,
+      "called_this_run": true,
+      "catalog_id": "sha256:abecb40b1ac7222475262e915a530b0382a8517f446fc710723929947314af10",
+      "catalog_mode": "flat_api",
+      "duration_seconds": 8.29,
+      "family_id": "incidence-eon",
+      "finish_reason": "stop",
+      "http_ok": true,
+      "http_ok_count": 2,
+      "id": "modified-exact-cover-to-eon-flat",
+      "lean_term": "ComplexityReduction.Certificate.CertifiedPath.step ComplexityReduction.Routes.IncidenceToRoleGraph.modifiedRoute",
+      "lean_term_normalized": false,
+      "lean_term_sha256": "1cd121080f8194b9bf23598481705e1ffd7634b234680d8a98078bdf6e5f0e51",
+      "lean_verified": true,
+      "matched_pair_id": "modified-exact-cover-to-eon",
+      "model_called": true,
+      "model_error": null,
+      "model_lean_term": "ComplexityReduction.Certificate.CertifiedPath.step ComplexityReduction.Routes.IncidenceToRoleGraph.modifiedRoute",
+      "model_rounds": [
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 4.139,
+          "finish_reason": "stop",
+          "http_ok": true,
+          "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/modified-exact-cover-to-eon-flat/round-01-prompt.json",
+          "prompt_sha256": "f8ad9518ad71d9abba2d7199fda82e125936df9c08f7274f31ae532174df3a1f",
+          "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/modified-exact-cover-to-eon-flat/round-01-response.json",
+          "response_sha256": "599154a6c480ca65cd4e25199bfc1ad15e07276919dcb5d09fafb642f845b95d",
+          "round": 1,
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 398,
+            "completion_tokens_details": {
+              "reasoning_tokens": 302
+            },
+            "prompt_cache_hit_tokens": 256,
+            "prompt_cache_miss_tokens": 2228,
+            "prompt_tokens": 2484,
+            "prompt_tokens_details": {
+              "cached_tokens": 256
+            },
+            "total_tokens": 2882
+          }
+        },
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 4.151,
+          "finish_reason": "stop",
+          "http_ok": true,
+          "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/modified-exact-cover-to-eon-flat/round-02-prompt.json",
+          "prompt_sha256": "b8ecef746e3fb8cb45601bf8eea3e7ea71706c52369cd2a97fb6e046b338eca8",
+          "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/modified-exact-cover-to-eon-flat/round-02-response.json",
+          "response_sha256": "6651577ce20dfdf3c88a0de13ecef1cef3559e1f0b73e596d5d81c02a17e01d6",
+          "round": 2,
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 499,
+            "completion_tokens_details": {
+              "reasoning_tokens": 431
+            },
+            "prompt_cache_hit_tokens": 384,
+            "prompt_cache_miss_tokens": 2240,
+            "prompt_tokens": 2624,
+            "prompt_tokens_details": {
+              "cached_tokens": 384
+            },
+            "total_tokens": 3123
+          }
+        }
+      ],
+      "plan": {
+        "catalog_id": "sha256:abecb40b1ac7222475262e915a530b0382a8517f446fc710723929947314af10",
+        "extensions": {},
+        "goal_id": null,
+        "metadata": {
+          "adapted_from": "existing_reduction_codegen_response_v1"
+        },
+        "objective": "reduce_to",
+        "outputs": [
+          {
+            "declaration_name": null,
+            "expected_type": "ComplexityReduction.Certificate.CertifiedPath Benchmark.Hardness.Inputs.IRFeasibility.Incidence.IncidenceToEON.modifiedSource Benchmark.Hardness.Inputs.IRFeasibility.Incidence.IncidenceToEON.target",
+            "extensions": {},
+            "lean_code": "ComplexityReduction.Certificate.CertifiedPath.step ComplexityReduction.Routes.IncidenceToRoleGraph.modifiedRoute",
+            "metadata": {},
+            "output_id": "selected_path",
+            "output_kind": "lean.term",
+            "producer_steps": [
+              "s1"
+            ],
+            "schema_version": "hardness_plan_output_v1"
+          }
+        ],
+        "plan_id": "sha256:7a262bcf034db87d82354cb68b52739d7c4912ebc02e2fd1af46288cf0ce1afd",
+        "registry_fingerprint": "lean:6968748221575336597",
+        "schema_version": "hardness_plan_v1",
+        "source_declaration": "Benchmark.Hardness.Inputs.IRFeasibility.Incidence.IncidenceToEON.modifiedSource",
+        "steps": [
+          {
+            "action_kind": "reuse.certified_reduction",
+            "argument_declarations": [],
+            "capability_kind": "certified_reduction",
+            "declaration": "ComplexityReduction.Routes.IncidenceToRoleGraph.modifiedRoute",
+            "depends_on": [],
+            "expected_type": null,
+            "extensions": {},
+            "input_handles": [],
+            "output_handles": [],
+            "parameters": {},
+            "role": "finalComposition",
+            "schema_version": "hardness_plan_step_v1",
+            "source_fingerprint": null,
+            "step_id": "s1",
+            "target_fingerprint": null
+          }
+        ],
+        "target_declaration": "Benchmark.Hardness.Inputs.IRFeasibility.Incidence.IncidenceToEON.target"
+      },
+      "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/modified-exact-cover-to-eon-flat/prompt.json",
+      "prompt_sha256": "b8ecef746e3fb8cb45601bf8eea3e7ea71706c52369cd2a97fb6e046b338eca8",
+      "protocol_accepted": true,
+      "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/modified-exact-cover-to-eon-flat/response.json",
+      "response_sha256": "6651577ce20dfdf3c88a0de13ecef1cef3559e1f0b73e596d5d81c02a17e01d6",
+      "retrieval_trace": [
+        {
+          "model_turn": 1,
+          "new_declarations": [
+            "ComplexityReduction.Routes.IncidenceToRoleGraph.modifiedRoute"
+          ],
+          "reason": "Search for direct edge from source to target in IncidenceToRoleGraph namespace.",
+          "returned_declarations": [
+            "ComplexityReduction.Routes.IncidenceToRoleGraph.modifiedRoute"
+          ],
+          "round": 1,
+          "searches": [
+            {
+              "limit": 8,
+              "namespace_prefixes": [
+                "ComplexityReduction.Routes.IncidenceToRoleGraph"
+              ],
+              "roles": [
+                "finalComposition"
+              ],
+              "source_node_ids": [
+                "lean-whnf:2809658476"
+              ],
+              "target_node_ids": [
+                "lean-whnf:3633361078"
+              ],
+              "terms": []
+            }
+          ],
+          "status": "search_completed"
+        }
+      ],
+      "retrieved_declarations": [
+        "ComplexityReduction.Routes.IncidenceToRoleGraph.modifiedRoute"
+      ],
+      "selected_declarations": [
+        "ComplexityReduction.Routes.IncidenceToRoleGraph.modifiedRoute"
+      ],
+      "source_node_id": "lean-whnf:2809658476",
+      "status_code": 200,
+      "target_node_id": "lean-whnf:3633361078",
+      "usage": {
+        "completion_tokens": 897,
+        "prompt_cache_hit_tokens": 640,
+        "prompt_cache_miss_tokens": 4468,
+        "prompt_tokens": 5108,
+        "total_tokens": 6005
+      }
+    },
+    {
+      "agent_interface_count": 50,
+      "api_call_count": 2,
+      "attempts": 2,
+      "called_this_run": true,
+      "catalog_id": "sha256:e92b731d265084786c2016ca6a7e9abf5fb2bc1e40c904fddf98ae217038a44b",
+      "catalog_mode": "ir_components",
+      "duration_seconds": 12.779,
+      "family_id": "incidence-eon",
+      "finish_reason": "stop",
+      "http_ok": true,
+      "http_ok_count": 2,
+      "id": "modified-exact-cover-to-eon-ir",
+      "lean_term": "ComplexityReduction.Certificate.CertifiedPath.cons (ComplexityReduction.Certificate.CertifiedPath.step ComplexityReduction.Domain.ModifiedExactCoverInput.modifiedSourceAdapter) ComplexityReduction.Domain.IncidenceToExactlyOneNeighborGadget.sharedGadget",
+      "lean_term_normalized": false,
+      "lean_term_sha256": "332423dd44b985ae61c79fb1facc0d8416937eb5a707b44a30c2eaca3fd12b05",
+      "lean_verified": true,
+      "matched_pair_id": "modified-exact-cover-to-eon",
+      "model_called": true,
+      "model_error": null,
+      "model_lean_term": "ComplexityReduction.Certificate.CertifiedPath.cons (ComplexityReduction.Certificate.CertifiedPath.step ComplexityReduction.Domain.ModifiedExactCoverInput.modifiedSourceAdapter) ComplexityReduction.Domain.IncidenceToExactlyOneNeighborGadget.sharedGadget",
+      "model_rounds": [
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 7.893,
+          "finish_reason": "stop",
+          "http_ok": true,
+          "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/modified-exact-cover-to-eon-ir/round-01-prompt.json",
+          "prompt_sha256": "380ebb571a7cf03a80eed022f1d913d6d1d783bb08249fcf772abd513fab4a06",
+          "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/modified-exact-cover-to-eon-ir/round-01-response.json",
+          "response_sha256": "907a9a0630215ef1e5fe74b9bcb51734023b92955db07b6f4b0a4d8eb6154b0c",
+          "round": 1,
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 1110,
+            "completion_tokens_details": {
+              "reasoning_tokens": 752
+            },
+            "prompt_cache_hit_tokens": 256,
+            "prompt_cache_miss_tokens": 2189,
+            "prompt_tokens": 2445,
+            "prompt_tokens_details": {
+              "cached_tokens": 256
+            },
+            "total_tokens": 3555
+          }
+        },
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 4.886,
+          "finish_reason": "stop",
+          "http_ok": true,
+          "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/modified-exact-cover-to-eon-ir/round-02-prompt.json",
+          "prompt_sha256": "da6a15aacabef906b35f2a1132efca9c0b58eefd8581b256ccf3cf1f1a84d797",
+          "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/modified-exact-cover-to-eon-ir/round-02-response.json",
+          "response_sha256": "19d2f54295877e3cbdd0c5e92765876bf30f23ae6b17bc3debbf7267612d7a6f",
+          "round": 2,
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 742,
+            "completion_tokens_details": {
+              "reasoning_tokens": 575
+            },
+            "prompt_cache_hit_tokens": 384,
+            "prompt_cache_miss_tokens": 3243,
+            "prompt_tokens": 3627,
+            "prompt_tokens_details": {
+              "cached_tokens": 384
+            },
+            "total_tokens": 4369
+          }
+        }
+      ],
+      "plan": {
+        "catalog_id": "sha256:e92b731d265084786c2016ca6a7e9abf5fb2bc1e40c904fddf98ae217038a44b",
+        "extensions": {},
+        "goal_id": null,
+        "metadata": {
+          "adapted_from": "existing_reduction_codegen_response_v1"
+        },
+        "objective": "reduce_to",
+        "outputs": [
+          {
+            "declaration_name": null,
+            "expected_type": "ComplexityReduction.Certificate.CertifiedPath Benchmark.Hardness.Inputs.IRFeasibility.Incidence.IncidenceToEON.modifiedSource Benchmark.Hardness.Inputs.IRFeasibility.Incidence.IncidenceToEON.target",
+            "extensions": {},
+            "lean_code": "ComplexityReduction.Certificate.CertifiedPath.cons (ComplexityReduction.Certificate.CertifiedPath.step ComplexityReduction.Domain.ModifiedExactCoverInput.modifiedSourceAdapter) ComplexityReduction.Domain.IncidenceToExactlyOneNeighborGadget.sharedGadget",
+            "metadata": {},
+            "output_id": "selected_path",
+            "output_kind": "lean.term",
+            "producer_steps": [
+              "s1",
+              "s2"
+            ],
+            "schema_version": "hardness_plan_output_v1"
+          }
+        ],
+        "plan_id": "sha256:6c3047c05ced72f4dae5f1acdd64afd4291e3b90bf4158a284a66d9b2b403723",
+        "registry_fingerprint": "lean:6968748221575336597",
+        "schema_version": "hardness_plan_v1",
+        "source_declaration": "Benchmark.Hardness.Inputs.IRFeasibility.Incidence.IncidenceToEON.modifiedSource",
+        "steps": [
+          {
+            "action_kind": "reuse.certified_reduction",
+            "argument_declarations": [],
+            "capability_kind": "certified_reduction",
+            "declaration": "ComplexityReduction.Domain.ModifiedExactCoverInput.modifiedSourceAdapter",
+            "depends_on": [],
+            "expected_type": null,
+            "extensions": {},
+            "input_handles": [],
+            "output_handles": [],
+            "parameters": {},
+            "role": "ingress",
+            "schema_version": "hardness_plan_step_v1",
+            "source_fingerprint": null,
+            "step_id": "s1",
+            "target_fingerprint": null
+          },
+          {
+            "action_kind": "reuse.certified_reduction",
+            "argument_declarations": [],
+            "capability_kind": "certified_reduction",
+            "declaration": "ComplexityReduction.Domain.IncidenceToExactlyOneNeighborGadget.sharedGadget",
+            "depends_on": [
+              "s1"
+            ],
+            "expected_type": null,
+            "extensions": {},
+            "input_handles": [],
+            "output_handles": [],
+            "parameters": {},
+            "role": "sharedGadget",
+            "schema_version": "hardness_plan_step_v1",
+            "source_fingerprint": null,
+            "step_id": "s2",
+            "target_fingerprint": null
+          }
+        ],
+        "target_declaration": "Benchmark.Hardness.Inputs.IRFeasibility.Incidence.IncidenceToEON.target"
+      },
+      "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/modified-exact-cover-to-eon-ir/prompt.json",
+      "prompt_sha256": "da6a15aacabef906b35f2a1132efca9c0b58eefd8581b256ccf3cf1f1a84d797",
+      "protocol_accepted": true,
+      "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/calls/modified-exact-cover-to-eon-ir/response.json",
+      "response_sha256": "19d2f54295877e3cbdd0c5e92765876bf30f23ae6b17bc3debbf7267612d7a6f",
+      "retrieval_trace": [
+        {
+          "model_turn": 1,
+          "new_declarations": [
+            "ComplexityReduction.Domain.ModifiedExactCoverInput.modifiedSourceAdapter",
+            "ComplexityReduction.Domain.IncidenceToExactlyOneNeighborGadget.sharedGadget",
+            "ComplexityReduction.Domain.ModifiedExactCoverInput.metadataErasureAdapter",
+            "ComplexityReduction.Routes.FiniteDomainCSP.clauseToExistentialEON"
+          ],
+          "reason": "Need to find the actual declarations for the path from source to target using the hinted transitions.",
+          "returned_declarations": [
+            "ComplexityReduction.Domain.ModifiedExactCoverInput.modifiedSourceAdapter",
+            "ComplexityReduction.Domain.IncidenceToExactlyOneNeighborGadget.sharedGadget",
+            "ComplexityReduction.Domain.ModifiedExactCoverInput.metadataErasureAdapter",
+            "ComplexityReduction.Routes.FiniteDomainCSP.clauseToExistentialEON"
+          ],
+          "round": 1,
+          "searches": [
+            {
+              "limit": 8,
+              "namespace_prefixes": [
+                "ComplexityReduction.Domain.ModifiedExactCoverInput"
+              ],
+              "roles": [
+                "ingress"
+              ],
+              "source_node_ids": [
+                "lean-whnf:2809658476"
+              ],
+              "target_node_ids": [
+                "lean-whnf:1302285965"
+              ],
+              "terms": []
+            },
+            {
+              "limit": 8,
+              "namespace_prefixes": [
+                "ComplexityReduction.Domain.IncidenceToExactlyOneNeighborGadget"
+              ],
+              "roles": [
+                "sharedGadget"
+              ],
+              "source_node_ids": [
+                "lean-whnf:1302285965"
+              ],
+              "target_node_ids": [
+                "lean-whnf:3633361078"
+              ],
+              "terms": []
+            },
+            {
+              "limit": 8,
+              "namespace_prefixes": [
+                "ComplexityReduction.Domain.ModifiedExactCoverInput"
+              ],
+              "roles": [
+                "ingress"
+              ],
+              "source_node_ids": [
+                "lean-whnf:2809658476"
+              ],
+              "target_node_ids": [
+                "lean-whnf:3058223938"
+              ],
+              "terms": []
+            },
+            {
+              "limit": 8,
+              "namespace_prefixes": [
+                "ComplexityReduction.Routes.FiniteDomainCSP"
+              ],
+              "roles": [
+                "sharedGadget"
+              ],
+              "source_node_ids": [
+                "lean-whnf:2026920832"
+              ],
+              "target_node_ids": [
+                "lean-whnf:3633361078"
+              ],
+              "terms": []
+            }
+          ],
+          "status": "search_completed"
+        }
+      ],
+      "retrieved_declarations": [
+        "ComplexityReduction.Domain.ModifiedExactCoverInput.modifiedSourceAdapter",
+        "ComplexityReduction.Domain.IncidenceToExactlyOneNeighborGadget.sharedGadget",
+        "ComplexityReduction.Domain.ModifiedExactCoverInput.metadataErasureAdapter",
+        "ComplexityReduction.Routes.FiniteDomainCSP.clauseToExistentialEON"
+      ],
+      "selected_declarations": [
+        "ComplexityReduction.Domain.ModifiedExactCoverInput.modifiedSourceAdapter",
+        "ComplexityReduction.Domain.IncidenceToExactlyOneNeighborGadget.sharedGadget"
+      ],
+      "source_node_id": "lean-whnf:2809658476",
+      "status_code": 200,
+      "target_node_id": "lean-whnf:3633361078",
+      "usage": {
+        "completion_tokens": 1852,
+        "prompt_cache_hit_tokens": 640,
+        "prompt_cache_miss_tokens": 5432,
+        "prompt_tokens": 6072,
+        "total_tokens": 7924
+      }
+    }
+  ],
+  "catalog_snapshot": {
+    "catalogs": {
+      "flat_api": {
+        "agent_interface_count": 28,
+        "catalog_id": "sha256:abecb40b1ac7222475262e915a530b0382a8517f446fc710723929947314af10",
+        "semantic_atomic_interface_count": 4
+      },
+      "ir_components": {
+        "agent_interface_count": 50,
+        "catalog_id": "sha256:e92b731d265084786c2016ca6a7e9abf5fb2bc1e40c904fddf98ae217038a44b",
+        "semantic_atomic_interface_count": 50
+      }
+    },
+    "endpoint_topology": {
+      "producer": "lean_whnf_endpoint_hash",
+      "registry_fingerprint": "lean:6968748221575336597",
+      "schema_version": "hardness_endpoint_topology_v1"
+    },
+    "inventory_entry_count": 75,
+    "path": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/Benchmark/Hardness/IR_CATALOG_SNAPSHOT.json",
+    "registry_fingerprint": "lean:6968748221575336597",
+    "schema_version": "hardness_ir_catalog_snapshot_v2",
+    "source": {
+      "kind": "successful_compiled_library_probe",
+      "probe_duration_seconds": 166.903,
+      "probe_stdout_sha256": "ee69bc3180e689ee91c03c81098f9528d6746ea489afd6c1196f6837047625c8"
+    }
+  },
+  "final_validation": {
+    "artifact": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/DeepSeekArtifact.lean",
+    "artifact_sha256": "570c629c7e7a177b3c54271c920735c97c9020989e5e43d181f368d426ac060b",
+    "command": [
+      "lake",
+      "env",
+      "lean",
+      "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6/DeepSeekArtifact.lean"
+    ],
+    "duration_seconds": 167.256,
+    "exit_code": 0,
+    "lean_process_count": 1,
+    "ok": true,
+    "started": true,
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_tail": "",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_tail": "",
+    "timed_out": false
+  },
+  "finished_at": "2026-07-30T08:42:53.232320+00:00",
+  "matched_pairs": [
+    {
+      "both_lean_verified": true,
+      "both_protocol_accepted": true,
+      "case_ids": [
+        "exact-cover-to-eon-flat",
+        "exact-cover-to-eon-ir"
+      ],
+      "matched_pair_id": "exact-cover-to-eon"
+    },
+    {
+      "both_lean_verified": true,
+      "both_protocol_accepted": true,
+      "case_ids": [
+        "graph-to-role-graph-flat",
+        "graph-to-role-graph-ir"
+      ],
+      "matched_pair_id": "graph-to-role-graph"
+    },
+    {
+      "both_lean_verified": true,
+      "both_protocol_accepted": true,
+      "case_ids": [
+        "modified-exact-cover-to-eon-flat",
+        "modified-exact-cover-to-eon-ir"
+      ],
+      "matched_pair_id": "modified-exact-cover-to-eon"
+    },
+    {
+      "both_lean_verified": true,
+      "both_protocol_accepted": true,
+      "case_ids": [
+        "structured-cnf-to-csp-flat",
+        "structured-cnf-to-csp-ir"
+      ],
+      "matched_pair_id": "structured-cnf-to-csp"
+    },
+    {
+      "both_lean_verified": true,
+      "both_protocol_accepted": true,
+      "case_ids": [
+        "three-sat-to-csp-flat",
+        "three-sat-to-csp-ir"
+      ],
+      "matched_pair_id": "three-sat-to-csp"
+    },
+    {
+      "both_lean_verified": true,
+      "both_protocol_accepted": true,
+      "case_ids": [
+        "two-cnf-to-csp-flat",
+        "two-cnf-to-csp-ir"
+      ],
+      "matched_pair_id": "two-cnf-to-csp"
+    }
+  ],
+  "model": {
+    "api_key_configured": true,
+    "base_url": "https://api.deepseek.com",
+    "max_retries": 2,
+    "max_tokens": 16384,
+    "model": "deepseek-v4-flash",
+    "temperature": 0.0,
+    "timeout_seconds": 900
+  },
+  "output_root": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-retrieval-full-20260730-v6",
+  "schema_version": "hardness_deepseek_retrieval_codegen_full_v2",
+  "scope": {
+    "compiled_endpoint_topology": true,
+    "deepseek_may_add_new_library_reductions": false,
+    "deepseek_writes_lean_path_terms": true,
+    "existing_library_declarations_only": true,
+    "expected_lean_process_count": 1,
+    "full_theorem_catalog_sent_to_model": false,
+    "lean_validation_timing": "once_after_all_model_calls",
+    "maximum_retrieval_rounds_per_case": 4,
+    "model_driven_theorem_retrieval": true,
+    "offline_compiled_library_catalog": true,
+    "standard_axiom_gate": true,
+    "suite_id": "ir-feasibility"
+  },
+  "started_at": "2026-07-30T08:37:57.924555+00:00",
+  "status": "VERIFIED",
+  "summary": {
+    "all_12_verified": true,
+    "api_calls_this_run": 25,
+    "execution_count": 12,
+    "lean_process_count": 1,
+    "lean_verified_count": 12,
+    "matched_pair_both_verified_count": 6,
+    "model_call_count": 25,
+    "model_case_count": 12,
+    "protocol_accepted_count": 12
+  }
+}

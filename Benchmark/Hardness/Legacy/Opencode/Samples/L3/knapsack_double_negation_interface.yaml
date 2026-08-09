@@ -1,0 +1,36 @@
+schema_version: opencode_decision_problem_sample_file_v1
+id: knapsack_double_negation_interface
+name: knapsack_double_negation_interface_problem
+input_language: numeric_interface_adapter_classical
+problem_family: numeric
+problem_statement: Given item weights and values, a capacity, and a target value, decide whether it is not refutable that some selected subset stays within the capacity and reaches the target value.
+certificate_contract: lean_proposition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction.Karp21
+
+  noncomputable section
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    { Instance := ComplexityReduction.Combinatorics.knapsackEncodedType
+      isYes := fun I => ¬¬ ComplexityReduction.Combinatorics.Knapsack I }
+
+  abbrev referenceProblem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.Combinatorics.knapsackKarpDecisionProblem
+lean_target_type: |
+  ∃ e : ComplexityReduction.ProblemEquivM
+      ComplexityReduction.CostedPolyTimeModel problem referenceProblem,
+    ∃ h : ComplexityReduction.PolyReducibleM
+        ComplexityReduction.CostedPolyTimeModel problem referenceProblem,
+      h = ComplexityReduction.ProblemEquivM.toReducible e ∧
+        ComplexityReduction.InNPEnc
+          ComplexityReduction.CostedPolyTimeModel referenceProblem ∧
+          ComplexityReduction.InNPEnc
+            ComplexityReduction.CostedPolyTimeModel problem
+difficulty: interface_adapter
+difficulty_tags:
+- numeric
+- interface_adapter
+- problem_equiv
+- classical_equivalence
+- costed_adapter

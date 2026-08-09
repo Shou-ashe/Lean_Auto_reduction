@@ -1,0 +1,22 @@
+schema_version: opencode_decision_problem_sample_file_v1
+id: zero_one_integer_programming
+name: zero_one_integer_programming_problem
+input_language: zero_one_integer_programming
+problem_family: integer_programming
+problem_statement: Given a finite system of linear inequalities over 0-1 variables, decide whether there is a Boolean vector satisfying all inequalities.
+certificate_contract: lean_proposition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction
+
+  noncomputable section
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.Combinatorics.zeroOneIntegerProgrammingDecisionProblem
+lean_target_type: |
+  ComplexityReduction.InNPEnc ComplexityReduction.CostedPolyTimeModel problem
+difficulty: hard
+difficulty_tags:
+- integer_programming
+- binary_vector_witness
+- linear_constraint_check

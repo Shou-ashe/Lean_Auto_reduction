@@ -1,0 +1,5 @@
+import Benchmark.Hardness.Regression.Refl
+import Benchmark.Hardness.Regression.RouteFallback
+
+assert_standard_axioms Benchmark.Hardness.Regression.Refl.result
+assert_standard_axioms Benchmark.Hardness.Regression.RouteFallback.result

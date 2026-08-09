@@ -1,0 +1,42 @@
+schema_version: opencode_lean_proposition_sample_file_v1
+id: right_tagged_clique_local_adapter
+name: right_tagged_clique_local_adapter_problem
+benchmark_level: L8
+input_language: right_tagged_clique_local_adapter_interface
+problem_family: graph_interface
+certificate_contract: lean_proposition
+problem_statement: "Input is a Boolean audit flag followed by a standard Clique instance. The audit flag is ignored: decide whether the Clique instance is accepting. Certify NP membership by writing a local adapter proof from this tagged interface to the standard Clique problem, then use local library evidence for the target."
+difficulty: local_adapter_authoring
+difficulty_tags: [graph, local_helper, nonidentity_map, right_projection]
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction
+
+  noncomputable section
+
+  abbrev localAdapterTarget : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.Combinatorics.Graph.cliqueDecisionProblem
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    { Instance := ComplexityReduction.EncodedType.prod
+        ComplexityReduction.EncodedType.bool
+        localAdapterTarget.Instance
+      isYes := fun p => localAdapterTarget.isYes p.2 }
+lean_target_type: |
+  (∀ x : problem.Instance.Carrier,
+      problem.isYes x ↔ localAdapterTarget.isYes x.2) ∧
+    ∃ _localAdapterReduction :
+      ComplexityReduction.KarpReductionM
+        ComplexityReduction.CostedPolyTimeModel
+        problem
+        localAdapterTarget,
+      ComplexityReduction.PolyReducibleM
+        ComplexityReduction.CostedPolyTimeModel
+        problem
+        localAdapterTarget ∧
+      ComplexityReduction.InNPEnc
+        ComplexityReduction.CostedPolyTimeModel
+        localAdapterTarget ∧
+      ComplexityReduction.InNPEnc
+        ComplexityReduction.CostedPolyTimeModel
+        problem

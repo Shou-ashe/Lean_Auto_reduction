@@ -1,0 +1,16 @@
+{
+  "schema_version": "hardness_benchmark_expected_v1",
+  "case_id": "program-indexed-reduction-authoring",
+  "authoritative": false,
+  "baseline_status": "BLOCKED",
+  "baseline_failure_code": "missing_semantic_proof",
+  "final_status": "VERIFIED",
+  "coverage": [
+    "new_executable",
+    "exact_primitive",
+    "same_program_semantics",
+    "program_indexed_direct_tm",
+    "certified_reduction",
+    "seven_stage_checkpoints"
+  ]
+}

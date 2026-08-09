@@ -1,0 +1,2286 @@
+{
+  "schema_version": "hardness_benchmark_migration_ledger_v1",
+  "generated_on": "2026-08-04",
+  "design_document": "HARDNESS_AGENT_BENCHMARK_DESIGN_AND_MIGRATION_PLAN.md",
+  "active_manifest": "Benchmark/Hardness/MANIFEST.json",
+  "source_inventory": {
+    "opencode_cases": 107,
+    "opencode_hidden_targets": 68,
+    "opencode_gold_proofs": 39,
+    "v2_hardness_cases": 3,
+    "total_legacy_cases": 110
+  },
+  "disposition_counts": {
+    "migrated": 8,
+    "split": 1,
+    "deferred": 101,
+    "deprecated": 0
+  },
+  "original_active_paths_removed": [
+    "Benchmark/MANIFEST.yaml",
+    "Benchmark/Samples",
+    "Benchmark/HiddenTargets",
+    "Benchmark/GoldProofs",
+    "Benchmark/V2Hardness"
+  ],
+  "phase3_validation_cases": [
+    {
+      "case_id": "representation-mismatch-gap",
+      "lane": "gap.presentation",
+      "origin": "phase3_synthetic_validation",
+      "legacy_disposition_effect": "none"
+    },
+    {
+      "case_id": "missing-primitive-gap",
+      "lane": "gap.primitive",
+      "origin": "phase3_synthetic_validation",
+      "legacy_disposition_effect": "none"
+    },
+    {
+      "case_id": "missing-native-membership-gap",
+      "lane": "membership.native.blocker",
+      "origin": "phase3_synthetic_validation",
+      "legacy_disposition_effect": "none"
+    }
+  ],
+  "phase4_validation_cases": [
+    {
+      "case_id": "closed-family-template-authoring",
+      "lane": "authoring.closed-family",
+      "origin": "phase4_synthetic_validation",
+      "legacy_disposition_effect": "none"
+    },
+    {
+      "case_id": "closed-family-candidate-absent",
+      "lane": "authoring.closed-family.resume-audit",
+      "origin": "phase4_synthetic_validation",
+      "legacy_disposition_effect": "none"
+    },
+    {
+      "case_id": "lawful-presentation-template-authoring",
+      "lane": "authoring.lawful-presentation",
+      "origin": "phase4_synthetic_validation",
+      "legacy_disposition_effect": "none"
+    },
+    {
+      "case_id": "lawful-presentation-candidate-absent",
+      "lane": "authoring.lawful-presentation.resume-audit",
+      "origin": "phase4_synthetic_validation",
+      "legacy_disposition_effect": "none"
+    },
+    {
+      "case_id": "primitive-admission-template-authoring",
+      "lane": "authoring.primitive-admission",
+      "origin": "phase4_synthetic_validation",
+      "legacy_disposition_effect": "none"
+    },
+    {
+      "case_id": "primitive-admission-candidate-absent",
+      "lane": "authoring.primitive-admission.resume-audit",
+      "origin": "phase4_synthetic_validation",
+      "legacy_disposition_effect": "none"
+    }
+  ],
+  "archive_policy": {
+    "executable": false,
+    "runner_rejection_code": "unsupported_legacy_benchmark",
+    "oracle_visible_to_model": false,
+    "candidate_import_allowed": false,
+    "note": "Deferred source material remains quarantined under Legacy and is not part of current pass-rate denominators."
+  },
+  "v2_hardness_cases": [
+    {
+      "legacy_case_id": "three_sat_to_known_np",
+      "legacy_suite": "lean_auto_reduction_v2_hardness_benchmark_v1",
+      "legacy_input": "V2Hardness/Inputs/ThreeSAT.lean",
+      "target_lane": "smoke.refl-and-route",
+      "minimum_agent_phase": 1,
+      "disposition": "split",
+      "current_case_ids": [
+        "three-sat-refl",
+        "three-sat-explicit-suffix"
+      ],
+      "reason": "The old minimum-one-atom expectation was split into a correct zero-atom reflexive case and a fixed distinct native target route."
+    },
+    {
+      "legacy_case_id": "tagged_three_sat_normalization",
+      "legacy_suite": "lean_auto_reduction_v2_hardness_benchmark_v1",
+      "legacy_input": "V2Hardness/Inputs/TaggedThreeSAT.lean",
+      "target_lane": "route.ingress-normalization",
+      "minimum_agent_phase": 1,
+      "disposition": "migrated",
+      "current_case_ids": [
+        "tagged-three-sat-normalization"
+      ],
+      "reason": "Ported to current PresentedProblem declarations, importable module ABI, and fixed structured-3SAT endpoint."
+    },
+    {
+      "legacy_case_id": "native_np_via_checked_cook_levin",
+      "legacy_suite": "lean_auto_reduction_v2_hardness_benchmark_v1",
+      "legacy_input": "V2Hardness/Inputs/KnapsackNativeNP.lean",
+      "target_lane": "cook-levin.native",
+      "minimum_agent_phase": 2,
+      "disposition": "migrated",
+      "state": "active_since_phase_2",
+      "current_case_ids": [
+        "knapsack-native-cook-levin",
+        "knapsack-native-cook-levin-clique"
+      ],
+      "reason": "Ported to the exact current NativeTMInNP ABI and split into fixed canonical-3SAT root plus fixed Clique production-suffix coverage."
+    }
+  ],
+  "opencode_cases": [
+    {
+      "legacy_case_id": "chromatic_number",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L0",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L0/chromatic_number.yaml",
+      "legacy_sample_sha256": "b272364a365a75523be7cf5c10486591e41abe2398fa8267318ce555cd09deb4",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L0/chromatic_number.lean",
+          "sha256": "bc4d04d33a51b8f61d4b0474a75bc0fc460a1fae132174b019d25d18cf5f3188"
+        }
+      ],
+      "target_lane": "membership.native",
+      "minimum_agent_phase": 6,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "clique_cover",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L0",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L0/clique_cover.yaml",
+      "legacy_sample_sha256": "b787f3b2f39884609836ac8744cf4551358962aaedb17ec6ef9bd6bf62c72524",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L0/clique_cover.lean",
+          "sha256": "05d117a9d448dd5b030d16cab0e41f7b3bdd000db59760d6fcc18bfc5624f64e"
+        }
+      ],
+      "target_lane": "membership.native",
+      "minimum_agent_phase": 6,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "clique",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L0",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L0/clique.yaml",
+      "legacy_sample_sha256": "4425cfac7b8148f5d0719393fb26fa7b56527ba987162738b852cac1f721b0f7",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L0/clique.lean",
+          "sha256": "d64d7235f7bdb272588e2eab4974f94b2de7b5c5104f48b93e09ef2597fadb08"
+        },
+        {
+          "kind": "gold_proof",
+          "path": "Opencode/GoldProofs/L0/clique.lean",
+          "sha256": "e8a23e9f605f2065fe2b35f7b06aaa0c008f351d49eb07417ff7ff6ba83f7214"
+        }
+      ],
+      "target_lane": "membership.native",
+      "minimum_agent_phase": 6,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "cnf_satisfiability",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L0",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L0/cnf_satisfiability.yaml",
+      "legacy_sample_sha256": "a73f885c04ed156c2b5ebd5709793657fc1fef10d1ec2868e05b446839cb68f9",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L0/cnf_satisfiability.lean",
+          "sha256": "a5de7827affceb5ef5bce7fe820b9f986ca9d2da0af09662bcdb1fecbfa2feaf"
+        }
+      ],
+      "target_lane": "membership.native",
+      "minimum_agent_phase": 6,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "directed_hamiltonian_circuit",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L0",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L0/directed_hamiltonian_circuit.yaml",
+      "legacy_sample_sha256": "cc821a265fcd9c6408794a0484e24b60aef38f03660a111295d8b611d18d0355",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L0/directed_hamiltonian_circuit.lean",
+          "sha256": "9b7f32ca74c3b7d583532d96571fcd6cd743e8a708459c9c4c39cb3ec4922642"
+        }
+      ],
+      "target_lane": "membership.native",
+      "minimum_agent_phase": 6,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "exact_cover",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L0",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L0/exact_cover.yaml",
+      "legacy_sample_sha256": "4daf43ed8ef8c160efd412182887fbd61927a3b1017165ebf467b71f66421033",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L0/exact_cover.lean",
+          "sha256": "2f7564b1f8f27126ea2812bc1aa2428f76d6e412cb9dc98ea0c876e5fed0985f"
+        }
+      ],
+      "target_lane": "membership.native",
+      "minimum_agent_phase": 6,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "feedback_arc_set",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L0",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L0/feedback_arc_set.yaml",
+      "legacy_sample_sha256": "34671f17c3989d6a0d39b18d75e8adfc4be42deb51e9986665930297c70106af",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L0/feedback_arc_set.lean",
+          "sha256": "1593504c0fb51012ffd14de17c22eb31b58cbe652c9f08db610d1a45db808e6d"
+        }
+      ],
+      "target_lane": "membership.native",
+      "minimum_agent_phase": 6,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "feedback_node_set",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L0",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L0/feedback_node_set.yaml",
+      "legacy_sample_sha256": "34c542ab8e06982f694ce3f3a553eac2a14856a85124aa3ab4919743c8631b34",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L0/feedback_node_set.lean",
+          "sha256": "f0953ed3a4e31768729e870ae9c24d866bda2ba99c8a9556daee0e0f0be42a59"
+        }
+      ],
+      "target_lane": "membership.native",
+      "minimum_agent_phase": 6,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "hitting_set",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L0",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L0/hitting_set.yaml",
+      "legacy_sample_sha256": "52e8b74764607c32953c959a569155b5e637219a7072de069f6a70b048a54545",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L0/hitting_set.lean",
+          "sha256": "91114e05fd7fcaf923c4c4defa5c5250dd197eddafae19e229869d388e5f4f39"
+        }
+      ],
+      "target_lane": "membership.native",
+      "minimum_agent_phase": 6,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "horn3_csp",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L0",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L0/horn3_csp.yaml",
+      "legacy_sample_sha256": "14fb8030b3d3dfb33bcee7a323f95c838bdda275f1c5cb568b01a90094d50130",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L0/horn3_csp.lean",
+          "sha256": "f45d41dc1548260094260ef3053e330329ac5234fb894f99b8b6c7f49373a3e8"
+        }
+      ],
+      "target_lane": "membership.native",
+      "minimum_agent_phase": 6,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "job_sequencing",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L0",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L0/job_sequencing.yaml",
+      "legacy_sample_sha256": "296f16abf2486a1cf3c31b201861270c0e65b4bd5c10089fb1aca7b2cba7594b",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L0/job_sequencing.lean",
+          "sha256": "60267d52990b0ebafb72cfc74386a7896c68b84997d71df39104da4e67738c10"
+        }
+      ],
+      "target_lane": "membership.native",
+      "minimum_agent_phase": 6,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "knapsack",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L0",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L0/knapsack.yaml",
+      "legacy_sample_sha256": "55ba9fd850ce56ece6398aa3ea40789cda3c7c34c469541ba9a5d5c07bfe2213",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L0/knapsack.lean",
+          "sha256": "82d9f43d677b5389cba99b3de76a55bd91f822d35278f970acc2dcb2456d7e2e"
+        }
+      ],
+      "target_lane": "membership.native",
+      "minimum_agent_phase": 6,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "max_cut",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L0",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L0/max_cut.yaml",
+      "legacy_sample_sha256": "deb643c000c63b51b08e5081b0cae12f57eef748c698e497d5a1fb7e58841aa7",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L0/max_cut.lean",
+          "sha256": "9c09f0e5ff906b32d08f323a420d53e291b6ab8806d74b1d75ae6b59dd5757dc"
+        }
+      ],
+      "target_lane": "membership.native",
+      "minimum_agent_phase": 6,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "nae3_csp",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L0",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L0/nae3_csp.yaml",
+      "legacy_sample_sha256": "0f4c9b0ee8dfb785e6ce3a607c8cf514ba52d6802723e2494471c00fe37b21cb",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L0/nae3_csp.lean",
+          "sha256": "1edb803e94203d7093f126d688602af1d18efd6ab98ca98fb5e3e2a5f7488039"
+        }
+      ],
+      "target_lane": "membership.native",
+      "minimum_agent_phase": 6,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "partition",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L0",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L0/partition.yaml",
+      "legacy_sample_sha256": "c4ef1569588e3f928e5518658f04a594555e67bf8d5eca7952040c27b8013afb",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L0/partition.lean",
+          "sha256": "496d2da8508b224c8258239e5c62db5654f133f531916211d0fc349360d070b4"
+        }
+      ],
+      "target_lane": "membership.native",
+      "minimum_agent_phase": 6,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "set_covering",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L0",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L0/set_covering.yaml",
+      "legacy_sample_sha256": "e23d9a25275ae277144eb4f2943712ef75ec6d8f28b87691c5f79370be729f85",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L0/set_covering.lean",
+          "sha256": "b78b955b606afbfbb11d9c799bc415659857f7828f786c8132418ae476fd903f"
+        }
+      ],
+      "target_lane": "membership.native",
+      "minimum_agent_phase": 6,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "set_packing",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L0",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L0/set_packing.yaml",
+      "legacy_sample_sha256": "0b4294bf67284dbc47c966b131d96b2839928dc89cab2c21abf25d55a0554c20",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L0/set_packing.lean",
+          "sha256": "37ed1f8ddf551dab95513b35417289a870318520565b3d4777822cd8599a3876"
+        }
+      ],
+      "target_lane": "membership.native",
+      "minimum_agent_phase": 6,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "steiner_tree",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L0",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L0/steiner_tree.yaml",
+      "legacy_sample_sha256": "c00d3d209a94a2f6ecafc13242a987038948a2edee4c4a20055f34357970d251",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L0/steiner_tree.lean",
+          "sha256": "68ddb87199f1803ff11f311535c8c2affcd5468649cf147a23927c635b6a383d"
+        }
+      ],
+      "target_lane": "membership.native",
+      "minimum_agent_phase": 6,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "three_dimensional_matching",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L0",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L0/three_dimensional_matching.yaml",
+      "legacy_sample_sha256": "dd7552546a9ed174a61fe591fd6d6d970e106237810b15dc5c23a0abdad3dafa",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L0/three_dimensional_matching.lean",
+          "sha256": "6bb709d3664664d5037fba63973af22dc103da41fc724d5f3e5b391d0dc8f6db"
+        }
+      ],
+      "target_lane": "membership.native",
+      "minimum_agent_phase": 6,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "three_sat_like_csp",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L0",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L0/three_sat_like_csp.yaml",
+      "legacy_sample_sha256": "92e12c74741d58097f434e3d8b734ec431016ec76fa12261b9ef2e3f6e392187",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L0/three_sat_like_csp.lean",
+          "sha256": "fd499705e2b9c39b8169d7f0394cb197d2fe5cb5c1ec721a883ab67413ea16a8"
+        }
+      ],
+      "target_lane": "membership.native",
+      "minimum_agent_phase": 6,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "three_sat",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L0",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L0/three_sat.yaml",
+      "legacy_sample_sha256": "efff75ec070ea0afc4b96dd05a3316f9285b9bbeefad2c653726c44d6e88ba66",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L0/three_sat.lean",
+          "sha256": "d8ab5691d590a8efe6a70b3e044a1f966c66b0cf3dfaa0e0920f01ed65c9d48d"
+        }
+      ],
+      "target_lane": "membership.native",
+      "minimum_agent_phase": 6,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "two_sat_like_csp",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L0",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L0/two_sat_like_csp.yaml",
+      "legacy_sample_sha256": "18b317c6cfe2a4d8f640b243b3f814a3eaca51cd32e3a333f72934f599635125",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L0/two_sat_like_csp.lean",
+          "sha256": "7208a4066bbadaf8d174fa6b6bbd136f2554eeed6843dae5dda7f377d650b5c2"
+        }
+      ],
+      "target_lane": "membership.native",
+      "minimum_agent_phase": 6,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "undirected_hamiltonian_circuit",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L0",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L0/undirected_hamiltonian_circuit.yaml",
+      "legacy_sample_sha256": "d820c4894a84c8d7f29416b07538b14b93e88c2a79017d896b828e2f975163b4",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L0/undirected_hamiltonian_circuit.lean",
+          "sha256": "54895da66fd8ab9037148cd52f1f00a1da1e3992ffb6e8958dade5793a7d8275"
+        }
+      ],
+      "target_lane": "membership.native",
+      "minimum_agent_phase": 6,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "vertex_cover",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L0",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L0/vertex_cover.yaml",
+      "legacy_sample_sha256": "66bb51921152b1c899ceeb38762c0f8cc8810dadc086455af5d18b2d794afaac",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L0/vertex_cover.lean",
+          "sha256": "7c8f6074d250ae192582a417c3fb5af8cb48b9f8cb7221cd534b42c92781e8dd"
+        }
+      ],
+      "target_lane": "membership.native",
+      "minimum_agent_phase": 6,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "zero_one_integer_programming",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L0",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L0/zero_one_integer_programming.yaml",
+      "legacy_sample_sha256": "967da5371cef0b5d3a4d6cb63653c958da46ff130207babd6ed7462b188dcd4a",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L0/zero_one_integer_programming.lean",
+          "sha256": "4eb84cda55d01262cff26b300b1bede532d8c5d4bc1553c6972a96c3b7ecb7b0"
+        }
+      ],
+      "target_lane": "membership.native",
+      "minimum_agent_phase": 6,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "chromatic_number_structured",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L1",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L1/chromatic_number_structured.yaml",
+      "legacy_sample_sha256": "74fd9781945567050e0e8d5e9efeb58b8d03e80605a51345f33f9ea11eba3c89",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L1/chromatic_number_structured.lean",
+          "sha256": "52a53d3a748c9c201f2e98a9e4dbbada61a2099e9869150bd5666e7379522a2e"
+        }
+      ],
+      "target_lane": "membership.native-verifier",
+      "minimum_agent_phase": 6,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "clique_structured",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L1",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L1/clique_structured.yaml",
+      "legacy_sample_sha256": "20a0c7d6da26269d9b16f446427b0f601088a9e4570794fb16c48318fa07ae43",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L1/clique_structured.lean",
+          "sha256": "ae1ee09b01601a7d2db5bba1d99595608b119bbe547713dc2d05a2084d5a6385"
+        }
+      ],
+      "target_lane": "membership.native-verifier",
+      "minimum_agent_phase": 6,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "directed_hamiltonian_circuit_structured",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L1",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L1/directed_hamiltonian_circuit_structured.yaml",
+      "legacy_sample_sha256": "99635d19b7ce3b7056d40cce9f68d1531aa6909fe92abf14133efd37a93abfa8",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L1/directed_hamiltonian_circuit_structured.lean",
+          "sha256": "6f259d62781fb70aa59bda8bdc68616e560a544d45248ec0be2d41ae13ed936c"
+        }
+      ],
+      "target_lane": "membership.native-verifier",
+      "minimum_agent_phase": 6,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "feedback_arc_set_structured",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L1",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L1/feedback_arc_set_structured.yaml",
+      "legacy_sample_sha256": "aa9ba3cd2e15652c359eff0eca79fb60ca98ee8da405b8a7f2774fd79a518331",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L1/feedback_arc_set_structured.lean",
+          "sha256": "3ca9817f1322b6c0f73987834a0120aa87d39d8bcc834c829bd4ff7ca1bf20ab"
+        }
+      ],
+      "target_lane": "membership.native-verifier",
+      "minimum_agent_phase": 6,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "hitting_set_structured",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L1",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L1/hitting_set_structured.yaml",
+      "legacy_sample_sha256": "dc683b223245de6328712d7c0f72f57c459ef5d626cde2c35513958e211be6a4",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L1/hitting_set_structured.lean",
+          "sha256": "fed4debef0cf9bde539a28a2626361407666bc388830b70aad6eb2090286fa62"
+        }
+      ],
+      "target_lane": "membership.native-verifier",
+      "minimum_agent_phase": 6,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "knapsack_binary_structured",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L1",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L1/knapsack_binary_structured.yaml",
+      "legacy_sample_sha256": "2e7122f62b1a9ebba6432d3ecb7eac6b8ec4088f05d917631c8fea1c8618bbb9",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L1/knapsack_binary_structured.lean",
+          "sha256": "28b332ca2303605a1a00e545454912847bc8096fda05d61a2bc7fa4087db2fe8"
+        }
+      ],
+      "target_lane": "membership.native-verifier",
+      "minimum_agent_phase": 6,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "max_cut_binary_structured",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L1",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L1/max_cut_binary_structured.yaml",
+      "legacy_sample_sha256": "7eb86ff34fb61b873282815a7e80f45f105b09455dc40b4cdef2aa2cd5317b37",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L1/max_cut_binary_structured.lean",
+          "sha256": "1e39fa81644e78def8c99152962b941ac8702cf5f9cc0221475415c634245d26"
+        }
+      ],
+      "target_lane": "membership.native-verifier",
+      "minimum_agent_phase": 6,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "set_covering_structured",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L1",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L1/set_covering_structured.yaml",
+      "legacy_sample_sha256": "96791134911818f8d415a425844ca1688cfd9ba36a345547dfeb0da37c601020",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L1/set_covering_structured.lean",
+          "sha256": "068f6d52d74a82b8fc4cf43c69de84175d3cafabccfa986ce6b57451192b0d7f"
+        }
+      ],
+      "target_lane": "membership.native-verifier",
+      "minimum_agent_phase": 6,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "vertex_cover_structured",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L1",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L1/vertex_cover_structured.yaml",
+      "legacy_sample_sha256": "9d0bb49e5e914e01e905b6da29b4ea1a897d2381d0075adf36b71ce8fc42a958",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L1/vertex_cover_structured.lean",
+          "sha256": "e1aaaeaa1f8d7e7cfcad998452a200651dc1c7653aee9182ccf48c1451a21fda"
+        }
+      ],
+      "target_lane": "membership.native-verifier",
+      "minimum_agent_phase": 6,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "zero_one_integer_programming_binary_structured",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L1",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L1/zero_one_integer_programming_binary_structured.yaml",
+      "legacy_sample_sha256": "e01474684123516bd28d90dc5635fc0394cd68d5001488b686a6b4bbf3533a40",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L1/zero_one_integer_programming_binary_structured.lean",
+          "sha256": "9d94c3f29425523665c03bbaec76743803c1572f16b4f1db7df1eb1a61750f4a"
+        }
+      ],
+      "target_lane": "membership.native-verifier",
+      "minimum_agent_phase": 6,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "deep_vertex_cover_three_hop_synthesis",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L10",
+      "legacy_schema": "opencode_lean_proposition_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L10/deep_vertex_cover_three_hop_synthesis.yaml",
+      "legacy_sample_sha256": "b121e5b7fa2728f08800dcdc5b30ac17bb22625dfc3bc514b18abe87bd854ade",
+      "legacy_oracles": [
+        {
+          "kind": "gold_proof",
+          "path": "Opencode/GoldProofs/L10/deep_vertex_cover_three_hop_synthesis.lean",
+          "sha256": "7f9bd013f4752693c71d342ad7f0eb5d7118d34d3b10ee83d85e085ed0c5fa9c"
+        }
+      ],
+      "target_lane": "route.multihop-reranking",
+      "minimum_agent_phase": 5,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "nested_three_sat_three_hop_synthesis",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L10",
+      "legacy_schema": "opencode_lean_proposition_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L10/nested_three_sat_three_hop_synthesis.yaml",
+      "legacy_sample_sha256": "46e0b87590c0bcc15ddfc7fa7d08c671678f08be0b8328795c6543bec04cd180",
+      "legacy_oracles": [
+        {
+          "kind": "gold_proof",
+          "path": "Opencode/GoldProofs/L10/nested_three_sat_three_hop_synthesis.lean",
+          "sha256": "9c4ffb66099801e290b3002d8d7174bd4b4129c767c9a91510e0b781e6f2e163"
+        }
+      ],
+      "target_lane": "route.multihop-reranking",
+      "minimum_agent_phase": 5,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "sandwiched_clique_three_hop_synthesis",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L10",
+      "legacy_schema": "opencode_lean_proposition_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L10/sandwiched_clique_three_hop_synthesis.yaml",
+      "legacy_sample_sha256": "bcdd0d9d33f2cbb806389737fd0803d6e551c41eb6a050a469c7851704d6f439",
+      "legacy_oracles": [
+        {
+          "kind": "gold_proof",
+          "path": "Opencode/GoldProofs/L10/sandwiched_clique_three_hop_synthesis.lean",
+          "sha256": "19cd785ec0fd829a4c5ded3a35bbf0e70c088f8f6ad09cdfb5269bdc825568c9"
+        }
+      ],
+      "target_lane": "route.multihop-reranking",
+      "minimum_agent_phase": 5,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "tagged_cnf_three_hop_synthesis",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L10",
+      "legacy_schema": "opencode_lean_proposition_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L10/tagged_cnf_three_hop_synthesis.yaml",
+      "legacy_sample_sha256": "c152bc84ab44330968997844539817dc43a48e970fed7117c6e458b0d7f5ece1",
+      "legacy_oracles": [
+        {
+          "kind": "gold_proof",
+          "path": "Opencode/GoldProofs/L10/tagged_cnf_three_hop_synthesis.lean",
+          "sha256": "66c89dc5295a54f0617904771efd2e881fbcb074f6446254be2e7773867da9b0"
+        }
+      ],
+      "target_lane": "route.multihop-reranking",
+      "minimum_agent_phase": 5,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "tagged_set_covering_three_hop_synthesis",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L10",
+      "legacy_schema": "opencode_lean_proposition_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L10/tagged_set_covering_three_hop_synthesis.yaml",
+      "legacy_sample_sha256": "872c4ebe44e6d838c2b023fd21c2cddf32f1bfd891da1762d1c53a8c0381669f",
+      "legacy_oracles": [
+        {
+          "kind": "gold_proof",
+          "path": "Opencode/GoldProofs/L10/tagged_set_covering_three_hop_synthesis.lean",
+          "sha256": "51a152818bd13724f138156cf3d021757eb25389856ed599798028b8d1993ca1"
+        }
+      ],
+      "target_lane": "route.multihop-reranking",
+      "minimum_agent_phase": 5,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "wrapped_zero_one_ip_three_hop_synthesis",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L10",
+      "legacy_schema": "opencode_lean_proposition_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L10/wrapped_zero_one_ip_three_hop_synthesis.yaml",
+      "legacy_sample_sha256": "fa1bca0b5980b0e089bd7691cc01da09f7e1c39b4cf6cd20392f85c9b2dd5dc8",
+      "legacy_oracles": [
+        {
+          "kind": "gold_proof",
+          "path": "Opencode/GoldProofs/L10/wrapped_zero_one_ip_three_hop_synthesis.lean",
+          "sha256": "7e0241e83e271bc1d3d70d4efed3146d8590e845e4fb3a9e5cb4783ef137e0e7"
+        }
+      ],
+      "target_lane": "route.multihop-reranking",
+      "minimum_agent_phase": 5,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "left_nested_nae3_roundtrip_composed_gadget",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L11",
+      "legacy_schema": "opencode_lean_proposition_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L11/left_nested_nae3_roundtrip_composed_gadget.yaml",
+      "legacy_sample_sha256": "af7e236e68061c8e97125901e5373e8d34d19827fbde4de97d9bdf31245a598d",
+      "legacy_oracles": [
+        {
+          "kind": "gold_proof",
+          "path": "Opencode/GoldProofs/L11/left_nested_nae3_roundtrip_composed_gadget.lean",
+          "sha256": "b89c677ec31c1e984853f2c09f7d7943b7a5120a8fc204324a429580f9c72ebf"
+        }
+      ],
+      "target_lane": "authoring.csp-gadget",
+      "minimum_agent_phase": 5,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "nested_horn3_to_nae3_composed_gadget",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L11",
+      "legacy_schema": "opencode_lean_proposition_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L11/nested_horn3_to_nae3_composed_gadget.yaml",
+      "legacy_sample_sha256": "29e064bd640eda1562fb456a3908ad444c695cd1ce872dd51e46ec5d1dd59c74",
+      "legacy_oracles": [
+        {
+          "kind": "gold_proof",
+          "path": "Opencode/GoldProofs/L11/nested_horn3_to_nae3_composed_gadget.lean",
+          "sha256": "9b170b73dc276f311da82be2422adb69bb2dda6e53b08f1916b1e2a38518aab0"
+        }
+      ],
+      "target_lane": "authoring.csp-gadget",
+      "minimum_agent_phase": 5,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "right_left_horn3_to_one_in_three_composed_gadget",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L11",
+      "legacy_schema": "opencode_lean_proposition_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L11/right_left_horn3_to_one_in_three_composed_gadget.yaml",
+      "legacy_sample_sha256": "1ff8d9cd41dba97e01320e0cbcb44c1fd82f4e2577057955bc1edfbd727c4b3c",
+      "legacy_oracles": [
+        {
+          "kind": "gold_proof",
+          "path": "Opencode/GoldProofs/L11/right_left_horn3_to_one_in_three_composed_gadget.lean",
+          "sha256": "1a7db180da5063e3cafa6d772f4a977c57ae1b354cba95cda6f9a9cc68c879c1"
+        }
+      ],
+      "target_lane": "authoring.csp-gadget",
+      "minimum_agent_phase": 5,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "right_nested_three_sat_like_to_nae3_composed_gadget",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L11",
+      "legacy_schema": "opencode_lean_proposition_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L11/right_nested_three_sat_like_to_nae3_composed_gadget.yaml",
+      "legacy_sample_sha256": "fa73608ff2b81d55acf0e881a45a14fcb195e7656cea513128a7ccce44d4b339",
+      "legacy_oracles": [
+        {
+          "kind": "gold_proof",
+          "path": "Opencode/GoldProofs/L11/right_nested_three_sat_like_to_nae3_composed_gadget.lean",
+          "sha256": "15c05a07a58c9c9cb6b19bb2213f47bc4c2c1cfb4a43ec97d89fcfd279751c02"
+        }
+      ],
+      "target_lane": "authoring.csp-gadget",
+      "minimum_agent_phase": 5,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "right_tagged_nae3_to_one_in_three_composed_gadget",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L11",
+      "legacy_schema": "opencode_lean_proposition_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L11/right_tagged_nae3_to_one_in_three_composed_gadget.yaml",
+      "legacy_sample_sha256": "985c2182ea90d28de846ef056d58a5f026bd5952aea8dedc1fa92220196c8c9d",
+      "legacy_oracles": [
+        {
+          "kind": "gold_proof",
+          "path": "Opencode/GoldProofs/L11/right_tagged_nae3_to_one_in_three_composed_gadget.lean",
+          "sha256": "f9eb255dce07dc45d05021bb1ad72bb92babbbf359990ddc811acaa5afdaecee"
+        }
+      ],
+      "target_lane": "authoring.csp-gadget",
+      "minimum_agent_phase": 5,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "sandwiched_one_in_three_roundtrip_composed_gadget",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L11",
+      "legacy_schema": "opencode_lean_proposition_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L11/sandwiched_one_in_three_roundtrip_composed_gadget.yaml",
+      "legacy_sample_sha256": "cd4454339a8c0e1bbbc2bcc1ee9123c0ca844b2adfd1011c2163932d4b147170",
+      "legacy_oracles": [
+        {
+          "kind": "gold_proof",
+          "path": "Opencode/GoldProofs/L11/sandwiched_one_in_three_roundtrip_composed_gadget.lean",
+          "sha256": "867cb7f8e3e33ac8802c19295f9acfa8c7f94943f3d667e00a336c53cfac748b"
+        }
+      ],
+      "target_lane": "authoring.csp-gadget",
+      "minimum_agent_phase": 5,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "sandwiched_three_sat_like_to_one_in_three_composed_gadget",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L11",
+      "legacy_schema": "opencode_lean_proposition_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L11/sandwiched_three_sat_like_to_one_in_three_composed_gadget.yaml",
+      "legacy_sample_sha256": "c27f91a18a785ff9cca58db38d1a20794c2ad61e576898ddb1413d7406b9dd72",
+      "legacy_oracles": [
+        {
+          "kind": "gold_proof",
+          "path": "Opencode/GoldProofs/L11/sandwiched_three_sat_like_to_one_in_three_composed_gadget.lean",
+          "sha256": "da44ca82e0d966865ec12e2f1fca65f08ad74c44c9c03eda8ea3d84da894de18"
+        }
+      ],
+      "target_lane": "authoring.csp-gadget",
+      "minimum_agent_phase": 5,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "tagged_one_in_three_to_nae3_composed_gadget",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L11",
+      "legacy_schema": "opencode_lean_proposition_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L11/tagged_one_in_three_to_nae3_composed_gadget.yaml",
+      "legacy_sample_sha256": "d8a78247e93dbd6f2e604d20ed2554ac00653dbbc29dd6db722d73cff12f3603",
+      "legacy_oracles": [
+        {
+          "kind": "gold_proof",
+          "path": "Opencode/GoldProofs/L11/tagged_one_in_three_to_nae3_composed_gadget.lean",
+          "sha256": "064f40ef6d0846c9b88210806484c9e85726187bed83299980dbc29a6fc4f83d"
+        }
+      ],
+      "target_lane": "authoring.csp-gadget",
+      "minimum_agent_phase": 5,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "left_nested_nae3_to_vertex_cover_mixed_route",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L12",
+      "legacy_schema": "opencode_lean_proposition_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L12/left_nested_nae3_to_vertex_cover_mixed_route.yaml",
+      "legacy_sample_sha256": "92dd19cf7aa67ac1fd019daeb3399e170bd4a265fd533e8d7a5f03661a61d640",
+      "legacy_oracles": [
+        {
+          "kind": "gold_proof",
+          "path": "Opencode/GoldProofs/L12/left_nested_nae3_to_vertex_cover_mixed_route.lean",
+          "sha256": "e421f50bbd305a7d34745088263ede463c1e19d01dcf04375c70669bdd2166a6"
+        }
+      ],
+      "target_lane": "authoring.mixed-gadget-route",
+      "minimum_agent_phase": 5,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "right_nested_horn3_to_knapsack_mixed_route",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L12",
+      "legacy_schema": "opencode_lean_proposition_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L12/right_nested_horn3_to_knapsack_mixed_route.yaml",
+      "legacy_sample_sha256": "90d820efac6b1201ec88ad278bb4531cb8f3a32be40619d166149d4fbcc09656",
+      "legacy_oracles": [
+        {
+          "kind": "gold_proof",
+          "path": "Opencode/GoldProofs/L12/right_nested_horn3_to_knapsack_mixed_route.lean",
+          "sha256": "3486e794e73a0b36874f979ae9921f82fdacf7ccad243b0adc9084c08e6dc26d"
+        }
+      ],
+      "target_lane": "authoring.mixed-gadget-route",
+      "minimum_agent_phase": 5,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "sandwiched_three_sat_like_to_knapsack_mixed_route",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L12",
+      "legacy_schema": "opencode_lean_proposition_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L12/sandwiched_three_sat_like_to_knapsack_mixed_route.yaml",
+      "legacy_sample_sha256": "2a15c2b27e626f4e89eae5fb7ea5c22ef10640da25dafe6533ce46c4f7d71771",
+      "legacy_oracles": [
+        {
+          "kind": "gold_proof",
+          "path": "Opencode/GoldProofs/L12/sandwiched_three_sat_like_to_knapsack_mixed_route.lean",
+          "sha256": "1e54bc18f1b380d00f6a551d1a47039cfb619c3a7385bb8391f5a690262810b2"
+        }
+      ],
+      "target_lane": "authoring.mixed-gadget-route",
+      "minimum_agent_phase": 5,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "tagged_one_in_three_to_vertex_cover_mixed_route",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L12",
+      "legacy_schema": "opencode_lean_proposition_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L12/tagged_one_in_three_to_vertex_cover_mixed_route.yaml",
+      "legacy_sample_sha256": "ced91e4d7ed5d825e60cee086a7644da477d20a68dfc2f1c23b52159de78ead9",
+      "legacy_oracles": [
+        {
+          "kind": "gold_proof",
+          "path": "Opencode/GoldProofs/L12/tagged_one_in_three_to_vertex_cover_mixed_route.lean",
+          "sha256": "3cce876292ead80e8dd0a7bbedcbb2d923aec5f03ed74ff9b3abdf506a9e040b"
+        }
+      ],
+      "target_lane": "authoring.mixed-gadget-route",
+      "minimum_agent_phase": 5,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "double_tagged_one_in_three_to_vertex_cover_stacked_bridge",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L13",
+      "legacy_schema": "opencode_lean_proposition_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L13/double_tagged_one_in_three_to_vertex_cover_stacked_bridge.yaml",
+      "legacy_sample_sha256": "909ccc0fa8b472df5ee7d072db09ae4e8592c461a4716865f4090acb965aacaa",
+      "legacy_oracles": [
+        {
+          "kind": "gold_proof",
+          "path": "Opencode/GoldProofs/L13/double_tagged_one_in_three_to_vertex_cover_stacked_bridge.lean",
+          "sha256": "dbc4e5c8bc19956b0cfec45e59fee8253b8a5c1d33abbe8128ef361db6e05397"
+        }
+      ],
+      "target_lane": "authoring.stacked-bridge",
+      "minimum_agent_phase": 5,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "left_sandwiched_nae3_to_knapsack_stacked_bridge",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L13",
+      "legacy_schema": "opencode_lean_proposition_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L13/left_sandwiched_nae3_to_knapsack_stacked_bridge.yaml",
+      "legacy_sample_sha256": "99a2f523842a212e06a448e7d2139df2b74b1ddc83ba78965c50f69fc6787860",
+      "legacy_oracles": [
+        {
+          "kind": "gold_proof",
+          "path": "Opencode/GoldProofs/L13/left_sandwiched_nae3_to_knapsack_stacked_bridge.lean",
+          "sha256": "f89547b0dcb50fc0df716eda27189c4db81aa8097c7d5fec4f6a6811bdcc0867"
+        }
+      ],
+      "target_lane": "authoring.stacked-bridge",
+      "minimum_agent_phase": 5,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "paired_flags_three_sat_like_to_knapsack_stacked_bridge",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L13",
+      "legacy_schema": "opencode_lean_proposition_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L13/paired_flags_three_sat_like_to_knapsack_stacked_bridge.yaml",
+      "legacy_sample_sha256": "7e3f926c57b4ad95b36efbc37d428527e1b265cf988a963af0e5de947cd91dae",
+      "legacy_oracles": [
+        {
+          "kind": "gold_proof",
+          "path": "Opencode/GoldProofs/L13/paired_flags_three_sat_like_to_knapsack_stacked_bridge.lean",
+          "sha256": "4b11e3edd33186be1c94a77c8984396a0db7f09fd0ff09455f0628705178505f"
+        }
+      ],
+      "target_lane": "authoring.stacked-bridge",
+      "minimum_agent_phase": 5,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "right_nested_horn3_to_vertex_cover_stacked_bridge",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L13",
+      "legacy_schema": "opencode_lean_proposition_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L13/right_nested_horn3_to_vertex_cover_stacked_bridge.yaml",
+      "legacy_sample_sha256": "45c4f6e998acd60963ce360457c55e5c2002463bdbe0a15a494467c829438aa9",
+      "legacy_oracles": [
+        {
+          "kind": "gold_proof",
+          "path": "Opencode/GoldProofs/L13/right_nested_horn3_to_vertex_cover_stacked_bridge.lean",
+          "sha256": "13380404fe6e9ee808097711ed7aec925793d08c8d6b94d9a7da0c51b5199048"
+        }
+      ],
+      "target_lane": "authoring.stacked-bridge",
+      "minimum_agent_phase": 5,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "left_nested_nae3_dual_tail_forked_route",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L14",
+      "legacy_schema": "opencode_lean_proposition_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L14/left_nested_nae3_dual_tail_forked_route.yaml",
+      "legacy_sample_sha256": "6cf99a798c38c6815f22d42a1b70de706cb7a48d3fe94c5a29cef8c5d18f2d84",
+      "legacy_oracles": [
+        {
+          "kind": "gold_proof",
+          "path": "Opencode/GoldProofs/L14/left_nested_nae3_dual_tail_forked_route.lean",
+          "sha256": "4d6e235e405554714e8d0c01714202e9923529d072e5ef9d28bdbc00aea6b1da"
+        }
+      ],
+      "target_lane": "authoring.forked-group",
+      "minimum_agent_phase": 5,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "right_nested_dual_horn3_clique_cover_knapsack_dual_tail_forked_route",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L14",
+      "legacy_schema": "opencode_lean_proposition_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L14/right_nested_dual_horn3_clique_cover_knapsack_dual_tail_forked_route.yaml",
+      "legacy_sample_sha256": "ad503d4c1b4b9c3352cdf99663aad488236e5c61a11e9877ec8532e7400cef64",
+      "legacy_oracles": [
+        {
+          "kind": "gold_proof",
+          "path": "Opencode/GoldProofs/L14/right_nested_dual_horn3_clique_cover_knapsack_dual_tail_forked_route.lean",
+          "sha256": "3b742e73942e0db40864fcff7ad3ab73f489cd4f85cec8ba60bee30876329e47"
+        }
+      ],
+      "target_lane": "authoring.forked-group",
+      "minimum_agent_phase": 5,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "right_nested_horn3_dual_tail_forked_route",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L14",
+      "legacy_schema": "opencode_lean_proposition_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L14/right_nested_horn3_dual_tail_forked_route.yaml",
+      "legacy_sample_sha256": "c55cdcfb97585a86f0e5c6f6ac063452d160165f4633cf0158c123c1a87f298e",
+      "legacy_oracles": [
+        {
+          "kind": "gold_proof",
+          "path": "Opencode/GoldProofs/L14/right_nested_horn3_dual_tail_forked_route.lean",
+          "sha256": "a958a18eeb36a46dab2da54a105eb813661b428d50487e9289d3cf5000978092"
+        }
+      ],
+      "target_lane": "authoring.forked-group",
+      "minimum_agent_phase": 5,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "sandwiched_three_sat_like_dual_tail_forked_route",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L14",
+      "legacy_schema": "opencode_lean_proposition_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L14/sandwiched_three_sat_like_dual_tail_forked_route.yaml",
+      "legacy_sample_sha256": "60f09522bb6dd7e721a40805adb46d5b3796b387779db211f5ae3993f407e757",
+      "legacy_oracles": [
+        {
+          "kind": "gold_proof",
+          "path": "Opencode/GoldProofs/L14/sandwiched_three_sat_like_dual_tail_forked_route.lean",
+          "sha256": "df815718f20b471790dfcf18b94468023c8ef9becabc09dbd186b41847a50f7b"
+        }
+      ],
+      "target_lane": "authoring.forked-group",
+      "minimum_agent_phase": 5,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "tagged_one_in_three_dual_tail_forked_route",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L14",
+      "legacy_schema": "opencode_lean_proposition_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L14/tagged_one_in_three_dual_tail_forked_route.yaml",
+      "legacy_sample_sha256": "95c42c2fc6106ac6501ff7e1e24a9d0d229fcec3c28051567cb7874571b3e1e7",
+      "legacy_oracles": [
+        {
+          "kind": "gold_proof",
+          "path": "Opencode/GoldProofs/L14/tagged_one_in_three_dual_tail_forked_route.lean",
+          "sha256": "b663181145a238dff534b53b5ab323ea94a78ad652ec9bd5ca385191666924fe"
+        }
+      ],
+      "target_lane": "authoring.forked-group",
+      "minimum_agent_phase": 5,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "tagged_xor3_clique_cover_knapsack_dual_tail_forked_route",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L14",
+      "legacy_schema": "opencode_lean_proposition_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L14/tagged_xor3_clique_cover_knapsack_dual_tail_forked_route.yaml",
+      "legacy_sample_sha256": "fd1c09828237b99fcc715367a96c2ccc0b70b41eac8e0240945318563e7ff799",
+      "legacy_oracles": [
+        {
+          "kind": "gold_proof",
+          "path": "Opencode/GoldProofs/L14/tagged_xor3_clique_cover_knapsack_dual_tail_forked_route.lean",
+          "sha256": "165490487d6c54782904f6f21d720ccc51c290bb890a48a77481543c452d0977"
+        }
+      ],
+      "target_lane": "authoring.forked-group",
+      "minimum_agent_phase": 5,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "double_tagged_xor3_clique_cover_knapsack_stacked_forked_route",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L15",
+      "legacy_schema": "opencode_lean_proposition_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L15/double_tagged_xor3_clique_cover_knapsack_stacked_forked_route.yaml",
+      "legacy_sample_sha256": "20f21bd29778273c063ce6f73068ad51e59c2e462b93d533c35c3b4ea72750b5",
+      "legacy_oracles": [
+        {
+          "kind": "gold_proof",
+          "path": "Opencode/GoldProofs/L15/double_tagged_xor3_clique_cover_knapsack_stacked_forked_route.lean",
+          "sha256": "c2407308a4c66a1df57e3f6903b6ae52b988d05fc525a9a79b48e735abaebab8"
+        }
+      ],
+      "target_lane": "authoring.stacked-forked-group",
+      "minimum_agent_phase": 5,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "left_sandwiched_dual_horn3_vertex_knapsack_stacked_forked_route",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L15",
+      "legacy_schema": "opencode_lean_proposition_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L15/left_sandwiched_dual_horn3_vertex_knapsack_stacked_forked_route.yaml",
+      "legacy_sample_sha256": "4ef3c2d6a12dcd863f09edcedd35bbd760d3fc727ec16265a431d1e3db2d9673",
+      "legacy_oracles": [
+        {
+          "kind": "gold_proof",
+          "path": "Opencode/GoldProofs/L15/left_sandwiched_dual_horn3_vertex_knapsack_stacked_forked_route.lean",
+          "sha256": "9b7fc5335b2cd031c50201728ff0aa3c3f45682b5278dc2b0023719ad482b2fc"
+        }
+      ],
+      "target_lane": "authoring.stacked-forked-group",
+      "minimum_agent_phase": 5,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "exact_cover_route",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L2",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L2/exact_cover_route.yaml",
+      "legacy_sample_sha256": "cb19035383370f671f7270441de3b56a3c17fba06a26d13b24786ba2af6c1702",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L2/exact_cover_route.lean",
+          "sha256": "9af56fb96eaa15abc1ad9db1e251e4a2cedb91e7adb2314cce3c1deb2dba1f9e"
+        }
+      ],
+      "target_lane": "route.single-hop",
+      "minimum_agent_phase": 1,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "generated_mixed_csp_route",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L2",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L2/generated_mixed_csp_route.yaml",
+      "legacy_sample_sha256": "31c9858e48c21482e724cb414db89538019015d34e1d6d1d3b3aa3853a03801b",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L2/generated_mixed_csp_route.lean",
+          "sha256": "e61de872d83774d7052b45707ef30a730418c7bee45d871ab2b71eee8bc4eb46"
+        }
+      ],
+      "target_lane": "route.single-hop",
+      "minimum_agent_phase": 1,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "graph_coloring_route",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L2",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L2/graph_coloring_route.yaml",
+      "legacy_sample_sha256": "ab9e2664a361b6d38ee656352d0f95f3cf9b9b936aa3868809dbbc8b9b569035",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L2/graph_coloring_route.lean",
+          "sha256": "af4b176379b227817a25a5e98e53aff95263a3368cb438c5b550ef7805528b8b"
+        }
+      ],
+      "target_lane": "route.single-hop",
+      "minimum_agent_phase": 1,
+      "disposition": "migrated",
+      "current_case_ids": [
+        "graph-coloring-route"
+      ],
+      "reason": "Ported to exact PresentedProblem endpoints and current CertifiedReduction registry."
+    },
+    {
+      "legacy_case_id": "numeric_subset_tradeoff_route",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L2",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L2/numeric_subset_tradeoff_route.yaml",
+      "legacy_sample_sha256": "63a87ff1e61d4fb6dedb9cc347153b5c2e27cc9a32cf1f74b2ae534f9c148fcf",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L2/numeric_subset_tradeoff_route.lean",
+          "sha256": "f17d248a26143e17d04776d83f362966ce3e7e4a13bfc0a77fe47ac2c8470ad2"
+        }
+      ],
+      "target_lane": "route.single-hop",
+      "minimum_agent_phase": 1,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "set_cover_budget_route",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L2",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L2/set_cover_budget_route.yaml",
+      "legacy_sample_sha256": "ec825d8448f210e332c83c8a517e7c1db5d06eebdf287318a95471152b6fa51f",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L2/set_cover_budget_route.lean",
+          "sha256": "9f734efa74b995f9b674761858a4f4fa7475a7770c3a884ad3cfdd4c52690347"
+        }
+      ],
+      "target_lane": "route.single-hop",
+      "minimum_agent_phase": 1,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "clique_audit_interface",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L3",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L3/clique_audit_interface.yaml",
+      "legacy_sample_sha256": "1cd2a71c5533315e3e0646225635229c38190c3d0c80fc422dcaa8531ac02fc3",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L3/clique_audit_interface.lean",
+          "sha256": "3b35f788391a12fdd21181b3274f7c028e17a08bab8c5de0c94f5ce7c8380756"
+        }
+      ],
+      "target_lane": "gap.presentation-or-primitive",
+      "minimum_agent_phase": 4,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "hitting_set_disabled_fallback_interface",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L3",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L3/hitting_set_disabled_fallback_interface.yaml",
+      "legacy_sample_sha256": "162bfcfd3f52e357498aeaaf56fe52f4a20a546f65f65ccce59c3495c31a1a09",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L3/hitting_set_disabled_fallback_interface.lean",
+          "sha256": "6b5042b66bf04e7c6a277a8a37e60cbee25bd9940fdada13a273f16d584e5058"
+        }
+      ],
+      "target_lane": "gap.presentation-or-primitive",
+      "minimum_agent_phase": 4,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "knapsack_double_negation_interface",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L3",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L3/knapsack_double_negation_interface.yaml",
+      "legacy_sample_sha256": "bc9ffe11fd7964d024a25bfadcd6c043edac7f14c9cd60034272ac6408c96f5f",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L3/knapsack_double_negation_interface.lean",
+          "sha256": "12db9bcb6bc1d0bd38ffcfe38f734424c850f26e1270f14cc23cb12955944816"
+        }
+      ],
+      "target_lane": "gap.presentation-or-primitive",
+      "minimum_agent_phase": 4,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "set_covering_duplicate_checker_interface",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L3",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L3/set_covering_duplicate_checker_interface.yaml",
+      "legacy_sample_sha256": "1033f8d5f5724465f5301b83953cc259eaddbd8ff299e9c1a549465bf9fcb2e2",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L3/set_covering_duplicate_checker_interface.lean",
+          "sha256": "282793ac76721418e0bd342bc4a5c57b4a1fb5d1d278fc8c02fa8c15fe895b2b"
+        }
+      ],
+      "target_lane": "gap.presentation-or-primitive",
+      "minimum_agent_phase": 4,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "vertex_cover_disabled_exception_interface",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L3",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L3/vertex_cover_disabled_exception_interface.yaml",
+      "legacy_sample_sha256": "439cb20f56629597c139ceebd00a060edce3e4c3557c77f1e2bb2d09d968f219",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L3/vertex_cover_disabled_exception_interface.lean",
+          "sha256": "96830e3597f839920089eb0bc4b2fa37157fd0c9901ac0f16146ccc94f971ea4"
+        }
+      ],
+      "target_lane": "gap.presentation-or-primitive",
+      "minimum_agent_phase": 4,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "clique_layered_cover_route",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L4",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L4/clique_layered_cover_route.yaml",
+      "legacy_sample_sha256": "7c0bed160d806092b611bb81294e5bec9c8b8f9e4e8042341e5b1bca401464ad",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L4/clique_layered_cover_route.lean",
+          "sha256": "c8439ef9a573bf3e70fcfed27bbbb404a4ec5c2e083a7ed0b6bba91a6b26273b"
+        }
+      ],
+      "target_lane": "route.multihop",
+      "minimum_agent_phase": 1,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "hard_cnf_three_sat_zero_one_ip_route",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L4",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L4/hard_cnf_three_sat_zero_one_ip_route.yaml",
+      "legacy_sample_sha256": "1c4eeab787973d848dda83e406f24fb263a22f027eb0b75e76ba77a74452ff7c",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L4/hard_cnf_three_sat_zero_one_ip_route.lean",
+          "sha256": "65baacc7228123d3ef61439b01d6ef2e6cde5d89457a16dc4339984c626d1b4b"
+        }
+      ],
+      "target_lane": "route.multihop",
+      "minimum_agent_phase": 1,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "hard_three_sat_chromatic_clique_cover_route",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L4",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L4/hard_three_sat_chromatic_clique_cover_route.yaml",
+      "legacy_sample_sha256": "bc6e713c1368f2e77a777c49fc847f90ece0469d02761f208c8b26ef5d180c32",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L4/hard_three_sat_chromatic_clique_cover_route.lean",
+          "sha256": "0120bd85ded0ab9aa5b2ae6ed25d640700c187249e3acb5e130017955b2c220c"
+        }
+      ],
+      "target_lane": "route.multihop",
+      "minimum_agent_phase": 1,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "hard_vertex_cover_feedback_arc_route",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L4",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L4/hard_vertex_cover_feedback_arc_route.yaml",
+      "legacy_sample_sha256": "ea1789007556b1bce36feefb47bd43c40f762ea82432a8be7194c9db6f2b04a3",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L4/hard_vertex_cover_feedback_arc_route.lean",
+          "sha256": "b4fdaa3527e9c243a750b65f004fba19e88ea3b23c04ea9e02df5a215556fd1a"
+        }
+      ],
+      "target_lane": "route.multihop",
+      "minimum_agent_phase": 1,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "knapsack_cut_route",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L4",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L4/knapsack_cut_route.yaml",
+      "legacy_sample_sha256": "a65d50dc5d7dce327e8900f3115a6bd899a383d9ded081037a7cbea522c19ff9",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L4/knapsack_cut_route.lean",
+          "sha256": "ee2ed6f5c06cdfd56b1eccf30d2164afec469bda191115ebf1afb8a7d2f5dd0d"
+        }
+      ],
+      "target_lane": "route.multihop",
+      "minimum_agent_phase": 1,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "set_cover_exact_steiner_route",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L4",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L4/set_cover_exact_steiner_route.yaml",
+      "legacy_sample_sha256": "27021e4568906f5ef83e4e19c28ed062520759daeb2e23868e8554d126464728",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L4/set_cover_exact_steiner_route.lean",
+          "sha256": "bb648a99e8ff68862f4c0ebba395965c8d668c5b7acb939b5a1f2069f149ecea"
+        }
+      ],
+      "target_lane": "route.multihop",
+      "minimum_agent_phase": 1,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "hard_nested_left_vertex_cover_set_covering_bridge",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L5",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L5/hard_nested_left_vertex_cover_set_covering_bridge.yaml",
+      "legacy_sample_sha256": "7c4a686e4554529b3abbc71a044f516e5f76980da6e978a83fbcb12f6289cc4d",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L5/hard_nested_left_vertex_cover_set_covering_bridge.lean",
+          "sha256": "ad433afbe894fa5918aa4557b6033b16259b328ae001fccf26f6f69174264477"
+        }
+      ],
+      "target_lane": "gap.presentation-bridge",
+      "minimum_agent_phase": 4,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "hard_nested_right_exact_cover_steiner_bridge",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L5",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L5/hard_nested_right_exact_cover_steiner_bridge.yaml",
+      "legacy_sample_sha256": "0253b762f487f7b822d73252b770520df29d9e1288d194f4af429ebe559285b1",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L5/hard_nested_right_exact_cover_steiner_bridge.lean",
+          "sha256": "a809276411224e930e2183af7ec017047510fcbc0f0a3a0d3c3d2880f7f69180"
+        }
+      ],
+      "target_lane": "gap.presentation-bridge",
+      "minimum_agent_phase": 4,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "hard_right_tagged_clique_vertex_cover_bridge",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L5",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L5/hard_right_tagged_clique_vertex_cover_bridge.yaml",
+      "legacy_sample_sha256": "68f0daf560f7ee25a3500430f55db5d32f7bc7f53457db1f3183228c5bb067a1",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L5/hard_right_tagged_clique_vertex_cover_bridge.lean",
+          "sha256": "6df374928f324a70c6120234cecd7d0fc2315aeea8ee32b5b99d0c4f6b482006"
+        }
+      ],
+      "target_lane": "gap.presentation-bridge",
+      "minimum_agent_phase": 4,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "hard_sandwiched_directed_hamiltonian_undirected_bridge",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L5",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L5/hard_sandwiched_directed_hamiltonian_undirected_bridge.yaml",
+      "legacy_sample_sha256": "da5bcd0586f0fbd48d3c0f1a4da515851bd1d556c2f5e4e225cb98fbe9cf935c",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L5/hard_sandwiched_directed_hamiltonian_undirected_bridge.lean",
+          "sha256": "f41fb8870dfec1830d15c8e7fc62d3a42b110458dc0d35aaf38363b2de8647f0"
+        }
+      ],
+      "target_lane": "gap.presentation-bridge",
+      "minimum_agent_phase": 4,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "exact_cover_steiner_textbook_adapter",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L6",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L6/exact_cover_steiner_textbook_adapter.yaml",
+      "legacy_sample_sha256": "bdabe6fafc6f6fd22075f026dbf07ba6c1f8815fd0dd8fc87c1b1e27ac1b8ce7",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L6/exact_cover_steiner_textbook_adapter.lean",
+          "sha256": "e3d8723a6bb4cb650f295522ae60d91655b9eded475a200de82abb09587b2a86"
+        }
+      ],
+      "target_lane": "authoring.reduction",
+      "minimum_agent_phase": 5,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "hard_nested_set_cover_exact_cover_textbook_adapter",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L6",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L6/hard_nested_set_cover_exact_cover_textbook_adapter.yaml",
+      "legacy_sample_sha256": "631f67094d08bd7d70397513ef421ee32a375416f2678e5e877c533014e00a00",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L6/hard_nested_set_cover_exact_cover_textbook_adapter.lean",
+          "sha256": "0297c8b26afb25f96b261bb8f43b002c989ae9d256744a8a72bc040bddb57529"
+        }
+      ],
+      "target_lane": "authoring.reduction",
+      "minimum_agent_phase": 5,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "hard_nested_vertex_cover_set_covering_textbook_adapter",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L6",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L6/hard_nested_vertex_cover_set_covering_textbook_adapter.yaml",
+      "legacy_sample_sha256": "0ba70eb1b89e650c2bdc8bd2392f7121e76e4389b9214f9ee8d10f1f2294577e",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L6/hard_nested_vertex_cover_set_covering_textbook_adapter.lean",
+          "sha256": "48e613ec098fac974009b7a0747cef9ada39932f42a0217683552bf0b8f3379e"
+        }
+      ],
+      "target_lane": "authoring.reduction",
+      "minimum_agent_phase": 5,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "hard_sandwiched_chromatic_clique_cover_textbook_adapter",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L6",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L6/hard_sandwiched_chromatic_clique_cover_textbook_adapter.yaml",
+      "legacy_sample_sha256": "ef6920f66f4e297421668bc778e3f6eb88a5ce5ab7866d376ee90320f6f8ad27",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L6/hard_sandwiched_chromatic_clique_cover_textbook_adapter.lean",
+          "sha256": "774e9cc0614e7cfa3c54d479bc09679abc8b759972839ddeeeac579dc7ab27a0"
+        }
+      ],
+      "target_lane": "authoring.reduction",
+      "minimum_agent_phase": 5,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "hard_tagged_three_sat_clique_textbook_adapter",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L6",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L6/hard_tagged_three_sat_clique_textbook_adapter.yaml",
+      "legacy_sample_sha256": "e82ef50e90ffa29d91043eeefe7c7281123651660635a905c499e1aeb615fed0",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L6/hard_tagged_three_sat_clique_textbook_adapter.lean",
+          "sha256": "4a95c44d1464175820fec6bacd6fa49c5bc17830af1519cf1224ad94ae67ddb1"
+        }
+      ],
+      "target_lane": "authoring.reduction",
+      "minimum_agent_phase": 5,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "three_sat_zero_one_ip_textbook_adapter",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L6",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L6/three_sat_zero_one_ip_textbook_adapter.yaml",
+      "legacy_sample_sha256": "d2398e57558886acbf1b87a1fdf45f6cd2b1dd859ca8c38ec44e9d84ec04cdf3",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L6/three_sat_zero_one_ip_textbook_adapter.lean",
+          "sha256": "877eff48cfba22ba245dea28d9b8222b798e61636b8c6ec7d055a60811b9091c"
+        }
+      ],
+      "target_lane": "authoring.reduction",
+      "minimum_agent_phase": 5,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "nae3_schaefer_hard_certificate",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L7",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L7/nae3_schaefer_hard_certificate.yaml",
+      "legacy_sample_sha256": "409252a3612475ead13635797f80835e77de5aeb4864595f1e5cfe1b9608d3ff",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L7/nae3_schaefer_hard_certificate.lean",
+          "sha256": "ace61f92a51f62fe0582214b8fe90fc058d7e2c09a254c57bd88876302d636aa"
+        }
+      ],
+      "target_lane": "completeness.native",
+      "minimum_agent_phase": 6,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "one_in_three_schaefer_hard_certificate",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L7",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L7/one_in_three_schaefer_hard_certificate.yaml",
+      "legacy_sample_sha256": "02c09529c300d6c163bf44bdc1111dd46b0f796f7322043e7c9b287fabda423f",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L7/one_in_three_schaefer_hard_certificate.lean",
+          "sha256": "dac65e983b4a3c502738acce9ae87f71c22cf68204b5ef72aa3fdbb5d6289960"
+        }
+      ],
+      "target_lane": "completeness.native",
+      "minimum_agent_phase": 6,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "three_sat_like_schaefer_hard_certificate",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L7",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L7/three_sat_like_schaefer_hard_certificate.yaml",
+      "legacy_sample_sha256": "5e3be627bc874c8d04bb4edd8432c0d20cb4a093c27d34c349939c0ade12ea04",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L7/three_sat_like_schaefer_hard_certificate.lean",
+          "sha256": "e4d823840a9e4439ea8cedcb8022c236c80ce4dc61fb7e4663815794cccead19"
+        }
+      ],
+      "target_lane": "completeness.native",
+      "minimum_agent_phase": 6,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "nested_nae3_csp_local_adapter",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L8",
+      "legacy_schema": "opencode_lean_proposition_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L8/nested_nae3_csp_local_adapter.yaml",
+      "legacy_sample_sha256": "750138c1a0c44e7788978ab4f3f642c23a54c6da79437a64b21ecb23f86181bd",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L8/nested_nae3_csp_local_adapter.lean",
+          "sha256": "477f86fa2c894326dc5feb465597103d7fc93544d04acc7e8c0c03c86eb84edc"
+        },
+        {
+          "kind": "gold_proof",
+          "path": "Opencode/GoldProofs/L8/nested_nae3_csp_local_adapter.lean",
+          "sha256": "e6705ca060f2c01d5aa460bae3756e4c7ff632b8987dc46a0884d3030923047f"
+        }
+      ],
+      "target_lane": "authoring.local-adapter",
+      "minimum_agent_phase": 4,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "nested_vertex_cover_local_adapter",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L8",
+      "legacy_schema": "opencode_lean_proposition_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L8/nested_vertex_cover_local_adapter.yaml",
+      "legacy_sample_sha256": "cc90f268cd8d0cd3f45cd0c9635f158637238c6067be4fb716a05dbc8c5158ea",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L8/nested_vertex_cover_local_adapter.lean",
+          "sha256": "d8ea34f853851a015f370214e5ffc63758622aa02e96a70871c7cab0e6ece459"
+        },
+        {
+          "kind": "gold_proof",
+          "path": "Opencode/GoldProofs/L8/nested_vertex_cover_local_adapter.lean",
+          "sha256": "d5e0e7a6f28214041cec1bc66e9b024641b3e772baf31d5321eccd69f33599a2"
+        }
+      ],
+      "target_lane": "authoring.local-adapter",
+      "minimum_agent_phase": 4,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "right_tagged_clique_local_adapter",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L8",
+      "legacy_schema": "opencode_lean_proposition_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L8/right_tagged_clique_local_adapter.yaml",
+      "legacy_sample_sha256": "8ea7c4fbf824b9f85551b9fc9511cb4a64c2d7a771789ea39eeb47b430692930",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L8/right_tagged_clique_local_adapter.lean",
+          "sha256": "8f51cf0dd5816b293ea5dda6ff35b936c130ae956c1fe93e8dfdb23b39929d5c"
+        },
+        {
+          "kind": "gold_proof",
+          "path": "Opencode/GoldProofs/L8/right_tagged_clique_local_adapter.lean",
+          "sha256": "d5b8c81f5da92aef592bdaaffeedb08c93eb53ffb4ca654ebb52024994dbe0e9"
+        }
+      ],
+      "target_lane": "authoring.local-adapter",
+      "minimum_agent_phase": 4,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "sandwiched_knapsack_local_adapter",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L8",
+      "legacy_schema": "opencode_lean_proposition_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L8/sandwiched_knapsack_local_adapter.yaml",
+      "legacy_sample_sha256": "9f786bd19a84d8d013d74bedaf7a3af45426234d01f1aa23126f3a93ce801890",
+      "legacy_oracles": [
+        {
+          "kind": "hidden_target",
+          "path": "Opencode/HiddenTargets/L8/sandwiched_knapsack_local_adapter.lean",
+          "sha256": "854111387db9a52a8382360cda7ef0172bcaa88b9da6add6b7c66d729f8e5e26"
+        },
+        {
+          "kind": "gold_proof",
+          "path": "Opencode/GoldProofs/L8/sandwiched_knapsack_local_adapter.lean",
+          "sha256": "3be6e8492283c28f81b0e5dad6502abfa3f4ae83bffb36c2c7c7c20f9a136063"
+        }
+      ],
+      "target_lane": "authoring.local-adapter",
+      "minimum_agent_phase": 4,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "nested_vertex_cover_open_two_hop_synthesis",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L9",
+      "legacy_schema": "opencode_lean_proposition_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L9/nested_vertex_cover_open_two_hop_synthesis.yaml",
+      "legacy_sample_sha256": "67159565f55336d1d927d38df6309592066e658f325daf6368a6adcce4c6d8f3",
+      "legacy_oracles": [
+        {
+          "kind": "gold_proof",
+          "path": "Opencode/GoldProofs/L9/nested_vertex_cover_open_two_hop_synthesis.lean",
+          "sha256": "4dcfa42625862d9947f6fdc78b31975a42f511e4a14acece9cd1b922b23ae48d"
+        }
+      ],
+      "target_lane": "authoring.open-route",
+      "minimum_agent_phase": 5,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "sandwiched_set_covering_open_two_hop_synthesis",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L9",
+      "legacy_schema": "opencode_lean_proposition_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L9/sandwiched_set_covering_open_two_hop_synthesis.yaml",
+      "legacy_sample_sha256": "3f9fc956ea3415f82502668550e0eb8e43947ce752a19c545639506a2c751982",
+      "legacy_oracles": [
+        {
+          "kind": "gold_proof",
+          "path": "Opencode/GoldProofs/L9/sandwiched_set_covering_open_two_hop_synthesis.lean",
+          "sha256": "28d1e70a5c2a7d4b16ee08221788f853ccf830c5ad4175ca1966d6e8c132e509"
+        }
+      ],
+      "target_lane": "authoring.open-route",
+      "minimum_agent_phase": 5,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "tagged_clique_open_two_hop_synthesis",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L9",
+      "legacy_schema": "opencode_lean_proposition_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L9/tagged_clique_open_two_hop_synthesis.yaml",
+      "legacy_sample_sha256": "556e5d75cba4b9c3295052f578eab95597a706f14d69b6ef034629cee3c9263d",
+      "legacy_oracles": [
+        {
+          "kind": "gold_proof",
+          "path": "Opencode/GoldProofs/L9/tagged_clique_open_two_hop_synthesis.lean",
+          "sha256": "e3faa07c23892ac9a737ed78123f60bd169f0c5f248165d34fac888906c158f8"
+        }
+      ],
+      "target_lane": "authoring.open-route",
+      "minimum_agent_phase": 5,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "tagged_three_sat_open_two_hop_synthesis",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "L9",
+      "legacy_schema": "opencode_lean_proposition_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/L9/tagged_three_sat_open_two_hop_synthesis.yaml",
+      "legacy_sample_sha256": "528a80e4f13144ea59c979c2fc1d33ca64757269aee7bae163e4ea407a604684",
+      "legacy_oracles": [
+        {
+          "kind": "gold_proof",
+          "path": "Opencode/GoldProofs/L9/tagged_three_sat_open_two_hop_synthesis.lean",
+          "sha256": "803a012539273815e5cc1d1eed5e05f97f18e826c92cdb53d90671ed643a1dce"
+        }
+      ],
+      "target_lane": "authoring.open-route",
+      "minimum_agent_phase": 5,
+      "disposition": "deferred",
+      "current_case_ids": [],
+      "reason": "Retained as quarantined migration source; current exact-type port and lane-specific verification remain pending."
+    },
+    {
+      "legacy_case_id": "fall2014_most_neighbors",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "Quals",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/Quals/fall2014_most_neighbors.yaml",
+      "legacy_sample_sha256": "3c5e63e8fe25a884572e4c3c13d143f463ee9f4ace9c0e42dbc69f76d5e6a424",
+      "legacy_oracles": [],
+      "target_lane": "quals-completeness-after-formalization",
+      "minimum_agent_phase": 14,
+      "disposition": "migrated",
+      "state": "active_since_stage_n_c",
+      "current_case_ids": [
+        "fall2014-most-neighbors"
+      ],
+      "reason": "Migrated after exact public formalization, independent validation, external-neighborhood native-membership authoring, the fresh real DeepSeek 12-case N-C run, three independent stability runs, combined Lean verification, and independent release replay."
+    },
+    {
+      "legacy_case_id": "fall2016_node_deletion_bipartite",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "Quals",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/Quals/fall2016_node_deletion_bipartite.yaml",
+      "legacy_sample_sha256": "054b1a57c09797d61c34ea331858478d2ddfa68fd10fe1f4a1e3b66c99e37130",
+      "legacy_oracles": [],
+      "target_lane": "quals-completeness-after-formalization",
+      "minimum_agent_phase": 14,
+      "disposition": "migrated",
+      "state": "active_since_stage_n_b",
+      "current_case_ids": [
+        "fall2016-node-deletion-bipartite"
+      ],
+      "reason": "Migrated after exact public formalization, independent validation, deletion-coloring native-membership authoring, a fresh real DeepSeek 8-case N-B run, combined Lean verification, and independent release replay."
+    },
+    {
+      "legacy_case_id": "spring2015_exactly_one_neighbor",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "Quals",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/Quals/spring2015_exactly_one_neighbor.yaml",
+      "legacy_sample_sha256": "89344668a71a872d0217b1e4d1ca3ce885279170d4a7a8bf5a96fcaf9ab46c14",
+      "legacy_oracles": [],
+      "target_lane": "quals-completeness-after-formalization",
+      "minimum_agent_phase": 14,
+      "disposition": "migrated",
+      "state": "active_since_stage_n_a",
+      "current_case_ids": [
+        "spring2015-exactly-one-neighbor"
+      ],
+      "reason": "Migrated after exact public formalization, independent validation, one native-membership authoring closure, a fresh real DeepSeek 4-case N-A run, combined Lean verification, and independent release replay."
+    },
+    {
+      "legacy_case_id": "uiuc_spring2020_two_disjoint_bounded_paths",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "Quals",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/Quals/uiuc_spring2020_two_disjoint_bounded_paths.yaml",
+      "legacy_sample_sha256": "00095fb52223da57aff0178e3dcf7d952f02212066cf17b1792e5dcfb0f30520",
+      "legacy_oracles": [],
+      "target_lane": "quals-completeness-after-formalization",
+      "minimum_agent_phase": 14,
+      "disposition": "migrated",
+      "state": "active_since_stage_n_c",
+      "current_case_ids": [
+        "uiuc2020-two-disjoint-bounded-paths"
+      ],
+      "reason": "Migrated after exact public formalization, independent validation, pair-of-path native-membership authoring, the fresh real DeepSeek 12-case N-C run, three independent stability runs, combined Lean verification, and independent release replay."
+    },
+    {
+      "legacy_case_id": "uiuc_spring2022_seeing_set",
+      "legacy_suite": "opencode_decision_problem_v0.19.0",
+      "legacy_level": "Quals",
+      "legacy_schema": "opencode_decision_problem_sample_file_v1",
+      "legacy_sample_file": "Opencode/Samples/Quals/uiuc_spring2022_seeing_set.yaml",
+      "legacy_sample_sha256": "9fa11bae67a18a34245ce1ffb1ee737ca641d50b9230595411102a115d8276fa",
+      "legacy_oracles": [],
+      "target_lane": "quals-completeness-after-formalization",
+      "minimum_agent_phase": 14,
+      "disposition": "migrated",
+      "state": "active_since_stage_n_b",
+      "current_case_ids": [
+        "uiuc2022-seeing-set"
+      ],
+      "reason": "Migrated after exact public formalization, independent validation, one program-indexed reduction authoring closure, a fresh real DeepSeek 8-case N-B run, combined Lean verification, and independent release replay."
+    }
+  ]
+}

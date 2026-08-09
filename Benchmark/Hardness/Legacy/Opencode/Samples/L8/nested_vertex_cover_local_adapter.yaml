@@ -1,0 +1,44 @@
+schema_version: opencode_lean_proposition_sample_file_v1
+id: nested_vertex_cover_local_adapter
+name: nested_vertex_cover_local_adapter_problem
+benchmark_level: L8
+input_language: nested_vertex_cover_local_adapter_interface
+problem_family: graph_interface
+certificate_contract: lean_proposition
+problem_statement: "Input is packaged as ((standard Vertex Cover instance, ignored phase bit), ignored checksum bit). Decide whether the Vertex Cover instance is accepting. Certify NP membership by writing a local adapter proof from this nested interface to the standard Vertex Cover problem, then use local library evidence for the target."
+difficulty: local_adapter_authoring
+difficulty_tags: [graph, local_helper, nonidentity_map, nested_projection]
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction
+
+  noncomputable section
+
+  abbrev localAdapterTarget : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.Combinatorics.Graph.vertexCoverDecisionProblem
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    { Instance := ComplexityReduction.EncodedType.prod
+        (ComplexityReduction.EncodedType.prod
+          localAdapterTarget.Instance
+          ComplexityReduction.EncodedType.bool)
+        ComplexityReduction.EncodedType.bool
+      isYes := fun p => localAdapterTarget.isYes p.1.1 }
+lean_target_type: |
+  (∀ x : problem.Instance.Carrier,
+      problem.isYes x ↔ localAdapterTarget.isYes x.1.1) ∧
+    ∃ _localAdapterReduction :
+      ComplexityReduction.KarpReductionM
+        ComplexityReduction.CostedPolyTimeModel
+        problem
+        localAdapterTarget,
+      ComplexityReduction.PolyReducibleM
+        ComplexityReduction.CostedPolyTimeModel
+        problem
+        localAdapterTarget ∧
+      ComplexityReduction.InNPEnc
+        ComplexityReduction.CostedPolyTimeModel
+        localAdapterTarget ∧
+      ComplexityReduction.InNPEnc
+        ComplexityReduction.CostedPolyTimeModel
+        problem

@@ -1,0 +1,26 @@
+schema_version: opencode_decision_problem_sample_file_v1
+id: knapsack_binary_structured
+name: knapsack_binary_structured_problem
+input_language: knapsack_binary_structured_encoding
+problem_family: numeric
+problem_statement: Given a binary-numeric finite encoding of item weights, item values, a capacity, and a target value, decide whether a subset of items has total weight within the capacity and total value at least the target.
+certificate_contract: lean_proposition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction.Karp21.PackagedCatalog
+
+  noncomputable section
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.Combinatorics.knapsackBinaryStructuredDecisionProblem
+lean_target_type: |
+  ComplexityReduction.SAT.TMInNPWithCheckedSuffixDecoder problem ∧
+    ComplexityReduction.TMInNP problem
+difficulty: challenge
+difficulty_tags:
+- numeric
+- binary_numeric_encoding
+- checked_suffix_decoder
+- tm_np_membership
+- subset_witness
+- exact_binding

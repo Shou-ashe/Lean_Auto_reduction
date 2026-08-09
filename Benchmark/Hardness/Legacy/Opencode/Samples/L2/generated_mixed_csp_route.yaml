@@ -1,0 +1,29 @@
+schema_version: opencode_decision_problem_sample_file_v1
+id: generated_mixed_csp_route
+name: generated_mixed_csp_route_problem
+input_language: generated_mixed_boolean_csp_route_composition
+problem_family: boolean_csp
+problem_statement: Given an instance of a fixed finite Boolean CSP language with one binary equality relation and one ternary relation accepting every tuple except all-false, decide whether the constraints are satisfiable.
+certificate_contract: lean_proposition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction
+
+  noncomputable section
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.CSP.Examples.Generated.CustomMixed.decisionProblem
+lean_target_type: |
+  ∃ routeTarget : ComplexityReduction.EncodedDecisionProblem,
+    routeTarget = ComplexityReduction.SAT.threeSATDecisionProblem ∧
+      ∃ reductionCertificate :
+        ComplexityReduction.KarpReductionM ComplexityReduction.CostedPolyTimeModel problem routeTarget,
+        ComplexityReduction.InNPEnc ComplexityReduction.CostedPolyTimeModel routeTarget ∧
+          ComplexityReduction.InNPEnc ComplexityReduction.CostedPolyTimeModel problem
+route_target_policy: any
+difficulty: route_composition
+difficulty_tags:
+- csp
+- finite_boolean_language
+- generated_language
+- route_certificate

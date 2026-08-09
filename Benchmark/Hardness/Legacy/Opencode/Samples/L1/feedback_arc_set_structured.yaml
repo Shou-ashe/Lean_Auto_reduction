@@ -1,0 +1,26 @@
+schema_version: opencode_decision_problem_sample_file_v1
+id: feedback_arc_set_structured
+name: feedback_arc_set_structured_problem
+input_language: feedback_arc_set_structured_encoding
+problem_family: graph
+problem_statement: Given a finitely encoded directed graph and a budget k, decide whether removing at most k listed arcs leaves no directed cycle among the remaining arcs.
+certificate_contract: lean_proposition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction.Karp21.PackagedCatalog
+
+  noncomputable section
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.Combinatorics.Graph.feedbackArcSetStructuredDecisionProblem
+lean_target_type: |
+  ComplexityReduction.SAT.TMInNPWithCheckedSuffixDecoder problem ∧
+    ComplexityReduction.TMInNP problem
+difficulty: challenge
+difficulty_tags:
+- graph
+- structured_encoding
+- checked_suffix_decoder
+- tm_np_membership
+- deletion_witness
+- directed_cycle

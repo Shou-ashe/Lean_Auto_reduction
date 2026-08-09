@@ -1,0 +1,22 @@
+schema_version: opencode_decision_problem_sample_file_v1
+id: nae3_csp
+name: nae3_csp_problem
+input_language: nae3_boolean_csp
+problem_family: boolean_csp
+problem_statement: Given an instance of the fixed not-all-equal ternary Boolean CSP language, decide whether there is a Boolean assignment satisfying every constraint.
+certificate_contract: lean_proposition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction
+
+  noncomputable section
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.CSP.Examples.notAllEqual3DecisionProblem
+lean_target_type: |
+  ComplexityReduction.InNPEnc ComplexityReduction.CostedPolyTimeModel problem
+difficulty: medium
+difficulty_tags:
+- csp
+- finite_boolean_language
+- non_horn_relation

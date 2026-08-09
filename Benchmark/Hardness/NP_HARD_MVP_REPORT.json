@@ -1,0 +1,150 @@
+{
+  "active_plan_sha256": "53d81130cb100dddb28438dab9dce33549a577871f5ffacaa4b924daa3272fa5",
+  "deletion_body_audit": {
+    "failure_code": "no_forward_path_from_hardness_seed",
+    "model_calls": 0,
+    "passed": true,
+    "publication": null,
+    "report_file": "tmp/np-hard-r-c-deletion-audit-v1/report.json",
+    "report_sha256": "d3f90c9b18a6ce9e185b46d3819d95ab8a16aea8f98c445cd02337eeb641f33b",
+    "status": "BLOCKED"
+  },
+  "direction": "hardness_seed_to_problem",
+  "final_lean_type": "ComplexityReduction.Certificate.NativeTMNPHard",
+  "generated_at": "2026-08-07T13:00:00.607115+00:00",
+  "metrics": {
+    "compiler_inserted_math_token_count": 0,
+    "deletion_restores_blocker_rate": 1.0,
+    "exact_final_np_hardness_rate": 1.0,
+    "fresh_core_selected_authored_atom_rate": 1.0,
+    "independent_replay_rate": 1.0,
+    "legacy_reduce_to_known_hardness_counted_as_success": 0,
+    "model_generated_hidden_case_success_rate": 1.0,
+    "standard_axiom_audit_rate": 1.0
+  },
+  "model": "deepseek-chat",
+  "objective": "prove_np_hard",
+  "passed": true,
+  "schema_version": "hardness_np_hard_mvp_real_report_v1",
+  "trust_boundary": {
+    "candidate_requires_real_lean_compile": true,
+    "final_artifact_requires_standard_axioms": true,
+    "fresh_core_after_publication": true,
+    "independent_release_replay": true,
+    "model_output_has_proof_authority": false,
+    "publication_is_content_addressed": true,
+    "target_membership_required": false
+  },
+  "verified_job": {
+    "artifact_file": "tmp/np-hard-model-real-r-c-v11/Artifact.lean",
+    "artifact_sha256": "c81d91c37c8cb279eee359e372f310f2a1e1877aa64e939438eb6337162def2c",
+    "candidate_body_sha256": "sha256:ef701564675fe512b9e0448e1d2d5a7f1b7f8095957b8533be3c93836b2ae086",
+    "candidate_source": "import Benchmark.Hardness.Inputs.NPHardMVP.ModelAuthoredTaggedThreeSAT\nimport ComplexityReduction.Agent.Hardness.Runtime\n\nnamespace Generated.NPHard.C609ae2e40e87f1a8.AuthoredForward\n\nopen ComplexityReduction\nopen ComplexityReduction.Certificate\n\n@[complexity_reduction_ir_typed_edge, complexity_reduction_ir_component_shared_gadget]\nnoncomputable def authoredForwardReduction :\n    ComplexityReduction.Certificate.CertifiedReduction ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem Benchmark.Hardness.Inputs.NPHardMVP.ModelAuthoredTaggedThreeSAT.source :=\n{\n  program := Benchmark.Hardness.Inputs.NPHardMVP.ModelAuthoredTaggedThreeSAT.forwardProgram,\n  correct := by\n    intro input\n    constructor\n    \u00b7 intro h\n      simp [Benchmark.Hardness.Inputs.NPHardMVP.ModelAuthoredTaggedThreeSAT.taggedSemantic,\n            Benchmark.Hardness.Inputs.NPHardMVP.ModelAuthoredTaggedThreeSAT.forwardProgram]\n      exact h\n    \u00b7 intro h\n      simp [Benchmark.Hardness.Inputs.NPHardMVP.ModelAuthoredTaggedThreeSAT.taggedSemantic,\n            Benchmark.Hardness.Inputs.NPHardMVP.ModelAuthoredTaggedThreeSAT.forwardProgram] at h\n      exact h\n}\n\nend Generated.NPHard.C609ae2e40e87f1a8.AuthoredForward\n\nassert_standard_axioms Generated.NPHard.C609ae2e40e87f1a8.AuthoredForward.authoredForwardReduction\n",
+    "candidate_source_sha256": "sha256:842997a533b55a521103d592891dbe1b0fd0953702b3dab5c922af31d7f26761",
+    "fresh_registry_fingerprint": "lean:8637868359114419944",
+    "fresh_resolution": {
+      "atoms": [
+        "Generated.NPHard.C609ae2e40e87f1a8.AuthoredForward.authoredForwardReduction"
+      ],
+      "completeness_declaration": "ComplexityReduction.Certificate.NativeCookLevin.canonicalThreeSATNativeCompleteness",
+      "direction": "hardness_seed_to_problem",
+      "evidence_kind": "transported_hardness",
+      "final_composition_count": 0,
+      "hardness_declaration": null,
+      "hub_declaration": "ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem",
+      "registry_fingerprint": "lean:8637868359114419944",
+      "request_id": "lean:1682829703",
+      "roles": [
+        "sharedGadget"
+      ],
+      "unique_dependency_count": 1
+    },
+    "independent_release_replay": true,
+    "initial_failure": {
+      "code": "no_forward_path_from_hardness_seed",
+      "declaration_handles": [
+        "ComplexityReduction.Certificate.NativeCookLevin.canonicalThreeSATNativeCompleteness"
+      ],
+      "explanation": "no validated forward path reaches request.problem from any native hardness seed",
+      "registry_fingerprint": "lean:17003872372039737758",
+      "request_id": "lean:1682829703",
+      "stable_gap_id": null
+    },
+    "job_id": "sha256:609ae2e40e87f1a87ad927a3107cf1b072c88787458f99365a781616827f387a",
+    "model_calls": 1,
+    "model_calls_public": [
+      {
+        "attempt": 1,
+        "called": true,
+        "duration_seconds": 1.845,
+        "finish_reason": "stop",
+        "ok": true,
+        "response_sha256": "sha256:53080cec6b433fccc270df75adc1c76f3c3e5db0a23ce05fccd33b741a5e1675",
+        "status_code": 200,
+        "usage": {
+          "completion_tokens": 204,
+          "prompt_cache_hit_tokens": 0,
+          "prompt_cache_miss_tokens": 1127,
+          "prompt_tokens": 1127,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          },
+          "total_tokens": 1331
+        }
+      }
+    ],
+    "model_response_sha256": "sha256:53080cec6b433fccc270df75adc1c76f3c3e5db0a23ce05fccd33b741a5e1675",
+    "publication": {
+      "attempt": 1,
+      "body_sha256": "sha256:ef701564675fe512b9e0448e1d2d5a7f1b7f8095957b8533be3c93836b2ae086",
+      "compiler_inserted_math_token_count": 0,
+      "direction": "hardness_seed_to_problem",
+      "model_calls": 1,
+      "model_response_sha256": "sha256:53080cec6b433fccc270df75adc1c76f3c3e5db0a23ce05fccd33b741a5e1675",
+      "provenance_kind": "model_generated",
+      "schema_version": "hardness_np_hard_authoring_publication_v1",
+      "source_declaration": "ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem",
+      "source_file": "tmp/np-hard-model-real-r-c-v11/published/842997a533b55a521103d592891dbe1b0fd0953702b3dab5c922af31d7f26761/src/Generated/NPHard/C609ae2e40e87f1a8/AuthoredForward.lean",
+      "source_relative_path": "src/Generated/NPHard/C609ae2e40e87f1a8/AuthoredForward.lean",
+      "source_sha256": "sha256:842997a533b55a521103d592891dbe1b0fd0953702b3dab5c922af31d7f26761",
+      "target_declaration": "Benchmark.Hardness.Inputs.NPHardMVP.ModelAuthoredTaggedThreeSAT.source",
+      "task": {
+        "candidate_declaration": "Generated.NPHard.C609ae2e40e87f1a8.AuthoredForward.authoredForwardReduction",
+        "candidate_module": "Generated.NPHard.C609ae2e40e87f1a8.AuthoredForward",
+        "direction": "hardness_seed_to_problem",
+        "exact_type": "ComplexityReduction.Certificate.CertifiedReduction ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem Benchmark.Hardness.Inputs.NPHardMVP.ModelAuthoredTaggedThreeSAT.source",
+        "gap_id": "sha256:55e25bb823e5f3e95e6c6bdc56bb76fa8f469619f9d6ceb7330fd21e7707c3e8",
+        "hub_declaration": "ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem",
+        "input_module": "Benchmark.Hardness.Inputs.NPHardMVP.ModelAuthoredTaggedThreeSAT",
+        "input_problem_declaration": "Benchmark.Hardness.Inputs.NPHardMVP.ModelAuthoredTaggedThreeSAT.source",
+        "input_source_sha256": "01ead5c8dc779be47ba4c6d2ffd2c95f8fc79cfd1158ec67f74f9318488dace9",
+        "max_attempts": 4,
+        "registry_fingerprint": "lean:17003872372039737758",
+        "request_id": "lean:1682829703",
+        "schema_version": "hardness_np_hard_authoring_task_v1",
+        "seed_evidence_declaration": "ComplexityReduction.Certificate.NativeCookLevin.canonicalThreeSATNativeCompleteness",
+        "seed_evidence_kind": "native_completeness_projection"
+      }
+    },
+    "report_file": "tmp/np-hard-model-real-r-c-v11/report.json",
+    "report_sha256": "3352e7f541dab707952939825f6076c04c8b385bd551ab4ca6d6f2585fb79b51",
+    "standard_axiom_audit": true,
+    "task": {
+      "candidate_declaration": "Generated.NPHard.C609ae2e40e87f1a8.AuthoredForward.authoredForwardReduction",
+      "candidate_module": "Generated.NPHard.C609ae2e40e87f1a8.AuthoredForward",
+      "direction": "hardness_seed_to_problem",
+      "exact_type": "ComplexityReduction.Certificate.CertifiedReduction ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem Benchmark.Hardness.Inputs.NPHardMVP.ModelAuthoredTaggedThreeSAT.source",
+      "gap_id": "sha256:55e25bb823e5f3e95e6c6bdc56bb76fa8f469619f9d6ceb7330fd21e7707c3e8",
+      "hub_declaration": "ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem",
+      "input_module": "Benchmark.Hardness.Inputs.NPHardMVP.ModelAuthoredTaggedThreeSAT",
+      "input_problem_declaration": "Benchmark.Hardness.Inputs.NPHardMVP.ModelAuthoredTaggedThreeSAT.source",
+      "input_source_sha256": "01ead5c8dc779be47ba4c6d2ffd2c95f8fc79cfd1158ec67f74f9318488dace9",
+      "max_attempts": 4,
+      "registry_fingerprint": "lean:17003872372039737758",
+      "request_id": "lean:1682829703",
+      "schema_version": "hardness_np_hard_authoring_task_v1",
+      "seed_evidence_declaration": "ComplexityReduction.Certificate.NativeCookLevin.canonicalThreeSATNativeCompleteness",
+      "seed_evidence_kind": "native_completeness_projection"
+    }
+  }
+}

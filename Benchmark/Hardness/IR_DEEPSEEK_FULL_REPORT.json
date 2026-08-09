@@ -1,0 +1,1304 @@
+{
+  "benchmark": {
+    "benchmark_id": "hardness-agent-e2e",
+    "case_ids": [
+      "graph-to-role-graph-flat",
+      "graph-to-role-graph-ir",
+      "structured-cnf-to-csp-flat",
+      "structured-cnf-to-csp-ir",
+      "two-cnf-to-csp-flat",
+      "two-cnf-to-csp-ir",
+      "three-sat-to-csp-flat",
+      "three-sat-to-csp-ir",
+      "exact-cover-to-eon-flat",
+      "exact-cover-to-eon-ir",
+      "modified-exact-cover-to-eon-flat",
+      "modified-exact-cover-to-eon-ir"
+    ],
+    "execution_count": 12,
+    "matched_pair_count": 6
+  },
+  "calls": {
+    "api_calls_this_run": 1,
+    "called": 12,
+    "completed": 12,
+    "duration_seconds": 347.391,
+    "expected": 12,
+    "http_ok": 12,
+    "protocol_accepted": 12,
+    "usage": {
+      "completion_tokens": 45654,
+      "prompt_cache_hit_tokens": 3712,
+      "prompt_cache_miss_tokens": 53424,
+      "prompt_tokens": 57136,
+      "total_tokens": 102790
+    }
+  },
+  "cases": [
+    {
+      "agent_interface_count": 28,
+      "attempts": 1,
+      "called_this_run": false,
+      "catalog_id": "sha256:6d649c2615acdfcb13187d6914fec52641165ef7e5d1043433693e342942a022",
+      "catalog_mode": "flat_api",
+      "duration_seconds": 5.11,
+      "family_id": "graph-role-graph",
+      "finish_reason": "stop",
+      "http_ok": true,
+      "id": "graph-to-role-graph-flat",
+      "lean_term": "ComplexityReduction.Certificate.CertifiedPath.step ComplexityReduction.Routes.GraphToRoleGraph.finalRoute",
+      "lean_term_sha256": "77438494115877063a056116631c64934b24c77f3334b8b4bc7af682a5dda9ee",
+      "lean_verified": false,
+      "matched_pair_id": "graph-to-role-graph",
+      "model_called": true,
+      "model_error": null,
+      "plan": {
+        "catalog_id": "sha256:6d649c2615acdfcb13187d6914fec52641165ef7e5d1043433693e342942a022",
+        "extensions": {},
+        "goal_id": null,
+        "metadata": {},
+        "objective": "reduce_to",
+        "outputs": [
+          {
+            "declaration_name": null,
+            "expected_type": "ComplexityReduction.Certificate.CertifiedPath Benchmark.Hardness.Inputs.IRFeasibility.Graph.GraphToRoleGraph.source Benchmark.Hardness.Inputs.IRFeasibility.Graph.GraphToRoleGraph.target",
+            "extensions": {},
+            "lean_code": "ComplexityReduction.Certificate.CertifiedPath.step ComplexityReduction.Routes.GraphToRoleGraph.finalRoute",
+            "metadata": {},
+            "output_id": "selected_path",
+            "output_kind": "lean.term",
+            "producer_steps": [
+              "s1"
+            ],
+            "schema_version": "hardness_plan_output_v1"
+          }
+        ],
+        "plan_id": "sha256:4ea4ca8fd27ba75bf9dfc9194537107906ec525a5a541652b70c1285f6b35224",
+        "registry_fingerprint": "lean:6968748221575336597",
+        "schema_version": "hardness_plan_v1",
+        "source_declaration": "Benchmark.Hardness.Inputs.IRFeasibility.Graph.GraphToRoleGraph.source",
+        "steps": [
+          {
+            "action_kind": "reuse.certified_reduction",
+            "argument_declarations": [],
+            "capability_kind": "certified_reduction",
+            "declaration": "ComplexityReduction.Routes.GraphToRoleGraph.finalRoute",
+            "depends_on": [],
+            "expected_type": null,
+            "extensions": {},
+            "input_handles": [],
+            "output_handles": [],
+            "parameters": {},
+            "role": "finalComposition",
+            "schema_version": "hardness_plan_step_v1",
+            "source_fingerprint": null,
+            "step_id": "s1",
+            "target_fingerprint": null
+          }
+        ],
+        "target_declaration": "Benchmark.Hardness.Inputs.IRFeasibility.Graph.GraphToRoleGraph.target"
+      },
+      "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-ir-codegen-full-20260730-hardness-plan-v1/calls/graph-to-role-graph-flat/prompt.json",
+      "prompt_sha256": "9c696a8bfffae52d88956fa31fd37b02f28ef10f647a59dc8fa985e71b0b1854",
+      "protocol_accepted": true,
+      "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-ir-codegen-full-20260730-hardness-plan-v1/calls/graph-to-role-graph-flat/response.json",
+      "response_sha256": "57dec5f579f9829163a0d543ab28e3e9cfd9fb3bdaeaba05d459a2c39d8113b1",
+      "reused_from_report": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-ir-codegen-full-20260730-hardness-plan-v1/report.json",
+      "selected_declarations": [
+        "ComplexityReduction.Routes.GraphToRoleGraph.finalRoute"
+      ],
+      "status_code": 200,
+      "usage": {
+        "completion_tokens": 741,
+        "completion_tokens_details": {
+          "reasoning_tokens": 290
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 3754,
+        "prompt_tokens": 3754,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 4495
+      }
+    },
+    {
+      "agent_interface_count": 50,
+      "attempts": 1,
+      "called_this_run": false,
+      "catalog_id": "sha256:ee1901476171624a10bc33d9d578019e4a3753f8a0039888f6fed5f4431891bc",
+      "catalog_mode": "ir_components",
+      "duration_seconds": 28.082,
+      "family_id": "graph-role-graph",
+      "finish_reason": "stop",
+      "http_ok": true,
+      "id": "graph-to-role-graph-ir",
+      "lean_term": "ComplexityReduction.Certificate.CertifiedPath.cons (ComplexityReduction.Certificate.CertifiedPath.step ComplexityReduction.Domain.GraphToGraphIRAdapter.sourceAdapter) ComplexityReduction.Domain.GraphIRRoleAssignmentGadget.sharedGadget",
+      "lean_term_sha256": "2c4c1a74ca4d4a1b468611b48dbee714b9e7055ac129b749f9e21e91fbcf4e53",
+      "lean_verified": false,
+      "matched_pair_id": "graph-to-role-graph",
+      "model_called": true,
+      "model_error": null,
+      "plan": {
+        "catalog_id": "sha256:ee1901476171624a10bc33d9d578019e4a3753f8a0039888f6fed5f4431891bc",
+        "extensions": {},
+        "goal_id": null,
+        "metadata": {},
+        "objective": "reduce_to",
+        "outputs": [
+          {
+            "declaration_name": null,
+            "expected_type": "ComplexityReduction.Certificate.CertifiedPath Benchmark.Hardness.Inputs.IRFeasibility.Graph.GraphToRoleGraph.source Benchmark.Hardness.Inputs.IRFeasibility.Graph.GraphToRoleGraph.target",
+            "extensions": {},
+            "lean_code": "ComplexityReduction.Certificate.CertifiedPath.cons (ComplexityReduction.Certificate.CertifiedPath.step ComplexityReduction.Domain.GraphToGraphIRAdapter.sourceAdapter) ComplexityReduction.Domain.GraphIRRoleAssignmentGadget.sharedGadget",
+            "metadata": {},
+            "output_id": "selected_path",
+            "output_kind": "lean.term",
+            "producer_steps": [
+              "s1",
+              "s2"
+            ],
+            "schema_version": "hardness_plan_output_v1"
+          }
+        ],
+        "plan_id": "sha256:500d565ad10938d435c7cb572e743e7c8dafe7bbaa7efb1a16153592cf08e2f8",
+        "registry_fingerprint": "lean:6968748221575336597",
+        "schema_version": "hardness_plan_v1",
+        "source_declaration": "Benchmark.Hardness.Inputs.IRFeasibility.Graph.GraphToRoleGraph.source",
+        "steps": [
+          {
+            "action_kind": "reuse.certified_reduction",
+            "argument_declarations": [],
+            "capability_kind": "certified_reduction",
+            "declaration": "ComplexityReduction.Domain.GraphToGraphIRAdapter.sourceAdapter",
+            "depends_on": [],
+            "expected_type": null,
+            "extensions": {},
+            "input_handles": [],
+            "output_handles": [],
+            "parameters": {},
+            "role": "ingress",
+            "schema_version": "hardness_plan_step_v1",
+            "source_fingerprint": null,
+            "step_id": "s1",
+            "target_fingerprint": null
+          },
+          {
+            "action_kind": "reuse.certified_reduction",
+            "argument_declarations": [],
+            "capability_kind": "certified_reduction",
+            "declaration": "ComplexityReduction.Domain.GraphIRRoleAssignmentGadget.sharedGadget",
+            "depends_on": [
+              "s1"
+            ],
+            "expected_type": null,
+            "extensions": {},
+            "input_handles": [],
+            "output_handles": [],
+            "parameters": {},
+            "role": "sharedGadget",
+            "schema_version": "hardness_plan_step_v1",
+            "source_fingerprint": null,
+            "step_id": "s2",
+            "target_fingerprint": null
+          }
+        ],
+        "target_declaration": "Benchmark.Hardness.Inputs.IRFeasibility.Graph.GraphToRoleGraph.target"
+      },
+      "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-ir-codegen-full-20260730-hardness-plan-v1/calls/graph-to-role-graph-ir/prompt.json",
+      "prompt_sha256": "1f6bbbfdb2ed063679bd91b9aff481edb579ed0625f573dcb33665961f4b68e1",
+      "protocol_accepted": true,
+      "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-ir-codegen-full-20260730-hardness-plan-v1/calls/graph-to-role-graph-ir/response.json",
+      "response_sha256": "1c8dceb4e2324fd78ec451933b496e647245349f964ebd565a0c00b618ab3352",
+      "reused_from_report": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-ir-codegen-full-20260730-hardness-plan-v1/report.json",
+      "selected_declarations": [
+        "ComplexityReduction.Domain.GraphToGraphIRAdapter.sourceAdapter",
+        "ComplexityReduction.Domain.GraphIRRoleAssignmentGadget.sharedGadget"
+      ],
+      "status_code": 200,
+      "usage": {
+        "completion_tokens": 3527,
+        "completion_tokens_details": {
+          "reasoning_tokens": 2947
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 5702,
+        "prompt_tokens": 5702,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 9229
+      }
+    },
+    {
+      "agent_interface_count": 28,
+      "attempts": 1,
+      "called_this_run": false,
+      "catalog_id": "sha256:6d649c2615acdfcb13187d6914fec52641165ef7e5d1043433693e342942a022",
+      "catalog_mode": "flat_api",
+      "duration_seconds": 13.469,
+      "family_id": "clause-csp",
+      "finish_reason": "stop",
+      "http_ok": true,
+      "id": "structured-cnf-to-csp-flat",
+      "lean_term": "ComplexityReduction.Certificate.CertifiedPath.step (ComplexityReduction.Routes.ClauseToCSP.finalRoute)",
+      "lean_term_sha256": "2fe61a5d726cc632a3a1b3f9d9a89820ca7bab64a1018c25f03f4ccde19c3094",
+      "lean_verified": false,
+      "matched_pair_id": "structured-cnf-to-csp",
+      "model_called": true,
+      "model_error": null,
+      "plan": {
+        "catalog_id": "sha256:6d649c2615acdfcb13187d6914fec52641165ef7e5d1043433693e342942a022",
+        "extensions": {},
+        "goal_id": null,
+        "metadata": {},
+        "objective": "reduce_to",
+        "outputs": [
+          {
+            "declaration_name": null,
+            "expected_type": "ComplexityReduction.Certificate.CertifiedPath Benchmark.Hardness.Inputs.IRFeasibility.Clause.ClauseToCSP.structuredCNFSource Benchmark.Hardness.Inputs.IRFeasibility.Clause.ClauseToCSP.target",
+            "extensions": {},
+            "lean_code": "ComplexityReduction.Certificate.CertifiedPath.step (ComplexityReduction.Routes.ClauseToCSP.finalRoute)",
+            "metadata": {},
+            "output_id": "selected_path",
+            "output_kind": "lean.term",
+            "producer_steps": [
+              "s1"
+            ],
+            "schema_version": "hardness_plan_output_v1"
+          }
+        ],
+        "plan_id": "sha256:19c77b22cc5713673f7e5beffc95ac5db2c3f758b5180f800ca1cd18ee7472fd",
+        "registry_fingerprint": "lean:6968748221575336597",
+        "schema_version": "hardness_plan_v1",
+        "source_declaration": "Benchmark.Hardness.Inputs.IRFeasibility.Clause.ClauseToCSP.structuredCNFSource",
+        "steps": [
+          {
+            "action_kind": "reuse.certified_reduction",
+            "argument_declarations": [],
+            "capability_kind": "certified_reduction",
+            "declaration": "ComplexityReduction.Routes.ClauseToCSP.finalRoute",
+            "depends_on": [],
+            "expected_type": null,
+            "extensions": {},
+            "input_handles": [],
+            "output_handles": [],
+            "parameters": {},
+            "role": "finalComposition",
+            "schema_version": "hardness_plan_step_v1",
+            "source_fingerprint": null,
+            "step_id": "s1",
+            "target_fingerprint": null
+          }
+        ],
+        "target_declaration": "Benchmark.Hardness.Inputs.IRFeasibility.Clause.ClauseToCSP.target"
+      },
+      "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-ir-codegen-full-20260730-hardness-plan-v1/calls/structured-cnf-to-csp-flat/prompt.json",
+      "prompt_sha256": "e2efebd397431927346435cb78c85605c7eeddfb76ef15001a7342ced8f15974",
+      "protocol_accepted": true,
+      "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-ir-codegen-full-20260730-hardness-plan-v1/calls/structured-cnf-to-csp-flat/response.json",
+      "response_sha256": "a587cb4a2e496951a4388927654dee3b895f06a4a164e84762eca08757ea3043",
+      "reused_from_report": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-ir-codegen-full-20260730-hardness-plan-v1/report.json",
+      "selected_declarations": [
+        "ComplexityReduction.Routes.ClauseToCSP.finalRoute"
+      ],
+      "status_code": 200,
+      "usage": {
+        "completion_tokens": 1732,
+        "completion_tokens_details": {
+          "reasoning_tokens": 1286
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 3800,
+        "prompt_tokens": 3800,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 5532
+      }
+    },
+    {
+      "agent_interface_count": 50,
+      "attempts": 1,
+      "called_this_run": false,
+      "catalog_id": "sha256:ee1901476171624a10bc33d9d578019e4a3753f8a0039888f6fed5f4431891bc",
+      "catalog_mode": "ir_components",
+      "duration_seconds": 33.918,
+      "family_id": "clause-csp",
+      "finish_reason": "stop",
+      "http_ok": true,
+      "id": "structured-cnf-to-csp-ir",
+      "lean_term": "ComplexityReduction.Certificate.CertifiedPath.step ComplexityReduction.Routes.ClauseToCSP.egress",
+      "lean_term_sha256": "ab6ff7fbadfe7906085bad17db5ecebfb451017a442f0208047f7ee538881087",
+      "lean_verified": false,
+      "matched_pair_id": "structured-cnf-to-csp",
+      "model_called": true,
+      "model_error": null,
+      "plan": {
+        "catalog_id": "sha256:ee1901476171624a10bc33d9d578019e4a3753f8a0039888f6fed5f4431891bc",
+        "extensions": {},
+        "goal_id": null,
+        "metadata": {},
+        "objective": "reduce_to",
+        "outputs": [
+          {
+            "declaration_name": null,
+            "expected_type": "ComplexityReduction.Certificate.CertifiedPath Benchmark.Hardness.Inputs.IRFeasibility.Clause.ClauseToCSP.structuredCNFSource Benchmark.Hardness.Inputs.IRFeasibility.Clause.ClauseToCSP.target",
+            "extensions": {},
+            "lean_code": "ComplexityReduction.Certificate.CertifiedPath.step ComplexityReduction.Routes.ClauseToCSP.egress",
+            "metadata": {},
+            "output_id": "selected_path",
+            "output_kind": "lean.term",
+            "producer_steps": [
+              "s1"
+            ],
+            "schema_version": "hardness_plan_output_v1"
+          }
+        ],
+        "plan_id": "sha256:96fb2d8e0949fa352afe2a287db9d3f2d16524fc316f91bdb07da9a08b8ad4ba",
+        "registry_fingerprint": "lean:6968748221575336597",
+        "schema_version": "hardness_plan_v1",
+        "source_declaration": "Benchmark.Hardness.Inputs.IRFeasibility.Clause.ClauseToCSP.structuredCNFSource",
+        "steps": [
+          {
+            "action_kind": "reuse.certified_reduction",
+            "argument_declarations": [],
+            "capability_kind": "certified_reduction",
+            "declaration": "ComplexityReduction.Routes.ClauseToCSP.egress",
+            "depends_on": [],
+            "expected_type": null,
+            "extensions": {},
+            "input_handles": [],
+            "output_handles": [],
+            "parameters": {},
+            "role": "egress",
+            "schema_version": "hardness_plan_step_v1",
+            "source_fingerprint": null,
+            "step_id": "s1",
+            "target_fingerprint": null
+          }
+        ],
+        "target_declaration": "Benchmark.Hardness.Inputs.IRFeasibility.Clause.ClauseToCSP.target"
+      },
+      "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-ir-codegen-full-20260730-hardness-plan-v1/calls/structured-cnf-to-csp-ir/prompt.json",
+      "prompt_sha256": "3cd17f39e91901fbb048997d7f68c4fb5b3ec22defd4ec322a68866e098c77ae",
+      "protocol_accepted": true,
+      "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-ir-codegen-full-20260730-hardness-plan-v1/calls/structured-cnf-to-csp-ir/response.json",
+      "response_sha256": "159c722d3ec237c7cb64cdb886d501cbc9d6db3b324962939b464c05dc106e72",
+      "reused_from_report": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-ir-codegen-full-20260730-hardness-plan-v1/report.json",
+      "selected_declarations": [
+        "ComplexityReduction.Routes.ClauseToCSP.egress"
+      ],
+      "status_code": 200,
+      "usage": {
+        "completion_tokens": 4304,
+        "completion_tokens_details": {
+          "reasoning_tokens": 3851
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 5748,
+        "prompt_tokens": 5748,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 10052
+      }
+    },
+    {
+      "agent_interface_count": 28,
+      "attempts": 1,
+      "called_this_run": true,
+      "catalog_id": "sha256:6d649c2615acdfcb13187d6914fec52641165ef7e5d1043433693e342942a022",
+      "catalog_mode": "flat_api",
+      "duration_seconds": 11.581,
+      "family_id": "clause-csp",
+      "finish_reason": "stop",
+      "http_ok": true,
+      "id": "two-cnf-to-csp-flat",
+      "lean_term": "ComplexityReduction.Certificate.CertifiedPath.step ComplexityReduction.Routes.ClauseToCSP.IngressAdapters.twoCNFToCSPRoute",
+      "lean_term_sha256": "b61ca45e8aa53cf365744502064199aafe2fa60f294a1cacbc9bced8ff00efe3",
+      "lean_verified": false,
+      "matched_pair_id": "two-cnf-to-csp",
+      "model_called": true,
+      "model_error": null,
+      "plan": {
+        "catalog_id": "sha256:6d649c2615acdfcb13187d6914fec52641165ef7e5d1043433693e342942a022",
+        "extensions": {},
+        "goal_id": null,
+        "metadata": {},
+        "objective": "reduce_to",
+        "outputs": [
+          {
+            "declaration_name": null,
+            "expected_type": "ComplexityReduction.Certificate.CertifiedPath Benchmark.Hardness.Inputs.IRFeasibility.Clause.ClauseToCSP.twoCNFSource Benchmark.Hardness.Inputs.IRFeasibility.Clause.ClauseToCSP.target",
+            "extensions": {},
+            "lean_code": "ComplexityReduction.Certificate.CertifiedPath.step ComplexityReduction.Routes.ClauseToCSP.IngressAdapters.twoCNFToCSPRoute",
+            "metadata": {},
+            "output_id": "selected_path",
+            "output_kind": "lean.term",
+            "producer_steps": [
+              "s1"
+            ],
+            "schema_version": "hardness_plan_output_v1"
+          }
+        ],
+        "plan_id": "sha256:d9b9f452bf877fac87510f221a77924120d50ed40695a6cb327bdd77fce4d638",
+        "registry_fingerprint": "lean:6968748221575336597",
+        "schema_version": "hardness_plan_v1",
+        "source_declaration": "Benchmark.Hardness.Inputs.IRFeasibility.Clause.ClauseToCSP.twoCNFSource",
+        "steps": [
+          {
+            "action_kind": "reuse.certified_reduction",
+            "argument_declarations": [],
+            "capability_kind": "certified_reduction",
+            "declaration": "ComplexityReduction.Routes.ClauseToCSP.IngressAdapters.twoCNFToCSPRoute",
+            "depends_on": [],
+            "expected_type": null,
+            "extensions": {},
+            "input_handles": [],
+            "output_handles": [],
+            "parameters": {},
+            "role": "finalComposition",
+            "schema_version": "hardness_plan_step_v1",
+            "source_fingerprint": null,
+            "step_id": "s1",
+            "target_fingerprint": null
+          }
+        ],
+        "target_declaration": "Benchmark.Hardness.Inputs.IRFeasibility.Clause.ClauseToCSP.target"
+      },
+      "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-ir-codegen-full-20260730-hardness-plan-v1-resume1/calls/two-cnf-to-csp-flat/prompt.json",
+      "prompt_sha256": "8334d3b31671b44bddeb851bfeaf7c5f6733bd6d52abf14efb67fed5dc2d565b",
+      "protocol_accepted": true,
+      "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-ir-codegen-full-20260730-hardness-plan-v1-resume1/calls/two-cnf-to-csp-flat/response.json",
+      "response_sha256": "c7037f003c2ce1ad3ff9658abbd357f669a187770a79455ca1a24fa01380363b",
+      "selected_declarations": [
+        "ComplexityReduction.Routes.ClauseToCSP.IngressAdapters.twoCNFToCSPRoute"
+      ],
+      "status_code": 200,
+      "usage": {
+        "completion_tokens": 1739,
+        "completion_tokens_details": {
+          "reasoning_tokens": 1266
+        },
+        "prompt_cache_hit_tokens": 3712,
+        "prompt_cache_miss_tokens": 88,
+        "prompt_tokens": 3800,
+        "prompt_tokens_details": {
+          "cached_tokens": 3712
+        },
+        "total_tokens": 5539
+      }
+    },
+    {
+      "agent_interface_count": 50,
+      "attempts": 1,
+      "called_this_run": false,
+      "catalog_id": "sha256:ee1901476171624a10bc33d9d578019e4a3753f8a0039888f6fed5f4431891bc",
+      "catalog_mode": "ir_components",
+      "duration_seconds": 30.621,
+      "family_id": "clause-csp",
+      "finish_reason": "stop",
+      "http_ok": true,
+      "id": "two-cnf-to-csp-ir",
+      "lean_term": "ComplexityReduction.Certificate.CertifiedPath.step (ComplexityReduction.Routes.ClauseToCSP.IngressAdapters.twoCNFIngress)",
+      "lean_term_sha256": "46b36358fabe366d1deb2673e9b1eec3764573e3133200fc75b3e0cf04669d54",
+      "lean_verified": false,
+      "matched_pair_id": "two-cnf-to-csp",
+      "model_called": true,
+      "model_error": null,
+      "plan": {
+        "catalog_id": "sha256:ee1901476171624a10bc33d9d578019e4a3753f8a0039888f6fed5f4431891bc",
+        "extensions": {},
+        "goal_id": null,
+        "metadata": {},
+        "objective": "reduce_to",
+        "outputs": [
+          {
+            "declaration_name": null,
+            "expected_type": "ComplexityReduction.Certificate.CertifiedPath Benchmark.Hardness.Inputs.IRFeasibility.Clause.ClauseToCSP.twoCNFSource Benchmark.Hardness.Inputs.IRFeasibility.Clause.ClauseToCSP.target",
+            "extensions": {},
+            "lean_code": "ComplexityReduction.Certificate.CertifiedPath.step (ComplexityReduction.Routes.ClauseToCSP.IngressAdapters.twoCNFIngress)",
+            "metadata": {},
+            "output_id": "selected_path",
+            "output_kind": "lean.term",
+            "producer_steps": [
+              "s1"
+            ],
+            "schema_version": "hardness_plan_output_v1"
+          }
+        ],
+        "plan_id": "sha256:9bdc6baee7169574783d8045a75d8a131d6ef2d89234d47d4f5d748e6f91b084",
+        "registry_fingerprint": "lean:6968748221575336597",
+        "schema_version": "hardness_plan_v1",
+        "source_declaration": "Benchmark.Hardness.Inputs.IRFeasibility.Clause.ClauseToCSP.twoCNFSource",
+        "steps": [
+          {
+            "action_kind": "reuse.certified_reduction",
+            "argument_declarations": [],
+            "capability_kind": "certified_reduction",
+            "declaration": "ComplexityReduction.Routes.ClauseToCSP.IngressAdapters.twoCNFIngress",
+            "depends_on": [],
+            "expected_type": null,
+            "extensions": {},
+            "input_handles": [],
+            "output_handles": [],
+            "parameters": {},
+            "role": "ingress",
+            "schema_version": "hardness_plan_step_v1",
+            "source_fingerprint": null,
+            "step_id": "s1",
+            "target_fingerprint": null
+          }
+        ],
+        "target_declaration": "Benchmark.Hardness.Inputs.IRFeasibility.Clause.ClauseToCSP.target"
+      },
+      "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-ir-codegen-full-20260730-hardness-plan-v1/calls/two-cnf-to-csp-ir/prompt.json",
+      "prompt_sha256": "89ab589d5a07abf94686858f9dcfddad8c2c40e69ea854aa396da448dc764ec3",
+      "protocol_accepted": true,
+      "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-ir-codegen-full-20260730-hardness-plan-v1/calls/two-cnf-to-csp-ir/response.json",
+      "response_sha256": "5ca313d799b52500af3c204fd82586562cc5c833c62997d52fc041c07912c914",
+      "reused_from_report": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-ir-codegen-full-20260730-hardness-plan-v1/report.json",
+      "selected_declarations": [
+        "ComplexityReduction.Routes.ClauseToCSP.IngressAdapters.twoCNFIngress"
+      ],
+      "status_code": 200,
+      "usage": {
+        "completion_tokens": 4284,
+        "completion_tokens_details": {
+          "reasoning_tokens": 3805
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 5748,
+        "prompt_tokens": 5748,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 10032
+      }
+    },
+    {
+      "agent_interface_count": 28,
+      "attempts": 1,
+      "called_this_run": false,
+      "catalog_id": "sha256:6d649c2615acdfcb13187d6914fec52641165ef7e5d1043433693e342942a022",
+      "catalog_mode": "flat_api",
+      "duration_seconds": 6.757,
+      "family_id": "clause-csp",
+      "finish_reason": "stop",
+      "http_ok": true,
+      "id": "three-sat-to-csp-flat",
+      "lean_term": "ComplexityReduction.Certificate.CertifiedPath.step (ComplexityReduction.Routes.ClauseToCSP.IngressAdapters.threeSATToCSPRoute)",
+      "lean_term_sha256": "472c2a13d36beae4c8a1a477800248a00f99fd0bc79749bb2966e63919c37927",
+      "lean_verified": false,
+      "matched_pair_id": "three-sat-to-csp",
+      "model_called": true,
+      "model_error": null,
+      "plan": {
+        "catalog_id": "sha256:6d649c2615acdfcb13187d6914fec52641165ef7e5d1043433693e342942a022",
+        "extensions": {},
+        "goal_id": null,
+        "metadata": {},
+        "objective": "reduce_to",
+        "outputs": [
+          {
+            "declaration_name": null,
+            "expected_type": "ComplexityReduction.Certificate.CertifiedPath Benchmark.Hardness.Inputs.IRFeasibility.Clause.ClauseToCSP.threeSATSource Benchmark.Hardness.Inputs.IRFeasibility.Clause.ClauseToCSP.target",
+            "extensions": {},
+            "lean_code": "ComplexityReduction.Certificate.CertifiedPath.step (ComplexityReduction.Routes.ClauseToCSP.IngressAdapters.threeSATToCSPRoute)",
+            "metadata": {},
+            "output_id": "selected_path",
+            "output_kind": "lean.term",
+            "producer_steps": [
+              "s1"
+            ],
+            "schema_version": "hardness_plan_output_v1"
+          }
+        ],
+        "plan_id": "sha256:6dc49761b8126f11d8ca723fd18e3ba5982ba2b4744dfeb620d47b64b169338e",
+        "registry_fingerprint": "lean:6968748221575336597",
+        "schema_version": "hardness_plan_v1",
+        "source_declaration": "Benchmark.Hardness.Inputs.IRFeasibility.Clause.ClauseToCSP.threeSATSource",
+        "steps": [
+          {
+            "action_kind": "reuse.certified_reduction",
+            "argument_declarations": [],
+            "capability_kind": "certified_reduction",
+            "declaration": "ComplexityReduction.Routes.ClauseToCSP.IngressAdapters.threeSATToCSPRoute",
+            "depends_on": [],
+            "expected_type": null,
+            "extensions": {},
+            "input_handles": [],
+            "output_handles": [],
+            "parameters": {},
+            "role": "finalComposition",
+            "schema_version": "hardness_plan_step_v1",
+            "source_fingerprint": null,
+            "step_id": "s1",
+            "target_fingerprint": null
+          }
+        ],
+        "target_declaration": "Benchmark.Hardness.Inputs.IRFeasibility.Clause.ClauseToCSP.target"
+      },
+      "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-ir-codegen-full-20260730-hardness-plan-v1/calls/three-sat-to-csp-flat/prompt.json",
+      "prompt_sha256": "eee81bf945a966f36ac4996663b1c1b42722055aadadf4cddd19cd18ea48946b",
+      "protocol_accepted": true,
+      "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-ir-codegen-full-20260730-hardness-plan-v1/calls/three-sat-to-csp-flat/response.json",
+      "response_sha256": "60c1700f87b5bde8228c8957369b24c7ffe28152846f9288c530d59a1a964e56",
+      "reused_from_report": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-ir-codegen-full-20260730-hardness-plan-v1/report.json",
+      "selected_declarations": [
+        "ComplexityReduction.Routes.ClauseToCSP.IngressAdapters.threeSATToCSPRoute"
+      ],
+      "status_code": 200,
+      "usage": {
+        "completion_tokens": 1021,
+        "completion_tokens_details": {
+          "reasoning_tokens": 555
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 3796,
+        "prompt_tokens": 3796,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 4817
+      }
+    },
+    {
+      "agent_interface_count": 50,
+      "attempts": 1,
+      "called_this_run": false,
+      "catalog_id": "sha256:ee1901476171624a10bc33d9d578019e4a3753f8a0039888f6fed5f4431891bc",
+      "catalog_mode": "ir_components",
+      "duration_seconds": 59.979,
+      "family_id": "clause-csp",
+      "finish_reason": "stop",
+      "http_ok": true,
+      "id": "three-sat-to-csp-ir",
+      "lean_term": "ComplexityReduction.Certificate.CertifiedPath.cons (ComplexityReduction.Certificate.CertifiedPath.step (ComplexityReduction.Routes.ClauseToCSP.IngressAdapters.threeSATIngress)) (ComplexityReduction.Routes.ClauseToCSP.egress)",
+      "lean_term_sha256": "0085495fb7391eeaf4c155091ce60798143e2033b37bfe12e7334b17bf11a9a5",
+      "lean_verified": false,
+      "matched_pair_id": "three-sat-to-csp",
+      "model_called": true,
+      "model_error": null,
+      "plan": {
+        "catalog_id": "sha256:ee1901476171624a10bc33d9d578019e4a3753f8a0039888f6fed5f4431891bc",
+        "extensions": {},
+        "goal_id": null,
+        "metadata": {},
+        "objective": "reduce_to",
+        "outputs": [
+          {
+            "declaration_name": null,
+            "expected_type": "ComplexityReduction.Certificate.CertifiedPath Benchmark.Hardness.Inputs.IRFeasibility.Clause.ClauseToCSP.threeSATSource Benchmark.Hardness.Inputs.IRFeasibility.Clause.ClauseToCSP.target",
+            "extensions": {},
+            "lean_code": "ComplexityReduction.Certificate.CertifiedPath.cons (ComplexityReduction.Certificate.CertifiedPath.step (ComplexityReduction.Routes.ClauseToCSP.IngressAdapters.threeSATIngress)) (ComplexityReduction.Routes.ClauseToCSP.egress)",
+            "metadata": {},
+            "output_id": "selected_path",
+            "output_kind": "lean.term",
+            "producer_steps": [
+              "s1",
+              "s2"
+            ],
+            "schema_version": "hardness_plan_output_v1"
+          }
+        ],
+        "plan_id": "sha256:56a82c4e348c4696e8940a45ef9f3a93f8fd3a30b8d1685e9e5355b3f888d90b",
+        "registry_fingerprint": "lean:6968748221575336597",
+        "schema_version": "hardness_plan_v1",
+        "source_declaration": "Benchmark.Hardness.Inputs.IRFeasibility.Clause.ClauseToCSP.threeSATSource",
+        "steps": [
+          {
+            "action_kind": "reuse.certified_reduction",
+            "argument_declarations": [],
+            "capability_kind": "certified_reduction",
+            "declaration": "ComplexityReduction.Routes.ClauseToCSP.IngressAdapters.threeSATIngress",
+            "depends_on": [],
+            "expected_type": null,
+            "extensions": {},
+            "input_handles": [],
+            "output_handles": [],
+            "parameters": {},
+            "role": "ingress",
+            "schema_version": "hardness_plan_step_v1",
+            "source_fingerprint": null,
+            "step_id": "s1",
+            "target_fingerprint": null
+          },
+          {
+            "action_kind": "reuse.certified_reduction",
+            "argument_declarations": [],
+            "capability_kind": "certified_reduction",
+            "declaration": "ComplexityReduction.Routes.ClauseToCSP.egress",
+            "depends_on": [
+              "s1"
+            ],
+            "expected_type": null,
+            "extensions": {},
+            "input_handles": [],
+            "output_handles": [],
+            "parameters": {},
+            "role": "egress",
+            "schema_version": "hardness_plan_step_v1",
+            "source_fingerprint": null,
+            "step_id": "s2",
+            "target_fingerprint": null
+          }
+        ],
+        "target_declaration": "Benchmark.Hardness.Inputs.IRFeasibility.Clause.ClauseToCSP.target"
+      },
+      "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-ir-codegen-full-20260730-hardness-plan-v1/calls/three-sat-to-csp-ir/prompt.json",
+      "prompt_sha256": "d9b2ec1e8d58f260d526d94b1dd4ea006bad544f76bed884df80d02553ad4ce9",
+      "protocol_accepted": true,
+      "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-ir-codegen-full-20260730-hardness-plan-v1/calls/three-sat-to-csp-ir/response.json",
+      "response_sha256": "291a7b8ebfe62cfd7b98b37f9ea7aef9bad8e33387e2a731b40298a37fd773cb",
+      "reused_from_report": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-ir-codegen-full-20260730-hardness-plan-v1/report.json",
+      "selected_declarations": [
+        "ComplexityReduction.Routes.ClauseToCSP.IngressAdapters.threeSATIngress",
+        "ComplexityReduction.Routes.ClauseToCSP.egress"
+      ],
+      "status_code": 200,
+      "usage": {
+        "completion_tokens": 8278,
+        "completion_tokens_details": {
+          "reasoning_tokens": 7638
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 5744,
+        "prompt_tokens": 5744,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 14022
+      }
+    },
+    {
+      "agent_interface_count": 28,
+      "attempts": 1,
+      "called_this_run": false,
+      "catalog_id": "sha256:6d649c2615acdfcb13187d6914fec52641165ef7e5d1043433693e342942a022",
+      "catalog_mode": "flat_api",
+      "duration_seconds": 10.931,
+      "family_id": "incidence-eon",
+      "finish_reason": "stop",
+      "http_ok": true,
+      "id": "exact-cover-to-eon-flat",
+      "lean_term": "ComplexityReduction.Certificate.CertifiedPath.step ComplexityReduction.Routes.IncidenceToRoleGraph.originalRoute",
+      "lean_term_sha256": "2246e7d09fafca3018d7bd3ad8f2d4c5ef12e138f7c9a8de4d17f34c972ea92f",
+      "lean_verified": false,
+      "matched_pair_id": "exact-cover-to-eon",
+      "model_called": true,
+      "model_error": null,
+      "plan": {
+        "catalog_id": "sha256:6d649c2615acdfcb13187d6914fec52641165ef7e5d1043433693e342942a022",
+        "extensions": {},
+        "goal_id": null,
+        "metadata": {},
+        "objective": "reduce_to",
+        "outputs": [
+          {
+            "declaration_name": null,
+            "expected_type": "ComplexityReduction.Certificate.CertifiedPath Benchmark.Hardness.Inputs.IRFeasibility.Incidence.IncidenceToEON.originalSource Benchmark.Hardness.Inputs.IRFeasibility.Incidence.IncidenceToEON.target",
+            "extensions": {},
+            "lean_code": "ComplexityReduction.Certificate.CertifiedPath.step ComplexityReduction.Routes.IncidenceToRoleGraph.originalRoute",
+            "metadata": {},
+            "output_id": "selected_path",
+            "output_kind": "lean.term",
+            "producer_steps": [
+              "s1"
+            ],
+            "schema_version": "hardness_plan_output_v1"
+          }
+        ],
+        "plan_id": "sha256:820f9b8bb344d7ed018f976ae445ab1b539a1d524c71f10f5744af49bc93aa80",
+        "registry_fingerprint": "lean:6968748221575336597",
+        "schema_version": "hardness_plan_v1",
+        "source_declaration": "Benchmark.Hardness.Inputs.IRFeasibility.Incidence.IncidenceToEON.originalSource",
+        "steps": [
+          {
+            "action_kind": "reuse.certified_reduction",
+            "argument_declarations": [],
+            "capability_kind": "certified_reduction",
+            "declaration": "ComplexityReduction.Routes.IncidenceToRoleGraph.originalRoute",
+            "depends_on": [],
+            "expected_type": null,
+            "extensions": {},
+            "input_handles": [],
+            "output_handles": [],
+            "parameters": {},
+            "role": "finalComposition",
+            "schema_version": "hardness_plan_step_v1",
+            "source_fingerprint": null,
+            "step_id": "s1",
+            "target_fingerprint": null
+          }
+        ],
+        "target_declaration": "Benchmark.Hardness.Inputs.IRFeasibility.Incidence.IncidenceToEON.target"
+      },
+      "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-ir-codegen-full-20260730-hardness-plan-v1/calls/exact-cover-to-eon-flat/prompt.json",
+      "prompt_sha256": "6af5053b5d64ab4cf985c879e3ca379051df268c149dba83a77fda378b513a37",
+      "protocol_accepted": true,
+      "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-ir-codegen-full-20260730-hardness-plan-v1/calls/exact-cover-to-eon-flat/response.json",
+      "response_sha256": "258e79d8b7903ab66fdd913bad745d076857c51f862b6170e2e1ff877080ad29",
+      "reused_from_report": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-ir-codegen-full-20260730-hardness-plan-v1/report.json",
+      "selected_declarations": [
+        "ComplexityReduction.Routes.IncidenceToRoleGraph.originalRoute"
+      ],
+      "status_code": 200,
+      "usage": {
+        "completion_tokens": 1468,
+        "completion_tokens_details": {
+          "reasoning_tokens": 996
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 3786,
+        "prompt_tokens": 3786,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 5254
+      }
+    },
+    {
+      "agent_interface_count": 50,
+      "attempts": 1,
+      "called_this_run": false,
+      "catalog_id": "sha256:ee1901476171624a10bc33d9d578019e4a3753f8a0039888f6fed5f4431891bc",
+      "catalog_mode": "ir_components",
+      "duration_seconds": 82.573,
+      "family_id": "incidence-eon",
+      "finish_reason": "stop",
+      "http_ok": true,
+      "id": "exact-cover-to-eon-ir",
+      "lean_term": "ComplexityReduction.Certificate.CertifiedPath.cons (ComplexityReduction.Certificate.CertifiedPath.step ComplexityReduction.Domain.IncidenceIRToStructuredExactCoverStandardTM.egress) ComplexityReduction.Routes.FiniteDomainCSP.clauseToExistentialEON",
+      "lean_term_sha256": "467cd92c79ff6987614c99f6b68a503efeb9c09e71cde109fb5190cbac29bc7c",
+      "lean_verified": false,
+      "matched_pair_id": "exact-cover-to-eon",
+      "model_called": true,
+      "model_error": null,
+      "plan": {
+        "catalog_id": "sha256:ee1901476171624a10bc33d9d578019e4a3753f8a0039888f6fed5f4431891bc",
+        "extensions": {},
+        "goal_id": null,
+        "metadata": {},
+        "objective": "reduce_to",
+        "outputs": [
+          {
+            "declaration_name": null,
+            "expected_type": "ComplexityReduction.Certificate.CertifiedPath Benchmark.Hardness.Inputs.IRFeasibility.Incidence.IncidenceToEON.originalSource Benchmark.Hardness.Inputs.IRFeasibility.Incidence.IncidenceToEON.target",
+            "extensions": {},
+            "lean_code": "ComplexityReduction.Certificate.CertifiedPath.cons (ComplexityReduction.Certificate.CertifiedPath.step ComplexityReduction.Domain.IncidenceIRToStructuredExactCoverStandardTM.egress) ComplexityReduction.Routes.FiniteDomainCSP.clauseToExistentialEON",
+            "metadata": {},
+            "output_id": "selected_path",
+            "output_kind": "lean.term",
+            "producer_steps": [
+              "s1",
+              "s2"
+            ],
+            "schema_version": "hardness_plan_output_v1"
+          }
+        ],
+        "plan_id": "sha256:e140a737e62cf3e8b4d1a7fb6f3ee9115693e43c11515546d000a0a01b52bbc3",
+        "registry_fingerprint": "lean:6968748221575336597",
+        "schema_version": "hardness_plan_v1",
+        "source_declaration": "Benchmark.Hardness.Inputs.IRFeasibility.Incidence.IncidenceToEON.originalSource",
+        "steps": [
+          {
+            "action_kind": "reuse.certified_reduction",
+            "argument_declarations": [],
+            "capability_kind": "certified_reduction",
+            "declaration": "ComplexityReduction.Domain.IncidenceIRToStructuredExactCoverStandardTM.egress",
+            "depends_on": [],
+            "expected_type": null,
+            "extensions": {},
+            "input_handles": [],
+            "output_handles": [],
+            "parameters": {},
+            "role": "egress",
+            "schema_version": "hardness_plan_step_v1",
+            "source_fingerprint": null,
+            "step_id": "s1",
+            "target_fingerprint": null
+          },
+          {
+            "action_kind": "reuse.certified_reduction",
+            "argument_declarations": [],
+            "capability_kind": "certified_reduction",
+            "declaration": "ComplexityReduction.Routes.FiniteDomainCSP.clauseToExistentialEON",
+            "depends_on": [
+              "s1"
+            ],
+            "expected_type": null,
+            "extensions": {},
+            "input_handles": [],
+            "output_handles": [],
+            "parameters": {},
+            "role": "sharedGadget",
+            "schema_version": "hardness_plan_step_v1",
+            "source_fingerprint": null,
+            "step_id": "s2",
+            "target_fingerprint": null
+          }
+        ],
+        "target_declaration": "Benchmark.Hardness.Inputs.IRFeasibility.Incidence.IncidenceToEON.target"
+      },
+      "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-ir-codegen-full-20260730-hardness-plan-v1/calls/exact-cover-to-eon-ir/prompt.json",
+      "prompt_sha256": "1c2aa03ef571f85400b65cad2e2f660ffd9b5ab6bf568a287b387b7112fb82b3",
+      "protocol_accepted": true,
+      "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-ir-codegen-full-20260730-hardness-plan-v1/calls/exact-cover-to-eon-ir/response.json",
+      "response_sha256": "293352c54ca22d4b86b7c88c3503c1b01af715b3478c429a60ff7fcddfdd1085",
+      "reused_from_report": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-ir-codegen-full-20260730-hardness-plan-v1/report.json",
+      "selected_declarations": [
+        "ComplexityReduction.Domain.IncidenceIRToStructuredExactCoverStandardTM.egress",
+        "ComplexityReduction.Routes.FiniteDomainCSP.clauseToExistentialEON"
+      ],
+      "status_code": 200,
+      "usage": {
+        "completion_tokens": 10340,
+        "completion_tokens_details": {
+          "reasoning_tokens": 9737
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 5734,
+        "prompt_tokens": 5734,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 16074
+      }
+    },
+    {
+      "agent_interface_count": 28,
+      "attempts": 1,
+      "called_this_run": false,
+      "catalog_id": "sha256:6d649c2615acdfcb13187d6914fec52641165ef7e5d1043433693e342942a022",
+      "catalog_mode": "flat_api",
+      "duration_seconds": 12.687,
+      "family_id": "incidence-eon",
+      "finish_reason": "stop",
+      "http_ok": true,
+      "id": "modified-exact-cover-to-eon-flat",
+      "lean_term": "ComplexityReduction.Certificate.CertifiedPath.step ComplexityReduction.Routes.IncidenceToRoleGraph.modifiedRoute",
+      "lean_term_sha256": "1cd121080f8194b9bf23598481705e1ffd7634b234680d8a98078bdf6e5f0e51",
+      "lean_verified": false,
+      "matched_pair_id": "modified-exact-cover-to-eon",
+      "model_called": true,
+      "model_error": null,
+      "plan": {
+        "catalog_id": "sha256:6d649c2615acdfcb13187d6914fec52641165ef7e5d1043433693e342942a022",
+        "extensions": {},
+        "goal_id": null,
+        "metadata": {},
+        "objective": "reduce_to",
+        "outputs": [
+          {
+            "declaration_name": null,
+            "expected_type": "ComplexityReduction.Certificate.CertifiedPath Benchmark.Hardness.Inputs.IRFeasibility.Incidence.IncidenceToEON.modifiedSource Benchmark.Hardness.Inputs.IRFeasibility.Incidence.IncidenceToEON.target",
+            "extensions": {},
+            "lean_code": "ComplexityReduction.Certificate.CertifiedPath.step ComplexityReduction.Routes.IncidenceToRoleGraph.modifiedRoute",
+            "metadata": {},
+            "output_id": "selected_path",
+            "output_kind": "lean.term",
+            "producer_steps": [
+              "s1"
+            ],
+            "schema_version": "hardness_plan_output_v1"
+          }
+        ],
+        "plan_id": "sha256:0dba47c6edbb35738ce61942cd172fc2533b31099eee1666f1f7fdee5b1cff35",
+        "registry_fingerprint": "lean:6968748221575336597",
+        "schema_version": "hardness_plan_v1",
+        "source_declaration": "Benchmark.Hardness.Inputs.IRFeasibility.Incidence.IncidenceToEON.modifiedSource",
+        "steps": [
+          {
+            "action_kind": "reuse.certified_reduction",
+            "argument_declarations": [],
+            "capability_kind": "certified_reduction",
+            "declaration": "ComplexityReduction.Routes.IncidenceToRoleGraph.modifiedRoute",
+            "depends_on": [],
+            "expected_type": null,
+            "extensions": {},
+            "input_handles": [],
+            "output_handles": [],
+            "parameters": {},
+            "role": "finalComposition",
+            "schema_version": "hardness_plan_step_v1",
+            "source_fingerprint": null,
+            "step_id": "s1",
+            "target_fingerprint": null
+          }
+        ],
+        "target_declaration": "Benchmark.Hardness.Inputs.IRFeasibility.Incidence.IncidenceToEON.target"
+      },
+      "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-ir-codegen-full-20260730-hardness-plan-v1/calls/modified-exact-cover-to-eon-flat/prompt.json",
+      "prompt_sha256": "7bfae7b6537cd25ff29b70822e58d70fbeb49550dbc84788552da682b0b19223",
+      "protocol_accepted": true,
+      "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-ir-codegen-full-20260730-hardness-plan-v1/calls/modified-exact-cover-to-eon-flat/response.json",
+      "response_sha256": "26c8cc515a5d269fd19a3ab89013d337ffe421c48c70df11f4253f2bc3fea7ea",
+      "reused_from_report": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-ir-codegen-full-20260730-hardness-plan-v1/report.json",
+      "selected_declarations": [
+        "ComplexityReduction.Routes.IncidenceToRoleGraph.modifiedRoute"
+      ],
+      "status_code": 200,
+      "usage": {
+        "completion_tokens": 1719,
+        "completion_tokens_details": {
+          "reasoning_tokens": 1212
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 3788,
+        "prompt_tokens": 3788,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 5507
+      }
+    },
+    {
+      "agent_interface_count": 50,
+      "attempts": 1,
+      "called_this_run": false,
+      "catalog_id": "sha256:ee1901476171624a10bc33d9d578019e4a3753f8a0039888f6fed5f4431891bc",
+      "catalog_mode": "ir_components",
+      "duration_seconds": 51.683,
+      "family_id": "incidence-eon",
+      "finish_reason": "stop",
+      "http_ok": true,
+      "id": "modified-exact-cover-to-eon-ir",
+      "lean_term": "ComplexityReduction.Certificate.CertifiedPath.cons (ComplexityReduction.Certificate.CertifiedPath.step ComplexityReduction.Domain.ModifiedExactCoverInput.modifiedSourceAdapter) ComplexityReduction.Domain.IncidenceToExactlyOneNeighborGadget.sharedGadget",
+      "lean_term_sha256": "332423dd44b985ae61c79fb1facc0d8416937eb5a707b44a30c2eaca3fd12b05",
+      "lean_verified": false,
+      "matched_pair_id": "modified-exact-cover-to-eon",
+      "model_called": true,
+      "model_error": null,
+      "plan": {
+        "catalog_id": "sha256:ee1901476171624a10bc33d9d578019e4a3753f8a0039888f6fed5f4431891bc",
+        "extensions": {},
+        "goal_id": null,
+        "metadata": {},
+        "objective": "reduce_to",
+        "outputs": [
+          {
+            "declaration_name": null,
+            "expected_type": "ComplexityReduction.Certificate.CertifiedPath Benchmark.Hardness.Inputs.IRFeasibility.Incidence.IncidenceToEON.modifiedSource Benchmark.Hardness.Inputs.IRFeasibility.Incidence.IncidenceToEON.target",
+            "extensions": {},
+            "lean_code": "ComplexityReduction.Certificate.CertifiedPath.cons (ComplexityReduction.Certificate.CertifiedPath.step ComplexityReduction.Domain.ModifiedExactCoverInput.modifiedSourceAdapter) ComplexityReduction.Domain.IncidenceToExactlyOneNeighborGadget.sharedGadget",
+            "metadata": {},
+            "output_id": "selected_path",
+            "output_kind": "lean.term",
+            "producer_steps": [
+              "s1",
+              "s2"
+            ],
+            "schema_version": "hardness_plan_output_v1"
+          }
+        ],
+        "plan_id": "sha256:dc5d22f3c2cedbf6b610f5d6f9cf2675cbad5e7aee81352629a8fd0da1b83d99",
+        "registry_fingerprint": "lean:6968748221575336597",
+        "schema_version": "hardness_plan_v1",
+        "source_declaration": "Benchmark.Hardness.Inputs.IRFeasibility.Incidence.IncidenceToEON.modifiedSource",
+        "steps": [
+          {
+            "action_kind": "reuse.certified_reduction",
+            "argument_declarations": [],
+            "capability_kind": "certified_reduction",
+            "declaration": "ComplexityReduction.Domain.ModifiedExactCoverInput.modifiedSourceAdapter",
+            "depends_on": [],
+            "expected_type": null,
+            "extensions": {},
+            "input_handles": [],
+            "output_handles": [],
+            "parameters": {},
+            "role": "ingress",
+            "schema_version": "hardness_plan_step_v1",
+            "source_fingerprint": null,
+            "step_id": "s1",
+            "target_fingerprint": null
+          },
+          {
+            "action_kind": "reuse.certified_reduction",
+            "argument_declarations": [],
+            "capability_kind": "certified_reduction",
+            "declaration": "ComplexityReduction.Domain.IncidenceToExactlyOneNeighborGadget.sharedGadget",
+            "depends_on": [
+              "s1"
+            ],
+            "expected_type": null,
+            "extensions": {},
+            "input_handles": [],
+            "output_handles": [],
+            "parameters": {},
+            "role": "sharedGadget",
+            "schema_version": "hardness_plan_step_v1",
+            "source_fingerprint": null,
+            "step_id": "s2",
+            "target_fingerprint": null
+          }
+        ],
+        "target_declaration": "Benchmark.Hardness.Inputs.IRFeasibility.Incidence.IncidenceToEON.target"
+      },
+      "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-ir-codegen-full-20260730-hardness-plan-v1/calls/modified-exact-cover-to-eon-ir/prompt.json",
+      "prompt_sha256": "d8303271319fa93b4d588f1dd35efd21b59b956bf8afc3853559a13c790f57a7",
+      "protocol_accepted": true,
+      "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-ir-codegen-full-20260730-hardness-plan-v1/calls/modified-exact-cover-to-eon-ir/response.json",
+      "response_sha256": "049fd0214ca0787f81649f110feba25ad5200f18d6d5147dba63624eca4c8194",
+      "reused_from_report": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-ir-codegen-full-20260730-hardness-plan-v1/report.json",
+      "selected_declarations": [
+        "ComplexityReduction.Domain.ModifiedExactCoverInput.modifiedSourceAdapter",
+        "ComplexityReduction.Domain.IncidenceToExactlyOneNeighborGadget.sharedGadget"
+      ],
+      "status_code": 200,
+      "usage": {
+        "completion_tokens": 6501,
+        "completion_tokens_details": {
+          "reasoning_tokens": 5900
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 5736,
+        "prompt_tokens": 5736,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 12237
+      }
+    }
+  ],
+  "catalog_snapshot": {
+    "catalogs": {
+      "flat_api": {
+        "agent_interface_count": 28,
+        "catalog_id": "sha256:6d649c2615acdfcb13187d6914fec52641165ef7e5d1043433693e342942a022",
+        "semantic_atomic_interface_count": 4
+      },
+      "ir_components": {
+        "agent_interface_count": 50,
+        "catalog_id": "sha256:ee1901476171624a10bc33d9d578019e4a3753f8a0039888f6fed5f4431891bc",
+        "semantic_atomic_interface_count": 50
+      }
+    },
+    "inventory_entry_count": 75,
+    "path": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/Benchmark/Hardness/IR_CATALOG_SNAPSHOT.json",
+    "registry_fingerprint": "lean:6968748221575336597",
+    "schema_version": "hardness_ir_catalog_snapshot_v1",
+    "source": {
+      "kind": "successful_compiled_library_probe",
+      "probe_duration_seconds": 272.872,
+      "probe_stdout_sha256": "a4190bf1dc97a343a36861c36804657394d82497b7910df1404199eae2f2cbdb"
+    }
+  },
+  "error": "DeepSeek codegen protocol or the one final Lean validation failed",
+  "final_validation": {
+    "artifact": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-ir-codegen-full-20260730-hardness-plan-v1-resume1/DeepSeekArtifact.lean",
+    "artifact_sha256": "df8c90512ed2249e0c690d0da47e10e1e9a60df333d006bf781b6d521be7fe7a",
+    "command": [
+      "lake",
+      "env",
+      "lean",
+      "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-ir-codegen-full-20260730-hardness-plan-v1-resume1/DeepSeekArtifact.lean"
+    ],
+    "duration_seconds": 221.026,
+    "exit_code": 1,
+    "lean_process_count": 1,
+    "ok": false,
+    "started": true,
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_tail": "",
+    "stdout_sha256": "7d1567c78bfb5c39afbc8310cb9abf87af8e5901fb1bfe5b615335ed8f3dee0f",
+    "stdout_tail": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-ir-codegen-full-20260730-hardness-plan-v1-resume1/DeepSeekArtifact.lean:70:53: error: Application type mismatch: The argument\n  ComplexityReduction.Routes.ClauseToCSP.egress\nhas type\n  ComplexityReduction.Certificate.CertifiedReduction ComplexityReduction.Routes.ClauseToCSP.canonicalCSPProblem\n    ComplexityReduction.Routes.ClauseToCSP.originalCSPProblem\nbut is expected to have type\n  ComplexityReduction.Certificate.CertifiedReduction Inputs.IRFeasibility.Clause.ClauseToCSP.structuredCNFSource\n    Inputs.IRFeasibility.Clause.ClauseToCSP.target\nin the application\n  ComplexityReduction.Certificate.CertifiedPath.step ComplexityReduction.Routes.ClauseToCSP.egress\n/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-ir-codegen-full-20260730-hardness-plan-v1-resume1/DeepSeekArtifact.lean:102:53: error: Application type mismatch: The argument\n  ComplexityReduction.Routes.ClauseToCSP.IngressAdapters.twoCNFIngress\nhas type\n  ComplexityReduction.Certificate.CertifiedReduction\n    ComplexityReduction.Routes.ClauseToCSP.IngressAdapters.twoCNFSourceProblem\n    ComplexityReduction.Routes.ClauseToCSP.IngressAdapters.clauseCNFHubProblem\nbut is expected to have type\n  ComplexityReduction.Certificate.CertifiedReduction Inputs.IRFeasibility.Clause.ClauseToCSP.twoCNFSource\n    Inputs.IRFeasibility.Clause.ClauseToCSP.target\nin the application\n  ComplexityReduction.Certificate.CertifiedPath.step\n    ComplexityReduction.Routes.ClauseToCSP.IngressAdapters.twoCNFIngress\n/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-ir-codegen-full-20260730-hardness-plan-v1-resume1/DeepSeekArtifact.lean:134:179: error: Application type mismatch: The argument\n  ComplexityReduction.Routes.ClauseToCSP.egress\nhas type\n  ComplexityReduction.Certificate.CertifiedReduction ComplexityReduction.Routes.ClauseToCSP.canonicalCSPProblem\n    ComplexityReduction.Routes.ClauseToCSP.originalCSPProblem\nbut is expected to have type\n  ComplexityReduction.Certificate.CertifiedReduction\n    ComplexityReduction.Routes.ClauseToCSP.IngressAdapters.clauseCNFHubProblem\n    Inputs.IRFeasibility.Clause.ClauseToCSP.target\nin the application\n  (ComplexityReduction.Certificate.CertifiedPath.step\n        ComplexityReduction.Routes.ClauseToCSP.IngressAdapters.threeSATIngress).cons\n    ComplexityReduction.Routes.ClauseToCSP.egress\n/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-ir-codegen-full-20260730-hardness-plan-v1-resume1/DeepSeekArtifact.lean:166:105: error: Application type mismatch: The argument\n  ComplexityReduction.Domain.IncidenceIRToStructuredExactCoverStandardTM.egress\nhas type\n  ComplexityReduction.Certificate.CertifiedReduction\n    ComplexityReduction.Domain.IncidenceIRToStructuredExactCoverStandardTM.sourceProblem\n    ComplexityReduction.Domain.IncidenceIRToStructuredExactCoverStandardTM.targetProblem\nbut is expected to have type\n  ComplexityReduction.Certificate.CertifiedReduction Inputs.IRFeasibility.Incidence.IncidenceToEON.originalSource ?m.5\nin the application\n  ComplexityReduction.Certificate.CertifiedPath.step\n    ComplexityReduction.Domain.IncidenceIRToStructuredExactCoverStandardTM.egress\n/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-ir-codegen-full-20260730-hardness-plan-v1-resume1/DeepSeekArtifact.lean:210:0: error: axiom gate rejected Benchmark.Hardness.DeepSeekIRCodegen.CaseStructuredCnfToCspIr.selectedPath: forbidden axiom sorryAx\n",
+    "timed_out": false
+  },
+  "finished_at": "2026-07-30T06:25:00.942829+00:00",
+  "matched_pairs": [
+    {
+      "both_lean_verified": false,
+      "both_protocol_accepted": true,
+      "case_ids": [
+        "exact-cover-to-eon-flat",
+        "exact-cover-to-eon-ir"
+      ],
+      "matched_pair_id": "exact-cover-to-eon"
+    },
+    {
+      "both_lean_verified": false,
+      "both_protocol_accepted": true,
+      "case_ids": [
+        "graph-to-role-graph-flat",
+        "graph-to-role-graph-ir"
+      ],
+      "matched_pair_id": "graph-to-role-graph"
+    },
+    {
+      "both_lean_verified": false,
+      "both_protocol_accepted": true,
+      "case_ids": [
+        "modified-exact-cover-to-eon-flat",
+        "modified-exact-cover-to-eon-ir"
+      ],
+      "matched_pair_id": "modified-exact-cover-to-eon"
+    },
+    {
+      "both_lean_verified": false,
+      "both_protocol_accepted": true,
+      "case_ids": [
+        "structured-cnf-to-csp-flat",
+        "structured-cnf-to-csp-ir"
+      ],
+      "matched_pair_id": "structured-cnf-to-csp"
+    },
+    {
+      "both_lean_verified": false,
+      "both_protocol_accepted": true,
+      "case_ids": [
+        "three-sat-to-csp-flat",
+        "three-sat-to-csp-ir"
+      ],
+      "matched_pair_id": "three-sat-to-csp"
+    },
+    {
+      "both_lean_verified": false,
+      "both_protocol_accepted": true,
+      "case_ids": [
+        "two-cnf-to-csp-flat",
+        "two-cnf-to-csp-ir"
+      ],
+      "matched_pair_id": "two-cnf-to-csp"
+    }
+  ],
+  "model": {
+    "api_key_configured": true,
+    "base_url": "https://api.deepseek.com",
+    "max_retries": 2,
+    "max_tokens": 16384,
+    "model": "deepseek-v4-flash",
+    "temperature": 0.0,
+    "timeout_seconds": 900
+  },
+  "output_root": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-ir-codegen-full-20260730-hardness-plan-v1-resume1",
+  "resume": {
+    "report": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-ir-codegen-full-20260730-hardness-plan-v1/report.json",
+    "reusable_case_count": 11
+  },
+  "schema_version": "hardness_deepseek_ir_codegen_full_v1",
+  "scope": {
+    "deepseek_may_add_new_library_reductions": false,
+    "deepseek_writes_lean_path_terms": true,
+    "existing_library_declarations_only": true,
+    "expected_lean_process_count": 1,
+    "lean_validation_timing": "once_after_all_model_calls",
+    "offline_compiled_library_catalog": true,
+    "standard_axiom_gate": true,
+    "suite_id": "ir-feasibility"
+  },
+  "started_at": "2026-07-30T06:21:07.900147+00:00",
+  "status": "FAILED",
+  "summary": {
+    "all_12_verified": false,
+    "api_calls_this_run": 1,
+    "execution_count": 12,
+    "lean_process_count": 1,
+    "lean_verified_count": 0,
+    "matched_pair_both_verified_count": 0,
+    "model_call_count": 12,
+    "protocol_accepted_count": 12
+  }
+}

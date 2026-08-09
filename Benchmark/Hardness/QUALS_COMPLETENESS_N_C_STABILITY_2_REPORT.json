@@ -1,0 +1,1674 @@
+{
+  "adversarial_case_count": 7,
+  "adversarial_correct_count": 7,
+  "adversarial_suite_file": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/auto_reduction_agent/Benchmark/Hardness/Suites/quals_adversarial.json",
+  "candidate_bundle_validation_count": 5,
+  "capability_tracks": {
+    "fall2014-most-neighbors": {
+      "completeness": "VERIFIED",
+      "lower_bound": "VERIFIED",
+      "membership": "VERIFIED"
+    },
+    "fall2014-most-neighbors-missing-membership": {
+      "completeness": "BLOCKED",
+      "lower_bound": "AVAILABLE_BUT_NOT_SCORED",
+      "membership": "BLOCKED"
+    },
+    "fall2016-node-deletion-bipartite": {
+      "completeness": "VERIFIED",
+      "lower_bound": "VERIFIED",
+      "membership": "VERIFIED"
+    },
+    "fall2016-node-deletion-bipartite-missing-membership": {
+      "completeness": "BLOCKED",
+      "lower_bound": "AVAILABLE_BUT_NOT_SCORED",
+      "membership": "BLOCKED"
+    },
+    "spring2015-exactly-one-neighbor": {
+      "completeness": "VERIFIED",
+      "lower_bound": "VERIFIED",
+      "membership": "VERIFIED"
+    },
+    "spring2015-exactly-one-neighbor-missing-membership": {
+      "completeness": "BLOCKED",
+      "lower_bound": "AVAILABLE_BUT_NOT_SCORED",
+      "membership": "BLOCKED"
+    },
+    "spring2015-exactly-one-neighbor-reversed-reduction": {
+      "completeness": "NOT_APPLICABLE",
+      "lower_bound": "BLOCKED_WRONG_DIRECTION",
+      "membership": "NOT_APPLICABLE"
+    },
+    "spring2015-exactly-one-neighbor-wrong-endpoint": {
+      "completeness": "BLOCKED",
+      "lower_bound": "BLOCKED_EXACT_ENDPOINT",
+      "membership": "BLOCKED_EXACT_ENDPOINT"
+    },
+    "uiuc2020-two-disjoint-bounded-paths": {
+      "completeness": "VERIFIED",
+      "lower_bound": "VERIFIED",
+      "membership": "VERIFIED"
+    },
+    "uiuc2020-two-disjoint-bounded-paths-missing-membership": {
+      "completeness": "BLOCKED",
+      "lower_bound": "AVAILABLE_BUT_NOT_SCORED",
+      "membership": "BLOCKED"
+    },
+    "uiuc2022-seeing-set": {
+      "completeness": "NOT_APPLICABLE",
+      "lower_bound": "VERIFIED",
+      "membership": "NOT_APPLICABLE"
+    },
+    "uiuc2022-seeing-set-missing-reduction": {
+      "completeness": "NOT_APPLICABLE",
+      "lower_bound": "BLOCKED",
+      "membership": "NOT_APPLICABLE"
+    }
+  },
+  "case_suite_wall_duration_seconds": 2626.038,
+  "cases": [
+    {
+      "authoring_duration_seconds": 961.572,
+      "authoring_failure_code": null,
+      "authoring_process_count": 10,
+      "authoring_report": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/auto_reduction_agent/.reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/spring2015-exactly-one-neighbor/authoring/report.json",
+      "authoring_status": "REGISTRY_REVALIDATED",
+      "baseline_duration_seconds": 309.234,
+      "baseline_failure_code": "missing_native_membership",
+      "baseline_gap": {
+        "expected_capability_head": "ComplexityReduction.Certificate.NativeTMInNP",
+        "failure_code": "missing_native_membership",
+        "gap_id": "sha256:9aee21700bce059b9d39c0fde3d430399901689566190cc5a37a6dfeae65d457",
+        "producer": "lean_gap_classifier",
+        "reason": "nativeMembership",
+        "registry_fingerprint": "lean:12631256280684034053",
+        "role": "finalComposition",
+        "schema_version": "hardness_gap_v2",
+        "source_declaration": "Benchmark.Hardness.Inputs.Quals.Spring2015ExactlyOneNeighbor.problem",
+        "source_display": "Benchmark.Hardness.Inputs.Quals.Spring2015ExactlyOneNeighbor.problem",
+        "target_declaration": "Benchmark.Hardness.Inputs.Quals.Spring2015ExactlyOneNeighbor.problem",
+        "target_display": "Benchmark.Hardness.Inputs.Quals.Spring2015ExactlyOneNeighbor.problem"
+      },
+      "baseline_immutable": true,
+      "baseline_process_count": 3,
+      "baseline_report": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/auto_reduction_agent/.reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/spring2015-exactly-one-neighbor/baseline/report.json",
+      "baseline_status": "BLOCKED",
+      "candidate_bundle_validation": true,
+      "candidate_integrity_revalidated": true,
+      "candidate_sha256": "59802ee81b3215493c4133b1ea5e7558e112caa52d560d238db7472e2a8b474e",
+      "candidate_stage_files": [
+        ".reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/spring2015-exactly-one-neighbor/authoring/work/Generated/Hardness/J970cbe957104cb9f/NativeMembership/Verifier.lean",
+        ".reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/spring2015-exactly-one-neighbor/authoring/work/Generated/Hardness/J970cbe957104cb9f/NativeMembership/WitnessPresentation.lean",
+        ".reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/spring2015-exactly-one-neighbor/authoring/work/Generated/Hardness/J970cbe957104cb9f/NativeMembership/Discipline.lean",
+        ".reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/spring2015-exactly-one-neighbor/authoring/work/Generated/Hardness/J970cbe957104cb9f/NativeMembership/Membership.lean"
+      ],
+      "candidate_stage_sha256": [
+        "fd20534e8bde25faf3963042181cdc3bc2b78e32270f893308ae423fa92f25e7",
+        "1180843795f2e9dfe0c8fef8512d4f5171dca71543bda81f4eac89249727cd0b",
+        "8ad660ccf84452d0224d829a349e832d0b2342984bb59eb8921d7691838cc2a9",
+        "0a5c8b402fd194dd45e85ad65f6afa96e2c4d40c0dd1f2767c5418185e15c481"
+      ],
+      "candidate_write_count": 4,
+      "capability_tracks": {
+        "completeness": "VERIFIED",
+        "lower_bound": "VERIFIED",
+        "membership": "VERIFIED"
+      },
+      "case_task_wall_duration_seconds": 1275.527,
+      "certificate_dag_id": "sha256:3cd35d994a1bb283243cdc41d7ffe646f4579a93160b2a72a2c9ebe547875d65",
+      "combined_final_lean": true,
+      "compiler_insertions": [
+        "native_membership_shell",
+        "exact_endpoint_coercion",
+        "canonical_candidate_bundle_shell",
+        "fresh_registry_revalidation",
+        "final_request_constructor"
+      ],
+      "completed_certificate_dag_id": "sha256:4aae45c09f15ba796952bfc8c9c37636756fdc798baadd4b019fe311fdaca00b",
+      "endpoint_mutation_count": 0,
+      "evaluation_lane": "quals_completeness",
+      "execution_layer": "optional_authoring",
+      "execution_position": 1,
+      "expected_baseline_failure_code": "missing_native_membership",
+      "expected_baseline_status": "BLOCKED",
+      "family_id": "graph-local-witness",
+      "final_failure_code": null,
+      "final_status": "VERIFIED",
+      "fresh_registry_revalidation": true,
+      "gap_closure_count": 1,
+      "id": "spring2015-exactly-one-neighbor",
+      "independent_release_replay": true,
+      "input_kind": "presented_problem",
+      "model_authoring_calls": [],
+      "model_call_count": 1,
+      "objective": "prove_np_complete",
+      "objective_mutation_count": 0,
+      "packet_count": 1,
+      "packet_index_id": "sha256:bcf9be95f74e3f0c7be0aa3cbfd50b8b41d17c188e0fe06e1467a03e8636828c",
+      "positive": true,
+      "protocol_matches_expected": true,
+      "provisional_status": "READY_FOR_COMBINED_LEAN",
+      "request": {
+        "active_node": "membership_capability",
+        "allowed_packet_kinds": [
+          "membership_packet"
+        ],
+        "attempt_budget": 1,
+        "authoring_mode": "deterministic-template",
+        "expected_capability_head": "ComplexityReduction.Certificate.NativeTMInNP",
+        "model_selection_required": true,
+        "objective": "prove_np_complete",
+        "request_id": "sha256:c2ac2af2dab326a5a9099300361b79ce442d964f6b4ac5574640a98bc3cfbf26",
+        "required_checker_combinators": [
+          "list_nat",
+          "nodup",
+          "vertices_within_bounds",
+          "adjacency",
+          "nat_budget",
+          "local_predicate"
+        ],
+        "schema_version": "hardness_typed_authoring_request_v1",
+        "source_declaration": "Benchmark.Hardness.Inputs.Quals.Spring2015ExactlyOneNeighbor.problem",
+        "target_declaration": "Benchmark.Hardness.Inputs.Quals.Spring2015ExactlyOneNeighbor.problem",
+        "witness_shape": "list_nat"
+      },
+      "request_mutation_count": 0,
+      "selected_candidate_id": "sha256:7858f78e39f20dc1c72c78ee1784c3bc95c58c7e13db2be0bebd5cee680645d2",
+      "selected_packet_id": "sha256:2d99d6a64157fe9cf3ea326e7b97e7eb7803db6ed75e822467aef4feadfaffed",
+      "selected_packet_kind": "membership_packet",
+      "selected_template_kind": "native_membership",
+      "selection_calls": [
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 2.521,
+          "finish_reason": "stop",
+          "ok": true,
+          "prompt_file": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/auto_reduction_agent/.reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/spring2015-exactly-one-neighbor/selection/round-01-prompt.json",
+          "prompt_sha256": "bb3f83963cf062b9cd4ae33eb8f64a7b09b2d5e29eed72157ed5b263aa5fe69d",
+          "response_file": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/auto_reduction_agent/.reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/spring2015-exactly-one-neighbor/selection/round-01-response.json",
+          "response_sha256": "4026b420ffcd7b94405def9cd6a4d7dfb61af094394ec98662174daadac97a9b",
+          "round": 1,
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 327,
+            "completion_tokens_details": {
+              "reasoning_tokens": 106
+            },
+            "prompt_cache_hit_tokens": 3072,
+            "prompt_cache_miss_tokens": 25,
+            "prompt_tokens": 3097,
+            "prompt_tokens_details": {
+              "cached_tokens": 3072
+            },
+            "total_tokens": 3424
+          }
+        }
+      ],
+      "verification_profile": "strict-release"
+    },
+    {
+      "authoring_duration_seconds": 1246.361,
+      "authoring_failure_code": null,
+      "authoring_process_count": 13,
+      "authoring_report": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/auto_reduction_agent/.reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/uiuc2022-seeing-set/authoring/report.json",
+      "authoring_status": "REGISTRY_REVALIDATED",
+      "baseline_duration_seconds": 310.532,
+      "baseline_failure_code": "no_registry_path",
+      "baseline_gap": {
+        "expected_capability_head": "ComplexityReduction.Certificate.CertifiedReduction",
+        "failure_code": "no_registry_path",
+        "gap_id": "sha256:9230695aa33d6a6f0b62201dc75f7fa2f0bcabd9c2b3f30700c7c314d5d6c703",
+        "producer": "lean_gap_classifier",
+        "reason": "noRegistryPath",
+        "registry_fingerprint": "lean:15633585531354454750",
+        "role": "finalComposition",
+        "schema_version": "hardness_gap_v2",
+        "source_declaration": "Benchmark.Hardness.Inputs.Quals.UIUC2022SeeingSet.source",
+        "source_display": "Benchmark.Hardness.Inputs.Quals.UIUC2022SeeingSet.source",
+        "target_declaration": "Benchmark.Hardness.Inputs.Quals.UIUC2022SeeingSet.target",
+        "target_display": "Benchmark.Hardness.Inputs.Quals.UIUC2022SeeingSet.target"
+      },
+      "baseline_immutable": true,
+      "baseline_process_count": 3,
+      "baseline_report": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/auto_reduction_agent/.reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/uiuc2022-seeing-set/baseline/report.json",
+      "baseline_status": "BLOCKED",
+      "candidate_bundle_validation": true,
+      "candidate_integrity_revalidated": true,
+      "candidate_sha256": "f53f3bba942aeae7316f78fa9bd459bc833696bf8ea85b255b26c56ddc2e0d8d",
+      "candidate_stage_files": [
+        ".reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/uiuc2022-seeing-set/authoring/work/Generated/Hardness/J3e9255ac3093faee/ProgramIndexedReduction/Executable.lean",
+        ".reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/uiuc2022-seeing-set/authoring/work/Generated/Hardness/J3e9255ac3093faee/ProgramIndexedReduction/ExecutableDirectTM.lean",
+        ".reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/uiuc2022-seeing-set/authoring/work/Generated/Hardness/J3e9255ac3093faee/ProgramIndexedReduction/Primitive.lean",
+        ".reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/uiuc2022-seeing-set/authoring/work/Generated/Hardness/J3e9255ac3093faee/ProgramIndexedReduction/Program.lean",
+        ".reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/uiuc2022-seeing-set/authoring/work/Generated/Hardness/J3e9255ac3093faee/ProgramIndexedReduction/SemanticProof.lean",
+        ".reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/uiuc2022-seeing-set/authoring/work/Generated/Hardness/J3e9255ac3093faee/ProgramIndexedReduction/DirectTM.lean",
+        ".reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/uiuc2022-seeing-set/authoring/work/Generated/Hardness/J3e9255ac3093faee/ProgramIndexedReduction/Reduction.lean"
+      ],
+      "candidate_stage_sha256": [
+        "c8c0f6f839535499c898f1972fe0cb3c9bc153fe13d5bf8187f9e555ed2db56a",
+        "06c1e8c585c2ea5359632dce8e27e900d5fa1567703b0d639cf4fe5fae441afd",
+        "f97b775b24cf563eeb764ad14adab6e7f72e83150f77af35c3773b1f5ef99d3a",
+        "8bbc686a33b8d255626c827a8bdec3211ff4eed673a5efe1cb55e860867b3ac0",
+        "afc3e2f2d42b21b4ba6a1baa1c18aacd5c0d460818b5a946f76618f408665519",
+        "6bce2eb4ca40ac0172af269fd7690299405dbf0dab83aa7cf993d2d254f0d831",
+        "20defb9d85a3ade1c5e2fb1c7fa7efa111c014a9d091da4b23ff2ea866eb671f"
+      ],
+      "candidate_write_count": 7,
+      "capability_tracks": {
+        "completeness": "NOT_APPLICABLE",
+        "lower_bound": "VERIFIED",
+        "membership": "NOT_APPLICABLE"
+      },
+      "case_task_wall_duration_seconds": 1564.788,
+      "certificate_dag_id": "sha256:e8ff09dab2f41b0b75178f166135adaf03c2219f35f74b90ae1bde3ebe8d4273",
+      "combined_final_lean": true,
+      "compiler_insertions": [
+        "program_indexed_reduction_shell",
+        "exact_endpoint_coercion",
+        "canonical_candidate_bundle_shell",
+        "fresh_registry_revalidation",
+        "final_request_constructor"
+      ],
+      "completed_certificate_dag_id": "sha256:7cb6f312513daab02b54e589ce97fc096e1fb9ffef0664c6c7eb9faec78c0888",
+      "endpoint_mutation_count": 0,
+      "evaluation_lane": "quals_completeness",
+      "execution_layer": "optional_authoring",
+      "execution_position": 2,
+      "expected_baseline_failure_code": "no_registry_path",
+      "expected_baseline_status": "BLOCKED",
+      "family_id": "directed-weighted-reachability",
+      "final_failure_code": null,
+      "final_status": "VERIFIED",
+      "fresh_registry_revalidation": true,
+      "gap_closure_count": 1,
+      "id": "uiuc2022-seeing-set",
+      "independent_release_replay": true,
+      "input_kind": "presented_problem",
+      "model_authoring_calls": [],
+      "model_call_count": 1,
+      "objective": "reduce_to",
+      "objective_mutation_count": 0,
+      "packet_count": 1,
+      "packet_index_id": "sha256:dfb97cd50b0b487561eb24acee43991ff5b61906dda71e61d58810741ce665db",
+      "positive": true,
+      "protocol_matches_expected": true,
+      "provisional_status": "READY_FOR_COMBINED_LEAN",
+      "request": {
+        "active_node": "reduction_capability",
+        "allowed_packet_kinds": [
+          "tm_certificate_packet"
+        ],
+        "attempt_budget": 1,
+        "authoring_mode": "deterministic-template",
+        "expected_capability_head": "ComplexityReduction.Certificate.CertifiedReduction",
+        "model_selection_required": true,
+        "objective": "reduce_to",
+        "request_id": "sha256:f24b6b1640abe784412b26fd504c55e731c8ceab452bcf6d5f733f32914d450e",
+        "required_checker_combinators": [],
+        "schema_version": "hardness_typed_authoring_request_v1",
+        "source_declaration": "Benchmark.Hardness.Inputs.Quals.UIUC2022SeeingSet.source",
+        "target_declaration": "Benchmark.Hardness.Inputs.Quals.UIUC2022SeeingSet.target",
+        "witness_shape": "none"
+      },
+      "request_mutation_count": 0,
+      "selected_candidate_id": "sha256:56ec8a5e9b3c9354dcf2a63b7ab6a6254968d9eb3d53f9302dc043f5fa3384c3",
+      "selected_packet_id": "sha256:39c4a9554cb55902f12275f1f3109f76e2eaf5b561016270525ed3fee06719f9",
+      "selected_packet_kind": "tm_certificate_packet",
+      "selected_template_kind": "program_indexed_reduction",
+      "selection_calls": [
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 5.365,
+          "finish_reason": "stop",
+          "ok": true,
+          "prompt_file": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/auto_reduction_agent/.reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/uiuc2022-seeing-set/selection/round-01-prompt.json",
+          "prompt_sha256": "212134bd3e97797a811f7aa10a2cb6bb12df5400cafb59ed4be5b57e7803551d",
+          "response_file": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/auto_reduction_agent/.reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/uiuc2022-seeing-set/selection/round-01-response.json",
+          "response_sha256": "8ecea009b8492dcac23a95d7961da6a06f0983fe6a44bc9d3d723d77d35aa14f",
+          "round": 1,
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 887,
+            "completion_tokens_details": {
+              "reasoning_tokens": 686
+            },
+            "prompt_cache_hit_tokens": 2944,
+            "prompt_cache_miss_tokens": 57,
+            "prompt_tokens": 3001,
+            "prompt_tokens_details": {
+              "cached_tokens": 2944
+            },
+            "total_tokens": 3888
+          }
+        }
+      ],
+      "verification_profile": "strict-release"
+    },
+    {
+      "authoring_duration_seconds": 960.168,
+      "authoring_failure_code": null,
+      "authoring_process_count": 10,
+      "authoring_report": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/auto_reduction_agent/.reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/fall2016-node-deletion-bipartite/authoring/report.json",
+      "authoring_status": "REGISTRY_REVALIDATED",
+      "baseline_duration_seconds": 309.247,
+      "baseline_failure_code": "missing_native_membership",
+      "baseline_gap": {
+        "expected_capability_head": "ComplexityReduction.Certificate.NativeTMInNP",
+        "failure_code": "missing_native_membership",
+        "gap_id": "sha256:78eadbbaa8aa87e2080a54a7f2faa66f7d26f0ac50158ee33a17c72111ddbcdd",
+        "producer": "lean_gap_classifier",
+        "reason": "nativeMembership",
+        "registry_fingerprint": "lean:2275603331427262060",
+        "role": "finalComposition",
+        "schema_version": "hardness_gap_v2",
+        "source_declaration": "Benchmark.Hardness.Inputs.Quals.Fall2016NodeDeletionBipartite.problem",
+        "source_display": "Benchmark.Hardness.Inputs.Quals.Fall2016NodeDeletionBipartite.problem",
+        "target_declaration": "Benchmark.Hardness.Inputs.Quals.Fall2016NodeDeletionBipartite.problem",
+        "target_display": "Benchmark.Hardness.Inputs.Quals.Fall2016NodeDeletionBipartite.problem"
+      },
+      "baseline_immutable": true,
+      "baseline_process_count": 3,
+      "baseline_report": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/auto_reduction_agent/.reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/fall2016-node-deletion-bipartite/baseline/report.json",
+      "baseline_status": "BLOCKED",
+      "candidate_bundle_validation": true,
+      "candidate_integrity_revalidated": true,
+      "candidate_sha256": "8899fa442ca7c2275fc67f8c9892189c78e0bdd107d3f2f5254c111ad3d7c7ea",
+      "candidate_stage_files": [
+        ".reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/fall2016-node-deletion-bipartite/authoring/work/Generated/Hardness/J5bcedf4c6eec8b8e/NativeMembership/Verifier.lean",
+        ".reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/fall2016-node-deletion-bipartite/authoring/work/Generated/Hardness/J5bcedf4c6eec8b8e/NativeMembership/WitnessPresentation.lean",
+        ".reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/fall2016-node-deletion-bipartite/authoring/work/Generated/Hardness/J5bcedf4c6eec8b8e/NativeMembership/Discipline.lean",
+        ".reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/fall2016-node-deletion-bipartite/authoring/work/Generated/Hardness/J5bcedf4c6eec8b8e/NativeMembership/Membership.lean"
+      ],
+      "candidate_stage_sha256": [
+        "16597ed504066cbddde3ef40f9b31c10fa3d74d9fbdea71cf7a4dd06746bb42f",
+        "389c9d3077526a9cd7e24e8ac36d2ca14e6a8675c993767b05966195bc154496",
+        "855514e901c75d6a494b46784bc02c88f6bae8f188984557c146412fe0faddb2",
+        "5ddf5821d3a9d0d636d6b21c686052f03141ab1d3793b724d53e21b982dbb716"
+      ],
+      "candidate_write_count": 4,
+      "capability_tracks": {
+        "completeness": "VERIFIED",
+        "lower_bound": "VERIFIED",
+        "membership": "VERIFIED"
+      },
+      "case_task_wall_duration_seconds": 1275.525,
+      "certificate_dag_id": "sha256:42113182cdce30f20d259f1841625a96c2504af2e1b2c7fcf52e3e985c408e02",
+      "combined_final_lean": true,
+      "compiler_insertions": [
+        "native_membership_shell",
+        "exact_endpoint_coercion",
+        "canonical_candidate_bundle_shell",
+        "fresh_registry_revalidation",
+        "final_request_constructor"
+      ],
+      "completed_certificate_dag_id": "sha256:49b92159bb19935dad642fe751ea9add122a0908873c4f4fbff1286ff9f8a927",
+      "endpoint_mutation_count": 0,
+      "evaluation_lane": "quals_completeness",
+      "execution_layer": "optional_authoring",
+      "execution_position": 3,
+      "expected_baseline_failure_code": "missing_native_membership",
+      "expected_baseline_status": "BLOCKED",
+      "family_id": "graph-deletion-coloring",
+      "final_failure_code": null,
+      "final_status": "VERIFIED",
+      "fresh_registry_revalidation": true,
+      "gap_closure_count": 1,
+      "id": "fall2016-node-deletion-bipartite",
+      "independent_release_replay": true,
+      "input_kind": "presented_problem",
+      "model_authoring_calls": [],
+      "model_call_count": 1,
+      "objective": "prove_np_complete",
+      "objective_mutation_count": 0,
+      "packet_count": 1,
+      "packet_index_id": "sha256:6007b48d46781b3a65fc9c0f54292be5836c2c668660111df738c455bbd409b4",
+      "positive": true,
+      "protocol_matches_expected": true,
+      "provisional_status": "READY_FOR_COMBINED_LEAN",
+      "request": {
+        "active_node": "membership_capability",
+        "allowed_packet_kinds": [
+          "membership_packet"
+        ],
+        "attempt_budget": 1,
+        "authoring_mode": "deterministic-template",
+        "expected_capability_head": "ComplexityReduction.Certificate.NativeTMInNP",
+        "model_selection_required": true,
+        "objective": "prove_np_complete",
+        "request_id": "sha256:0f1d8b2f83ed817ef37450f30cc7d26cf51d2ea1622b535ee0add0ca0045bff5",
+        "required_checker_combinators": [
+          "list_nat",
+          "adjacency",
+          "coloring",
+          "deletion_coloring",
+          "nat_budget",
+          "local_predicate"
+        ],
+        "schema_version": "hardness_typed_authoring_request_v1",
+        "source_declaration": "Benchmark.Hardness.Inputs.Quals.Fall2016NodeDeletionBipartite.problem",
+        "target_declaration": "Benchmark.Hardness.Inputs.Quals.Fall2016NodeDeletionBipartite.problem",
+        "witness_shape": "deletion_coloring"
+      },
+      "request_mutation_count": 0,
+      "selected_candidate_id": "sha256:c7e261f5785d0272942f8d80d2079e533cf4eddbf9cfba0dfe237cdf946e7ddb",
+      "selected_packet_id": "sha256:05d67fe42066bbb302b9c4e289f4bc6a8990de18260d2c8a07bc026910a810ad",
+      "selected_packet_kind": "membership_packet",
+      "selected_template_kind": "native_membership",
+      "selection_calls": [
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 3.95,
+          "finish_reason": "stop",
+          "ok": true,
+          "prompt_file": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/auto_reduction_agent/.reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/fall2016-node-deletion-bipartite/selection/round-01-prompt.json",
+          "prompt_sha256": "5fe6b584b38ff7205a41789bc7d1fee4ab10e1aac2caa4cc0154850b51e5dcf3",
+          "response_file": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/auto_reduction_agent/.reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/fall2016-node-deletion-bipartite/selection/round-01-response.json",
+          "response_sha256": "4f8ad76b63074298c2e7e122f93aff6b84eeab31ae406caed06b02f57b8a84ca",
+          "round": 1,
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 656,
+            "completion_tokens_details": {
+              "reasoning_tokens": 429
+            },
+            "prompt_cache_hit_tokens": 2944,
+            "prompt_cache_miss_tokens": 81,
+            "prompt_tokens": 3025,
+            "prompt_tokens_details": {
+              "cached_tokens": 2944
+            },
+            "total_tokens": 3681
+          }
+        }
+      ],
+      "verification_profile": "strict-release"
+    },
+    {
+      "authoring_duration_seconds": 961.722,
+      "authoring_failure_code": null,
+      "authoring_process_count": 10,
+      "authoring_report": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/auto_reduction_agent/.reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/fall2014-most-neighbors/authoring/report.json",
+      "authoring_status": "REGISTRY_REVALIDATED",
+      "baseline_duration_seconds": 309.242,
+      "baseline_failure_code": "missing_native_membership",
+      "baseline_gap": {
+        "expected_capability_head": "ComplexityReduction.Certificate.NativeTMInNP",
+        "failure_code": "missing_native_membership",
+        "gap_id": "sha256:87e3a0418bb3dd08bab9e668608558a0708f2c98cbec03cfbaa9c3f5897d1f64",
+        "producer": "lean_gap_classifier",
+        "reason": "nativeMembership",
+        "registry_fingerprint": "lean:964909733702727924",
+        "role": "finalComposition",
+        "schema_version": "hardness_gap_v2",
+        "source_declaration": "Benchmark.Hardness.Inputs.Quals.Fall2014MostNeighbors.problem",
+        "source_display": "Benchmark.Hardness.Inputs.Quals.Fall2014MostNeighbors.problem",
+        "target_declaration": "Benchmark.Hardness.Inputs.Quals.Fall2014MostNeighbors.problem",
+        "target_display": "Benchmark.Hardness.Inputs.Quals.Fall2014MostNeighbors.problem"
+      },
+      "baseline_immutable": true,
+      "baseline_process_count": 3,
+      "baseline_report": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/auto_reduction_agent/.reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/fall2014-most-neighbors/baseline/report.json",
+      "baseline_status": "BLOCKED",
+      "candidate_bundle_validation": true,
+      "candidate_integrity_revalidated": true,
+      "candidate_sha256": "ad113c3dd2cc5b433c7b6d410271a73bc545a9a30a029a409c1b2ead150b3d9d",
+      "candidate_stage_files": [
+        ".reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/fall2014-most-neighbors/authoring/work/Generated/Hardness/J79fc5ae384534a93/NativeMembership/Verifier.lean",
+        ".reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/fall2014-most-neighbors/authoring/work/Generated/Hardness/J79fc5ae384534a93/NativeMembership/WitnessPresentation.lean",
+        ".reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/fall2014-most-neighbors/authoring/work/Generated/Hardness/J79fc5ae384534a93/NativeMembership/Discipline.lean",
+        ".reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/fall2014-most-neighbors/authoring/work/Generated/Hardness/J79fc5ae384534a93/NativeMembership/Membership.lean"
+      ],
+      "candidate_stage_sha256": [
+        "1a425da7039d512fa68737ebd43e6928a3cd831f2554906274d73cf474b5e8c9",
+        "a53d42aa5e51bebfd31e0f4ba4bd7c9e326a83efd0d4b62c26eed00f959115e9",
+        "44ab223b131d7c2068b00188237eb9b351ab4fab01315a0e523189145f79bbc7",
+        "cd4e166882854e3532783f255e92a3a24d9aa2f44c8c269ac67735a97af72698"
+      ],
+      "candidate_write_count": 4,
+      "capability_tracks": {
+        "completeness": "VERIFIED",
+        "lower_bound": "VERIFIED",
+        "membership": "VERIFIED"
+      },
+      "case_task_wall_duration_seconds": 1275.525,
+      "certificate_dag_id": "sha256:a5adf149ce5366789a50f22d45d8bb3b2276ceb01f276ac480a62e1e96df9074",
+      "combined_final_lean": true,
+      "compiler_insertions": [
+        "native_membership_shell",
+        "exact_endpoint_coercion",
+        "canonical_candidate_bundle_shell",
+        "fresh_registry_revalidation",
+        "final_request_constructor"
+      ],
+      "completed_certificate_dag_id": "sha256:5e36e88aa36752ec06a3f81c262b1802dc43be06b05f37e4ea59c1ff128c0cf8",
+      "endpoint_mutation_count": 0,
+      "evaluation_lane": "quals_completeness",
+      "execution_layer": "optional_authoring",
+      "execution_position": 4,
+      "expected_baseline_failure_code": "missing_native_membership",
+      "expected_baseline_status": "BLOCKED",
+      "family_id": "external-neighborhood",
+      "final_failure_code": null,
+      "final_status": "VERIFIED",
+      "fresh_registry_revalidation": true,
+      "gap_closure_count": 1,
+      "id": "fall2014-most-neighbors",
+      "independent_release_replay": true,
+      "input_kind": "presented_problem",
+      "model_authoring_calls": [],
+      "model_call_count": 1,
+      "objective": "prove_np_complete",
+      "objective_mutation_count": 0,
+      "packet_count": 1,
+      "packet_index_id": "sha256:1fcdf9e94a775e726a6d7ffb822d4cac86faef469d20fe2dc93dce0a07362ac6",
+      "positive": true,
+      "protocol_matches_expected": true,
+      "provisional_status": "READY_FOR_COMBINED_LEAN",
+      "request": {
+        "active_node": "membership_capability",
+        "allowed_packet_kinds": [
+          "membership_packet"
+        ],
+        "attempt_budget": 1,
+        "authoring_mode": "deterministic-template",
+        "expected_capability_head": "ComplexityReduction.Certificate.NativeTMInNP",
+        "model_selection_required": true,
+        "objective": "prove_np_complete",
+        "request_id": "sha256:0bec29c44fead9090e6ba3e2d96de06a1ab7e0e673f1b7d47ee5566bcfb26542",
+        "required_checker_combinators": [
+          "list_nat",
+          "adjacency",
+          "external_neighborhood",
+          "nat_budget",
+          "local_predicate"
+        ],
+        "schema_version": "hardness_typed_authoring_request_v1",
+        "source_declaration": "Benchmark.Hardness.Inputs.Quals.Fall2014MostNeighbors.problem",
+        "target_declaration": "Benchmark.Hardness.Inputs.Quals.Fall2014MostNeighbors.problem",
+        "witness_shape": "list_nat"
+      },
+      "request_mutation_count": 0,
+      "selected_candidate_id": "sha256:dc1164e39f952a526accbecb2f954489de650a713afa93f49fccaa468f1263f6",
+      "selected_packet_id": "sha256:de47adb3128f9436340257503e043774a00cbfa262eb218039ee89d10f533dfa",
+      "selected_packet_kind": "membership_packet",
+      "selected_template_kind": "native_membership",
+      "selection_calls": [
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 2.605,
+          "finish_reason": "stop",
+          "ok": true,
+          "prompt_file": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/auto_reduction_agent/.reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/fall2014-most-neighbors/selection/round-01-prompt.json",
+          "prompt_sha256": "76a7fe517b37003712f42260d9a53960798439f540babc9c25a150dc3fcdbd7a",
+          "response_file": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/auto_reduction_agent/.reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/fall2014-most-neighbors/selection/round-01-response.json",
+          "response_sha256": "c8083eb538fa7679d07d863a3a6d5f32f885c1721d0d980f802019881f9f3a52",
+          "round": 1,
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 318,
+            "completion_tokens_details": {
+              "reasoning_tokens": 116
+            },
+            "prompt_cache_hit_tokens": 2944,
+            "prompt_cache_miss_tokens": 121,
+            "prompt_tokens": 3065,
+            "prompt_tokens_details": {
+              "cached_tokens": 2944
+            },
+            "total_tokens": 3383
+          }
+        }
+      ],
+      "verification_profile": "strict-release"
+    },
+    {
+      "authoring_duration_seconds": 1057.803,
+      "authoring_failure_code": null,
+      "authoring_process_count": 10,
+      "authoring_report": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/auto_reduction_agent/.reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/uiuc2020-two-disjoint-bounded-paths/authoring/report.json",
+      "authoring_status": "REGISTRY_REVALIDATED",
+      "baseline_duration_seconds": 287.688,
+      "baseline_failure_code": "missing_native_membership",
+      "baseline_gap": {
+        "expected_capability_head": "ComplexityReduction.Certificate.NativeTMInNP",
+        "failure_code": "missing_native_membership",
+        "gap_id": "sha256:c73d80a56114de4746e031764551d435812949b59e27009f4d3136b9fcf7d9fc",
+        "producer": "lean_gap_classifier",
+        "reason": "nativeMembership",
+        "registry_fingerprint": "lean:113397701550014775",
+        "role": "finalComposition",
+        "schema_version": "hardness_gap_v2",
+        "source_declaration": "Benchmark.Hardness.Inputs.Quals.UIUC2020TwoDisjointBoundedPaths.problem",
+        "source_display": "Benchmark.Hardness.Inputs.Quals.UIUC2020TwoDisjointBoundedPaths.problem",
+        "target_declaration": "Benchmark.Hardness.Inputs.Quals.UIUC2020TwoDisjointBoundedPaths.problem",
+        "target_display": "Benchmark.Hardness.Inputs.Quals.UIUC2020TwoDisjointBoundedPaths.problem"
+      },
+      "baseline_immutable": true,
+      "baseline_process_count": 3,
+      "baseline_report": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/auto_reduction_agent/.reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/uiuc2020-two-disjoint-bounded-paths/baseline/report.json",
+      "baseline_status": "BLOCKED",
+      "candidate_bundle_validation": true,
+      "candidate_integrity_revalidated": true,
+      "candidate_sha256": "e38910482f38c6da954dc5c5c90d22f702b3e80c36a7a133ebdc7d7f0245d36d",
+      "candidate_stage_files": [
+        ".reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/uiuc2020-two-disjoint-bounded-paths/authoring/work/Generated/Hardness/Jc10453d41f370a44/NativeMembership/Verifier.lean",
+        ".reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/uiuc2020-two-disjoint-bounded-paths/authoring/work/Generated/Hardness/Jc10453d41f370a44/NativeMembership/WitnessPresentation.lean",
+        ".reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/uiuc2020-two-disjoint-bounded-paths/authoring/work/Generated/Hardness/Jc10453d41f370a44/NativeMembership/Discipline.lean",
+        ".reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/uiuc2020-two-disjoint-bounded-paths/authoring/work/Generated/Hardness/Jc10453d41f370a44/NativeMembership/Membership.lean"
+      ],
+      "candidate_stage_sha256": [
+        "364bd3716db6000b144383837b328541846d2907b545c791f2257892b7713cfe",
+        "6df459f694c885652abac28c234755d100eda93e0db8460712fb4fd6a9a424d6",
+        "8706900346b04a2024fd3ac61243266fdaf230c83dafc438bbb3c59157bbfa4f",
+        "024f035eb03ed63a644aec359619583ed9018b6224de3e7f35fb012c17b0307b"
+      ],
+      "candidate_write_count": 4,
+      "capability_tracks": {
+        "completeness": "VERIFIED",
+        "lower_bound": "VERIFIED",
+        "membership": "VERIFIED"
+      },
+      "case_task_wall_duration_seconds": 1350.497,
+      "certificate_dag_id": "sha256:7189d1bf5f9a5bb9c78c328f037ede0e10839d7ec6f4874b785111f2c2b21f24",
+      "combined_final_lean": true,
+      "compiler_insertions": [
+        "native_membership_shell",
+        "exact_endpoint_coercion",
+        "canonical_candidate_bundle_shell",
+        "fresh_registry_revalidation",
+        "final_request_constructor"
+      ],
+      "completed_certificate_dag_id": "sha256:86f4ff26a11eb33f3338b9b2e0379471479318726e303293b5f00efeffcec188",
+      "endpoint_mutation_count": 0,
+      "evaluation_lane": "quals_completeness",
+      "execution_layer": "optional_authoring",
+      "execution_position": 5,
+      "expected_baseline_failure_code": "missing_native_membership",
+      "expected_baseline_status": "BLOCKED",
+      "family_id": "directed-costed-pair-path",
+      "final_failure_code": null,
+      "final_status": "VERIFIED",
+      "fresh_registry_revalidation": true,
+      "gap_closure_count": 1,
+      "id": "uiuc2020-two-disjoint-bounded-paths",
+      "independent_release_replay": true,
+      "input_kind": "presented_problem",
+      "model_authoring_calls": [],
+      "model_call_count": 1,
+      "objective": "prove_np_complete",
+      "objective_mutation_count": 0,
+      "packet_count": 1,
+      "packet_index_id": "sha256:3100484542d55a4cc05df794461836213dc9ed86ca6ff628e2a6e40f7699e07b",
+      "positive": true,
+      "protocol_matches_expected": true,
+      "provisional_status": "READY_FOR_COMBINED_LEAN",
+      "request": {
+        "active_node": "membership_capability",
+        "allowed_packet_kinds": [
+          "membership_packet"
+        ],
+        "attempt_budget": 1,
+        "authoring_mode": "deterministic-template",
+        "expected_capability_head": "ComplexityReduction.Certificate.NativeTMInNP",
+        "model_selection_required": true,
+        "objective": "prove_np_complete",
+        "request_id": "sha256:e2860c1b4c218a1cf9862c80973fe1816b9de28b6b0d1ca99dc2a9857b3439d5",
+        "required_checker_combinators": [
+          "list_nat",
+          "pair_list",
+          "edge_index_path",
+          "binary_path_cost",
+          "disjointness",
+          "nat_budget",
+          "local_predicate"
+        ],
+        "schema_version": "hardness_typed_authoring_request_v1",
+        "source_declaration": "Benchmark.Hardness.Inputs.Quals.UIUC2020TwoDisjointBoundedPaths.problem",
+        "target_declaration": "Benchmark.Hardness.Inputs.Quals.UIUC2020TwoDisjointBoundedPaths.problem",
+        "witness_shape": "pair_list"
+      },
+      "request_mutation_count": 0,
+      "selected_candidate_id": "sha256:b7c3ec7cb23156b588721a14e47f8fcf3af59bef9be0f0748abfdbb74812b608",
+      "selected_packet_id": "sha256:bf7fc965c61e900b6ab2daa1d4334a1e97460fedc4486070f44588af57e357ba",
+      "selected_packet_kind": "membership_packet",
+      "selected_template_kind": "native_membership",
+      "selection_calls": [
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 3.295,
+          "finish_reason": "stop",
+          "ok": true,
+          "prompt_file": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/auto_reduction_agent/.reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/uiuc2020-two-disjoint-bounded-paths/selection/round-01-prompt.json",
+          "prompt_sha256": "f6b018239b4e5b8c0d55615be1e9728e9c884eff26b1732fbc514bd902487385",
+          "response_file": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/auto_reduction_agent/.reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/uiuc2020-two-disjoint-bounded-paths/selection/round-01-response.json",
+          "response_sha256": "1a61d48eb66c9c1ee06b9c396e42a3a74f7db37848e412d7d24b1b770fd164e4",
+          "round": 1,
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 479,
+            "completion_tokens_details": {
+              "reasoning_tokens": 284
+            },
+            "prompt_cache_hit_tokens": 3072,
+            "prompt_cache_miss_tokens": 8,
+            "prompt_tokens": 3080,
+            "prompt_tokens_details": {
+              "cached_tokens": 3072
+            },
+            "total_tokens": 3559
+          }
+        }
+      ],
+      "verification_profile": "strict-release"
+    },
+    {
+      "authoring_duration_seconds": 0.0,
+      "authoring_process_count": 0,
+      "baseline_duration_seconds": 287.698,
+      "baseline_failure_code": "missing_native_membership",
+      "baseline_gap": {
+        "expected_capability_head": "ComplexityReduction.Certificate.NativeTMInNP",
+        "failure_code": "missing_native_membership",
+        "gap_id": "sha256:2b5ac5f86c9b6e96d6ff146cb24dbe78bb56fbc24a65792bec62bdc0aff51c17",
+        "producer": "lean_gap_classifier",
+        "reason": "nativeMembership",
+        "registry_fingerprint": "lean:6148490964957036373",
+        "role": "finalComposition",
+        "schema_version": "hardness_gap_v2",
+        "source_declaration": "Benchmark.Hardness.Inputs.Quals.Spring2015ExactlyOneNeighborMissingMembership.problem",
+        "source_display": "Benchmark.Hardness.Inputs.Quals.Spring2015ExactlyOneNeighborMissingMembership.problem",
+        "target_declaration": "Benchmark.Hardness.Inputs.Quals.Spring2015ExactlyOneNeighborMissingMembership.problem",
+        "target_display": "Benchmark.Hardness.Inputs.Quals.Spring2015ExactlyOneNeighborMissingMembership.problem"
+      },
+      "baseline_immutable": true,
+      "baseline_process_count": 3,
+      "baseline_report": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/auto_reduction_agent/.reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/spring2015-exactly-one-neighbor-missing-membership/report.json",
+      "baseline_status": "BLOCKED",
+      "candidate_write_count": 0,
+      "capability_tracks": {
+        "completeness": "BLOCKED",
+        "lower_bound": "AVAILABLE_BUT_NOT_SCORED",
+        "membership": "BLOCKED"
+      },
+      "case_task_wall_duration_seconds": 288.061,
+      "endpoint_isolation_confirmed": true,
+      "endpoint_mutation_count": 0,
+      "evaluation_lane": "quals_adversarial",
+      "exact_authoring_template_count": 0,
+      "execution_layer": "core_reuse",
+      "execution_position": 6,
+      "expected_baseline_failure_code": "missing_native_membership",
+      "expected_baseline_status": "BLOCKED",
+      "family_id": "graph-local-witness",
+      "final_failure_code": "missing_native_membership",
+      "final_status": "BLOCKED",
+      "gap_closure_count": 0,
+      "id": "spring2015-exactly-one-neighbor-missing-membership",
+      "input_kind": "presented_problem",
+      "model_authoring_calls": [],
+      "model_call_count": 0,
+      "negative_class": "missing_membership",
+      "objective": "prove_np_complete",
+      "objective_mutation_count": 0,
+      "positive": false,
+      "pre_model_blocked": true,
+      "protocol_matches_expected": true,
+      "request_mutation_count": 0,
+      "selection_calls": [],
+      "verification_profile": "core"
+    },
+    {
+      "authoring_duration_seconds": 0.0,
+      "authoring_process_count": 0,
+      "baseline_duration_seconds": 287.694,
+      "baseline_failure_code": "no_registry_path",
+      "baseline_gap": {
+        "expected_capability_head": "ComplexityReduction.Certificate.CertifiedReduction",
+        "failure_code": "no_registry_path",
+        "gap_id": "sha256:3efb1bc904b0e0e1cce49d2248f0c515b024f17841f145071a77cc628262b7dc",
+        "producer": "lean_gap_classifier",
+        "reason": "noRegistryPath",
+        "registry_fingerprint": "lean:7665501147039441018",
+        "role": "finalComposition",
+        "schema_version": "hardness_gap_v2",
+        "source_declaration": "Benchmark.Hardness.Inputs.Quals.Spring2015ExactlyOneNeighborReversedReduction.source",
+        "source_display": "Benchmark.Hardness.Inputs.Quals.Spring2015ExactlyOneNeighborReversedReduction.source",
+        "target_declaration": "Benchmark.Hardness.Inputs.Quals.Spring2015ExactlyOneNeighborReversedReduction.target",
+        "target_display": "Benchmark.Hardness.Inputs.Quals.Spring2015ExactlyOneNeighborReversedReduction.target"
+      },
+      "baseline_immutable": true,
+      "baseline_process_count": 3,
+      "baseline_report": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/auto_reduction_agent/.reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/spring2015-exactly-one-neighbor-reversed-reduction/report.json",
+      "baseline_status": "BLOCKED",
+      "candidate_write_count": 0,
+      "capability_tracks": {
+        "completeness": "NOT_APPLICABLE",
+        "lower_bound": "BLOCKED_WRONG_DIRECTION",
+        "membership": "NOT_APPLICABLE"
+      },
+      "case_task_wall_duration_seconds": 288.06,
+      "endpoint_isolation_confirmed": true,
+      "endpoint_mutation_count": 0,
+      "evaluation_lane": "quals_adversarial",
+      "exact_authoring_template_count": 0,
+      "execution_layer": "core_reuse",
+      "execution_position": 7,
+      "expected_baseline_failure_code": "no_registry_path",
+      "expected_baseline_status": "BLOCKED",
+      "family_id": "graph-local-witness",
+      "final_failure_code": "no_registry_path",
+      "final_status": "BLOCKED",
+      "gap_closure_count": 0,
+      "id": "spring2015-exactly-one-neighbor-reversed-reduction",
+      "input_kind": "presented_problem",
+      "model_authoring_calls": [],
+      "model_call_count": 0,
+      "negative_class": "reversed_reduction",
+      "objective": "reduce_to",
+      "objective_mutation_count": 0,
+      "positive": false,
+      "pre_model_blocked": true,
+      "protocol_matches_expected": true,
+      "request_mutation_count": 0,
+      "selection_calls": [],
+      "verification_profile": "core"
+    },
+    {
+      "authoring_duration_seconds": 0.0,
+      "authoring_process_count": 0,
+      "baseline_duration_seconds": 272.137,
+      "baseline_failure_code": "missing_native_membership",
+      "baseline_gap": {
+        "expected_capability_head": "ComplexityReduction.Certificate.NativeTMInNP",
+        "failure_code": "missing_native_membership",
+        "gap_id": "sha256:35298c8a4b07bcbb587b90477cbe811e8681eada961c28afab7bab23941588f1",
+        "producer": "lean_gap_classifier",
+        "reason": "nativeMembership",
+        "registry_fingerprint": "lean:12569543480646251820",
+        "role": "finalComposition",
+        "schema_version": "hardness_gap_v2",
+        "source_declaration": "Benchmark.Hardness.Inputs.Quals.Spring2015ExactlyOneNeighborWrongEndpoint.problem",
+        "source_display": "Benchmark.Hardness.Inputs.Quals.Spring2015ExactlyOneNeighborWrongEndpoint.problem",
+        "target_declaration": "Benchmark.Hardness.Inputs.Quals.Spring2015ExactlyOneNeighborWrongEndpoint.problem",
+        "target_display": "Benchmark.Hardness.Inputs.Quals.Spring2015ExactlyOneNeighborWrongEndpoint.problem"
+      },
+      "baseline_immutable": true,
+      "baseline_process_count": 3,
+      "baseline_report": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/auto_reduction_agent/.reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/spring2015-exactly-one-neighbor-wrong-endpoint/report.json",
+      "baseline_status": "BLOCKED",
+      "candidate_write_count": 0,
+      "capability_tracks": {
+        "completeness": "BLOCKED",
+        "lower_bound": "BLOCKED_EXACT_ENDPOINT",
+        "membership": "BLOCKED_EXACT_ENDPOINT"
+      },
+      "case_task_wall_duration_seconds": 272.52,
+      "endpoint_isolation_confirmed": true,
+      "endpoint_mutation_count": 0,
+      "evaluation_lane": "quals_adversarial",
+      "exact_authoring_template_count": 0,
+      "execution_layer": "core_reuse",
+      "execution_position": 8,
+      "expected_baseline_failure_code": "missing_native_membership",
+      "expected_baseline_status": "BLOCKED",
+      "family_id": "graph-local-witness",
+      "final_failure_code": "missing_native_membership",
+      "final_status": "BLOCKED",
+      "gap_closure_count": 0,
+      "id": "spring2015-exactly-one-neighbor-wrong-endpoint",
+      "input_kind": "presented_problem",
+      "model_authoring_calls": [],
+      "model_call_count": 0,
+      "negative_class": "wrong_endpoint",
+      "objective": "prove_np_complete",
+      "objective_mutation_count": 0,
+      "positive": false,
+      "pre_model_blocked": true,
+      "protocol_matches_expected": true,
+      "request_mutation_count": 0,
+      "selection_calls": [],
+      "verification_profile": "core"
+    },
+    {
+      "authoring_duration_seconds": 0.0,
+      "authoring_process_count": 0,
+      "baseline_duration_seconds": 273.535,
+      "baseline_failure_code": "no_registry_path",
+      "baseline_gap": {
+        "expected_capability_head": "ComplexityReduction.Certificate.CertifiedReduction",
+        "failure_code": "no_registry_path",
+        "gap_id": "sha256:35b79c66838751c8363e24e208671ce04ad31397c05485542338e882c6e2832c",
+        "producer": "lean_gap_classifier",
+        "reason": "noRegistryPath",
+        "registry_fingerprint": "lean:3287680882731691212",
+        "role": "finalComposition",
+        "schema_version": "hardness_gap_v2",
+        "source_declaration": "Benchmark.Hardness.Inputs.Quals.UIUC2022SeeingSetMissingReduction.source",
+        "source_display": "Benchmark.Hardness.Inputs.Quals.UIUC2022SeeingSetMissingReduction.source",
+        "target_declaration": "Benchmark.Hardness.Inputs.Quals.UIUC2022SeeingSetMissingReduction.target",
+        "target_display": "Benchmark.Hardness.Inputs.Quals.UIUC2022SeeingSetMissingReduction.target"
+      },
+      "baseline_immutable": true,
+      "baseline_process_count": 3,
+      "baseline_report": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/auto_reduction_agent/.reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/uiuc2022-seeing-set-missing-reduction/report.json",
+      "baseline_status": "BLOCKED",
+      "candidate_write_count": 0,
+      "capability_tracks": {
+        "completeness": "NOT_APPLICABLE",
+        "lower_bound": "BLOCKED",
+        "membership": "NOT_APPLICABLE"
+      },
+      "case_task_wall_duration_seconds": 273.857,
+      "endpoint_isolation_confirmed": true,
+      "endpoint_mutation_count": 0,
+      "evaluation_lane": "quals_adversarial",
+      "exact_authoring_template_count": 0,
+      "execution_layer": "core_reuse",
+      "execution_position": 9,
+      "expected_baseline_failure_code": "no_registry_path",
+      "expected_baseline_status": "BLOCKED",
+      "family_id": "directed-weighted-reachability",
+      "final_failure_code": "no_registry_path",
+      "final_status": "BLOCKED",
+      "gap_closure_count": 0,
+      "id": "uiuc2022-seeing-set-missing-reduction",
+      "input_kind": "presented_problem",
+      "model_authoring_calls": [],
+      "model_call_count": 0,
+      "negative_class": "missing_reduction",
+      "objective": "reduce_to",
+      "objective_mutation_count": 0,
+      "positive": false,
+      "pre_model_blocked": true,
+      "protocol_matches_expected": true,
+      "request_mutation_count": 0,
+      "selection_calls": [],
+      "verification_profile": "core"
+    },
+    {
+      "authoring_duration_seconds": 0.0,
+      "authoring_process_count": 0,
+      "baseline_duration_seconds": 271.077,
+      "baseline_failure_code": "missing_native_membership",
+      "baseline_gap": {
+        "expected_capability_head": "ComplexityReduction.Certificate.NativeTMInNP",
+        "failure_code": "missing_native_membership",
+        "gap_id": "sha256:0d94a5409732d9c4ac88f201faf452160ebfad145dbaf361a650e9a1b44dfc01",
+        "producer": "lean_gap_classifier",
+        "reason": "nativeMembership",
+        "registry_fingerprint": "lean:3472022221319334615",
+        "role": "finalComposition",
+        "schema_version": "hardness_gap_v2",
+        "source_declaration": "Benchmark.Hardness.Inputs.Quals.Fall2016NodeDeletionBipartiteMissingMembership.problem",
+        "source_display": "Benchmark.Hardness.Inputs.Quals.Fall2016NodeDeletionBipartiteMissingMembership.problem",
+        "target_declaration": "Benchmark.Hardness.Inputs.Quals.Fall2016NodeDeletionBipartiteMissingMembership.problem",
+        "target_display": "Benchmark.Hardness.Inputs.Quals.Fall2016NodeDeletionBipartiteMissingMembership.problem"
+      },
+      "baseline_immutable": true,
+      "baseline_process_count": 3,
+      "baseline_report": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/auto_reduction_agent/.reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/fall2016-node-deletion-bipartite-missing-membership/report.json",
+      "baseline_status": "BLOCKED",
+      "candidate_write_count": 0,
+      "capability_tracks": {
+        "completeness": "BLOCKED",
+        "lower_bound": "AVAILABLE_BUT_NOT_SCORED",
+        "membership": "BLOCKED"
+      },
+      "case_task_wall_duration_seconds": 271.41,
+      "endpoint_isolation_confirmed": true,
+      "endpoint_mutation_count": 0,
+      "evaluation_lane": "quals_adversarial",
+      "exact_authoring_template_count": 0,
+      "execution_layer": "core_reuse",
+      "execution_position": 10,
+      "expected_baseline_failure_code": "missing_native_membership",
+      "expected_baseline_status": "BLOCKED",
+      "family_id": "graph-deletion-coloring",
+      "final_failure_code": "missing_native_membership",
+      "final_status": "BLOCKED",
+      "gap_closure_count": 0,
+      "id": "fall2016-node-deletion-bipartite-missing-membership",
+      "input_kind": "presented_problem",
+      "model_authoring_calls": [],
+      "model_call_count": 0,
+      "negative_class": "missing_membership",
+      "objective": "prove_np_complete",
+      "objective_mutation_count": 0,
+      "positive": false,
+      "pre_model_blocked": true,
+      "protocol_matches_expected": true,
+      "request_mutation_count": 0,
+      "selection_calls": [],
+      "verification_profile": "core"
+    },
+    {
+      "authoring_duration_seconds": 0.0,
+      "authoring_process_count": 0,
+      "baseline_duration_seconds": 272.372,
+      "baseline_failure_code": "missing_native_membership",
+      "baseline_gap": {
+        "expected_capability_head": "ComplexityReduction.Certificate.NativeTMInNP",
+        "failure_code": "missing_native_membership",
+        "gap_id": "sha256:dc2228784f5f5df4b2cb1ec74edcd3a0c7691c61bd36c9883904f8fa436c7814",
+        "producer": "lean_gap_classifier",
+        "reason": "nativeMembership",
+        "registry_fingerprint": "lean:9699463127826035464",
+        "role": "finalComposition",
+        "schema_version": "hardness_gap_v2",
+        "source_declaration": "Benchmark.Hardness.Inputs.Quals.Fall2014MostNeighborsMissingMembership.problem",
+        "source_display": "Benchmark.Hardness.Inputs.Quals.Fall2014MostNeighborsMissingMembership.problem",
+        "target_declaration": "Benchmark.Hardness.Inputs.Quals.Fall2014MostNeighborsMissingMembership.problem",
+        "target_display": "Benchmark.Hardness.Inputs.Quals.Fall2014MostNeighborsMissingMembership.problem"
+      },
+      "baseline_immutable": true,
+      "baseline_process_count": 3,
+      "baseline_report": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/auto_reduction_agent/.reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/fall2014-most-neighbors-missing-membership/report.json",
+      "baseline_status": "BLOCKED",
+      "candidate_write_count": 0,
+      "capability_tracks": {
+        "completeness": "BLOCKED",
+        "lower_bound": "AVAILABLE_BUT_NOT_SCORED",
+        "membership": "BLOCKED"
+      },
+      "case_task_wall_duration_seconds": 272.686,
+      "endpoint_isolation_confirmed": true,
+      "endpoint_mutation_count": 0,
+      "evaluation_lane": "quals_adversarial",
+      "exact_authoring_template_count": 0,
+      "execution_layer": "core_reuse",
+      "execution_position": 11,
+      "expected_baseline_failure_code": "missing_native_membership",
+      "expected_baseline_status": "BLOCKED",
+      "family_id": "external-neighborhood",
+      "final_failure_code": "missing_native_membership",
+      "final_status": "BLOCKED",
+      "gap_closure_count": 0,
+      "id": "fall2014-most-neighbors-missing-membership",
+      "input_kind": "presented_problem",
+      "model_authoring_calls": [],
+      "model_call_count": 0,
+      "negative_class": "missing_membership",
+      "objective": "prove_np_complete",
+      "objective_mutation_count": 0,
+      "positive": false,
+      "pre_model_blocked": true,
+      "protocol_matches_expected": true,
+      "request_mutation_count": 0,
+      "selection_calls": [],
+      "verification_profile": "core"
+    },
+    {
+      "authoring_duration_seconds": 0.0,
+      "authoring_process_count": 0,
+      "baseline_duration_seconds": 272.291,
+      "baseline_failure_code": "missing_native_membership",
+      "baseline_gap": {
+        "expected_capability_head": "ComplexityReduction.Certificate.NativeTMInNP",
+        "failure_code": "missing_native_membership",
+        "gap_id": "sha256:2cda4e8502e54363e445ec7315f40e199dd6301ae37e21d7002543cecb3244aa",
+        "producer": "lean_gap_classifier",
+        "reason": "nativeMembership",
+        "registry_fingerprint": "lean:15858454449217334374",
+        "role": "finalComposition",
+        "schema_version": "hardness_gap_v2",
+        "source_declaration": "Benchmark.Hardness.Inputs.Quals.UIUC2020TwoDisjointBoundedPathsMissingMembership.problem",
+        "source_display": "Benchmark.Hardness.Inputs.Quals.UIUC2020TwoDisjointBoundedPathsMissingMembership.problem",
+        "target_declaration": "Benchmark.Hardness.Inputs.Quals.UIUC2020TwoDisjointBoundedPathsMissingMembership.problem",
+        "target_display": "Benchmark.Hardness.Inputs.Quals.UIUC2020TwoDisjointBoundedPathsMissingMembership.problem"
+      },
+      "baseline_immutable": true,
+      "baseline_process_count": 3,
+      "baseline_report": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/auto_reduction_agent/.reduction-agent/deepseek-quals-n-c-stability-2-20260804/cases/uiuc2020-two-disjoint-bounded-paths-missing-membership/report.json",
+      "baseline_status": "BLOCKED",
+      "candidate_write_count": 0,
+      "capability_tracks": {
+        "completeness": "BLOCKED",
+        "lower_bound": "AVAILABLE_BUT_NOT_SCORED",
+        "membership": "BLOCKED"
+      },
+      "case_task_wall_duration_seconds": 272.6,
+      "endpoint_isolation_confirmed": true,
+      "endpoint_mutation_count": 0,
+      "evaluation_lane": "quals_adversarial",
+      "exact_authoring_template_count": 0,
+      "execution_layer": "core_reuse",
+      "execution_position": 12,
+      "expected_baseline_failure_code": "missing_native_membership",
+      "expected_baseline_status": "BLOCKED",
+      "family_id": "directed-costed-pair-path",
+      "final_failure_code": "missing_native_membership",
+      "final_status": "BLOCKED",
+      "gap_closure_count": 0,
+      "id": "uiuc2020-two-disjoint-bounded-paths-missing-membership",
+      "input_kind": "presented_problem",
+      "model_authoring_calls": [],
+      "model_call_count": 0,
+      "negative_class": "missing_membership",
+      "objective": "prove_np_complete",
+      "objective_mutation_count": 0,
+      "positive": false,
+      "pre_model_blocked": true,
+      "protocol_matches_expected": true,
+      "request_mutation_count": 0,
+      "selection_calls": [],
+      "verification_profile": "core"
+    }
+  ],
+  "combined_lean_path": {
+    "copied_file_count": 46,
+    "identical_duplicate_count": 0,
+    "path": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/auto_reduction_agent/.reduction-agent/deepseek-quals-n-c-stability-2-20260804/combined-lean-path",
+    "work_root_count": 5
+  },
+  "combined_lean_path_error": null,
+  "completeness_suite_file": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/auto_reduction_agent/Benchmark/Hardness/Suites/quals_completeness.json",
+  "configured_jobs": 4,
+  "endpoint_mutation_count": 0,
+  "final_active_case_count": 0,
+  "final_artifact_file": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/auto_reduction_agent/.reduction-agent/deepseek-quals-n-c-stability-2-20260804/QualsCompletenessFinal.lean",
+  "final_artifact_sha256": "295b3f984b95b21fc032121614706f2719fd93abadd63903d6ad89bf47d56d49",
+  "final_combined_lean": {
+    "command": [
+      "lake",
+      "env",
+      "lean",
+      "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/auto_reduction_agent/.reduction-agent/deepseek-quals-n-c-stability-2-20260804/QualsCompletenessFinal.lean"
+    ],
+    "duration_seconds": 155.055,
+    "exit_code": 0,
+    "stderr": "",
+    "stdout": "",
+    "timed_out": false
+  },
+  "finished_at": "2026-08-04T10:12:42.178832+00:00",
+  "finite_witness_registry": {
+    "combinators": [
+      {
+        "category": "witness_shape",
+        "combinator_id": "sha256:39d77e0e595aa808fd7da95017fa6a151235d617f7b5b1aa3a4e8a79d9d0052c",
+        "lean_declaration": "ComplexityReduction.Agent.Hardness.FiniteWitness.natListPresentation",
+        "name": "list_nat",
+        "producer": "stage_m_finite_witness_registry",
+        "witness_shapes": [
+          "bounded_subset",
+          "pair_list",
+          "list_nat",
+          "deletion_coloring"
+        ]
+      },
+      {
+        "category": "subset_constraint",
+        "combinator_id": "sha256:6be9f0865c0206b040db06c101716a5e435c166c47077861534b07bd41705b98",
+        "lean_declaration": "List.Nodup",
+        "name": "nodup",
+        "producer": "stage_m_finite_witness_registry",
+        "witness_shapes": [
+          "bounded_subset"
+        ]
+      },
+      {
+        "category": "subset_constraint",
+        "combinator_id": "sha256:350d8da09da3c38b4e46f3de7df3c2582a88b58dc63d598b7863641efa3bbadc",
+        "lean_declaration": "ComplexityReduction.Agent.Hardness.FiniteWitness.VerticesWithinBounds",
+        "name": "vertices_within_bounds",
+        "producer": "stage_m_finite_witness_registry",
+        "witness_shapes": [
+          "bounded_subset",
+          "pair_list"
+        ]
+      },
+      {
+        "category": "budget",
+        "combinator_id": "sha256:afc1247217b8f67d54747cd6d64ec1edf008884152b4b729e89b2d5e17238fef",
+        "lean_declaration": "ComplexityReduction.Agent.Hardness.FiniteWitness.cardinalityBudgetChecker",
+        "name": "cardinality_budget",
+        "producer": "stage_m_finite_witness_registry",
+        "witness_shapes": [
+          "bounded_subset"
+        ]
+      },
+      {
+        "category": "witness_shape",
+        "combinator_id": "sha256:1b91516f46e62fbffa534a161c7f3a5722e51b240c4ab3fe23a8b1f9be2c68e5",
+        "lean_declaration": "ComplexityReduction.Agent.Hardness.FiniteWitness.pairListView",
+        "name": "pair_list",
+        "producer": "stage_m_finite_witness_registry",
+        "witness_shapes": [
+          "pair_list"
+        ]
+      },
+      {
+        "category": "local_graph_checker",
+        "combinator_id": "sha256:14f05c5db27c4c0989a56488cfb33d7d79c6027a40932757be838089e612c74e",
+        "lean_declaration": "ComplexityReduction.Agent.Hardness.FiniteWitness.adjacencyChecker",
+        "name": "edge",
+        "producer": "stage_m_finite_witness_registry",
+        "witness_shapes": [
+          "bounded_subset",
+          "pair_list",
+          "list_nat",
+          "deletion_coloring"
+        ]
+      },
+      {
+        "category": "local_graph_checker",
+        "combinator_id": "sha256:b6c0da82263b4205e0a69045a975a42835144b8d67349ba5f1b2775d686690da",
+        "lean_declaration": "ComplexityReduction.Agent.Hardness.FiniteWitness.adjacencyChecker",
+        "name": "adjacency",
+        "producer": "stage_m_finite_witness_registry",
+        "witness_shapes": [
+          "bounded_subset",
+          "pair_list",
+          "list_nat",
+          "deletion_coloring"
+        ]
+      },
+      {
+        "category": "local_graph_checker",
+        "combinator_id": "sha256:b0a7c9b7265e4975c86776746e02f237c5b186a5a9ca432b5b2c52e03db0246b",
+        "lean_declaration": "ComplexityReduction.Program.ContextListAny.executable",
+        "name": "external_neighborhood",
+        "producer": "stage_m_finite_witness_registry",
+        "witness_shapes": [
+          "list_nat"
+        ]
+      },
+      {
+        "category": "local_graph_checker",
+        "combinator_id": "sha256:ff021eab2e8ea606fdb6fa6dfaeb69537a4123b7cae87e7e9d3dd70caa6705db",
+        "lean_declaration": "ComplexityReduction.Agent.Hardness.FiniteWitness.coverChecker",
+        "name": "cover",
+        "producer": "stage_m_finite_witness_registry",
+        "witness_shapes": [
+          "bounded_subset"
+        ]
+      },
+      {
+        "category": "local_graph_checker",
+        "combinator_id": "sha256:79feb44f5a97f9d121f3dc239f64e00ec8c48333ae3d6260a364b49cd34b4ae5",
+        "lean_declaration": "ComplexityReduction.Agent.Hardness.FiniteWitness.coloringChecker",
+        "name": "coloring",
+        "producer": "stage_m_finite_witness_registry",
+        "witness_shapes": [
+          "list_nat",
+          "deletion_coloring"
+        ]
+      },
+      {
+        "category": "witness_shape",
+        "combinator_id": "sha256:090a483cfe1ad83f85fb3c234e375ff8063daeb46dc5ae70bd95260d66244808",
+        "lean_declaration": "ComplexityReduction.Agent.Hardness.FiniteWitness.DeletionColoring",
+        "name": "deletion_coloring",
+        "producer": "stage_m_finite_witness_registry",
+        "witness_shapes": [
+          "deletion_coloring"
+        ]
+      },
+      {
+        "category": "local_graph_checker",
+        "combinator_id": "sha256:418caf80259adb77c7c01070bf1963eb5dffd61015e49a98782c9159bbcb2491",
+        "lean_declaration": "ComplexityReduction.Agent.Hardness.FiniteWitness.pathLegalityChecker",
+        "name": "path_legality",
+        "producer": "stage_m_finite_witness_registry",
+        "witness_shapes": [
+          "pair_list",
+          "list_nat"
+        ]
+      },
+      {
+        "category": "local_graph_checker",
+        "combinator_id": "sha256:097e87ef120743d54e637d852982b43101f53e23969bcace21b4ac3f8a0fb010",
+        "lean_declaration": "ComplexityReduction.Program.PairOfPaths.edgeIndexPathBool",
+        "name": "edge_index_path",
+        "producer": "stage_m_finite_witness_registry",
+        "witness_shapes": [
+          "pair_list"
+        ]
+      },
+      {
+        "category": "budget",
+        "combinator_id": "sha256:c2c3de308151abdc343922896440618ef8295985bf95388459177c47783104c8",
+        "lean_declaration": "ComplexityReduction.Program.PairOfPaths.boundedCostBool",
+        "name": "binary_path_cost",
+        "producer": "stage_m_finite_witness_registry",
+        "witness_shapes": [
+          "pair_list"
+        ]
+      },
+      {
+        "category": "local_graph_checker",
+        "combinator_id": "sha256:195f645db071df2e93b7727ecc8d10806af8511eabb700c72b30c6e653c436e4",
+        "lean_declaration": "ComplexityReduction.Agent.Hardness.FiniteWitness.pairListDisjointChecker",
+        "name": "disjointness",
+        "producer": "stage_m_finite_witness_registry",
+        "witness_shapes": [
+          "pair_list"
+        ]
+      },
+      {
+        "category": "budget",
+        "combinator_id": "sha256:df8d6721a24575674c3e211471590d48c427309264100298c56575c2a39b6d4b",
+        "lean_declaration": "ComplexityReduction.Agent.Hardness.FiniteWitness.listSum",
+        "name": "list_sum",
+        "producer": "stage_m_finite_witness_registry",
+        "witness_shapes": [
+          "bounded_subset",
+          "pair_list",
+          "list_nat",
+          "deletion_coloring"
+        ]
+      },
+      {
+        "category": "budget",
+        "combinator_id": "sha256:657c3a133296aba061983b8819b8d2bdd48c6398ba269b6b3e50c8e947b3996e",
+        "lean_declaration": "ComplexityReduction.Agent.Hardness.FiniteWitness.natBudgetChecker",
+        "name": "nat_budget",
+        "producer": "stage_m_finite_witness_registry",
+        "witness_shapes": [
+          "bounded_subset",
+          "pair_list",
+          "list_nat",
+          "deletion_coloring"
+        ]
+      },
+      {
+        "category": "budget",
+        "combinator_id": "sha256:800aafad3c59a77b330c25a1fe5c8debc0f147513d51057e3340d2e6ded11877",
+        "lean_declaration": "ComplexityReduction.Agent.Hardness.FiniteWitness.intBudgetChecker",
+        "name": "int_budget",
+        "producer": "stage_m_finite_witness_registry",
+        "witness_shapes": [
+          "bounded_subset",
+          "pair_list",
+          "list_nat"
+        ]
+      },
+      {
+        "category": "local_predicate",
+        "combinator_id": "sha256:9154c93bc6724d4d4442be302f3993e16afc11c108247484a25a9f8fe0dbcf52",
+        "lean_declaration": "ComplexityReduction.Agent.Hardness.FiniteWitness.localPredicateChecker",
+        "name": "local_predicate",
+        "producer": "stage_m_finite_witness_registry",
+        "witness_shapes": [
+          "bounded_subset",
+          "pair_list",
+          "list_nat",
+          "deletion_coloring"
+        ]
+      }
+    ],
+    "registry_id": "sha256:879f397d80ae7ffde68bfe8956d12064d08c1462d8445343d75f408e19b40894",
+    "schema_version": "hardness_finite_witness_registry_v1"
+  },
+  "formalization": {
+    "case_count": 5,
+    "cases": [
+      {
+        "expected_status": "VERIFIED",
+        "hardness_score_contribution": 0,
+        "id": "spring2015-exactly-one-neighbor-formalization",
+        "module": "Benchmark.Hardness.Inputs.Quals.Spring2015ExactlyOneNeighbor",
+        "oracle_visible_to_model": false,
+        "passed": true,
+        "problem_declaration": "Benchmark.Hardness.Inputs.Quals.Spring2015ExactlyOneNeighbor.problem",
+        "production_endpoint": "ComplexityReduction.Presentation.ExactlyOneNeighbor.presentedProblem",
+        "public_module_file": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/auto_reduction_agent/Lean/Reference/Benchmark/Hardness/Inputs/Quals/Spring2015ExactlyOneNeighbor.lean",
+        "public_module_sha256": "1525487958511ced1d36ed6f01b3047e994fe6160e51e74fa536e1171f348ab8",
+        "representation_declaration": "ComplexityReduction.Presentation.ExactlyOneNeighbor.structuredPresentation",
+        "semantic_theorem": "Benchmark.Hardness.Inputs.Quals.Spring2015ExactlyOneNeighbor.problem_accepts_iff",
+        "status": "VERIFIED",
+        "validation_kind": "independent_manual_validation",
+        "validation_record": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/auto_reduction_agent/Benchmark/Hardness/Validation/Quals/spring2015-exactly-one-neighbor.json",
+        "validation_record_sha256": "b732839aa11a317f7f1cf857964d0a967597baad60cd1ee4c099edab6878a0db"
+      },
+      {
+        "expected_status": "VERIFIED",
+        "hardness_score_contribution": 0,
+        "id": "uiuc2022-seeing-set-formalization",
+        "module": "Benchmark.Hardness.Inputs.Quals.UIUC2022SeeingSet",
+        "oracle_visible_to_model": false,
+        "passed": true,
+        "problem_declaration": "Benchmark.Hardness.Inputs.Quals.UIUC2022SeeingSet.problem",
+        "production_endpoint": "ComplexityReduction.Presentation.SeeingSet.presentedProblem",
+        "public_module_file": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/auto_reduction_agent/Lean/Reference/Benchmark/Hardness/Inputs/Quals/UIUC2022SeeingSet.lean",
+        "public_module_sha256": "f23c7505b1b629aaf88572d7ceb5a00fd3304bba584b79b9b99e93df25d07b74",
+        "representation_declaration": "ComplexityReduction.Presentation.SeeingSet.structuredPresentation",
+        "semantic_theorem": "Benchmark.Hardness.Inputs.Quals.UIUC2022SeeingSet.problem_accepts_iff",
+        "status": "VERIFIED",
+        "validation_kind": "independent_manual_validation",
+        "validation_record": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/auto_reduction_agent/Benchmark/Hardness/Validation/Quals/uiuc2022-seeing-set.json",
+        "validation_record_sha256": "2f3499fedaff563ccfc0102214a9d3f9d15f5e688f5e713b030aac7df41168b1"
+      },
+      {
+        "expected_status": "VERIFIED",
+        "hardness_score_contribution": 0,
+        "id": "fall2016-node-deletion-bipartite-formalization",
+        "module": "Benchmark.Hardness.Inputs.Quals.Fall2016NodeDeletionBipartite",
+        "oracle_visible_to_model": false,
+        "passed": true,
+        "problem_declaration": "Benchmark.Hardness.Inputs.Quals.Fall2016NodeDeletionBipartite.problem",
+        "production_endpoint": "ComplexityReduction.Presentation.NodeDeletionBipartite.presentedProblem",
+        "public_module_file": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/auto_reduction_agent/Lean/Reference/Benchmark/Hardness/Inputs/Quals/Fall2016NodeDeletionBipartite.lean",
+        "public_module_sha256": "9a125dde74e04ab5ceef6dc415431a55987e9a743b5cd7494b2e6717890cc777",
+        "representation_declaration": "ComplexityReduction.Presentation.NodeDeletionBipartite.structuredPresentation",
+        "semantic_theorem": "Benchmark.Hardness.Inputs.Quals.Fall2016NodeDeletionBipartite.problem_accepts_iff",
+        "status": "VERIFIED",
+        "validation_kind": "independent_manual_validation",
+        "validation_record": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/auto_reduction_agent/Benchmark/Hardness/Validation/Quals/fall2016-node-deletion-bipartite.json",
+        "validation_record_sha256": "3a63d4d02fbcbc6b1696304698867258d521b6d9eec63ae69b698d108b537425"
+      },
+      {
+        "expected_status": "VERIFIED",
+        "hardness_score_contribution": 0,
+        "id": "fall2014-most-neighbors-formalization",
+        "module": "Benchmark.Hardness.Inputs.Quals.Fall2014MostNeighbors",
+        "oracle_visible_to_model": false,
+        "passed": true,
+        "problem_declaration": "Benchmark.Hardness.Inputs.Quals.Fall2014MostNeighbors.problem",
+        "production_endpoint": "ComplexityReduction.Presentation.MostNeighbors.presentedProblem",
+        "public_module_file": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/auto_reduction_agent/Lean/Reference/Benchmark/Hardness/Inputs/Quals/Fall2014MostNeighbors.lean",
+        "public_module_sha256": "cfa1b2701b90e7542d9bc5af5fcda287d8dae6c24f898e47395ac1b31d4e6f90",
+        "representation_declaration": "ComplexityReduction.Presentation.MostNeighbors.structuredPresentation",
+        "semantic_theorem": "Benchmark.Hardness.Inputs.Quals.Fall2014MostNeighbors.problem_accepts_iff",
+        "status": "VERIFIED",
+        "validation_kind": "independent_manual_validation",
+        "validation_record": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/auto_reduction_agent/Benchmark/Hardness/Validation/Quals/fall2014-most-neighbors.json",
+        "validation_record_sha256": "d5b8563311c3b8855fac47cb7a8d952afea127983c15a09081d3a64990cf8833"
+      },
+      {
+        "expected_status": "VERIFIED",
+        "hardness_score_contribution": 0,
+        "id": "uiuc2020-two-disjoint-bounded-paths-formalization",
+        "module": "Benchmark.Hardness.Inputs.Quals.UIUC2020TwoDisjointBoundedPaths",
+        "oracle_visible_to_model": false,
+        "passed": true,
+        "problem_declaration": "Benchmark.Hardness.Inputs.Quals.UIUC2020TwoDisjointBoundedPaths.problem",
+        "production_endpoint": "ComplexityReduction.Presentation.TwoDisjointBoundedPaths.presentedProblem",
+        "public_module_file": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/auto_reduction_agent/Lean/Reference/Benchmark/Hardness/Inputs/Quals/UIUC2020TwoDisjointBoundedPaths.lean",
+        "public_module_sha256": "8a1d5d5a20f2def4f22915205438f3fcf4257d97a78bf8fdd9095deb867ffaba",
+        "representation_declaration": "ComplexityReduction.Presentation.TwoDisjointBoundedPaths.structuredPresentation",
+        "semantic_theorem": "Benchmark.Hardness.Inputs.Quals.UIUC2020TwoDisjointBoundedPaths.problem_accepts_iff",
+        "status": "VERIFIED",
+        "validation_kind": "independent_manual_validation",
+        "validation_record": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/auto_reduction_agent/Benchmark/Hardness/Validation/Quals/uiuc2020-two-disjoint-bounded-paths.json",
+        "validation_record_sha256": "8fb550caa4a350b1c99453bfcc5574d7f710db3b2af87e37492013c0f12ce1c5"
+      }
+    ],
+    "command": {
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/auto_reduction_agent/.reduction-agent/deepseek-quals-n-c-stability-2-20260804/formalization/QualsFormalizationGate.lean"
+      ],
+      "duration_seconds": 144.374,
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "Benchmark.Hardness.Inputs.Quals.Spring2015ExactlyOneNeighbor.problem_accepts_iff\n  (input : Inputs.Quals.Spring2015ExactlyOneNeighbor.problem.Instance) :\n  Inputs.Quals.Spring2015ExactlyOneNeighbor.problem.accepts input \u2194\n    \u2203 selected, ComplexityReduction.ExactlyOneNeighborWitness input selected\nBenchmark.Hardness.Inputs.Quals.UIUC2022SeeingSet.problem_accepts_iff\n  (input : Inputs.Quals.UIUC2022SeeingSet.problem.Instance) :\n  Inputs.Quals.UIUC2022SeeingSet.problem.accepts input \u2194 ComplexityReduction.Presentation.SeeingSet.IsYes input\nBenchmark.Hardness.Inputs.Quals.Fall2016NodeDeletionBipartite.problem_accepts_iff\n  (input : Inputs.Quals.Fall2016NodeDeletionBipartite.problem.Instance) :\n  Inputs.Quals.Fall2016NodeDeletionBipartite.problem.accepts input \u2194\n    ComplexityReduction.Presentation.NodeDeletionBipartite.IsYes input\nBenchmark.Hardness.Inputs.Quals.Fall2014MostNeighbors.problem_accepts_iff\n  (input : Inputs.Quals.Fall2014MostNeighbors.problem.Instance) :\n  Inputs.Quals.Fall2014MostNeighbors.problem.accepts input \u2194 ComplexityReduction.Presentation.MostNeighbors.IsYes input\nBenchmark.Hardness.Inputs.Quals.UIUC2020TwoDisjointBoundedPaths.problem_accepts_iff\n  (input : Inputs.Quals.UIUC2020TwoDisjointBoundedPaths.problem.Instance) :\n  Inputs.Quals.UIUC2020TwoDisjointBoundedPaths.problem.accepts input \u2194\n    ComplexityReduction.Presentation.TwoDisjointBoundedPaths.IsYes input\n",
+      "timed_out": false
+    },
+    "generated_gate_file": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/auto_reduction_agent/.reduction-agent/deepseek-quals-n-c-stability-2-20260804/formalization/QualsFormalizationGate.lean",
+    "generated_gate_sha256": "0deffa08cb2b470e86f4af5d95b91f8a0d35a4bf8b5fecb050350d6ea14a26d6",
+    "hardness_score_contribution": 0,
+    "milestone": "N-C",
+    "status": "VERIFIED",
+    "suite_file": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/auto_reduction_agent/Benchmark/Hardness/Suites/quals_formalization.json",
+    "suite_id": "quals-formalization",
+    "suite_sha256": "c3a97ea2b864201c5fbc2cb2d69a9b5fdd8b7f39b5c7ee1ae73d136daa3870d4",
+    "verified_count": 5,
+    "wall_duration_seconds": 144.528
+  },
+  "formalization_suite_file": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/auto_reduction_agent/Benchmark/Hardness/Suites/quals_formalization.json",
+  "fresh_registry_revalidation_count": 5,
+  "gap_closure_count": 5,
+  "gates": {
+    "adversarial_7_of_7": true,
+    "five_bundle_validations": true,
+    "five_fresh_registry_revalidations": true,
+    "five_gaps_closed": true,
+    "formalization_5_of_5": true,
+    "jobs_within_limit": true,
+    "no_active_case_leak": true,
+    "observed_parallelism": true,
+    "one_combined_final_lean": true,
+    "one_release_replay": true,
+    "primary_5_of_5": true,
+    "primary_core_blocker_5_of_5": true,
+    "protocol_12_of_12": true,
+    "real_api_used": true,
+    "seven_pre_model_adversarials": true,
+    "zero_endpoint_mutations": true,
+    "zero_objective_mutations": true,
+    "zero_request_mutations": true
+  },
+  "metrics": {
+    "certificate_dag_validation_rate": 1.0,
+    "family_specific_prompt_rule_count": 0,
+    "family_specific_python_branch_count": 0,
+    "final_lean_standard_axiom_rate": 1.0,
+    "finite_witness_membership_closure_rate": 1.0,
+    "new_reduction_edge_authored_count": 1,
+    "new_reduction_edge_authored_rate": 1.0,
+    "new_reduction_edge_expected_count": 1,
+    "packet_compile_rate": 1.0,
+    "release_replay_rate": 1.0,
+    "unseen_exact_endpoint_closure_rate": 1.0
+  },
+  "milestone": "N-C",
+  "model_configuration": {
+    "api_key_configured": true,
+    "base_url": "https://api.deepseek.com",
+    "max_retries": 2,
+    "max_tokens": 8192,
+    "model": "deepseek-v4-flash",
+    "temperature": 0.0,
+    "timeout_seconds": 300
+  },
+  "objective_mutation_count": 0,
+  "observed_max_case_concurrency": 4,
+  "output_root": "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/auto_reduction_agent/.reduction-agent/deepseek-quals-n-c-stability-2-20260804",
+  "pre_model_adversarial_count": 7,
+  "primary_case_count": 5,
+  "primary_verified_count": 5,
+  "process_counts": {
+    "authoring_local": 53,
+    "core_baseline": 36,
+    "final_combined_lean": 1,
+    "formalization": 1,
+    "release_replay": 1,
+    "setup_build": 1
+  },
+  "protocol_expected_count": 12,
+  "published": true,
+  "quals_authoring_verdict": {
+    "closure_rate": 1.0,
+    "final_verified_count": 5,
+    "primary_count": 5,
+    "single_gap_closure_count": 5
+  },
+  "quals_core_verdict": {
+    "authoring_implicitly_invoked": false,
+    "core_verified_count": 0,
+    "core_zero_authoring_rate": 1.0,
+    "primary_count": 5,
+    "typed_blocker_accurate_count": 5
+  },
+  "real_deepseek": true,
+  "real_http_call_count": 5,
+  "release_replay": {
+    "command": [
+      "lake",
+      "env",
+      "lean",
+      "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/auto_reduction_agent/.reduction-agent/deepseek-quals-n-c-stability-2-20260804/QualsCompletenessFinal.lean"
+    ],
+    "duration_seconds": 170.161,
+    "exit_code": 0,
+    "stderr": "",
+    "stdout": "",
+    "timed_out": false
+  },
+  "request_mutation_count": 0,
+  "run_label": "stage-n-c-stability-2-real-deepseek-20260804",
+  "schema_version": "hardness_quals_completeness_report_v1",
+  "setup_build": {
+    "command": [
+      "lake",
+      "build",
+      "ComplexityReduction.Agent.Hardness.Runtime",
+      "Benchmark.Hardness.Inputs.Quals.Fall2014MostNeighbors",
+      "Benchmark.Hardness.Inputs.Quals.Fall2014MostNeighborsMissingMembership",
+      "Benchmark.Hardness.Inputs.Quals.Fall2016NodeDeletionBipartite",
+      "Benchmark.Hardness.Inputs.Quals.Fall2016NodeDeletionBipartiteMissingMembership",
+      "Benchmark.Hardness.Inputs.Quals.Spring2015ExactlyOneNeighbor",
+      "Benchmark.Hardness.Inputs.Quals.Spring2015ExactlyOneNeighborMissingMembership",
+      "Benchmark.Hardness.Inputs.Quals.Spring2015ExactlyOneNeighborReversedReduction",
+      "Benchmark.Hardness.Inputs.Quals.Spring2015ExactlyOneNeighborWrongEndpoint",
+      "Benchmark.Hardness.Inputs.Quals.UIUC2020TwoDisjointBoundedPaths",
+      "Benchmark.Hardness.Inputs.Quals.UIUC2020TwoDisjointBoundedPathsMissingMembership",
+      "Benchmark.Hardness.Inputs.Quals.UIUC2022SeeingSet",
+      "Benchmark.Hardness.Inputs.Quals.UIUC2022SeeingSetMissingReduction",
+      "ComplexityReduction.Agent.Hardness.FiniteWitness",
+      "ComplexityReduction.Agent.Hardness.FiniteWitnessNative",
+      "ComplexityReduction.Agent.Hardness.Runtime"
+    ],
+    "duration_seconds": 73.911,
+    "exit_code": 0,
+    "stderr": "",
+    "stdout": "\u2139 [3449/3519] Replayed ComplexityReduction.Legacy.ComplexityReduction.Core.ReductionComposition\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Core/ReductionComposition.lean:68:0: ComplexityReduction.TMKarpReduction.toTMPolyReducible {A B : EncodedDecisionProblem} (r : TMKarpReduction A B) :\n  TMPolyReducible A B\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Core/ReductionComposition.lean:69:0: ComplexityReduction.composeTMKarp {A B C : EncodedDecisionProblem} (rAB : TMPolyReducible A B)\n  (rBC : TMPolyReducible B C) : TMPolyReducible A C\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Core/ReductionComposition.lean:70:0: ComplexityReduction.liftNPCompleteAlongReduction {K L : EncodedDecisionProblem} (hK : TMNPCompleteEnc K)\n  (rKL : TMPolyReducible K L) (hL : TMInNP L) : TMNPCompleteEnc L\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Core/ReductionComposition.lean:71:0: ComplexityReduction.transferTMNPComplete {A B : EncodedDecisionProblem} (rAB : TMPolyReducible A B)\n  (_rBA : TMPolyReducible B A) (hA : TMNPCompleteEnc A) (hBmem : TMInNP B) : TMNPCompleteEnc B\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Core/ReductionComposition.lean:72:0: ComplexityReduction.reduceViaEncodingBridge {A B C : EncodedDecisionProblem} (encode : TMKarpReduction A B)\n  (hard : TMPolyReducible B C) : TMPolyReducible A C\n\u2139 [3563/3612] Replayed ComplexityReduction.Legacy.ComplexityReduction.Bridges.TMEncodingDiscipline\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/TMEncodingDiscipline.lean:87:0: ComplexityReduction.SAT.TMVerifierEncodingDiscipline {L : EncodedDecisionProblem} (V : TMVerifier L) : Type\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/TMEncodingDiscipline.lean:88:0: ComplexityReduction.SAT.TMVerifierEncodingDiscipline.ofCheckedSuffixDecoder {L : EncodedDecisionProblem}\n  {V : TMVerifier L} (D : TMVerifierXOnlyCheckedSuffixDecoder V) : TMVerifierEncodingDiscipline V\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/TMEncodingDiscipline.lean:89:0: ComplexityReduction.SAT.TMVerifierEncodingDiscipline.toCheckedSuffixDecoder {L : EncodedDecisionProblem}\n  {V : TMVerifier L} (D : TMVerifierEncodingDiscipline V) : TMVerifierXOnlyCheckedSuffixDecoder V\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/TMEncodingDiscipline.lean:90:0: ComplexityReduction.SAT.TMVerifierEncodingDiscipline.toCheckedSuffixValidity {L : EncodedDecisionProblem}\n  {V : TMVerifier L} (D : TMVerifierEncodingDiscipline V) : TMVerifierXOnlyCheckedSuffixValidity V\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/TMEncodingDiscipline.lean:91:0: ComplexityReduction.SAT.UniformTMVerifierEncodingDiscipline : Prop\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/TMEncodingDiscipline.lean:92:0: ComplexityReduction.SAT.uniformCheckedSuffixValidityOfEncodingDiscipline\n  (hDiscipline : UniformTMVerifierEncodingDiscipline) {L : EncodedDecisionProblem} (V : TMVerifier L) :\n  TMVerifierXOnlyCheckedSuffixValidity V\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/TMEncodingDiscipline.lean:93:0: ComplexityReduction.SAT.standardTMCookLevinTheoremOfEncodingDiscipline\n  (hSplit : TMPolyTimeMap cnfStructuredEncodedType threeSATDecisionProblem.Instance CNF.splitToThreeCNF)\n  (hDiscipline : UniformTMVerifierEncodingDiscipline) : TMCookLevinTheorem\n\u26a0 [3775/3862] Replayed ComplexityReduction.Legacy.ComplexityReduction.Karp21.Knapsack.StructuredTM.UnaryToBinary\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/Knapsack/StructuredTM/UnaryToBinary.lean:132:29: This simp argument is unused:\n  unaryIntScanAccEncodedType\n\nHint: Omit it from the simp argument list.\n  simp [unaryIntScanToInt, u\u0335n\u0335a\u0335r\u0335y\u0335I\u0335n\u0335t\u0335S\u0335c\u0335a\u0335n\u0335A\u0335c\u0335c\u0335E\u0335n\u0335c\u0335o\u0335d\u0335e\u0335d\u0335T\u0335y\u0335p\u0335e\u0335,\u0335 \u0335EncodedType.prod, EncodedType.bool, EncodedType.binaryInt,\n  \u0332  \u0332 \u0332 \u0332 \u0332 \u0332unaryIntScanAccToBinaryIntKeep]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/Knapsack/StructuredTM/UnaryToBinary.lean:132:57: This simp argument is unused:\n  EncodedType.prod\n\nHint: Omit it from the simp argument list.\n  simp [unaryIntScanToInt, unaryIntScanAccEncodedType, E\u0335n\u0335c\u0335o\u0335d\u0335e\u0335d\u0335T\u0335y\u0335p\u0335e\u0335.\u0335p\u0335r\u0335o\u0335d\u0335,\u0335EncodedType.bool, EncodedType.binaryInt,\n  \u0332  \u0332 \u0332 \u0332 \u0332 \u0332unaryIntScanAccToBinaryIntKeep]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/Knapsack/StructuredTM/UnaryToBinary.lean:133:6: This simp argument is unused:\n  EncodedType.bool\n\nHint: Omit it from the simp argument list.\n  simp [unaryIntScanToInt, unaryIntScanAccEncodedType, EncodedType.prod, E\u0335n\u0335c\u0335o\u0335d\u0335e\u0335d\u0335T\u0335y\u0335p\u0335e\u0335.\u0335b\u0335o\u0335o\u0335l\u0335,\u0335 \u0335EncodedType.binaryInt,\n  \u0332  \u0332 \u0332 \u0332 \u0332 \u0332unaryIntScanAccToBinaryIntKeep]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\n\u26a0 [3798/3872] Replayed ComplexityReduction.Agent.Hardness.Authoring\nwarning: Reference/ComplexityReduction/Agent/Hardness/Authoring.lean:162:2: 'change source.accepts input \u2194 target.accepts (program.run input)' tactic does nothing\n\nNote: This linter can be disabled with `set_option linter.unusedTactic false`\n\u26a0 [3847/3886] Replayed ComplexityReduction.Domain.CliqueToNodeDeletionBipartite\nwarning: Reference/ComplexityReduction/Domain/CliqueToNodeDeletionBipartite.lean:257:5: unused variable `deletedNodup`\n\nNote: This linter can be disabled with `set_option linter.unusedVariables false`\n\u26a0 [3857/3893] Replayed ComplexityReduction.Domain.VertexCoverToMostNeighborsCore\nwarning: Reference/ComplexityReduction/Domain/VertexCoverToMostNeighborsCore.lean:263:21: This simp argument is unused:\n  or_assoc\n\nHint: Omit it from the simp argument list.\n  simp [gadgetEdges,\u0335 \u0335o\u0335r\u0335_\u0335a\u0335s\u0335s\u0335o\u0335c\u0335]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Domain/VertexCoverToMostNeighborsCore.lean:401:28: This simp argument is unused:\n  bound\n\nHint: Omit it from the simp argument list.\n  simp [assignmentForCover,\u0335 \u0335b\u0335o\u0335u\u0335n\u0335d\u0335]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Domain/VertexCoverToMostNeighborsCore.lean:497:28: This simp argument is unused:\n  offset\n\nHint: Omit it from the simp argument list.\n  simp [constraintVertex,\u0335 \u0335o\u0335f\u0335f\u0335s\u0335e\u0335t\u0335]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Domain/VertexCoverToMostNeighborsCore.lean:648:10: try 'simp' instead of 'simpa'\n\nNote: This linter can be disabled with `set_option linter.unnecessarySimpa false`\nwarning: Reference/ComplexityReduction/Domain/VertexCoverToMostNeighborsCore.lean:685:7: `Finset.filter_card_add_filter_neg_card_eq_card` has been deprecated: Use `Finset.card_filter_add_card_filter_not` instead\n\u26a0 [3875/3901] Replayed ComplexityReduction.Domain.PartitionToTwoDisjointBoundedPathsCore\nwarning: Reference/ComplexityReduction/Domain/PartitionToTwoDisjointBoundedPathsCore.lean:91:21: This simp argument is unused:\n  Nat.mul_comm\n\nHint: Omit it from the simp argument list.\n  simp [ladderEdges, N\u0335a\u0335t\u0335.\u0335m\u0335u\u0335l\u0335_\u0335c\u0335o\u0335m\u0335m\u0335,\u0335 \u0335Nat.two_mul]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Domain/PartitionToTwoDisjointBoundedPathsCore.lean:107:21: This simp argument is unused:\n  Nat.mul_comm\n\nHint: Omit it from the simp argument list.\n  simp [ladderCosts, N\u0335a\u0335t\u0335.\u0335m\u0335u\u0335l\u0335_\u0335c\u0335o\u0335m\u0335m\u0335,\u0335 \u0335Nat.two_mul]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Domain/PartitionToTwoDisjointBoundedPathsCore.lean:222:8: try 'simp' instead of 'simpa'\n\nNote: This linter can be disabled with `set_option linter.unnecessarySimpa false`\nwarning: Reference/ComplexityReduction/Domain/PartitionToTwoDisjointBoundedPathsCore.lean:385:23: This simp argument is unused:\n  stageBound\n\nHint: Omit it from the simp argument list.\n  simp [pathSelection,\u0335 \u0335s\u0335t\u0335a\u0335g\u0335e\u0335B\u0335o\u0335u\u0335n\u0335d\u0335]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Domain/PartitionToTwoDisjointBoundedPathsCore.lean:468:58: This simp argument is unused:\n  selected\n\nHint: Omit it from the simp argument list.\n  simp \u0335[\u0335s\u0335e\u0335l\u0335e\u0335c\u0335t\u0335e\u0335d\u0335]\u0335\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Domain/PartitionToTwoDisjointBoundedPathsCore.lean:481:58: This simp argument is unused:\n  selected\n\nHint: Omit it from the simp argument list.\n  simp \u0335[\u0335s\u0335e\u0335l\u0335e\u0335c\u0335t\u0335e\u0335d\u0335]\u0335\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Domain/PartitionToTwoDisjointBoundedPathsCore.lean:553:39: This simp argument is unused:\n  finalWeight\n\nHint: Omit it from the simp argument list.\n  simp [stageCount, List.range_succ,\u0335 \u0335f\u0335i\u0335n\u0335a\u0335l\u0335W\u0335e\u0335i\u0335g\u0335h\u0335t\u0335]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\n\u26a0 [3885/3907] Replayed ComplexityReduction.Domain.PartitionToTwoDisjointBoundedPathsSemantics\nwarning: Reference/ComplexityReduction/Domain/PartitionToTwoDisjointBoundedPathsSemantics.lean:179:5: unused variable `copiesPositive`\n\nNote: This linter can be disabled with `set_option linter.unusedVariables false`\nwarning: Reference/ComplexityReduction/Domain/PartitionToTwoDisjointBoundedPathsSemantics.lean:194:53: This simp argument is unused:\n  bitValue\n\nHint: Omit it from the simp argument list.\n  simp \u0335[\u0335b\u0335i\u0335t\u0335V\u0335a\u0335l\u0335u\u0335e\u0335]\u0335\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Domain/PartitionToTwoDisjointBoundedPathsSemantics.lean:207:53: This simp argument is unused:\n  bitValue\n\nHint: Omit it from the simp argument list.\n  simp \u0335[\u0335b\u0335i\u0335t\u0335V\u0335a\u0335l\u0335u\u0335e\u0335]\u0335\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Domain/PartitionToTwoDisjointBoundedPathsSemantics.lean:222:53: This simp argument is unused:\n  bitValue\n\nHint: Omit it from the simp argument list.\n  simp \u0335[\u0335b\u0335i\u0335t\u0335V\u0335a\u0335l\u0335u\u0335e\u0335]\u0335\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Domain/PartitionToTwoDisjointBoundedPathsSemantics.lean:280:53: This simp argument is unused:\n  bitValue\n\nHint: Omit it from the simp argument list.\n  simp \u0335[\u0335b\u0335i\u0335t\u0335V\u0335a\u0335l\u0335u\u0335e\u0335]\u0335\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Domain/PartitionToTwoDisjointBoundedPathsSemantics.lean:300:53: This simp argument is unused:\n  bitValue\n\nHint: Omit it from the simp argument list.\n  simp \u0335[\u0335b\u0335i\u0335t\u0335V\u0335a\u0335l\u0335u\u0335e\u0335]\u0335\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\n\u26a0 [3926/3939] Replayed ComplexityReduction.Legacy.ComplexityReduction.Karp21.PackagedMembershipSteinerTreePath\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/PackagedMembershipSteinerTreePath.lean:642:26: try 'simp' instead of 'simpa'\n\nNote: This linter can be disabled with `set_option linter.unnecessarySimpa false`\n\u2139 [3929/3939] Replayed ComplexityReduction.Problems.Karp21.ChromaticMembership\ninfo: Reference/ComplexityReduction/Problems/Karp21/ChromaticMembership.lean:135:0: ComplexityReduction.Problems.Karp21.ChromaticMembership.chromaticNumberStructured_backendTMInNP_export :\n  TMInNP Presentation.ChromaticNumber.structuredProblem.toEncodedDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/ChromaticMembership.lean:136:0: ComplexityReduction.Problems.Karp21.ChromaticMembership.chromaticNumberStructured_backendTMInNP :\n  BackendTMInNP Presentation.ChromaticNumber.structuredProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/ChromaticMembership.lean:137:0: ComplexityReduction.Karp21.chromaticNumberStructured_TMInNP :\n  TMInNP Combinatorics.Graph.chromaticNumberStructuredDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/ChromaticMembership.lean:138:0: ComplexityReduction.Problems.Karp21.ChromaticMembership.chromaticNumberStructured_nativeMembershipOutcome :\n  ChromaticNumberStructuredNativeMembershipOutcome\ninfo: Reference/ComplexityReduction/Problems/Karp21/ChromaticMembership.lean:139:0: ComplexityReduction.Problems.Karp21.ChromaticMembership.chromaticNumberStructured_completenessOutcome :\n  ChromaticNumberStructuredCompletenessOutcome\n\u26a0 [3935/3947] Replayed ComplexityReduction.Legacy.ComplexityReduction.Karp21.PackagedMembershipSteinerTree\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/PackagedMembershipSteinerTree.lean:329:9: unused variable `h`\n\nNote: This linter can be disabled with `set_option linter.unusedVariables false`\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/PackagedMembershipSteinerTree.lean:349:4: try 'simp' instead of 'simpa'\n\nNote: This linter can be disabled with `set_option linter.unnecessarySimpa false`\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/PackagedMembershipSteinerTree.lean:517:37: This simp argument is unused:\n  ih\n\nHint: Omit it from the simp argument list.\n  simp [weightedEndpointSupport,\u0335 \u0335i\u0335h\u0335]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/PackagedMembershipSteinerTree.lean:616:6: try 'simp' instead of 'simpa'\n\nNote: This linter can be disabled with `set_option linter.unnecessarySimpa false`\n\u26a0 [3939/3947] Replayed ComplexityReduction.Legacy.ComplexityReduction.SAT.CookLevin.XOnlyFiniteBoolSuffixDecoderTM\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/XOnlyFiniteBoolSuffixDecoderTM.lean:168:52: This simp argument is unused:\n  ih\n\nHint: Omit it from the simp argument list.\n  simp [tmVerifierFiniteBoolCertificateSymbols, i\u0335h\u0335,\u0335 \u0335Nat.succ_mul]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/XOnlyFiniteBoolSuffixDecoderTM.lean:555:12: This simp argument is unused:\n  List.getElem?_map\n\nHint: Omit it from the simp argument list.\n  simp [L\u0335i\u0335s\u0335t\u0335.\u0335g\u0335e\u0335t\u0335E\u0335l\u0335e\u0335m\u0335?\u0335_\u0335m\u0335a\u0335p\u0335,\u0335 \u0335hiSuffix]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/XOnlyFiniteBoolSuffixDecoderTM.lean:561:12: This simp argument is unused:\n  List.getElem?_map\n\nHint: Omit it from the simp argument list.\n  simp [L\u0335i\u0335s\u0335t\u0335.\u0335g\u0335e\u0335t\u0335E\u0335l\u0335e\u0335m\u0335?\u0335_\u0335m\u0335a\u0335p\u0335,\u0335 \u0335hiSymbols]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/XOnlyFiniteBoolSuffixDecoderTM.lean:842:6: try 'simp' instead of 'simpa'\n\nNote: This linter can be disabled with `set_option linter.unnecessarySimpa false`\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/XOnlyFiniteBoolSuffixDecoderTM.lean:1319:24: This simp argument is unused:\n  hDrop\n\nHint: Omit it from the simp argument list.\n  simp [h\u0335D\u0335r\u0335o\u0335p\u0335,\u0335 \u0335tmVerifierFiniteBoolChoicePrefixDecode, hEmpty]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/XOnlyFiniteBoolSuffixDecoderTM.lean:1321:24: This simp argument is unused:\n  hDrop\n\nHint: Omit it from the simp argument list.\n  simp [h\u0335D\u0335r\u0335o\u0335p\u0335,\u0335 \u0335tmVerifierFiniteBoolChoicePrefixDecode, hEmpty]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/XOnlyFiniteBoolSuffixDecoderTM.lean:1390:26: This simp argument \n... output trimmed ...\nlyReducible A B) (_rBA : TMPolyReducible B A) (hA : TMNPCompleteEncWithEncodingDiscipline A)\n  (hBmem : TMInNP B) : TMNPCompleteEncWithEncodingDiscipline B\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/TMRootStandard.lean:200:0: ComplexityReduction.SAT.threeSAT_TMNPComplete_with_encodingDiscipline :\n  TMNPCompleteEncWithEncodingDiscipline threeSATDecisionProblem\n\u2139 [3982/4000] Replayed ComplexityReduction.Legacy.ComplexityReduction.Karp21.ThreeSATTMRootDecoding\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/ThreeSATTMRootDecoding.lean:394:0: ComplexityReduction.SAT.TMInNPWithCheckedSuffixDecoder.toEncodingDiscipline {L : EncodedDecisionProblem}\n  (h : TMInNPWithCheckedSuffixDecoder L) : TMInNPWithEncodingDiscipline L\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/ThreeSATTMRootDecoding.lean:395:0: ComplexityReduction.SAT.TMInNPWithEncodingDiscipline.toCheckedSuffixDecoder {L : EncodedDecisionProblem}\n  (h : TMInNPWithEncodingDiscipline L) : TMInNPWithCheckedSuffixDecoder L\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/ThreeSATTMRootDecoding.lean:396:0: ComplexityReduction.SAT.threeSATStructured_TMInNPWithEncodingDiscipline :\n  TMInNPWithEncodingDiscipline Karp21.threeSATStructuredDecisionProblem\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/ThreeSATTMRootDecoding.lean:397:0: ComplexityReduction.SAT.threeSAT_TMInNPWithEncodingDiscipline : TMInNPWithEncodingDiscipline threeSATDecisionProblem\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/ThreeSATTMRootDecoding.lean:398:0: ComplexityReduction.SAT.TMNPCompleteEncWithCheckedSuffixDecoder.toEncodingDiscipline {K : EncodedDecisionProblem}\n  (h : TMNPCompleteEncWithCheckedSuffixDecoder K) : TMNPCompleteEncWithEncodingDiscipline K\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/ThreeSATTMRootDecoding.lean:399:0: ComplexityReduction.SAT.TMNPCompleteEncWithEncodingDiscipline.toCheckedSuffixDecoder {K : EncodedDecisionProblem}\n  (h : TMNPCompleteEncWithEncodingDiscipline K) : TMNPCompleteEncWithCheckedSuffixDecoder K\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/ThreeSATTMRootDecoding.lean:400:0: ComplexityReduction.SAT.threeSAT_TMNPComplete_with_encodingDiscipline_from_checkedDecoder :\n  TMNPCompleteEncWithEncodingDiscipline threeSATDecisionProblem\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/ThreeSATTMRootDecoding.lean:401:0: ComplexityReduction.SAT.threeSATStructured_TMNPComplete_with_encodingDiscipline :\n  TMNPCompleteEncWithEncodingDiscipline Karp21.threeSATStructuredDecisionProblem\n\u2139 [3985/4000] Replayed ComplexityReduction.Problems.Karp21.SetSystemMembership\ninfo: Reference/ComplexityReduction/Problems/Karp21/SetSystemMembership.lean:81:0: ComplexityReduction.Problems.Karp21.SetSystemMembership.setCoveringStructured_backendTMInNP_export :\n  TMInNP Presentation.SetSystem.setCoveringStructuredProblem.toEncodedDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/SetSystemMembership.lean:82:0: ComplexityReduction.Problems.Karp21.SetSystemMembership.setCoveringStructured_backendTMInNP :\n  BackendTMInNP Presentation.SetSystem.setCoveringStructuredProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/SetSystemMembership.lean:83:0: ComplexityReduction.Karp21.setCoveringStructured_TMInNP : TMInNP Combinatorics.setCoveringStructuredDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/SetSystemMembership.lean:84:0: ComplexityReduction.Problems.Karp21.SetSystemMembership.exactCoverStructured_backendTMInNP_export :\n  TMInNP Presentation.SetSystem.exactCoverStructuredProblem.toEncodedDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/SetSystemMembership.lean:85:0: ComplexityReduction.Problems.Karp21.SetSystemMembership.exactCoverStructured_backendTMInNP :\n  BackendTMInNP Presentation.SetSystem.exactCoverStructuredProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/SetSystemMembership.lean:86:0: ComplexityReduction.Karp21.exactCoverStructured_TMInNP : TMInNP Combinatorics.exactCoverStructuredDecisionProblem\n\u2139 [3986/4000] Replayed ComplexityReduction.Problems.Karp21.SetSystemHittingSetMembership\ninfo: Reference/ComplexityReduction/Problems/Karp21/SetSystemHittingSetMembership.lean:130:0: ComplexityReduction.Problems.Karp21.SetSystemHittingSetMembership.hittingSetStructured_backendTMInNP_export :\n  TMInNP Presentation.SetSystem.hittingSetStructuredProblem.toEncodedDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/SetSystemHittingSetMembership.lean:131:0: ComplexityReduction.Problems.Karp21.SetSystemHittingSetMembership.hittingSetStructured_backendTMInNP :\n  BackendTMInNP Presentation.SetSystem.hittingSetStructuredProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/SetSystemHittingSetMembership.lean:132:0: ComplexityReduction.Karp21.hittingSetStructured_TMInNP : TMInNP Combinatorics.hittingSetStructuredDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/SetSystemHittingSetMembership.lean:133:0: ComplexityReduction.Problems.Karp21.SetSystemHittingSetMembership.hittingSetStructured_nativeMembershipOutcome :\n  HittingSetStructuredNativeMembershipOutcome\ninfo: Reference/ComplexityReduction/Problems/Karp21/SetSystemHittingSetMembership.lean:134:0: ComplexityReduction.Problems.Karp21.SetSystemHittingSetMembership.hittingSetStructured_completenessOutcome :\n  HittingSetStructuredCompletenessOutcome\n\u2139 [3987/4000] Replayed ComplexityReduction.Problems.Karp21.SteinerTreeMembership\ninfo: Reference/ComplexityReduction/Problems/Karp21/SteinerTreeMembership.lean:132:0: ComplexityReduction.Problems.Karp21.SteinerTreeMembership.steinerTreeStructured_backendTMInNP_export :\n  TMInNP Presentation.SteinerTree.structuredProblem.toEncodedDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/SteinerTreeMembership.lean:133:0: ComplexityReduction.Problems.Karp21.SteinerTreeMembership.steinerTreeStructured_backendTMInNP :\n  BackendTMInNP Presentation.SteinerTree.structuredProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/SteinerTreeMembership.lean:134:0: ComplexityReduction.Karp21.SteinerTreeMembership.steinerTreeStructured_TMInNP :\n  TMInNP Combinatorics.Graph.steinerTreeStructuredDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/SteinerTreeMembership.lean:135:0: ComplexityReduction.Problems.Karp21.SteinerTreeMembership.steinerTreeStructured_nativeMembershipOutcome :\n  SteinerTreeStructuredNativeMembershipOutcome\ninfo: Reference/ComplexityReduction/Problems/Karp21/SteinerTreeMembership.lean:136:0: ComplexityReduction.Problems.Karp21.SteinerTreeMembership.steinerTreeStructured_completenessOutcome :\n  SteinerTreeStructuredCompletenessOutcome\ninfo: Reference/ComplexityReduction/Problems/Karp21/SteinerTreeMembership.lean:167:0: 'ComplexityReduction.Problems.Karp21.SteinerTreeMembership.steinerTreeStructured_backendTMInNP_export' depends on axioms: [propext,\n Classical.choice,\n Quot.sound,\n Karp21.SteinerTreeMembership.steinerPathFold_tm_polytime._native.native_decide.ax_1_1]\n\u2139 [3989/4003] Replayed ComplexityReduction.Problems.Karp21.CliqueNativeVerifier\ninfo: Reference/ComplexityReduction/Problems/Karp21/CliqueNativeVerifier.lean:228:0: 'ComplexityReduction.Problems.Karp21.CliqueNativeVerifier.checker_directTM' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\ninfo: Reference/ComplexityReduction/Problems/Karp21/CliqueNativeVerifier.lean:229:0: 'ComplexityReduction.Problems.Karp21.CliqueNativeVerifier.verifier' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\ninfo: Reference/ComplexityReduction/Problems/Karp21/CliqueNativeVerifier.lean:230:0: 'ComplexityReduction.Problems.Karp21.CliqueNativeVerifier.checkedDecoderDiscipline' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\ninfo: Reference/ComplexityReduction/Problems/Karp21/CliqueNativeVerifier.lean:231:0: 'ComplexityReduction.Problems.Karp21.CliqueNativeVerifier.nativeCapability' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n\u2139 [3995/4014] Replayed ComplexityReduction.Problems.Karp21.GraphMembership\ninfo: Reference/ComplexityReduction/Problems/Karp21/GraphMembership.lean:224:0: ComplexityReduction.Problems.Karp21.GraphMembership.cliqueStructured_backendTMInNP_export :\n  TMInNP GraphAtoms.cliqueStructuredProblem.toEncodedDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/GraphMembership.lean:225:0: ComplexityReduction.Problems.Karp21.GraphMembership.cliqueStructured_backendTMInNP :\n  BackendTMInNP GraphAtoms.cliqueStructuredProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/GraphMembership.lean:226:0: ComplexityReduction.Karp21.cliqueStructured_TMInNP : TMInNP Combinatorics.Graph.cliqueStructuredDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/GraphMembership.lean:227:0: ComplexityReduction.Problems.Karp21.GraphMembership.cliqueStructured_backendMembershipOutcome :\n  CliqueStructuredBackendMembershipOutcome\ninfo: Reference/ComplexityReduction/Problems/Karp21/GraphMembership.lean:228:0: ComplexityReduction.Problems.Karp21.GraphMembership.cliqueStructured_nativeMembershipOutcome :\n  CliqueStructuredNativeMembershipOutcome\ninfo: Reference/ComplexityReduction/Problems/Karp21/GraphMembership.lean:229:0: ComplexityReduction.Problems.Karp21.GraphMembership.cliqueStructured_completenessOutcome :\n  CliqueStructuredCompletenessOutcome\ninfo: Reference/ComplexityReduction/Problems/Karp21/GraphMembership.lean:230:0: ComplexityReduction.Problems.Karp21.GraphMembership.cliqueStructured_nativeCapability_exactComponents\n  (capability : NativeVerifierCapability GraphAtoms.cliqueStructuredProblem) :\n  \u2203 verifier discipline, capability = NativeVerifierCapability.mk verifier discipline \u2227 \u22ef = \u22ef\ninfo: Reference/ComplexityReduction/Problems/Karp21/GraphMembership.lean:231:0: ComplexityReduction.Problems.Karp21.GraphMembership.cliqueStructured_nativeCapability_exactDisciplineProvenance\n  (capability : NativeVerifierCapability GraphAtoms.cliqueStructuredProblem) :\n  \u2203 backendDiscipline, capability.discipline.basis = VerifierEncodingDisciplineBasis.checkedDecoder backendDiscipline\n\u2139 [3997/4014] Replayed ComplexityReduction.Problems.Karp21.NumericMembership\ninfo: Reference/ComplexityReduction/Problems/Karp21/NumericMembership.lean:237:0: ComplexityReduction.Problems.Karp21.NumericMembership.knapsackStructured_backendTMInNP_export :\n  TMInNP Presentation.Knapsack.structuredProblem.toEncodedDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/NumericMembership.lean:238:0: ComplexityReduction.Problems.Karp21.NumericMembership.knapsackStructured_backendTMInNP :\n  BackendTMInNP Presentation.Knapsack.structuredProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/NumericMembership.lean:239:0: ComplexityReduction.Karp21.knapsackStructured_TMInNP : TMInNP Combinatorics.knapsackStructuredDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/NumericMembership.lean:240:0: ComplexityReduction.Problems.Karp21.NumericMembership.knapsackStructured_backendMembershipOutcome :\n  KnapsackStructuredBackendMembershipOutcome\ninfo: Reference/ComplexityReduction/Problems/Karp21/NumericMembership.lean:241:0: ComplexityReduction.Problems.Karp21.NumericMembership.knapsackStructured_nativeMembershipOutcome :\n  KnapsackStructuredNativeMembershipOutcome\ninfo: Reference/ComplexityReduction/Problems/Karp21/NumericMembership.lean:242:0: ComplexityReduction.Problems.Karp21.NumericMembership.knapsackStructured_completenessOutcome :\n  KnapsackStructuredCompletenessOutcome\ninfo: Reference/ComplexityReduction/Problems/Karp21/NumericMembership.lean:243:0: ComplexityReduction.Problems.Karp21.NumericMembership.knapsackStructured_nativeCapability_exactComponents\n  (capability : NativeVerifierCapability Presentation.Knapsack.structuredProblem) :\n  \u2203 verifier discipline, capability = NativeVerifierCapability.mk verifier discipline \u2227 \u22ef = \u22ef\ninfo: Reference/ComplexityReduction/Problems/Karp21/NumericMembership.lean:244:0: ComplexityReduction.Problems.Karp21.NumericMembership.knapsackStructured_nativeCapability_exactDisciplineProvenance\n  (capability : NativeVerifierCapability Presentation.Knapsack.structuredProblem) :\n  \u2203 backendDiscipline, capability.discipline.basis = VerifierEncodingDisciplineBasis.checkedDecoder backendDiscipline\n\u26a0 [4003/4025] Replayed ComplexityReduction.Protocol.Result\nwarning: Reference/ComplexityReduction/Protocol/Result.lean:171:14: unused variable `source`\n\nNote: This linter can be disabled with `set_option linter.unusedVariables false`\nwarning: Reference/ComplexityReduction/Protocol/Result.lean:171:21: unused variable `target`\n\nNote: This linter can be disabled with `set_option linter.unusedVariables false`\nwarning: Reference/ComplexityReduction/Protocol/Result.lean:172:21: unused variable `source`\n\nNote: This linter can be disabled with `set_option linter.unusedVariables false`\nwarning: Reference/ComplexityReduction/Protocol/Result.lean:172:28: unused variable `target`\n\nNote: This linter can be disabled with `set_option linter.unusedVariables false`\nwarning: Reference/ComplexityReduction/Protocol/Result.lean:174:15: unused variable `problem`\n\nNote: This linter can be disabled with `set_option linter.unusedVariables false`\nwarning: Reference/ComplexityReduction/Protocol/Result.lean:175:21: unused variable `problem`\n\nNote: This linter can be disabled with `set_option linter.unusedVariables false`\n\u26a0 [4014/4031] Replayed ComplexityReduction.Domain.NodeDeletionBipartiteMembership\nwarning: Reference/ComplexityReduction/Domain/NodeDeletionBipartiteMembership.lean:171:6: `push_neg` has been deprecated. Prefer using `push Not` instead.\nIf you'd rather continue using `push_neg` in your project, you can implement it as follows:\n```\nopen Lean.Parser.Tactic in\nmacro \"push_neg\" cfg:optConfig loc:(location)? : tactic =>\n  `(tactic| push $cfg:optConfig Not $[$loc]?)\n```\n\u26a0 [4020/4031] Replayed ComplexityReduction.Program.PairOfPaths\nwarning: Reference/ComplexityReduction/Program/PairOfPaths.lean:324:8: This simp argument is unused:\n  edgeEncodedType\n\nHint: Omit it from the simp argument list.\n  simp [\u0335e\u0335d\u0335g\u0335e\u0335E\u0335n\u0335c\u0335o\u0335d\u0335e\u0335d\u0335T\u0335y\u0335p\u0335e\u0335,\u0335 \u0335e\u0335d\u0335g\u0335e\u0335S\u0335t\u0335r\u0335u\u0335c\u0335t\u0335u\u0335r\u0335e\u0335d\u0335E\u0335n\u0335c\u0335o\u0335d\u0335e\u0335d\u0335T\u0335y\u0335p\u0335e\u0335,\u0335[\u0332e\u0332d\u0332g\u0332e\u0332S\u0332t\u0332r\u0332u\u0332c\u0332t\u0332u\u0332r\u0332e\u0332d\u0332E\u0332n\u0332c\u0332o\u0332d\u0332e\u0332d\u0332T\u0332y\u0332p\u0332e\u0332,\u0332 EncodedType.inputSize_prod, EncodedType.inputSize_nat]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\n\u26a0 [4029/4035] Replayed ComplexityReduction.Domain.TwoDisjointBoundedPathsMembership\nwarning: Reference/ComplexityReduction/Domain/TwoDisjointBoundedPathsMembership.lean:372:4: This simp argument is unused:\n  binaryNatListEncodedType\n\nHint: Omit it from the simp argument list.\n  simp [Presentation.TwoDisjointBoundedPaths.tupleStructuredEncodedType,\n      b\u0335i\u0335n\u0335a\u0335r\u0335y\u0335N\u0335a\u0335t\u0335L\u0335i\u0335s\u0335t\u0335E\u0335n\u0335c\u0335o\u0335d\u0335e\u0335d\u0335T\u0335y\u0335p\u0335e\u0335,\u0335 \u0335PairOfPaths.binaryNatListEncodedType]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Domain/TwoDisjointBoundedPathsMembership.lean:372:30: This simp argument is unused:\n  PairOfPaths.binaryNatListEncodedType\n\nHint: Omit it from the simp argument list.\n  simp [Presentation.TwoDisjointBoundedPaths.tupleStructuredEncodedType, b\u0335i\u0335n\u0335a\u0335r\u0335y\u0335N\u0335a\u0335t\u0335L\u0335i\u0335s\u0335t\u0335E\u0335n\u0335c\u0335o\u0335d\u0335e\u0335d\u0335T\u0335y\u0335p\u0335e\u0335,\u0335 \u0335P\u0335a\u0335i\u0335r\u0335O\u0335f\u0335P\u0335a\u0335t\u0335h\u0335s\u0335.\u0335b\u0335i\u0335n\u0335a\u0335r\u0335y\u0335N\u0335a\u0335t\u0335L\u0335i\u0335s\u0335t\u0335E\u0335n\u0335c\u0335o\u0335d\u0335e\u0335d\u0335T\u0335y\u0335p\u0335e\u0335]\u0335b\u0332i\u0332n\u0332a\u0332r\u0332y\u0332N\u0332a\u0332t\u0332L\u0332i\u0332s\u0332t\u0332E\u0332n\u0332c\u0332o\u0332d\u0332e\u0332d\u0332T\u0332y\u0332p\u0332e\u0332]\u0332\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\n\u26a0 [4033/4035] Replayed ComplexityReduction.Domain.SetCoveringToSeeingSet\nwarning: Reference/ComplexityReduction/Domain/SetCoveringToSeeingSet.lean:100:41: This simp argument is unused:\n  bound\n\nHint: Omit it from the simp argument list.\n  simp [weights, targetVertex, setCount,\u0335 \u0335b\u0335o\u0335u\u0335n\u0335d\u0335]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nBuild completed successfully (4035 jobs).\n",
+    "timed_out": false
+  },
+  "setup_build_wall_duration_seconds": 73.911,
+  "stage": "N",
+  "started_at": "2026-08-04T09:14:49.164084+00:00",
+  "status": "VERIFIED",
+  "suite_case_count": 12,
+  "suite_hashes": {
+    "adversarial": "5dcee943883b18d75ae67ef9a34fa10f5965d46e65700d5bbcc4d53889d8ebc3",
+    "completeness": "24f0fae7f6597bd2a41b40f605c008b8f1c7b1a67692c330a5e0a5564326e71c",
+    "formalization": "c3a97ea2b864201c5fbc2cb2d69a9b5fdd8b7f39b5c7ee1ae73d136daa3870d4"
+  },
+  "usage": {
+    "combined": {
+      "completion_tokens": 2667,
+      "prompt_cache_hit_tokens": 14976,
+      "prompt_cache_miss_tokens": 292,
+      "prompt_tokens": 15268,
+      "total_tokens": 17935
+    },
+    "model_authoring": {},
+    "packet_selection": {
+      "completion_tokens": 2667,
+      "prompt_cache_hit_tokens": 14976,
+      "prompt_cache_miss_tokens": 292,
+      "prompt_tokens": 15268,
+      "total_tokens": 17935
+    }
+  },
+  "wall_duration_seconds": 3169.693
+}

@@ -1,0 +1,29 @@
+schema_version: opencode_decision_problem_sample_file_v1
+id: set_cover_budget_route
+name: set_cover_budget_route_problem
+input_language: set_cover_budget_route_composition
+problem_family: set_system
+problem_statement: Given a finite universe, a family of subsets, and a budget k, decide whether at most k of the subsets cover the whole universe.
+certificate_contract: lean_proposition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction
+
+  noncomputable section
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.Combinatorics.setCoveringDecisionProblem
+lean_target_type: |
+  ∃ routeTarget : ComplexityReduction.EncodedDecisionProblem,
+    routeTarget = ComplexityReduction.Combinatorics.hittingSetDecisionProblem ∧
+      ∃ reductionCertificate :
+        ComplexityReduction.KarpReductionM ComplexityReduction.CostedPolyTimeModel problem routeTarget,
+        ComplexityReduction.InNPEnc ComplexityReduction.CostedPolyTimeModel routeTarget ∧
+          ComplexityReduction.InNPEnc ComplexityReduction.CostedPolyTimeModel problem
+route_target_policy: any
+difficulty: route_composition
+difficulty_tags:
+- set_system
+- karp21_route
+- route_certificate
+- covering

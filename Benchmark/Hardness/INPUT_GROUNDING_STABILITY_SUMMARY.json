@@ -1,0 +1,120 @@
+{
+  "schema_version": "hardness_input_grounding_stability_summary_v1",
+  "status": "VERIFIED",
+  "suite_id": "input-grounding-fixed-target",
+  "model": "deepseek-v4-flash",
+  "base_url": "https://api.deepseek.com",
+  "registry_fingerprint": "lean:3399781889525615152",
+  "toolchain": "leanprover/lean4:v4.29.0",
+  "lake_manifest_sha256": "1cdf1c43e9beff10c959afe8f06863eb72772ad310e0c8229293d8e4c356cf87",
+  "problem_catalog_id": "sha256:153bc5ba0393e49a9b1d9322b19e64e1baee0b43ce754ea6b15ea58135b0bec2",
+  "connection_catalog_id": "sha256:7af5907f79983f6ee8c0d8c789213c447d2339599ffa75b7a546e7e07e38f62b",
+  "reduction_catalog_id": "sha256:ca296ec6440397cdf1a3b3e915e262736fdf9c713219eb5a6170b3098511a064",
+  "system_prompt_sha256": "e4c4278411c11eca334dd0e01fb373656c43c5cfbf9bd78275bb796f2fec6bf5",
+  "requirements": {
+    "fresh_output_directory_per_run": true,
+    "model_answers_reused": false,
+    "positive_protocol_accepted_per_run": 18,
+    "positive_lean_verified_per_run": 18,
+    "negative_correctly_rejected_per_run": 6,
+    "lean_processes_per_run": 1,
+    "family_specific_agent_rules": 0,
+    "hidden_route_fixtures": 0,
+    "model_term_normalization_count": 0
+  },
+  "runs": [
+    {
+      "run_label": "stage-e-full-attempt-4-constructor-guard",
+      "role": "passing_baseline",
+      "report": "Benchmark/Hardness/INPUT_GROUNDING_REPORT.json",
+      "status": "VERIFIED",
+      "positive_protocol_accepted": 18,
+      "positive_lean_verified": 18,
+      "negative_correctly_rejected": 6,
+      "external_api_calls": 63,
+      "http_ok": 63,
+      "lean_process_count": 1,
+      "total_tokens": 278660,
+      "artifact_sha256": "de531408e065066874b61ae892c63e009d74194d5b9021b0708e7c9cedf3a810"
+    },
+    {
+      "run_label": "stage-e-stability-final-1",
+      "role": "stability_1",
+      "report": "Benchmark/Hardness/INPUT_GROUNDING_STABILITY_FINAL_1_REPORT.json",
+      "status": "VERIFIED",
+      "positive_protocol_accepted": 18,
+      "positive_lean_verified": 18,
+      "negative_correctly_rejected": 6,
+      "external_api_calls": 62,
+      "http_ok": 62,
+      "lean_process_count": 1,
+      "total_tokens": 266527,
+      "artifact_sha256": "acf64aeb4b7cdfab283bdce23f1d21e5c2852173967cc32356ae3239e362ad3e"
+    },
+    {
+      "run_label": "stage-e-stability-final-2",
+      "role": "stability_2",
+      "report": "Benchmark/Hardness/INPUT_GROUNDING_STABILITY_FINAL_2_REPORT.json",
+      "status": "VERIFIED",
+      "positive_protocol_accepted": 18,
+      "positive_lean_verified": 18,
+      "negative_correctly_rejected": 6,
+      "external_api_calls": 62,
+      "http_ok": 62,
+      "lean_process_count": 1,
+      "total_tokens": 272575,
+      "artifact_sha256": "2f1e89a686f9b2b83fdc269fe9305e3c8bd0bab2abed8b949156e73b4512332c"
+    },
+    {
+      "run_label": "stage-e-stability-final-3",
+      "role": "stability_3",
+      "report": "Benchmark/Hardness/INPUT_GROUNDING_STABILITY_FINAL_3_REPORT.json",
+      "status": "VERIFIED",
+      "positive_protocol_accepted": 18,
+      "positive_lean_verified": 18,
+      "negative_correctly_rejected": 6,
+      "external_api_calls": 64,
+      "http_ok": 64,
+      "lean_process_count": 1,
+      "total_tokens": 284927,
+      "artifact_sha256": "6182a9e5e87d482bc0c12829ccf6e12c5d7cf1084e78e33ec1b3fdf07de8cb93"
+    }
+  ],
+  "aggregate": {
+    "run_count": 4,
+    "case_executions": 96,
+    "positive_protocol_accepted": 72,
+    "positive_lean_verified": 72,
+    "negative_correctly_rejected": 24,
+    "external_api_calls": 251,
+    "http_ok": 251,
+    "http_request_attempts": 251,
+    "lean_process_count": 4,
+    "prompt_tokens": 960873,
+    "completion_tokens": 141816,
+    "total_tokens": 1102689,
+    "prompt_cache_hit_tokens": 744448,
+    "prompt_cache_miss_tokens": 216425,
+    "prompt_characters": 3691096,
+    "protocol_feedback_count": 4,
+    "wrong_problem_matches": 0,
+    "unretrieved_declaration_use_failures": 0,
+    "prompt_key_leak_count": 0,
+    "model_term_normalization_count": 0,
+    "replayed_case_count": 0
+  },
+  "historical_failures_retained": [
+    {
+      "report": ".reduction-agent/deepseek-input-grounding-stage-e-initial/report.json",
+      "reason": "DeepSeek JSON-object mode rejected requests because the message did not explicitly contain the word JSON."
+    },
+    {
+      "report": ".reduction-agent/deepseek-input-grounding-stage-e-attempt-2/report.json",
+      "reason": "One empty HTTP-200 response and several model answers confused input-match connections with route theorem retrieval."
+    },
+    {
+      "report": ".reduction-agent/deepseek-input-grounding-stability-2/report.json",
+      "reason": "One model submitted a bare CertifiedReduction declaration where a CertifiedPath.step expression was required; the single final Lean process rejected it."
+    }
+  ]
+}

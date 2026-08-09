@@ -1,0 +1,11 @@
+{
+  "schema_version": "hardness_benchmark_expected_v1",
+  "case_id": "authoring-pair-list-membership",
+  "authoritative": false,
+  "expected_lane": "typed_authoring",
+  "baseline_status": "BLOCKED",
+  "baseline_failure_code": "missing_checker_combinator:pair_list",
+  "final_status": "VERIFIED",
+  "final_failure_code": null,
+  "coverage": ["membership_packet", "pair_list", "disjointness", "path_legality"]
+}

@@ -1,0 +1,98 @@
+{
+  "schema_version": "hardness_main_phase7_45_real_report_v1",
+  "generated_at": "2026-08-07T15:00:55Z",
+  "benchmark_id": "hardness-agent-e2e",
+  "agent_phase": 7,
+  "passed": true,
+  "execution_plan_sha256": "de2954b5274276c9d01089f0b944b2984d7facfc2d6540509550083d68fa6671",
+  "raw_report": {
+    "file": "tmp/main-benchmark-phase7-45-real-ds-1/report.json",
+    "sha256": "6f7e805b74680984a7db1ef3fd1b0d0616849a202179d4ac36534639c62447ec",
+    "schema_version": "hardness_benchmark_result_v2"
+  },
+  "reproducibility": {
+    "manifest": "Benchmark/Hardness/MANIFEST.json",
+    "manifest_sha256": "cd93b06d69c526af80d76b55c239a7e2f6e92e7f783b06d1c932d7a5da748088",
+    "runner": "scripts/run_hardness_benchmark.py",
+    "runner_sha256": "c8d90b718d2369d1bf959f0db10fa0f2df294b074ad200096ced32af85f61459",
+    "agent_runner_sha256": "b5d3c045427743ba6347a95e9cb98a6a5a620af9cdbcd2e3b9834e0736841191",
+    "lake_manifest_sha256": "7b9ebbed765572606d98ef3e13b2a3036325a9d5bd860a111bdd73db1104aec7",
+    "lean_toolchain": "leanprover/lean4:v4.29.0",
+    "jobs": 4,
+    "fresh_output_root": "tmp/main-benchmark-phase7-45-real-ds-1"
+  },
+  "counts": {
+    "runnable_case_count": 45,
+    "passed_case_count": 45,
+    "failed_expectation_count": 0,
+    "phase_gated_outside_denominator": 20,
+    "positive_case_count": 29,
+    "positive_verified_count": 29,
+    "negative_case_count": 16,
+    "negative_expected_outcome_count": 16,
+    "actual_verified_count": 29,
+    "actual_blocked_count": 13,
+    "actual_failed_count": 3,
+    "candidate_removal_resume_audit_count": 4
+  },
+  "evaluation_lanes": {
+    "existing_route": {"passed": 10, "total": 10, "model_calls": 0},
+    "ir_feasibility": {"passed": 12, "total": 12, "model_calls": 0},
+    "deterministic_fixture": {"passed": 7, "total": 7, "model_calls": 0},
+    "negative": {"passed": 15, "total": 15, "model_calls": 0},
+    "model_synthesis": {"passed": 1, "total": 1, "model_calls": 1}
+  },
+  "objectives": {
+    "reduce_to": 28,
+    "reduce_to_known_np": 9,
+    "prove_in_np": 3,
+    "prove_np_complete": 5
+  },
+  "metrics": {
+    "case_outcome_accuracy": 1.0,
+    "positive_final_verified_rate": 1.0,
+    "negative_block_accuracy": 1.0,
+    "axiom_clean_rate": 1.0,
+    "deterministic_replay_rate": 1.0,
+    "native_membership_rate": 1.0,
+    "native_completeness_rate": 1.0,
+    "matched_pair_both_verified_rate": 1.0,
+    "full_reduction_authored_rate": 0.666667
+  },
+  "real_model": {
+    "provider": "DeepSeek",
+    "base_url": "https://api.deepseek.com",
+    "model": "deepseek-chat",
+    "max_retries": 0,
+    "called_case": "model-semantic-proof-authoring",
+    "model_call_count": 1,
+    "http_request_count": 1,
+    "http_ok_count": 1,
+    "status_code": 200,
+    "duration_seconds": 1.339,
+    "prompt_tokens": 2024,
+    "completion_tokens": 155,
+    "total_tokens": 2179,
+    "response_sha256": "268a435244263854422b7298ce4ca72d8aeb705c6b3f6420cdb2eff0bb2fe700",
+    "candidate_provenance": "model_generated",
+    "authoring_attempt_count": 1,
+    "accepted_stage_count": 7,
+    "final_status": "VERIFIED",
+    "axiom_clean": true,
+    "independent_replay": true
+  },
+  "gates": {
+    "preflight_passed": true,
+    "all_45_cases_executed": true,
+    "all_expectations_matched": true,
+    "no_coverage_failures": true,
+    "all_29_positive_cases_verified": true,
+    "all_16_negative_cases_matched": true,
+    "all_verified_cases_axiom_clean": true,
+    "all_verified_cases_replayed": true,
+    "real_model_case_called": true,
+    "non_model_cases_zero_model_calls": true,
+    "oracle_modules_forbidden": true,
+    "lean_reconstructed_final_results": true
+  }
+}

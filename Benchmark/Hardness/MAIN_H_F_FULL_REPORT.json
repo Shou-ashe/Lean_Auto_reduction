@@ -1,0 +1,220 @@
+{
+  "fresh_output_paths": {
+    "heldout": "/Users/chenyuan/Project/Auto_Reduction_Agent/.reduction-agent/h-f-heldout-v3/cases/hf-existing-vertex-cover",
+    "main_45": "tmp/h-f-main45-v4",
+    "release_stability": "Benchmark/Hardness"
+  },
+  "gates": {
+    "active_plan_transition": {
+      "completed_active_plan_sha256": "a4b4d83cb4c7ddfc0a8c0f46019041e8c22734249ceb9ab79b2be8bf1f7c3085",
+      "h_f_removed_after_completion": true,
+      "passed": true,
+      "tested_active_plan_sha256": "479fe0efea04c0ca62fc5d585f42dceed4e16811a0a450524addc5c208bf802f"
+    },
+    "full_tests": {
+      "duration_seconds": 1601.312,
+      "errors": 0,
+      "failures": 0,
+      "file": "tmp/h-f-full-junit.xml",
+      "passed": true,
+      "sha256": "5f2c5c4912e5f29b3fff941fd7ef05db8d2e8e0a871f2f0ba20c7d34cb873b3f",
+      "skipped": 0,
+      "tests": 713
+    },
+    "h_f_qualification_heldout": {
+      "file": "Benchmark/Hardness/NP_HARD_H_F_QUALIFICATION_HELDOUT_REPORT.json",
+      "metrics": {
+        "authoring_problem_count": 0,
+        "authoring_verified_count": 0,
+        "deletion_audit_node_count": 0,
+        "deletion_audit_problem_count": 0,
+        "distinct_positive_endpoint_count": 6,
+        "endpoint_equality_audit_count": 6,
+        "existing_route_count": 6,
+        "existing_route_model_calls": 0,
+        "family_count": 5,
+        "fresh_core_rediscovery_count": 0,
+        "http_ok_count": 0,
+        "independent_replay_count": 6,
+        "inventory_known_forward_route_count": 174,
+        "inventory_known_forward_route_identity_count": 22,
+        "inventory_module_count": 200,
+        "inventory_presented_problem_count": 253,
+        "inventory_unique_problem_identity_count": 44,
+        "matrix_auxiliary_count": 8,
+        "matrix_blocked_count": 14,
+        "matrix_identity_count": 44,
+        "matrix_in_scope_count": 22,
+        "matrix_production_entry_observed_identity_count": 14,
+        "matrix_production_entry_verified_identity_count": 6,
+        "matrix_unclassified_count": 0,
+        "negative_case_count": 8,
+        "negative_matched_count": 8,
+        "positive_case_count": 6,
+        "positive_verified_count": 6,
+        "real_api_calls": 0,
+        "standard_axiom_audit_count": 6,
+        "structural_negative_model_calls": 0,
+        "suite_case_count": 14,
+        "token_usage": {},
+        "worker_fallback_count": 0
+      },
+      "model": {
+        "api_key_configured": true,
+        "base_url": "https://api.deepseek.com",
+        "max_retries": 0,
+        "max_tokens": 16000,
+        "model": "deepseek-v4-flash",
+        "reasoning_effort": "low",
+        "temperature": 0.0,
+        "timeout_seconds": 300
+      },
+      "passed": true,
+      "security": {
+        "cached_or_recorded_response_used": false,
+        "fixture_model_used": false,
+        "hidden_or_gold_import_count": 0,
+        "oracle_passed_to_orchestrator": false,
+        "secret_absent": true
+      },
+      "sha256": "fe6e3779050add2965a2750238d5d73912d60ec465039a5c5c4b501ca88e1b0d"
+    },
+    "inventory": {
+      "declaration_count": 253,
+      "file": "Benchmark/Hardness/NP_HARD_H_F_INVENTORY.json",
+      "identity_count": 44,
+      "inventory_id": "sha256:c557f383f4421ae574a4750ed88bac226f1d5f8a117c17c35c4b4b8f98ca5570",
+      "known_forward_route_declaration_count": 174,
+      "known_forward_route_identity_count": 22,
+      "passed": true,
+      "sha256": "943e52c18ba277a176ad72935292db74dffde8131888e2f70a9bb87822165462",
+      "target_matrix_id": "sha256:a91e2d467f8391d040f8f1dcb406fb778188513959976e0e4c058a390db6a7dc"
+    },
+    "main_benchmark_45": {
+      "executed": 45,
+      "failed": 0,
+      "file": "tmp/h-f-main45-v4/report.json",
+      "http_ok_count": 2,
+      "matched": 45,
+      "model": {
+        "api_key_configured": true,
+        "base_url": "https://api.deepseek.com",
+        "max_retries": 0,
+        "max_tokens": 16384,
+        "model": "deepseek-v4-flash",
+        "reasoning_effort": "low",
+        "temperature": 0.0,
+        "timeout_seconds": 300
+      },
+      "passed": true,
+      "real_api_calls": 2,
+      "sha256": "97aa1bbaccce349833afe73e36cb686eb61d1a009bd443d6d1a2b1fdff6928a2",
+      "token_usage": {
+        "completion_tokens": 7828,
+        "prompt_cache_hit_tokens": 2560,
+        "prompt_cache_miss_tokens": 1741,
+        "prompt_tokens": 4301,
+        "total_tokens": 12129
+      },
+      "verified_replay_axiom_clean": true
+    },
+    "related_tests": {
+      "duration_seconds": 954.354,
+      "errors": 0,
+      "failures": 0,
+      "file": "tmp/h-f-related-junit.xml",
+      "passed": true,
+      "sha256": "680f16e0d6a967e82e6fa193b9dee819dcab305599263095ab6e4935ec028460",
+      "skipped": 0,
+      "tests": 25
+    },
+    "release_stability_3_rounds": {
+      "file": "Benchmark/Hardness/NP_HARD_RELEASE_STABILITY_AGGREGATE.json",
+      "metrics": {
+        "deletion_audit_count": 15,
+        "existing_route_model_calls": 0,
+        "instance_execution_count": 36,
+        "matched_instance_count": 36,
+        "model_authoring_verified_count": 15,
+        "positive_execution_count": 30,
+        "real_api_calls": 36,
+        "round_count": 3,
+        "safety_negative_matched_count": 6,
+        "token_usage": {
+          "completion_tokens": 32767,
+          "prompt_cache_hit_tokens": 106368,
+          "prompt_cache_miss_tokens": 2964,
+          "prompt_tokens": 109332,
+          "total_tokens": 142099
+        },
+        "worker_fallback_count": 0
+      },
+      "model": {
+        "api_key_configured": true,
+        "base_url": "https://api.deepseek.com",
+        "max_retries": 0,
+        "max_tokens": 16000,
+        "model": "deepseek-v4-flash",
+        "reasoning_effort": "low",
+        "temperature": 0.0,
+        "timeout_seconds": 300
+      },
+      "passed": true,
+      "sha256": "7ad0251a952bd8ff20de0b4228720ccde76d2ea7be02da7918f4a143afce9b35"
+    },
+    "target_matrix": {
+      "auxiliary_count": 8,
+      "blocked_count": 14,
+      "declaration_count": 253,
+      "file": "Benchmark/Hardness/NP_HARD_TARGET_MATRIX.json",
+      "identity_count": 44,
+      "in_scope_count": 22,
+      "known_forward_route_identity_count": 22,
+      "matrix_id": "sha256:a91e2d467f8391d040f8f1dcb406fb778188513959976e0e4c058a390db6a7dc",
+      "passed": true,
+      "production_entry_observed_identity_count": 14,
+      "sha256": "7e26702c9a56dcf107e6f1431f0f0fe1bc6804570690a0e5f9f00cf0f2fab960",
+      "unclassified_count": 0
+    }
+  },
+  "generated_at": "2026-08-09T01:29:22.960474+00:00",
+  "inputs": {
+    "oracle_sha256": "3fc761532edb38f57d1e5ef6fe77d40a31faf208d96efc5f6fdaf187eb42d462",
+    "scope_policy_id": "sha256:22f633f64ec3b2e4d8bce041ab1c5f1e1b64c74b36196cc78740b884be5a5443",
+    "suite_sha256": "155ee340796a355844ec79420856df785ffa746e939f308f262779e370bd8853"
+  },
+  "lean": {
+    "lake_manifest_sha256": "7b9ebbed765572606d98ef3e13b2a3036325a9d5bd860a111bdd73db1104aec7",
+    "toolchain": "leanprover/lean4:v4.29.0",
+    "toolchain_file_sha256": "651c8accb402b0c071cd336e9d3dc0a55516b1bfb434ddc4801f14936785b1d2"
+  },
+  "passed": true,
+  "schema_version": "hardness_main_h_f_full_report_v1",
+  "source_control": {
+    "completed_active_plan_sha256": "a4b4d83cb4c7ddfc0a8c0f46019041e8c22734249ceb9ab79b2be8bf1f7c3085",
+    "git_available": false,
+    "h_f_removed_after_completion": true,
+    "passed": true,
+    "reason": "workspace .git directory does not contain readable repository metadata; per-file SHA-256 evidence is authoritative",
+    "source_sha256": {
+      "ACTIVE_AGENT_IMPROVEMENT_PLAN.md": "a4b4d83cb4c7ddfc0a8c0f46019041e8c22734249ceb9ab79b2be8bf1f7c3085",
+      "Benchmark/Hardness/Evaluation/np_hard_h_f_qualification_oracle.json": "3fc761532edb38f57d1e5ef6fe77d40a31faf208d96efc5f6fdaf187eb42d462",
+      "Benchmark/Hardness/NP_HARD_H_F_INVENTORY.json": "943e52c18ba277a176ad72935292db74dffde8131888e2f70a9bb87822165462",
+      "Benchmark/Hardness/NP_HARD_H_F_QUALIFICATION_HELDOUT_REPORT.json": "fe6e3779050add2965a2750238d5d73912d60ec465039a5c5c4b501ca88e1b0d",
+      "Benchmark/Hardness/NP_HARD_TARGET_MATRIX.json": "7e26702c9a56dcf107e6f1431f0f0fe1bc6804570690a0e5f9f00cf0f2fab960",
+      "Benchmark/Hardness/Suites/np_hard_h_f_qualification_inputs.json": "155ee340796a355844ec79420856df785ffa746e939f308f262779e370bd8853",
+      "agent/hardness/data/np_hard_scope_policy.json": "6845ea0734c6be8ffb77bcfdd42b92547b8ffeaf08e452768acc8f1ba3ef6476",
+      "agent/hardness/np_hard_h_f_benchmark.py": "668e2e0ec65c4dee1b5dccbe2f688fdca884d3d7ae4e97f7f1bca2e7fe0a7c23",
+      "agent/hardness/np_hard_inventory.py": "10acc3918f514155805cb26b5a27d879a47f640e6fd0aebe595bd369a7d92c66",
+      "agent/hardness/np_hard_orchestrator.py": "9b762f3ca7239a6ba6fa1af3fd8298901453eb8ae6ca9792dbdc3a23fc16b993",
+      "agent/hardness/np_hard_scope_policy.py": "0f2e3b28ba4d31322386e6d51c5a26a1cfc561ea690e005a215c08d3b1617c6f",
+      "agent/hardness/np_hard_target_matrix.py": "6278e3b736d4bb948374128a67849f8f0072f7bc7df5859ce1dec7bfcdda2892",
+      "scripts/run_np_hard_h_f_full_report.py": "0da4750d1ff65c2e50c72db433b674bdeff4c4a5c9375156c7763bdb29a5b032",
+      "scripts/run_np_hard_h_f_heldout.py": "34292eededb42eace64544a145a416752c452150cc4e31f33416eadbca5888b5",
+      "scripts/run_np_hard_h_f_qualification.py": "14a06cf6c5ea26e8a0739d6a55488e87ba1181c179140216bdf6a0c05a613e5a",
+      "tests/test_hardness_np_hard_h_f.py": "bc0ec3541c1a8b09965580432936e8ea4acf1480e7413b3351d23ab13fe530ee"
+    },
+    "tested_active_plan_sha256": "479fe0efea04c0ca62fc5d585f42dceed4e16811a0a450524addc5c208bf802f"
+  },
+  "stage": "H-F"
+}

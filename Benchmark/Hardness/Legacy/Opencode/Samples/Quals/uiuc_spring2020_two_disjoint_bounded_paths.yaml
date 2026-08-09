@@ -1,0 +1,68 @@
+schema_version: opencode_decision_problem_sample_file_v1
+id: uiuc_spring2020_two_disjoint_bounded_paths
+name: uiuc_spring2020_two_disjoint_bounded_paths_problem
+input_language: edge_disjoint_bounded_cost_paths
+problem_family: graph
+problem_statement: |
+  UIUC Theory Qual, Spring 2020, Algorithms Problem 3.1. Let G = (V, E) be an
+  edge-weighted directed graph with positive integer edge costs c : E -> Z+,
+  and let s, t be two distinct nodes. Given G, c, s, t, and a bound B, decide
+  whether there exist two edge-disjoint directed paths from s to t such that
+  each path has total cost at most B. Prove that this problem is NP-complete.
+  The standard hardness route is from a Hamiltonian-circuit/path style
+  reduction with a path-splitting gadget.
+certificate_contract: lean_proposition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction
+
+  noncomputable section
+
+  def TwoPaths.walkEdges (p : List Nat) : List (Nat × Nat) :=
+    p.zip p.tail
+
+  def TwoPaths.IsSTPath (g : ComplexityReduction.Combinatorics.Graph.GraphInput)
+      (s t : Nat) (p : List Nat) : Prop :=
+    p.head? = some s ∧ p.getLast? = some t ∧ p.Nodup ∧
+      ComplexityReduction.Combinatorics.Graph.VerticesWithinBounds g p ∧
+      (∀ e ∈ TwoPaths.walkEdges p,
+        ComplexityReduction.Combinatorics.Graph.HasDirectedEdge g e.1 e.2)
+
+  structure TwoDisjointPathsInput where
+    graph : ComplexityReduction.Combinatorics.Graph.GraphInput
+    cost : Nat → Nat → Int
+    s : Nat
+    t : Nat
+    B : Int
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    { Instance := ComplexityReduction.EncodedType.raw TwoDisjointPathsInput
+      isYes := fun I =>
+        ∃ p1 p2 : List Nat,
+          TwoPaths.IsSTPath I.graph I.s I.t p1 ∧
+            TwoPaths.IsSTPath I.graph I.s I.t p2 ∧
+            ((TwoPaths.walkEdges p1).map (fun e => I.cost e.1 e.2)).sum ≤ I.B ∧
+            ((TwoPaths.walkEdges p2).map (fun e => I.cost e.1 e.2)).sum ≤ I.B ∧
+            (∀ e ∈ TwoPaths.walkEdges p1, e ∉ TwoPaths.walkEdges p2) }
+lean_target_type: |
+  ComplexityReduction.NPCompleteEnc ComplexityReduction.CostedPolyTimeModel problem
+expected:
+  phase1:
+    outcome: typed_missing_obligation
+    certificate_tracks:
+      lower_bound: typed_missing_obligation
+      membership: typed_missing_obligation
+      npcomplete: typed_missing_obligation
+    missing_obligations:
+    - missing_route_edge
+    - missing_target_bridge
+    - missing_membership_packet
+difficulty: quals_reduction
+difficulty_tags:
+- graph
+- np_complete
+- edge_disjoint_paths
+- bounded_cost
+- hamiltonian_source
+- real_exam
+- uiuc_quals

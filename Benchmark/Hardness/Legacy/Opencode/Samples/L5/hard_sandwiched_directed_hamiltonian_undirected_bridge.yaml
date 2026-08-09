@@ -1,0 +1,42 @@
+schema_version: opencode_decision_problem_sample_file_v1
+id: hard_sandwiched_directed_hamiltonian_undirected_bridge
+name: hard_sandwiched_directed_hamiltonian_undirected_bridge_problem
+input_language: sandwiched_directed_hamiltonian_interface
+problem_family: graph_interface
+problem_statement: 'Input is a pair whose first field is a pair of a Boolean audit flag and a standard Directed Hamiltonian Circuit instance, and whose second field is another Boolean audit flag. Both flags are ignored: decide whether the directed Hamiltonian instance is accepting.'
+certificate_contract: lean_proposition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction
+
+  noncomputable section
+
+  abbrev sourceProblem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.Combinatorics.Graph.directedHamiltonianCircuitDecisionProblem
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    { Instance := ComplexityReduction.EncodedType.prod
+        (ComplexityReduction.EncodedType.prod
+          ComplexityReduction.EncodedType.bool
+          sourceProblem.Instance)
+        ComplexityReduction.EncodedType.bool
+      isYes := fun p => sourceProblem.isYes p.1.2 }
+lean_target_type: |
+  ∃ normalizedProblem : ComplexityReduction.EncodedDecisionProblem,
+    normalizedProblem = ComplexityReduction.Combinatorics.Graph.directedHamiltonianCircuitDecisionProblem ∧
+      ∃ encodingBridgeCertificate :
+        ComplexityReduction.ProblemEquivM ComplexityReduction.CostedPolyTimeModel problem normalizedProblem,
+        ∃ normalizedRouteTarget : ComplexityReduction.EncodedDecisionProblem,
+          normalizedRouteTarget = ComplexityReduction.Combinatorics.Graph.undirectedHamiltonianCircuitDecisionProblem ∧
+            ∃ normalizedReductionCertificate :
+              ComplexityReduction.KarpReductionM ComplexityReduction.CostedPolyTimeModel normalizedProblem normalizedRouteTarget,
+              ∃ liftedReductionCertificate :
+                ComplexityReduction.PolyReducibleM ComplexityReduction.CostedPolyTimeModel problem normalizedRouteTarget,
+                ComplexityReduction.InNPEnc ComplexityReduction.CostedPolyTimeModel normalizedRouteTarget ∧
+                  ComplexityReduction.InNPEnc ComplexityReduction.CostedPolyTimeModel problem
+difficulty: encoding_bridge_hard
+difficulty_tags:
+- graph
+- nonidentity_bridge
+- nested_projection
+- costed_adapter

@@ -1,0 +1,11 @@
+{
+  "schema_version": "hardness_benchmark_expected_v1",
+  "case_id": "uiuc2020-two-disjoint-bounded-paths",
+  "authoritative": false,
+  "expected_lane": "quals_completeness",
+  "baseline_status": "BLOCKED",
+  "baseline_failure_code": "missing_native_membership",
+  "final_status": "VERIFIED",
+  "final_failure_code": null,
+  "coverage": ["prove_np_complete", "native_membership", "pair_of_paths", "exact_endpoint"]
+}

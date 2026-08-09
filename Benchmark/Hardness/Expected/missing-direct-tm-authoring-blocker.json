@@ -1,0 +1,9 @@
+{
+  "schema_version": "hardness_benchmark_expected_v1",
+  "case_id": "missing-direct-tm-authoring-blocker",
+  "authoritative": false,
+  "final_status": "BLOCKED",
+  "final_failure_code": "missing_direct_tm",
+  "gap_reason": "directTM",
+  "coverage": ["typed_direct_tm_blocker", "no_cost_only_promotion"]
+}

@@ -1,0 +1,11 @@
+{
+  "schema_version": "hardness_benchmark_expected_v1",
+  "case_id": "authoring-unsupported-checker",
+  "authoritative": false,
+  "expected_lane": "typed_authoring",
+  "baseline_status": "BLOCKED",
+  "baseline_failure_code": "missing_checker_combinator:unsupported_local_checker",
+  "final_status": "BLOCKED",
+  "final_failure_code": "missing_checker_combinator:unsupported_local_checker",
+  "coverage": ["unsupported_checker", "pre_model_rejection"]
+}

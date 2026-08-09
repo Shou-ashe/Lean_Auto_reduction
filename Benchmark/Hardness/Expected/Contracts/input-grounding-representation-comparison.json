@@ -1,0 +1,76 @@
+{
+  "schema_version": "hardness_representation_comparison_contract_v1",
+  "suite_id": "input-grounding-representation-comparison",
+  "authoritative": false,
+  "contract_only": true,
+  "contains_observed_results": false,
+  "study_boundary": {
+    "source_suite": "input-grounding-fixed-target",
+    "positive_input_count": 18,
+    "comparison_group_count": 18,
+    "execution_case_count": 36,
+    "catalog_modes": ["flat_api", "component_catalog"],
+    "component_catalog_is_flat_superset": true,
+    "negative_cases": 0,
+    "gold_route_metadata": false
+  },
+  "execution_requirements": {
+    "full_suite_real_deepseek_api_run": true,
+    "model_calls_must_not_be_forbidden": true,
+    "same_final_lean_validation_for_both_catalog_modes": true,
+    "lean_is_the_only_proof_authority": true
+  },
+  "family_dimensions": {
+    "study_family": ["graph", "clause_csp", "incidence"],
+    "logical_sources_are_reported_separately": true
+  },
+  "required_case_metrics": [
+    "retrieved_ingress_count",
+    "selected_ingress_count",
+    "selected_shared_gadget_count",
+    "selected_final_facade_count",
+    "independent_lean_adapter_count",
+    "specialized_lean_interface_count",
+    "selected_reduction_declarations",
+    "selected_reduction_roles.route_atom_count",
+    "usage.prompt_tokens",
+    "usage.completion_tokens",
+    "usage.total_tokens",
+    "usage.prompt_cache_hit_tokens",
+    "usage.prompt_cache_miss_tokens",
+    "query_round_count",
+    "model_rounds[*].usage",
+    "final_status"
+  ],
+  "required_family_metrics": [
+    "python_family_specific_rule_count",
+    "flat_api_unique_specialized_interface_count",
+    "component_catalog_unique_specialized_interface_count"
+  ],
+  "required_aggregate_metrics": [
+    "selected_declaration_reuse_by_mode",
+    "python_family_rule_audit",
+    "representation_catalog_scope",
+    "real_http_request_count_this_run",
+    "lean_process_count"
+  ],
+  "required_pair_invariants": [
+    "same_input_declaration",
+    "same_fixed_target",
+    "same_model_budget",
+    "exactly_one_flat_api_case",
+    "exactly_one_component_catalog_case",
+    "alternating_treatment_order"
+  ],
+  "interpretation": {
+    "primary_question": "Does reuse of library representations reduce new per-input Lean adapters and Python special rules?",
+    "route_atom_count_is_not_a_standalone_winner_metric": true,
+    "no_catalog_mode_is_predeclared_superior": true
+  },
+  "result_artifact": {
+    "required_after_run": true,
+    "must_record_real_http_call_count": true,
+    "must_record_final_lean_result": true,
+    "current_result": null
+  }
+}

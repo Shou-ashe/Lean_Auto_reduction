@@ -1,0 +1,85 @@
+{
+  "schema_version": "hardness_benchmark_suite_v1",
+  "suite_id": "gaps",
+  "description": "Phase 3 Lean-classified exact blockers and stable one-capability task packets.",
+  "cases": [
+    {
+      "id": "representation-mismatch-gap",
+      "module": "Benchmark.Hardness.Inputs.Gaps.RepresentationMismatch",
+      "source": "Benchmark.Hardness.Inputs.Gaps.RepresentationMismatch.source",
+      "membership": null,
+      "target": "ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem",
+      "objective": "reduce_to",
+      "target_policy": "fixed",
+      "planner": "deterministic",
+      "enabled": true,
+      "min_agent_phase": 3,
+      "authoring_policy": {"enabled": false},
+      "expected": {
+        "baseline_status": "BLOCKED",
+        "baseline_failure_code": "missing_lawful_presentation",
+        "final_status": "BLOCKED",
+        "final_failure_code": "missing_lawful_presentation"
+      },
+      "coverage": {
+        "required_blocker": "missing_lawful_presentation",
+        "required_gap_reason": "lawfulPresentation",
+        "required_expected_capability_head": "ComplexityReduction.Encoding.StructuralRepresentationCertificate"
+      },
+      "resources": {"lean_timeout_seconds": 300, "max_model_calls": 1},
+      "tags": ["gap", "presentation", "exact-endpoint", "phase-3"]
+    },
+    {
+      "id": "missing-primitive-gap",
+      "module": "Benchmark.Hardness.Inputs.Gaps.MissingPrimitive",
+      "source": "Benchmark.Hardness.Inputs.Gaps.MissingPrimitive.source",
+      "membership": null,
+      "target": "Benchmark.Hardness.Inputs.Gaps.MissingPrimitive.target",
+      "objective": "reduce_to",
+      "target_policy": "fixed",
+      "planner": "deterministic",
+      "enabled": true,
+      "min_agent_phase": 3,
+      "authoring_policy": {"enabled": false},
+      "expected": {
+        "baseline_status": "BLOCKED",
+        "baseline_failure_code": "missing_primitive",
+        "final_status": "BLOCKED",
+        "final_failure_code": "missing_primitive"
+      },
+      "coverage": {
+        "required_blocker": "missing_primitive",
+        "required_gap_reason": "primitive",
+        "required_expected_capability_head": "ComplexityReduction.Program.Primitive"
+      },
+      "resources": {"lean_timeout_seconds": 300, "max_model_calls": 1},
+      "tags": ["gap", "primitive", "typed-declaration", "phase-3"]
+    },
+    {
+      "id": "missing-native-membership-gap",
+      "module": "Benchmark.Hardness.Inputs.Gaps.MissingNativeMembership",
+      "source": "Benchmark.Hardness.Inputs.Gaps.MissingNativeMembership.source",
+      "membership": null,
+      "target": "Benchmark.Hardness.Inputs.Gaps.MissingNativeMembership.problem",
+      "objective": "reduce_to_known_np",
+      "target_policy": "fixed",
+      "planner": "deterministic",
+      "enabled": true,
+      "min_agent_phase": 3,
+      "authoring_policy": {"enabled": false},
+      "expected": {
+        "baseline_status": "BLOCKED",
+        "baseline_failure_code": "missing_native_membership",
+        "final_status": "BLOCKED",
+        "final_failure_code": "missing_native_membership"
+      },
+      "coverage": {
+        "required_blocker": "missing_native_membership",
+        "required_gap_reason": "nativeMembership",
+        "required_expected_capability_head": "ComplexityReduction.Certificate.NativeTMInNP"
+      },
+      "resources": {"lean_timeout_seconds": 300, "max_model_calls": 1},
+      "tags": ["gap", "membership", "reflexive-path", "phase-3"]
+    }
+  ]
+}

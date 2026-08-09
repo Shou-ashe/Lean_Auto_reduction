@@ -1,0 +1,20 @@
+{
+  "schema_version": "hardness_np_hard_h_f_qualification_evaluation_oracle_v1",
+  "description": "H-F evaluation oracle. Determined from the identity-level target matrix (deterministic planner qualification plus Lean-observed forward route catalog); never passed to the production orchestrator.",
+  "cases": [
+    {"id": "hf-existing-vertex-cover", "status": "VERIFIED", "failure_code": null, "validation_mode": "production_entry", "requires_model": false, "task_class": null, "gap_count": 0, "disposition": "in_scope_np_hard"},
+    {"id": "hf-existing-exact-cover", "status": "VERIFIED", "failure_code": null, "validation_mode": "production_entry", "requires_model": false, "task_class": null, "gap_count": 0, "disposition": "in_scope_np_hard"},
+    {"id": "hf-existing-knapsack-binary", "status": "VERIFIED", "failure_code": null, "validation_mode": "production_entry", "requires_model": false, "task_class": null, "gap_count": 0, "disposition": "in_scope_np_hard"},
+    {"id": "hf-existing-three-sat", "status": "VERIFIED", "failure_code": null, "validation_mode": "production_entry", "requires_model": false, "task_class": null, "gap_count": 0, "disposition": "in_scope_np_hard"},
+    {"id": "hf-existing-chromatic-number", "status": "VERIFIED", "failure_code": null, "validation_mode": "production_entry", "requires_model": false, "task_class": null, "gap_count": 0, "disposition": "in_scope_np_hard"},
+    {"id": "hf-existing-node-deletion-bipartite", "status": "VERIFIED", "failure_code": null, "validation_mode": "production_entry", "requires_model": false, "task_class": null, "gap_count": 0, "disposition": "in_scope_np_hard"},
+    {"id": "hf-aux-graph-well-formed", "status": "BLOCKED", "failure_code": "auxiliary_or_non_target", "validation_mode": "production_entry", "requires_model": false, "task_class": null, "gap_count": 0, "disposition": "auxiliary_or_non_target"},
+    {"id": "hf-aux-two-cnf", "status": "BLOCKED", "failure_code": "auxiliary_or_non_target", "validation_mode": "production_entry", "requires_model": false, "task_class": null, "gap_count": 0, "disposition": "auxiliary_or_non_target"},
+    {"id": "hf-aux-set-system-well-formed", "status": "BLOCKED", "failure_code": "auxiliary_or_non_target", "validation_mode": "production_entry", "requires_model": false, "task_class": null, "gap_count": 0, "disposition": "auxiliary_or_non_target"},
+    {"id": "hf-blocked-knapsack", "status": "BLOCKED", "failure_code": "authoring_plan_missing_capability", "validation_mode": "production_entry", "requires_model": false, "task_class": null, "gap_count": 0, "disposition": "blocked_missing_formal_prerequisite"},
+    {"id": "hf-blocked-max-cut", "status": "BLOCKED", "failure_code": "authoring_plan_missing_capability", "validation_mode": "production_entry", "requires_model": false, "task_class": null, "gap_count": 0, "disposition": "blocked_missing_formal_prerequisite"},
+    {"id": "hf-blocked-hitting-set", "status": "BLOCKED", "failure_code": "authoring_plan_missing_capability", "validation_mode": "production_entry", "requires_model": false, "task_class": null, "gap_count": 0, "disposition": "blocked_missing_formal_prerequisite"},
+    {"id": "hf-blocked-partition", "status": "BLOCKED", "failure_code": "authoring_plan_missing_capability", "validation_mode": "production_entry", "requires_model": false, "task_class": null, "gap_count": 0, "disposition": "blocked_missing_formal_prerequisite"},
+    {"id": "hf-blocked-3d-matching", "status": "BLOCKED", "failure_code": "authoring_plan_missing_capability", "validation_mode": "production_entry", "requires_model": false, "task_class": null, "gap_count": 0, "disposition": "blocked_missing_formal_prerequisite"}
+  ]
+}

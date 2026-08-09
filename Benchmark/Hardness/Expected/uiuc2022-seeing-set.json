@@ -1,0 +1,11 @@
+{
+  "schema_version": "hardness_benchmark_expected_v1",
+  "case_id": "uiuc2022-seeing-set",
+  "authoritative": false,
+  "expected_lane": "quals_completeness",
+  "baseline_status": "BLOCKED",
+  "baseline_failure_code": "no_registry_path",
+  "final_status": "VERIFIED",
+  "final_failure_code": null,
+  "coverage": ["reduce_to", "program_indexed_reduction", "hardness_only", "exact_endpoint"]
+}

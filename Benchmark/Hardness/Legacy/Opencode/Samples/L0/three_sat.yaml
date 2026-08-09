@@ -1,0 +1,22 @@
+schema_version: opencode_decision_problem_sample_file_v1
+id: three_sat
+name: three_sat_problem
+input_language: three_sat
+problem_family: sat
+problem_statement: Given a Boolean formula whose clauses have at most three literals, decide whether it is satisfiable.
+certificate_contract: lean_proposition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction
+
+  noncomputable section
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.SAT.threeSATDecisionProblem
+lean_target_type: |
+  ComplexityReduction.InNPEnc ComplexityReduction.CostedPolyTimeModel problem
+difficulty: easy
+difficulty_tags:
+- sat
+- bounded_clause_width
+- witness_assignment

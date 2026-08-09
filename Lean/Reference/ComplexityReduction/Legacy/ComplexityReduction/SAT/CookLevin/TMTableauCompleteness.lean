@@ -1,0 +1,44 @@
+/-
+Copyright (c) 2026.
+Released under Apache 2.0 license as described in the file LICENSE.
+-/
+
+import ComplexityReduction.Legacy.ComplexityReduction.SAT.CookLevin.TMTableauCompleteness.AcceptedRun
+import ComplexityReduction.Legacy.ComplexityReduction.SAT.CookLevin.TMTableauCompleteness.TransitionRows
+import ComplexityReduction.Legacy.ComplexityReduction.SAT.CookLevin.TMTableauCompleteness.TransitionRowsAggregation
+import ComplexityReduction.Legacy.ComplexityReduction.SAT.CookLevin.TMTableauCompleteness.SameControlWindows
+import ComplexityReduction.Legacy.ComplexityReduction.SAT.CookLevin.TMTableauCompleteness.GlobalMicro
+import ComplexityReduction.Legacy.ComplexityReduction.SAT.CookLevin.TMTableauCompleteness.GlobalSelectedWindow
+import ComplexityReduction.Legacy.ComplexityReduction.SAT.CookLevin.TMTableauCompleteness.GlobalAcceptedRun
+import ComplexityReduction.Legacy.ComplexityReduction.SAT.CookLevin.TMTableauCompleteness.GlobalTransitionRowsAggregation
+import ComplexityReduction.Legacy.ComplexityReduction.SAT.CookLevin.TMTableauCompleteness.GlobalAcceptedRows
+import ComplexityReduction.Legacy.ComplexityReduction.SAT.CookLevin.TMTableauCompleteness.GlobalExtraction
+import ComplexityReduction.Legacy.ComplexityReduction.SAT.CookLevin.TMTableauCompleteness.GlobalWindowSelection
+import ComplexityReduction.Legacy.ComplexityReduction.SAT.CookLevin.TMTableauCompleteness.GlobalMacroSteps
+import ComplexityReduction.Legacy.ComplexityReduction.SAT.CookLevin.TMTableauCompleteness.GlobalMacroStepSoundness
+import ComplexityReduction.Legacy.ComplexityReduction.SAT.CookLevin.TMTableauCompleteness.GlobalTableauAccepted
+import ComplexityReduction.Legacy.ComplexityReduction.SAT.CookLevin.TMTableauCompleteness.GlobalRun
+import ComplexityReduction.Legacy.ComplexityReduction.SAT.CookLevin.TMTableauCompleteness.GlobalSoundness
+import ComplexityReduction.Legacy.ComplexityReduction.SAT.CookLevin.XOnlyBounds
+import ComplexityReduction.Legacy.ComplexityReduction.SAT.CookLevin.XOnlyBlocks
+import ComplexityReduction.Legacy.ComplexityReduction.SAT.CookLevin.XOnlyTransitions
+import ComplexityReduction.Legacy.ComplexityReduction.SAT.CookLevin.XOnlyExtraction
+import ComplexityReduction.Legacy.ComplexityReduction.SAT.CookLevin.XOnlyStackDecoder
+import ComplexityReduction.Legacy.ComplexityReduction.SAT.CookLevin.XOnlyIOStacks
+import ComplexityReduction.Legacy.ComplexityReduction.SAT.CookLevin.XOnlyGlobalExtraction
+import ComplexityReduction.Legacy.ComplexityReduction.SAT.CookLevin.XOnlyStackActionSemantics
+import ComplexityReduction.Legacy.ComplexityReduction.SAT.CookLevin.XOnlyStackListEffects
+import ComplexityReduction.Legacy.ComplexityReduction.SAT.CookLevin.XOnlyMacroSteps
+import ComplexityReduction.Legacy.ComplexityReduction.SAT.CookLevin.XOnlyGlobalMacroRows
+import ComplexityReduction.Legacy.ComplexityReduction.SAT.CookLevin.XOnlyGlobalWindowSelection
+import ComplexityReduction.Legacy.ComplexityReduction.SAT.CookLevin.XOnlyGlobalStepSoundness
+import ComplexityReduction.Legacy.ComplexityReduction.SAT.CookLevin.XOnlyGlobalRun
+import ComplexityReduction.Legacy.ComplexityReduction.SAT.CookLevin.XOnlyGlobalAccepted
+import ComplexityReduction.Legacy.ComplexityReduction.SAT.CookLevin.XOnlyCertificateBridge
+
+/-!
+Completeness entry point for the standard-TM verifier tableau.
+
+The implementation is split into submodules under `TMTableauCompleteness/` to keep each
+Lean file below the local 1000-line limit while preserving this public module path.
+-/

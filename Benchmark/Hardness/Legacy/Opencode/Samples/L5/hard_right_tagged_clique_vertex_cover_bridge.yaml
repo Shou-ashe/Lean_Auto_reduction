@@ -1,0 +1,40 @@
+schema_version: opencode_decision_problem_sample_file_v1
+id: hard_right_tagged_clique_vertex_cover_bridge
+name: hard_right_tagged_clique_vertex_cover_bridge_problem
+input_language: right_tagged_clique_interface
+problem_family: graph_interface
+problem_statement: 'Input is a Boolean audit flag followed by a standard Clique instance. The audit flag is ignored: decide whether the Clique instance is accepting.'
+certificate_contract: lean_proposition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction
+
+  noncomputable section
+
+  abbrev sourceProblem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.Combinatorics.Graph.cliqueDecisionProblem
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    { Instance := ComplexityReduction.EncodedType.prod
+        ComplexityReduction.EncodedType.bool
+        sourceProblem.Instance
+      isYes := fun p => sourceProblem.isYes p.2 }
+lean_target_type: |
+  ∃ normalizedProblem : ComplexityReduction.EncodedDecisionProblem,
+    normalizedProblem = ComplexityReduction.Combinatorics.Graph.cliqueDecisionProblem ∧
+      ∃ encodingBridgeCertificate :
+        ComplexityReduction.ProblemEquivM ComplexityReduction.CostedPolyTimeModel problem normalizedProblem,
+        ∃ normalizedRouteTarget : ComplexityReduction.EncodedDecisionProblem,
+          normalizedRouteTarget = ComplexityReduction.Combinatorics.Graph.vertexCoverDecisionProblem ∧
+            ∃ normalizedReductionCertificate :
+              ComplexityReduction.KarpReductionM ComplexityReduction.CostedPolyTimeModel normalizedProblem normalizedRouteTarget,
+              ∃ liftedReductionCertificate :
+                ComplexityReduction.PolyReducibleM ComplexityReduction.CostedPolyTimeModel problem normalizedRouteTarget,
+                ComplexityReduction.InNPEnc ComplexityReduction.CostedPolyTimeModel normalizedRouteTarget ∧
+                  ComplexityReduction.InNPEnc ComplexityReduction.CostedPolyTimeModel problem
+difficulty: encoding_bridge_hard
+difficulty_tags:
+- graph
+- nonidentity_bridge
+- right_projection
+- costed_adapter

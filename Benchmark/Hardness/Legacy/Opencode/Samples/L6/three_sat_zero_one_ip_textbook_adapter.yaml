@@ -1,0 +1,30 @@
+schema_version: opencode_decision_problem_sample_file_v1
+id: three_sat_zero_one_ip_textbook_adapter
+name: three_sat_zero_one_ip_textbook_adapter_problem
+input_language: sat_textbook_integer_programming_adapter
+problem_family: sat_numeric
+problem_statement: Given a 3-CNF formula, decide whether it is satisfiable.
+certificate_contract: lean_proposition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction
+
+  noncomputable section
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.SAT.threeSATDecisionProblem
+lean_target_type: |
+  ∃ textbookTarget : ComplexityReduction.EncodedDecisionProblem,
+    textbookTarget = ComplexityReduction.Combinatorics.zeroOneIntegerProgrammingDecisionProblem ∧
+      ∃ textbookReductionCertificate :
+        ComplexityReduction.KarpReductionM ComplexityReduction.CostedPolyTimeModel problem textbookTarget,
+        ∃ textbookRouteCertificate :
+          ComplexityReduction.PolyReducibleM ComplexityReduction.CostedPolyTimeModel problem textbookTarget,
+          ComplexityReduction.InNPEnc ComplexityReduction.CostedPolyTimeModel textbookTarget ∧
+            ComplexityReduction.InNPEnc ComplexityReduction.CostedPolyTimeModel problem
+difficulty: textbook_adapter
+difficulty_tags:
+- sat
+- integer_programming
+- textbook_construction
+- karp_reduction

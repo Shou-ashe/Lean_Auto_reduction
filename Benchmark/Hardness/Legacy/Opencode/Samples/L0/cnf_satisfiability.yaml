@@ -1,0 +1,22 @@
+schema_version: opencode_decision_problem_sample_file_v1
+id: cnf_satisfiability
+name: cnf_satisfiability_problem
+input_language: cnf_satisfiability
+problem_family: sat
+problem_statement: Given a Boolean CNF formula, decide whether there exists a truth assignment satisfying all clauses.
+certificate_contract: lean_proposition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction
+
+  noncomputable section
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.Karp21.satisfiabilityDecisionProblem
+lean_target_type: |
+  ComplexityReduction.InNPEnc ComplexityReduction.CostedPolyTimeModel problem
+difficulty: easy
+difficulty_tags:
+- sat
+- formula_encoding
+- witness_assignment

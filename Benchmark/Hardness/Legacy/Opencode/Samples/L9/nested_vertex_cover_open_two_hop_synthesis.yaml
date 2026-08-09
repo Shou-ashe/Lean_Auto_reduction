@@ -1,0 +1,62 @@
+schema_version: opencode_lean_proposition_sample_file_v1
+id: nested_vertex_cover_open_two_hop_synthesis
+name: nested_vertex_cover_open_two_hop_synthesis_problem
+benchmark_level: L9
+input_language: nested_vertex_cover_open_route_synthesis
+problem_family: graph_set_open_route_synthesis
+certificate_contract: lean_proposition
+route_target_policy: any
+problem_statement: "Input is a standard Vertex Cover instance paired with two ignored Boolean audit flags in a nested product interface. Prove NP membership by first normalizing the public interface, then synthesizing a two-hop Karp reduction route through locally available NP targets. The benchmark does not prescribe the intermediate or final route targets."
+difficulty: open_synthesis
+difficulty_tags:
+  - graph
+  - set_system
+  - nested_projection
+  - open_route_selection
+  - bridge_authoring
+  - multihop_reduction
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction
+
+  noncomputable section
+
+  abbrev sourceProblem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.Combinatorics.Graph.vertexCoverDecisionProblem
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    { Instance := ComplexityReduction.EncodedType.prod
+        (ComplexityReduction.EncodedType.prod
+          sourceProblem.Instance
+          ComplexityReduction.EncodedType.bool)
+        ComplexityReduction.EncodedType.bool
+      isYes := fun p => sourceProblem.isYes p.1.1 }
+lean_target_type: |
+  ∃ normalizedProblem : ComplexityReduction.EncodedDecisionProblem,
+    ∃ routeTarget1 : ComplexityReduction.EncodedDecisionProblem,
+      ∃ routeTarget2 : ComplexityReduction.EncodedDecisionProblem,
+        ∃ _encodingBridgeCertificate :
+          ComplexityReduction.ProblemEquivM
+            ComplexityReduction.CostedPolyTimeModel
+            problem
+            normalizedProblem,
+          ∃ _reductionStep1 :
+            ComplexityReduction.KarpReductionM
+              ComplexityReduction.CostedPolyTimeModel
+              normalizedProblem
+              routeTarget1,
+            ∃ _reductionStep2 :
+              ComplexityReduction.KarpReductionM
+                ComplexityReduction.CostedPolyTimeModel
+                routeTarget1
+                routeTarget2,
+              ComplexityReduction.PolyReducibleM
+                ComplexityReduction.CostedPolyTimeModel
+                problem
+                routeTarget2 ∧
+              ComplexityReduction.InNPEnc
+                ComplexityReduction.CostedPolyTimeModel
+                routeTarget2 ∧
+              ComplexityReduction.InNPEnc
+                ComplexityReduction.CostedPolyTimeModel
+                problem

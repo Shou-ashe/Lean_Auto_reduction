@@ -1,0 +1,14 @@
+{
+  "schema_version": "hardness_benchmark_expected_v1",
+  "case_id": "program-indexed-retry-isolation",
+  "authoritative": false,
+  "baseline_status": "BLOCKED",
+  "baseline_failure_code": "missing_semantic_proof",
+  "final_status": "VERIFIED",
+  "coverage": [
+    "bounded_retry",
+    "per_stage_axiom_gate",
+    "failed_candidate_isolation",
+    "clean_candidate_revalidation"
+  ]
+}

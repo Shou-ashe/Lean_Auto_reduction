@@ -1,0 +1,71 @@
+{
+  "schema_version": "hardness_np_hard_scope_policy_v1",
+  "description": "Production scope exclusions keyed by exact Lean problem+representation identity. These rows are formal target-set policy, not a benchmark oracle and not a claim that an unproved target is easy.",
+  "entries": [
+    {
+      "schema_version": "hardness_np_hard_scope_policy_entry_v1",
+      "identity_id": "sha256:3722c85a36fcad1a2aa26ae21f18b9de6ab84bf4a0f5219faddd76006ca9e038",
+      "canonical_declaration": "ComplexityReduction.Presentation.Graph.wellFormedProblem",
+      "canonical_module": "ComplexityReduction.Presentation.Graph",
+      "problem_node_id": "lean-whnf:3795151338",
+      "representation_node_id": "lean-whnf:872261323",
+      "disposition": "auxiliary_or_non_target",
+      "category": "encoding_well_formedness_predicate",
+      "rationale": "The public endpoint is the structural validity predicate for the graph interchange encoding and is excluded from the NP-hard target denominator by production policy.",
+      "public_source_file": "Lean/Reference/ComplexityReduction/Presentation/Graph.lean",
+      "semantic_evidence_declaration": "ComplexityReduction.Presentation.Graph.wellFormedProblem_accepts"
+    },
+    {
+      "schema_version": "hardness_np_hard_scope_policy_entry_v1",
+      "identity_id": "sha256:7c6ba25a3dad3da75efa4febaaed156e022d6a594a2be9cc21531eff8fda5863",
+      "canonical_declaration": "ComplexityReduction.Presentation.RoleGraph.wellFormedPresentedProblem",
+      "canonical_module": "ComplexityReduction.Presentation.RoleGraph",
+      "problem_node_id": "lean-whnf:1196495233",
+      "representation_node_id": "lean-whnf:4174308941",
+      "disposition": "auxiliary_or_non_target",
+      "category": "encoding_well_formedness_predicate",
+      "rationale": "The endpoint is the canonical erased-interchange well-formedness predicate exposed through the RoleGraph compatibility presentation.",
+      "public_source_file": "Lean/Reference/ComplexityReduction/Presentation/RoleGraph.lean",
+      "semantic_evidence_declaration": "ComplexityReduction.Presentation.RoleGraph.wellFormedPresentedProblem_accepts"
+    },
+    {
+      "schema_version": "hardness_np_hard_scope_policy_entry_v1",
+      "identity_id": "sha256:3bd76b6727ab8c02e8a7c6dc835727970489e97a38bcb325960be82fc97993c1",
+      "canonical_declaration": "ComplexityReduction.Presentation.SetSystem.wellFormedProblem",
+      "canonical_module": "ComplexityReduction.Presentation.SetSystem",
+      "problem_node_id": "lean-whnf:2187413300",
+      "representation_node_id": "lean-whnf:56507493",
+      "disposition": "auxiliary_or_non_target",
+      "category": "encoding_well_formedness_predicate",
+      "rationale": "The endpoint recognizes structurally valid set-system encodings and is an admission predicate rather than an optimization/decision target in the NP-hard lane.",
+      "public_source_file": "Lean/Reference/ComplexityReduction/Presentation/SetSystem.lean",
+      "semantic_evidence_declaration": "ComplexityReduction.Presentation.SetSystem.wellFormedProblem_accepts"
+    },
+    {
+      "schema_version": "hardness_np_hard_scope_policy_entry_v1",
+      "identity_id": "sha256:29c575fd0843686af1e44892558778282eba94d7563711f69b5be2f4e8ac3dc9",
+      "canonical_declaration": "ComplexityReduction.Problems.Karp21.GraphAtoms.graphWellFormedProblem",
+      "canonical_module": "ComplexityReduction.Problems.Karp21.GraphAtoms",
+      "problem_node_id": "lean-whnf:1552548268",
+      "representation_node_id": "lean-whnf:3167167239",
+      "disposition": "auxiliary_or_non_target",
+      "category": "encoding_well_formedness_predicate",
+      "rationale": "This GraphAtoms endpoint is the structured graph validity predicate. A syntactically available program into it is not evidence that the predicate is an NP-hard target.",
+      "public_source_file": "Lean/Reference/ComplexityReduction/Problems/Karp21/GraphAtoms.lean",
+      "semantic_evidence_declaration": "ComplexityReduction.Problems.Karp21.GraphAtoms.graphWellFormedProblem_accepts"
+    },
+    {
+      "schema_version": "hardness_np_hard_scope_policy_entry_v1",
+      "identity_id": "sha256:ad9c858d0d1bf7bf49eddff79069e75a7ae9ab33f2e385a7459f0f8dd73582d0",
+      "canonical_declaration": "ComplexityReduction.Problems.Karp21.SATTractable.twoCNFStructuredProblem",
+      "canonical_module": "ComplexityReduction.Problems.Karp21.SATTractable",
+      "problem_node_id": "lean-whnf:2127219011",
+      "representation_node_id": "lean-whnf:3699980410",
+      "disposition": "auxiliary_or_non_target",
+      "category": "tractable_syntactic_class",
+      "rationale": "The library exposes direct 2-CNF as the tractable ingress syntax family; production policy excludes it from the NP-hard target denominator without interpreting route-search failure as a complexity theorem.",
+      "public_source_file": "Lean/Reference/ComplexityReduction/Problems/Karp21/SATTractable.lean",
+      "semantic_evidence_declaration": "ComplexityReduction.Problems.Karp21.SATTractable.twoCNFStructuredProblem_accepts"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "schema_version": "hardness_benchmark_expected_v1",
+  "case_id": "primitive-admission-candidate-absent",
+  "authoritative": false,
+  "baseline_status": "BLOCKED",
+  "baseline_failure_code": "missing_primitive",
+  "final_status": "BLOCKED",
+  "final_failure_code": "missing_primitive",
+  "coverage": ["candidate_removal", "resume", "typed_blocker_restored"]
+}

@@ -1,0 +1,183 @@
+{
+  "schema_version": "hardness_main_h_d_full_report_v1",
+  "generated_at": "2026-08-08T22:05:11+08:00",
+  "stage": "H-D",
+  "passed": true,
+  "model": {
+    "provider": "DeepSeek",
+    "base_url": "https://api.deepseek.com",
+    "model": "deepseek-v4-flash",
+    "reasoning_effort": "low",
+    "temperature": 0.0,
+    "max_retries": 0,
+    "main_benchmark_max_tokens": 16384,
+    "np_hard_max_tokens": 16000,
+    "credentials_recorded": false
+  },
+  "lean": {
+    "toolchain": "leanprover/lean4:v4.29.0",
+    "toolchain_file_sha256": "651c8accb402b0c071cd336e9d3dc0a55516b1bfb434ddc4801f14936785b1d2",
+    "lake_manifest_sha256": "7b9ebbed765572606d98ef3e13b2a3036325a9d5bd860a111bdd73db1104aec7"
+  },
+  "gates": {
+    "related_test_suite": {
+      "passed": true,
+      "test_count": 51,
+      "failed": 0,
+      "duration_seconds": 740.70
+    },
+    "full_test_suite": {
+      "passed": true,
+      "test_count": 698,
+      "failed": 0,
+      "duration_seconds": 784.71
+    },
+    "offline_release_contract": {
+      "passed": true,
+      "output_dir": "tmp/h-d-offline-20260808-v1",
+      "report_file": "Benchmark/Hardness/NP_HARD_RELEASE_OFFLINE_REPORT.json",
+      "report_sha256": "f19d90ded77f7382a461b34a23a8b27c2475c640cdfe5e2fe977287a999abfac",
+      "case_count": 12,
+      "existing_route_verified": 5,
+      "authoring_public_blockers_confirmed": 5,
+      "safety_negative_count": 2,
+      "fresh_core_rediscovery_count": 12,
+      "independent_replay_count": 5,
+      "worker_fallback_count": 0
+    },
+    "main_benchmark_45": {
+      "passed": true,
+      "output_dir": "tmp/h-d-main45-real-deepseek-v4-flash-20260808-v2",
+      "report_file": "tmp/h-d-main45-real-deepseek-v4-flash-20260808-v2/report.json",
+      "report_sha256": "d15fb0f643cb2b9828f0a248be28a70cc4579dbf01b28a91acb46a8236cfc15a",
+      "executed": 45,
+      "matched": 45,
+      "failed": 0,
+      "real_api_calls": 1,
+      "http_ok_count": 1,
+      "token_usage": {
+        "prompt_tokens": 2024,
+        "completion_tokens": 3938,
+        "total_tokens": 5962,
+        "prompt_cache_hit_tokens": 1920,
+        "prompt_cache_miss_tokens": 104
+      },
+      "kernel_replay_axiom_audit_passed": true
+    },
+    "release_stability_3_rounds": {
+      "passed": true,
+      "output_dir": "tmp/h-d-release-stability-real-deepseek-v4-flash-20260808-v2",
+      "report_file": "Benchmark/Hardness/NP_HARD_RELEASE_STABILITY_AGGREGATE.json",
+      "report_sha256": "af193004bbdb859f92911c45936d72f6e75ad34cbcec46a2eea4a9c98b3e6898",
+      "round_count": 3,
+      "executed": 36,
+      "matched": 36,
+      "model_authoring_verified": 15,
+      "existing_route_model_calls": 0,
+      "safety_negatives_matched": 6,
+      "deletion_audit_count": 15,
+      "real_api_calls": 36,
+      "token_usage": {
+        "prompt_tokens": 109332,
+        "completion_tokens": 30695,
+        "total_tokens": 140027,
+        "prompt_cache_hit_tokens": 78080,
+        "prompt_cache_miss_tokens": 31252
+      },
+      "worker_fallback_count": 0
+    },
+    "held_out_production_entry": {
+      "passed": true,
+      "output_dir": "tmp/h-d-heldout-real-deepseek-v4-flash-20260808-v1",
+      "report_file": "Benchmark/Hardness/NP_HARD_H_D_HELDOUT_REPORT.json",
+      "report_sha256": "fddef3fec2c77a9db98dd126dfa4de2e15e94e9868983f767f49cfddd20e8d8e",
+      "executed": 1,
+      "verified": 1,
+      "normalization_verified": 1,
+      "planner_model_calls": 0,
+      "planned_node_count": 2,
+      "real_api_calls": 2,
+      "http_ok_count": 2,
+      "token_usage": {
+        "prompt_tokens": 7104,
+        "completion_tokens": 2223,
+        "total_tokens": 9327,
+        "prompt_cache_hit_tokens": 1152,
+        "prompt_cache_miss_tokens": 5952
+      },
+      "deletion_audit_node_count": 2,
+      "worker_fallback_count": 0
+    }
+  },
+  "normalization_audit": {
+    "catalog_authority": "Lean elaboration over the supplied module's real local import closure",
+    "registry_is_support_whitelist": false,
+    "registry_roles": [
+      "stable IDs",
+      "preferred compatibility aliases"
+    ],
+    "supported_paths": [
+      "unregistered exact PresentedProblem",
+      "registered stable ID",
+      "alias",
+      "wrapper",
+      "unique bare LawfulEncodedType"
+    ],
+    "stable_blockers": [
+      "missing_lawful_presentation",
+      "ambiguous_lawful_presentation",
+      "input_problem_not_found",
+      "candidate_dependency_stale"
+    ],
+    "lean_compiled_normalization_certificates": true,
+    "catalog_content_addressed": true,
+    "source_drift_invalidates_identity": true,
+    "held_out_normalizer_special_case": false,
+    "held_out_planner_special_case": false,
+    "canonical_endpoint_audited": true
+  },
+  "audit_notes": {
+    "prompt_contains_api_credentials": false,
+    "raw_model_outputs_retained_in_fresh_output_directories": true,
+    "fixture_or_cached_model_response_accepted": false,
+    "discarded_preflight_runs": [
+      {
+        "model": "deepseek-chat",
+        "reason": "operator configuration corrected to the user-required deepseek-v4-flash before qualification completed",
+        "included_in_gates": false
+      },
+      {
+        "model": "deepseek-v4-flash",
+        "reason": "default 4096-token budget ended with reasoning-only length responses; replaced by a fresh low-effort 16384-token run",
+        "included_in_gates": false
+      },
+      {
+        "model": "deepseek-v4-flash",
+        "reason": "16384 exceeded the NP-hard task contract's 16000-token ceiling and was rejected locally before any API call",
+        "included_in_gates": false
+      }
+    ]
+  },
+  "source_control": {
+    "git_available": false,
+    "reason": "workspace .git directory contains no readable repository metadata; source hashes are authoritative",
+    "tested_active_plan_sha256": "0e723320d11ea633dff477a9d4a2fd8ab9ec208cee7a0e349b940587ac635f46",
+    "completed_active_plan_sha256": "0e9a66b11f9d1bbbd1616ba831c48d29edf6fab46abaee5ded16b51c7e92e6c5",
+    "source_sha256": {
+      "Lean/Reference/ComplexityReduction/Agent/Hardness/InputNormalization.lean": "bce5e3ca26347f31a2f6a32fc866b4ee9063fd66950625e4876d7a7280129e50",
+      "Lean/Reference/Benchmark/Hardness/Inputs/NPHardGeneralization/InputNormalizationOpenWorld.lean": "00d458e94960e9ad4a0f45e0cbeec5076511cf92b45a71a879821d9f3bd02a95",
+      "Lean/Reference/Benchmark/Hardness/Inputs/HDCrossModuleEncoding.lean": "e29ddfab70a2dfaf6a4fdd83cfc28d4fedc2145a8717e3884691534144ca0c99",
+      "agent/hardness/np_hard_input.py": "8179c501ebd49b40ecebb473489448f70263a027042675e794003e73cf5e3c28",
+      "agent/hardness/np_hard.py": "20604f031af710e0a5b5a59d9375acf23779dd056e875ca099416494675b34f0",
+      "agent/hardness/np_hard_orchestrator.py": "d9f78607e38b6bf95e1e31c42c5d90d7c6dd678b334852b31966777421661291",
+      "agent/hardness/np_hard_release_benchmark.py": "ce31299d03004f561499ebfe81d58dcc0d3942e310296d69ff25c970319a96f2",
+      "agent/hardness/np_hard_entrypoint_benchmark.py": "bb3c3495f8b6b253b17897afe7e49e79388dd3c90be9696f14021fb8316b0bc1",
+      "scripts/prove_np_hard.py": "70e7bd38cbf1e9f0db06e03a6b33c20f4cfdfdae40a7290ddec457523cb8dd93",
+      "scripts/run_np_hard_h_d_heldout.py": "74bb483d549ab3954acc67520575dea32268cb38244843d583fdd86109204b3d",
+      "Benchmark/Hardness/np_hard_input_registry.json": "1598ee2cc9bdf311dd6eeb0f6b1efd58e46413a051496f301b35af435df58542",
+      "Benchmark/Hardness/Suites/model_authoring.json": "7b88d7ab443a8d1e812ec5ff399cd46722d0060e0e3cbefcee037d26fb9f7b1c",
+      "tests/test_hardness_np_hard_input.py": "54cb08e86d67b9a98be549a26015c817b939e2121c8744e42bffe3805087320a",
+      "tests/test_hardness_np_hard_input_normalization_v2.py": "411971eeeb92909b1b82c2152df6d01f247438d6bb7fe32af7e93bf7c79439be"
+    }
+  }
+}

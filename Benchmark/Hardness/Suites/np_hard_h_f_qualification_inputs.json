@@ -1,0 +1,20 @@
+{
+  "schema_version": "hardness_np_hard_h_f_qualification_input_suite_v1",
+  "description": "H-F qualification held-out inputs: real public ComplexityReduction identities with no expected, task-class, gap, gold, or authoring policy metadata.",
+  "cases": [
+    {"id": "hf-existing-vertex-cover", "module": "ComplexityReduction.Problems.Karp21.GraphAtoms", "problem": "ComplexityReduction.Problems.Karp21.GraphAtoms.vertexCoverStructuredProblem", "family": "graph"},
+    {"id": "hf-existing-exact-cover", "module": "ComplexityReduction.Presentation.SetSystem", "problem": "ComplexityReduction.Presentation.SetSystem.exactCoverStructuredProblem", "family": "set-system"},
+    {"id": "hf-existing-knapsack-binary", "module": "ComplexityReduction.Presentation.KnapsackBinary", "problem": "ComplexityReduction.Presentation.KnapsackBinary.structuredProblem", "family": "numeric"},
+    {"id": "hf-existing-three-sat", "module": "ComplexityReduction.Problems.Karp21.Satisfiability", "problem": "ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem", "family": "sat-csp"},
+    {"id": "hf-existing-chromatic-number", "module": "ComplexityReduction.Presentation.ChromaticNumber", "problem": "ComplexityReduction.Presentation.ChromaticNumber.structuredProblem", "family": "other"},
+    {"id": "hf-existing-node-deletion-bipartite", "module": "ComplexityReduction.Presentation.NodeDeletionBipartite", "problem": "ComplexityReduction.Presentation.NodeDeletionBipartite.presentedProblem", "family": "graph"},
+    {"id": "hf-aux-graph-well-formed", "module": "ComplexityReduction.Problems.Karp21.GraphAtoms", "problem": "ComplexityReduction.Problems.Karp21.GraphAtoms.graphWellFormedProblem", "family": "graph"},
+    {"id": "hf-aux-two-cnf", "module": "ComplexityReduction.Problems.Karp21.SATTractable", "problem": "ComplexityReduction.Problems.Karp21.SATTractable.twoCNFStructuredProblem", "family": "sat-csp"},
+    {"id": "hf-aux-set-system-well-formed", "module": "ComplexityReduction.Presentation.SetSystem", "problem": "ComplexityReduction.Presentation.SetSystem.wellFormedProblem", "family": "set-system"},
+    {"id": "hf-blocked-knapsack", "module": "ComplexityReduction.Presentation.Knapsack", "problem": "ComplexityReduction.Presentation.Knapsack.structuredProblem", "family": "numeric"},
+    {"id": "hf-blocked-max-cut", "module": "ComplexityReduction.Presentation.MaxCut", "problem": "ComplexityReduction.Presentation.MaxCut.structuredProblem", "family": "graph"},
+    {"id": "hf-blocked-hitting-set", "module": "ComplexityReduction.Presentation.SetSystem", "problem": "ComplexityReduction.Presentation.SetSystem.hittingSetStructuredProblem", "family": "set-system"},
+    {"id": "hf-blocked-partition", "module": "ComplexityReduction.Presentation.Partition", "problem": "ComplexityReduction.Presentation.Partition.structuredProblem", "family": "numeric"},
+    {"id": "hf-blocked-3d-matching", "module": "ComplexityReduction.Presentation.ThreeDimensionalMatching", "problem": "ComplexityReduction.Presentation.ThreeDimensionalMatching.structuredProblem", "family": "other"}
+  ]
+}

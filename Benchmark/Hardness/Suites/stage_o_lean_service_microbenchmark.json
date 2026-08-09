@@ -1,0 +1,36 @@
+{
+  "schema_version": "hardness_stage_o_lean_service_microbenchmark_v1",
+  "benchmark_id": "stage-o-readonly-import-check-20x",
+  "repeat_count": 20,
+  "command_profile": {
+    "cold": ["lake", "env", "lean", "<fresh-readonly-check.lean>"],
+    "warm": ["stage-o-lean-validation-service", "validate", "<same-content-key>"],
+    "final_authority": ["lake", "env", "lean", "<final-combined.lean>"],
+    "release_authority": ["lake", "env", "lean", "<independent-release-replay.lean>"]
+  },
+  "cache_key_fields": [
+    "toolchain",
+    "lake_manifest",
+    "base_registry_fingerprint",
+    "complete_source_hash",
+    "dependency_hash",
+    "namespace",
+    "editable_allowlist",
+    "validation_profile"
+  ],
+  "isolation_checks": [
+    "session_ownership",
+    "namespace_isolation",
+    "dependency_invalidation",
+    "candidate_invalidation",
+    "registry_invalidation",
+    "stale_olean_rejection",
+    "service_restart"
+  ],
+  "gates": {
+    "warm_p50_over_cold_p50_max": 0.5,
+    "cache_invalidation_rate_min": 1.0,
+    "namespace_isolation_rate_min": 1.0,
+    "stale_olean_rejection_rate_min": 1.0
+  }
+}

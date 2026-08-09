@@ -1,0 +1,80 @@
+{
+  "schema_version": "hardness_predicate_input_contract_v1",
+  "suite_id": "predicate-input",
+  "authoritative": false,
+  "contract_only": true,
+  "contains_observed_results": false,
+  "study_boundary": {
+    "execution_case_count": 8,
+    "positive_case_count": 4,
+    "negative_case_count": 4,
+    "evaluation_lane": "predicate_open_target",
+    "predicate_case_count": 7,
+    "closed_prop_case_count": 1,
+    "target_route_or_candidate_declarations_in_coverage": false,
+    "scenarios": [
+      "exact_accepts",
+      "notation_expansion",
+      "reducible_wrapper",
+      "same_carrier_different_predicate",
+      "same_predicate_incompatible_codec",
+      "closed_prop",
+      "missing_presentation",
+      "multiple_candidates_unique_correct_codec"
+    ]
+  },
+  "grounding_requirements": {
+    "lean_confirms_unary_predicate_type": true,
+    "lean_confirms_domain_identity": true,
+    "lean_confirms_accepts_relation": "accepts_exact_defeq_or_existing_certificate",
+    "carrier_identity_alone_is_insufficient": true,
+    "name_similarity_is_insufficient": true,
+    "encoder_bound_identity_must_be_compatible": true,
+    "selected_presentation_must_already_be_lawful": true,
+    "model_may_not_author_a_presentation": true,
+    "successful_cases_continue_through_the_stage_g_open_target_protocol": true
+  },
+  "stable_negative_failure_codes": {
+    "same_carrier_different_predicate": "predicate_accepts_not_definitionally_equal",
+    "same_predicate_incompatible_codec": "ambiguous_predicate_presentation",
+    "closed_prop": "closed_prop_has_no_problem_encoding",
+    "missing_presentation": "predicate_has_no_lawful_presentation"
+  },
+  "execution_requirements": {
+    "full_suite_real_deepseek_api_run": true,
+    "resume_or_replay_for_final_run": false,
+    "fresh_output_directory": true,
+    "one_combined_final_lean_validation": true,
+    "lean_is_the_only_proof_authority": true,
+    "standard_axiom_gate_required": true,
+    "raw_model_lean_term_is_preserved": true,
+    "prompt_oracle_leak_count_must_be_zero": true
+  },
+  "required_case_evidence": [
+    "input_observation.input_kind",
+    "input_observation.predicate_domain_node_id",
+    "input_observation.predicate_node_id",
+    "predicate_presentation_matches[*].relation",
+    "predicate_presentation_matches[*].encoder_bound_identity_node_id",
+    "selected_presentation_source",
+    "query_history",
+    "model_rounds[*].usage",
+    "final_status",
+    "final_failure_code"
+  ],
+  "required_aggregate_metrics": [
+    "real_http_request_count_this_run",
+    "resume_source_count",
+    "replay_source_count",
+    "lean_process_count",
+    "prompt_oracle_leak_count",
+    "positive_lean_verified_count",
+    "negative_failure_code_match_count"
+  ],
+  "result_artifact": {
+    "required_after_run": true,
+    "must_record_real_http_call_count": true,
+    "must_record_final_lean_result": true,
+    "current_result": null
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "schema_version": "hardness_benchmark_expected_v1",
+  "case_id": "backend-only-prove-in-np-blocker",
+  "authoritative": false,
+  "final_status": "BLOCKED",
+  "final_failure_code": "missing_native_membership",
+  "coverage": ["prove_in_np", "backend_membership_boundary"]
+}

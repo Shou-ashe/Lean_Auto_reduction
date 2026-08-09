@@ -1,0 +1,24 @@
+{
+  "schema_version": "lean_auto_reduction_v2_hardness_benchmark_v1",
+  "cases": [
+    {
+      "id": "three_sat_to_known_np",
+      "input": "Benchmark/V2Hardness/Inputs/ThreeSAT.lean",
+      "source": "Benchmark.V2Hardness.ThreeSAT.source",
+      "minimum_route_atoms": 1
+    },
+    {
+      "id": "tagged_three_sat_normalization",
+      "input": "Benchmark/V2Hardness/Inputs/TaggedThreeSAT.lean",
+      "source": "Benchmark.V2Hardness.TaggedThreeSAT.source",
+      "minimum_route_atoms": 1
+    },
+    {
+      "id": "native_np_via_checked_cook_levin",
+      "input": "Benchmark/V2Hardness/Inputs/KnapsackNativeNP.lean",
+      "source": "Benchmark.V2Hardness.KnapsackNativeNP.source",
+      "membership": "Benchmark.V2Hardness.KnapsackNativeNP.membership",
+      "minimum_route_atoms": 1
+    }
+  ]
+}

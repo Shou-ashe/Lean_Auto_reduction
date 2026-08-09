@@ -1,0 +1,7 @@
+{
+  "schema_version": "hardness_benchmark_expected_v1",
+  "case_id": "modified-exact-cover-to-eon-ir",
+  "authoritative": false,
+  "final_status": "VERIFIED",
+  "coverage": ["ir_feasibility", "incidence", "ingress_shared_gadget", "matched_endpoint"]
+}

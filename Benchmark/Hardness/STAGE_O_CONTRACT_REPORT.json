@@ -1,0 +1,1478 @@
+{
+  "ablation_replays": [],
+  "artifacts": [],
+  "benchmark": {
+    "case_count": 16,
+    "microbenchmark": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/Benchmark/Hardness/Suites/stage_o_lean_service_microbenchmark.json",
+    "microbenchmark_sha256": "8307de43eb4d622e58f29292b505caa9b6de480850c935e46a9ce7b1c4478e79",
+    "negative_suite": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/Benchmark/Hardness/Suites/stage_o_adversarial.json",
+    "negative_suite_sha256": "8791beb5a32d9fcf13efee19702ec9f5936077c5e1876ceebe0ceb120dd6e2b9",
+    "positive_suite": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/Benchmark/Hardness/Suites/stage_o_multi_gap.json",
+    "positive_suite_sha256": "20d7f50c8d5290938dbc64548ef19c07c910f32dbefe34d46b0ed2ee5671a99e"
+  },
+  "cases": [
+    {
+      "candidate_count": 4,
+      "candidate_set_id": "sha256:06cf9f85761f81bb98346bcd5a3c979f6f3987cae45711be9fbce86030b74f01",
+      "case_task_wall_duration_seconds": 5.039,
+      "execution_position": 1,
+      "expected_action": "select_packet",
+      "external_api_calls_this_run": 1,
+      "globally_valid_candidate_count": 1,
+      "http_ok_count_this_run": 1,
+      "http_request_attempts_this_run": 1,
+      "id": "o-core-ambiguous-fixed-target",
+      "input_kind": "presented_problem",
+      "inspected_packet_ids": [
+        "sha256:307cf8a3b00e3dd1ed42936080e3a147c77b3a7abb900552d37f260b2819cc4d",
+        "sha256:d8b62000c843d0650ab1a2346ec0689e7cf4b2b8ad09148f5cbe12f710089308",
+        "sha256:7ce7b2deb75cbb040bb84c6c2ccc4df355cb9a4dbc4975d8a94b4d2a9205786e"
+      ],
+      "locally_valid_candidate_count": 2,
+      "model_calls": [
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 4.994,
+          "error": "",
+          "finish_reason": "stop",
+          "ok": true,
+          "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/stage-o-a-contract-full-20260804-4/cases/o-core-ambiguous-fixed-target/calls/turn-01-prompt.json",
+          "prompt_sha256": "bc547eb3a9af3df30f30402334a60a99096185b3f985987dfb3f202748d3db2f",
+          "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/stage-o-a-contract-full-20260804-4/cases/o-core-ambiguous-fixed-target/calls/turn-01-response.json",
+          "response_sha256": "806c62bb9b2d1d9b97d80e0248ae302950ca46b4430752036af6108ff6580e7e",
+          "status_code": 200,
+          "turn": 1,
+          "usage": {
+            "completion_tokens": 668,
+            "completion_tokens_details": {
+              "reasoning_tokens": 354
+            },
+            "prompt_cache_hit_tokens": 3328,
+            "prompt_cache_miss_tokens": 20,
+            "prompt_tokens": 3348,
+            "prompt_tokens_details": {
+              "cached_tokens": 3328
+            },
+            "total_tokens": 4016
+          }
+        }
+      ],
+      "model_choice_preserved": true,
+      "objective": "reduce_to",
+      "positive": true,
+      "prompt_oracle_errors": [],
+      "protocol_accepted": true,
+      "protocol_errors": [],
+      "protocol_matches_expected": true,
+      "raw_terminal_action": {
+        "action": "select_packet",
+        "candidate_kind": "route_packet",
+        "checked_packet_ids": [],
+        "dependencies": [
+          "dep:standard-axioms"
+        ],
+        "explanation": "Retrieved route packet has matching source-to-target endpoints, correct consecutive route segments, available preconditions/dependencies, matching hashes, no declared axioms, and base registry visibility.",
+        "missing_conditions": [],
+        "packet_id": "sha256:307cf8a3b00e3dd1ed42936080e3a147c77b3a7abb900552d37f260b2819cc4d",
+        "schema_version": "hardness_stage_o_action_v1",
+        "session_id": "sha256:9c3dfabee7e04584f3850a11de6bb27a7df4e787dfc27e4f861a614bd0827ad3",
+        "typed_bindings": {
+          "capability_kind": "ComplexityReduction.Certificate.CertifiedReduction",
+          "direction": "source_to_target",
+          "input_endpoint_id": "sha256:0315fcecd29cacf624a391857b6733422498b3db466a9e144af8f7b59079d413",
+          "output_endpoint_id": "sha256:a5bbcd28951293df1a64f315c87653be2e4f2c49f01113a9d9b84c4eee0a97d6"
+        }
+      },
+      "replayed_from_resume": false,
+      "selected_packet_id": "sha256:307cf8a3b00e3dd1ed42936080e3a147c77b3a7abb900552d37f260b2819cc4d",
+      "status": "VERIFIED",
+      "usage": {
+        "completion_tokens": 668,
+        "prompt_cache_hit_tokens": 3328,
+        "prompt_cache_miss_tokens": 20,
+        "prompt_tokens": 3348,
+        "total_tokens": 4016
+      }
+    },
+    {
+      "candidate_count": 4,
+      "candidate_set_id": "sha256:7740f7e3ed2d787ab93e72e9a34da17f896dcab1b5d95d9ef0dcafe6c90f8d21",
+      "case_task_wall_duration_seconds": 9.264,
+      "execution_position": 2,
+      "expected_action": "select_packet",
+      "external_api_calls_this_run": 1,
+      "globally_valid_candidate_count": 1,
+      "http_ok_count_this_run": 1,
+      "http_request_attempts_this_run": 1,
+      "id": "o-core-ambiguous-auto-target",
+      "input_kind": "presented_problem",
+      "inspected_packet_ids": [
+        "sha256:0b0e0a67777f4e9da28e539b2467a0a943ab704c525ca2df10d285e244eaebb6",
+        "sha256:dca993ce8a6d327f3685ff85e5444a63dcb1e71c7292579a70e39426cec22f41",
+        "sha256:9ebc410d1138d7a3250240c88e33ca7a603ed460ed57a45763eb17b2c3704b49"
+      ],
+      "locally_valid_candidate_count": 2,
+      "model_calls": [
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 9.221,
+          "error": "",
+          "finish_reason": "stop",
+          "ok": true,
+          "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/stage-o-a-contract-full-20260804-4/cases/o-core-ambiguous-auto-target/calls/turn-01-prompt.json",
+          "prompt_sha256": "55d03c1695baf6815120f056a3c4f584c875634156a1602a2b72a50761041110",
+          "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/stage-o-a-contract-full-20260804-4/cases/o-core-ambiguous-auto-target/calls/turn-01-response.json",
+          "response_sha256": "a493ff47ffa90872945586249c1dae294894baf8ad67d446b3e6365f32a2f5e9",
+          "status_code": 200,
+          "turn": 1,
+          "usage": {
+            "completion_tokens": 1174,
+            "completion_tokens_details": {
+              "reasoning_tokens": 839
+            },
+            "prompt_cache_hit_tokens": 3328,
+            "prompt_cache_miss_tokens": 73,
+            "prompt_tokens": 3401,
+            "prompt_tokens_details": {
+              "cached_tokens": 3328
+            },
+            "total_tokens": 4575
+          }
+        }
+      ],
+      "model_choice_preserved": true,
+      "objective": "reduce_to_known_hardness",
+      "positive": true,
+      "prompt_oracle_errors": [],
+      "protocol_accepted": true,
+      "protocol_errors": [],
+      "protocol_matches_expected": true,
+      "raw_terminal_action": {
+        "action": "select_packet",
+        "candidate_kind": "route_packet",
+        "checked_packet_ids": [],
+        "dependencies": [
+          "dep:standard-axioms"
+        ],
+        "explanation": "Selected route packet satisfies all public contract rules: exact endpoints and direction, matching source/bound dependency hash, declared dependencies and preconditions are available, route segments are consecutive and terminate at the required output, and no declared axioms or oracle imports are present.",
+        "missing_conditions": [],
+        "packet_id": "sha256:dca993ce8a6d327f3685ff85e5444a63dcb1e71c7292579a70e39426cec22f41",
+        "schema_version": "hardness_stage_o_action_v1",
+        "session_id": "sha256:e0c72fa58091c1a0c77e0be97c2948d8ed52159ba4a4ed9d7a1f7595fa5cac1d",
+        "typed_bindings": {
+          "capability_kind": "ComplexityReduction.Certificate.CertifiedReduction",
+          "direction": "source_to_target",
+          "input_endpoint_id": "sha256:8578cef27f8732d582313d8a6aefed548deac6317856fba1e1dc78ddedcb276f",
+          "output_endpoint_id": "sha256:25e4b775f0ab82a716b735cf27b90fbc12805aab0c6c2c08fb74b8cb1a66c5a8"
+        }
+      },
+      "replayed_from_resume": false,
+      "selected_packet_id": "sha256:dca993ce8a6d327f3685ff85e5444a63dcb1e71c7292579a70e39426cec22f41",
+      "status": "VERIFIED",
+      "usage": {
+        "completion_tokens": 1174,
+        "prompt_cache_hit_tokens": 3328,
+        "prompt_cache_miss_tokens": 73,
+        "prompt_tokens": 3401,
+        "total_tokens": 4575
+      }
+    },
+    {
+      "candidate_count": 4,
+      "candidate_set_id": "sha256:0f8bcc08a83de1334b2454f84d21d4522c6fb965744ea8c2f833a869004bf4ec",
+      "case_task_wall_duration_seconds": 13.531,
+      "execution_position": 3,
+      "expected_action": "select_packet",
+      "external_api_calls_this_run": 1,
+      "globally_valid_candidate_count": 1,
+      "http_ok_count_this_run": 1,
+      "http_request_attempts_this_run": 1,
+      "id": "o-predicate-adapter-route",
+      "input_kind": "predicate",
+      "inspected_packet_ids": [
+        "sha256:1630f690aca1da9417a1b6077510331ffa08d4dd7511221523041fae29d440b9",
+        "sha256:34190c0c71bdd70c986ef8d49534663f4e6cf3dc11ddb8a58abed79298666aba",
+        "sha256:47c41cd9634015a5889a903b2fd9cad99a0ef354fbe8e92ac0a256ed1f47dcd4"
+      ],
+      "locally_valid_candidate_count": 2,
+      "model_calls": [
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 13.472,
+          "error": "",
+          "finish_reason": "stop",
+          "ok": true,
+          "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/stage-o-a-contract-full-20260804-4/cases/o-predicate-adapter-route/calls/turn-01-prompt.json",
+          "prompt_sha256": "45ee08af6c272011fe427fde019e03a704ad9394937115d82b89b59dc1e67b57",
+          "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/stage-o-a-contract-full-20260804-4/cases/o-predicate-adapter-route/calls/turn-01-response.json",
+          "response_sha256": "a756e94aa66127c23e0a3d0bcab16189758eecf036f25206cbc8d9d079bbfa82",
+          "status_code": 200,
+          "turn": 1,
+          "usage": {
+            "completion_tokens": 1756,
+            "completion_tokens_details": {
+              "reasoning_tokens": 1383
+            },
+            "prompt_cache_hit_tokens": 3072,
+            "prompt_cache_miss_tokens": 95,
+            "prompt_tokens": 3167,
+            "prompt_tokens_details": {
+              "cached_tokens": 3072
+            },
+            "total_tokens": 4923
+          }
+        }
+      ],
+      "model_choice_preserved": true,
+      "objective": "reduce_to_known_np",
+      "positive": true,
+      "prompt_oracle_errors": [],
+      "protocol_accepted": true,
+      "protocol_errors": [],
+      "protocol_matches_expected": true,
+      "raw_terminal_action": {
+        "action": "select_packet",
+        "candidate_kind": "route_packet",
+        "checked_packet_ids": [],
+        "dependencies": [
+          "dep:standard-axioms"
+        ],
+        "explanation": "Packet 34190c0c71bdd70c986ef8d49534663f4e6cf3dc11ddb8a58abed79298666aba satisfies all public contract rules: capability, direction, and endpoints match the goal; preconditions dep:core and dep:input-gate are available; dependency dep:standard-axioms is available; candidate_source_hash equals bound_dependency_hash; route segments connect consecutively from the exact input to the exact output; no declared axioms or forbidden imports.",
+        "missing_conditions": [],
+        "packet_id": "sha256:34190c0c71bdd70c986ef8d49534663f4e6cf3dc11ddb8a58abed79298666aba",
+        "schema_version": "hardness_stage_o_action_v1",
+        "session_id": "sha256:a5ab7626120ac188238778310824c12055005b82f76f970b1880ee5501afe34a",
+        "typed_bindings": {
+          "capability_kind": "ComplexityReduction.Certificate.CertifiedReduction",
+          "direction": "source_to_target",
+          "input_endpoint_id": "sha256:9f5928e05e1117c340a151f32053ee9d792d1ca88fa822ed8fb91a2b63ab25ac",
+          "output_endpoint_id": "sha256:f57817499e8f9761eb99a640f794732cb0196e9826f2228f9c48acbafe9530b3"
+        }
+      },
+      "replayed_from_resume": false,
+      "selected_packet_id": "sha256:34190c0c71bdd70c986ef8d49534663f4e6cf3dc11ddb8a58abed79298666aba",
+      "status": "VERIFIED",
+      "usage": {
+        "completion_tokens": 1756,
+        "prompt_cache_hit_tokens": 3072,
+        "prompt_cache_miss_tokens": 95,
+        "prompt_tokens": 3167,
+        "total_tokens": 4923
+      }
+    },
+    {
+      "candidate_count": 4,
+      "candidate_set_id": "sha256:e36e71f7fd53ce62bd5615fbc51dd39f5653f1297cbd9637822b9f8d89bea9fd",
+      "case_task_wall_duration_seconds": 8.076,
+      "execution_position": 4,
+      "expected_action": "select_packet",
+      "external_api_calls_this_run": 1,
+      "globally_valid_candidate_count": 1,
+      "http_ok_count_this_run": 1,
+      "http_request_attempts_this_run": 1,
+      "id": "o-parameterized-predicate-membership",
+      "input_kind": "parameterized_predicate",
+      "inspected_packet_ids": [
+        "sha256:46b416e9271daa83f218840be8a2a8f050e882e41c01106ab36eb684e3492205",
+        "sha256:9038f8e61815388374a57f5ae11a0a16d85625097413b0fedbe5df63d7daa645",
+        "sha256:8ce81a939df38681db320bea1c7b36cea4dab4f0a412abe3b35fbcc1d436a1bb"
+      ],
+      "locally_valid_candidate_count": 2,
+      "model_calls": [
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 8.023,
+          "error": "",
+          "finish_reason": "stop",
+          "ok": true,
+          "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/stage-o-a-contract-full-20260804-4/cases/o-parameterized-predicate-membership/calls/turn-01-prompt.json",
+          "prompt_sha256": "b5363a6b6e95a23f57a1253310d7d7cb0baada991f1bce03dcbbf94496bb8272",
+          "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/stage-o-a-contract-full-20260804-4/cases/o-parameterized-predicate-membership/calls/turn-01-response.json",
+          "response_sha256": "89feac20765d61a2b73ca3f91cf77bf3004fd30a2b934ebb87fb5fddde096036",
+          "status_code": 200,
+          "turn": 1,
+          "usage": {
+            "completion_tokens": 999,
+            "completion_tokens_details": {
+              "reasoning_tokens": 698
+            },
+            "prompt_cache_hit_tokens": 3072,
+            "prompt_cache_miss_tokens": 102,
+            "prompt_tokens": 3174,
+            "prompt_tokens_details": {
+              "cached_tokens": 3072
+            },
+            "total_tokens": 4173
+          }
+        }
+      ],
+      "model_choice_preserved": true,
+      "objective": "prove_in_np",
+      "positive": true,
+      "prompt_oracle_errors": [],
+      "protocol_accepted": true,
+      "protocol_errors": [],
+      "protocol_matches_expected": true,
+      "raw_terminal_action": {
+        "action": "select_packet",
+        "candidate_kind": "membership_packet",
+        "checked_packet_ids": [],
+        "dependencies": [
+          "dep:standard-axioms"
+        ],
+        "explanation": "Selected packet matches goal endpoints and direction, is base-registry visible, has valid route from input to output, source hash matches bound dependency hash, and all preconditions/dependencies are available.",
+        "missing_conditions": [],
+        "packet_id": "sha256:46b416e9271daa83f218840be8a2a8f050e882e41c01106ab36eb684e3492205",
+        "schema_version": "hardness_stage_o_action_v1",
+        "session_id": "sha256:cea7254dc1eaad8dd2e679f82f028fda1f73727222c91c24602b4977f195e21c",
+        "typed_bindings": {
+          "capability_kind": "ComplexityReduction.Certificate.NativeTMInNP",
+          "direction": "identity",
+          "input_endpoint_id": "sha256:e4fb173c122acc84b85eb8cd7046461544d606a79546298f848641175cdf8e3d",
+          "output_endpoint_id": "sha256:659195809837997fd9900a843f45a50d3a65e4ffa713ba1eee77ed7551a6fe44"
+        }
+      },
+      "replayed_from_resume": false,
+      "selected_packet_id": "sha256:46b416e9271daa83f218840be8a2a8f050e882e41c01106ab36eb684e3492205",
+      "status": "VERIFIED",
+      "usage": {
+        "completion_tokens": 999,
+        "prompt_cache_hit_tokens": 3072,
+        "prompt_cache_miss_tokens": 102,
+        "prompt_tokens": 3174,
+        "total_tokens": 4173
+      }
+    },
+    {
+      "candidate_count": 4,
+      "candidate_set_id": "sha256:6b54afe6137b972ad43536496f4a1bd6b9c6a2ca845eb0f97bd3120d1b4b4d49",
+      "case_task_wall_duration_seconds": 7.537,
+      "execution_position": 5,
+      "expected_action": "select_packet",
+      "external_api_calls_this_run": 1,
+      "globally_valid_candidate_count": 1,
+      "http_ok_count_this_run": 1,
+      "http_request_attempts_this_run": 1,
+      "id": "o-two-gap-presentation-then-reduction",
+      "input_kind": "predicate",
+      "inspected_packet_ids": [
+        "sha256:37467db873d7eb97216c52a606e2560099c319668d0b9ea5698ff88b2cd681a7",
+        "sha256:60862bc3cd29f67f2ff93fe67f25151a0eea1f340129d00647986b635f8b0c35",
+        "sha256:84543f440d1c2bb3fa162b044289dcac2efc95726e5958bcc649e449372ec793"
+      ],
+      "locally_valid_candidate_count": 2,
+      "model_calls": [
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 7.487,
+          "error": "",
+          "finish_reason": "stop",
+          "ok": true,
+          "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/stage-o-a-contract-full-20260804-4/cases/o-two-gap-presentation-then-reduction/calls/turn-01-prompt.json",
+          "prompt_sha256": "507f1e56176662ff2c16d7bd63e2597c9d4de284978b31a8fb42964ef729932d",
+          "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/stage-o-a-contract-full-20260804-4/cases/o-two-gap-presentation-then-reduction/calls/turn-01-response.json",
+          "response_sha256": "61fcd73ceec0d5c9d908adf9901edbd9188670e67317558ac0a487ecbcb704a5",
+          "status_code": 200,
+          "turn": 1,
+          "usage": {
+            "completion_tokens": 995,
+            "completion_tokens_details": {
+              "reasoning_tokens": 634
+            },
+            "prompt_cache_hit_tokens": 3200,
+            "prompt_cache_miss_tokens": 120,
+            "prompt_tokens": 3320,
+            "prompt_tokens_details": {
+              "cached_tokens": 3200
+            },
+            "total_tokens": 4315
+          }
+        }
+      ],
+      "model_choice_preserved": true,
+      "objective": "reduce_to",
+      "positive": true,
+      "prompt_oracle_errors": [],
+      "protocol_accepted": true,
+      "protocol_errors": [],
+      "protocol_matches_expected": true,
+      "raw_terminal_action": {
+        "action": "select_packet",
+        "candidate_kind": "gadget_packet",
+        "checked_packet_ids": [],
+        "dependencies": [
+          "dep:standard-axioms"
+        ],
+        "explanation": "Packet 37467db873d7eb97216c52a606e2560099c319668d0b9ea5698ff88b2cd681a7 matches the required source_to_target CertifiedReduction endpoints, has valid available preconditions/dependencies, no axioms, matching dependency/source hashes, base_registry visibility, and route segments connect consecutively from the exact input to the exact output.",
+        "missing_conditions": [],
+        "packet_id": "sha256:37467db873d7eb97216c52a606e2560099c319668d0b9ea5698ff88b2cd681a7",
+        "schema_version": "hardness_stage_o_action_v1",
+        "session_id": "sha256:201de909352e4c26429ed9108d8445b3b01e3d91717f90d5d56df75c67969f00",
+        "typed_bindings": {
+          "capability_kind": "ComplexityReduction.Certificate.CertifiedReduction",
+          "direction": "source_to_target",
+          "input_endpoint_id": "sha256:468159a59a85c0a9d9ecfcf43348fe923b58b8b19f102339dfe94d0f55a8bdca",
+          "output_endpoint_id": "sha256:0dbbc8152fa69d0683ee961f7380361c0f6491ba977dee908576822f7c99e02f"
+        }
+      },
+      "replayed_from_resume": false,
+      "selected_packet_id": "sha256:37467db873d7eb97216c52a606e2560099c319668d0b9ea5698ff88b2cd681a7",
+      "status": "VERIFIED",
+      "usage": {
+        "completion_tokens": 995,
+        "prompt_cache_hit_tokens": 3200,
+        "prompt_cache_miss_tokens": 120,
+        "prompt_tokens": 3320,
+        "total_tokens": 4315
+      }
+    },
+    {
+      "candidate_count": 4,
+      "candidate_set_id": "sha256:bc2479621e9322180a5eaa525280c46d13167eaf67e07bd7d44b753578ec5e7c",
+      "case_task_wall_duration_seconds": 40.479,
+      "execution_position": 6,
+      "expected_action": "select_packet",
+      "external_api_calls_this_run": 2,
+      "globally_valid_candidate_count": 1,
+      "http_ok_count_this_run": 2,
+      "http_request_attempts_this_run": 2,
+      "id": "o-two-gap-checker-then-membership",
+      "input_kind": "presented_problem",
+      "inspected_packet_ids": [
+        "sha256:3be3aad28f0aa5f3cfc971decc34835de29ba9c9abb573b7976f77e34674a8a8",
+        "sha256:5416f3aee740625bbcf06d7be82f544422c82fc4ec98bd9c54c3d4db6a9ed378",
+        "sha256:4beb121dea1caac6408f490677562a43c8b6b34279a152b847956af161786328"
+      ],
+      "locally_valid_candidate_count": 2,
+      "model_calls": [
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 31.81,
+          "error": "",
+          "finish_reason": "length",
+          "ok": true,
+          "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/stage-o-a-contract-full-20260804-4/cases/o-two-gap-checker-then-membership/calls/turn-01-prompt.json",
+          "prompt_sha256": "0eba08462aef40926f36cd3a16866516989506787a8ebaa4cac02e2ff1b7e688",
+          "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/stage-o-a-contract-full-20260804-4/cases/o-two-gap-checker-then-membership/calls/turn-01-response.json",
+          "response_sha256": "c1e1ac70de56947707181ff1a97f08154350a4200b2c3e524c6f5876f8c3b158",
+          "status_code": 200,
+          "turn": 1,
+          "usage": {
+            "completion_tokens": 4096,
+            "completion_tokens_details": {
+              "reasoning_tokens": 3941
+            },
+            "prompt_cache_hit_tokens": 3200,
+            "prompt_cache_miss_tokens": 13,
+            "prompt_tokens": 3213,
+            "prompt_tokens_details": {
+              "cached_tokens": 3200
+            },
+            "total_tokens": 7309
+          }
+        },
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 8.584,
+          "error": "",
+          "finish_reason": "stop",
+          "ok": true,
+          "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/stage-o-a-contract-full-20260804-4/cases/o-two-gap-checker-then-membership/calls/turn-02-prompt.json",
+          "prompt_sha256": "eb4789adca85f8d9206e5ed313217a2b0167d90dde581c3e08c8785727b9022c",
+          "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/stage-o-a-contract-full-20260804-4/cases/o-two-gap-checker-then-membership/calls/turn-02-response.json",
+          "response_sha256": "658db56c8484ac753259c0519bf8e4216c3cc3580c4e9867f0622ad9bfcfd018",
+          "status_code": 200,
+          "turn": 2,
+          "usage": {
+            "completion_tokens": 1190,
+            "completion_tokens_details": {
+              "reasoning_tokens": 873
+            },
+            "prompt_cache_hit_tokens": 1920,
+            "prompt_cache_miss_tokens": 1313,
+            "prompt_tokens": 3233,
+            "prompt_tokens_details": {
+              "cached_tokens": 1920
+            },
+            "total_tokens": 4423
+          }
+        }
+      ],
+      "model_choice_preserved": true,
+      "objective": "prove_np_complete",
+      "positive": true,
+      "prompt_oracle_errors": [],
+      "protocol_accepted": true,
+      "protocol_errors": [
+        {
+          "code": "invalid_model_json",
+          "message": "model response is not one JSON object"
+        }
+      ],
+      "protocol_matches_expected": true,
+      "raw_terminal_action": {
+        "action": "select_packet",
+        "candidate_kind": "gadget_packet",
+        "checked_packet_ids": [],
+        "dependencies": [
+          "dep:standard-axioms"
+        ],
+        "explanation": "Retrieved packet has matching source/dependency hash, all preconditions and dependencies are available, no forbidden imports or axioms, correct identity direction, and route segments connect consecutively from the exact input endpoint to the exact output endpoint.",
+        "missing_conditions": [],
+        "packet_id": "sha256:3be3aad28f0aa5f3cfc971decc34835de29ba9c9abb573b7976f77e34674a8a8",
+        "schema_version": "hardness_stage_o_action_v1",
+        "session_id": "sha256:39dfb16bf6077350ec8a31b25255c33398135337f161173198f64701e4544fc1",
+        "typed_bindings": {
+          "capability_kind": "ComplexityReduction.Certificate.NativeTMNPComplete",
+          "direction": "identity",
+          "input_endpoint_id": "sha256:3479eb784fdffd2047bd1c0c310acac39b8c89b6b887499be0d3ecfe33927298",
+          "output_endpoint_id": "sha256:96776b536e180cc073ed91c79a7b49660b1e5dfbd21a9bdacfc19835d8b9dd8d"
+        }
+      },
+      "replayed_from_resume": false,
+      "selected_packet_id": "sha256:3be3aad28f0aa5f3cfc971decc34835de29ba9c9abb573b7976f77e34674a8a8",
+      "status": "VERIFIED",
+      "usage": {
+        "completion_tokens": 5286,
+        "prompt_cache_hit_tokens": 5120,
+        "prompt_cache_miss_tokens": 1326,
+        "prompt_tokens": 6446,
+        "total_tokens": 11732
+      }
+    },
+    {
+      "candidate_count": 4,
+      "candidate_set_id": "sha256:8ba404daaa4b7e160980a05577a21e5ca8e05874cee64118e33bcb3db4257d40",
+      "case_task_wall_duration_seconds": 6.442,
+      "execution_position": 7,
+      "expected_action": "select_packet",
+      "external_api_calls_this_run": 1,
+      "globally_valid_candidate_count": 1,
+      "http_ok_count_this_run": 1,
+      "http_request_attempts_this_run": 1,
+      "id": "o-capability-producer",
+      "input_kind": "presented_problem",
+      "inspected_packet_ids": [
+        "sha256:21c9fc17a0c40b13467073bcd63474158218f537f476b06a5b343cc955d355e7",
+        "sha256:eb296161b6b6a86c832145a20fc1ecfb0c76068b560993d4476e45b5cb344d83",
+        "sha256:04ea6b7ae4fb4032eef359166ba5b6aa942d13f3f2341e22abda587a71a18483"
+      ],
+      "locally_valid_candidate_count": 2,
+      "model_calls": [
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 6.408,
+          "error": "",
+          "finish_reason": "stop",
+          "ok": true,
+          "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/stage-o-a-contract-full-20260804-4/cases/o-capability-producer/calls/turn-01-prompt.json",
+          "prompt_sha256": "2b1746641d21860dbc56f080a48e333fbbc21273cbcc1e190bd6a24090f55f2e",
+          "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/stage-o-a-contract-full-20260804-4/cases/o-capability-producer/calls/turn-01-response.json",
+          "response_sha256": "e7d37d034d551e4e24619fa0eb3d401af40bd23b94a20df44520180ea2a141e6",
+          "status_code": 200,
+          "turn": 1,
+          "usage": {
+            "completion_tokens": 879,
+            "completion_tokens_details": {
+              "reasoning_tokens": 520
+            },
+            "prompt_cache_hit_tokens": 3328,
+            "prompt_cache_miss_tokens": 10,
+            "prompt_tokens": 3338,
+            "prompt_tokens_details": {
+              "cached_tokens": 3328
+            },
+            "total_tokens": 4217
+          }
+        }
+      ],
+      "model_choice_preserved": true,
+      "objective": "reduce_to",
+      "positive": true,
+      "prompt_oracle_errors": [],
+      "protocol_accepted": true,
+      "protocol_errors": [],
+      "protocol_matches_expected": true,
+      "raw_terminal_action": {
+        "action": "select_packet",
+        "candidate_kind": "gadget_packet",
+        "checked_packet_ids": [],
+        "dependencies": [
+          "dep:standard-axioms"
+        ],
+        "explanation": "Packet sha256:eb296161b6b6a86c832145a20fc1ecfb0c76068b560993d4476e45b5cb344d83 is valid: direction source_to_target, exact input/output endpoints, consecutive route segments, all preconditions/dependencies are in available_dependencies, no declared axioms, and source hash matches bound dependency hash.",
+        "missing_conditions": [],
+        "packet_id": "sha256:eb296161b6b6a86c832145a20fc1ecfb0c76068b560993d4476e45b5cb344d83",
+        "schema_version": "hardness_stage_o_action_v1",
+        "session_id": "sha256:06e8a105b41b84d64b96f372ca515fa7eb5aef00be243b6f1ace1e2782f6dfe0",
+        "typed_bindings": {
+          "capability_kind": "ComplexityReduction.Certificate.CertifiedReduction",
+          "direction": "source_to_target",
+          "input_endpoint_id": "sha256:776a556f5e42dd439c46ca5173c8366342f21e2ac6ae7dafea9b0a4992e640fc",
+          "output_endpoint_id": "sha256:9057d1b3bc6a09b8b86987705079be44eee29894109aa5b204aab7f2e726a107"
+        }
+      },
+      "replayed_from_resume": false,
+      "selected_packet_id": "sha256:eb296161b6b6a86c832145a20fc1ecfb0c76068b560993d4476e45b5cb344d83",
+      "status": "VERIFIED",
+      "usage": {
+        "completion_tokens": 879,
+        "prompt_cache_hit_tokens": 3328,
+        "prompt_cache_miss_tokens": 10,
+        "prompt_tokens": 3338,
+        "total_tokens": 4217
+      }
+    },
+    {
+      "candidate_count": 4,
+      "candidate_set_id": "sha256:bbe6f640f4aef2a903e86411abd4ec1c169c3c572c7ecdb4458c023800dc4df2",
+      "case_task_wall_duration_seconds": 5.979,
+      "execution_position": 8,
+      "expected_action": "select_packet",
+      "external_api_calls_this_run": 1,
+      "globally_valid_candidate_count": 1,
+      "http_ok_count_this_run": 1,
+      "http_request_attempts_this_run": 1,
+      "id": "o-capability-consumer",
+      "input_kind": "presented_problem",
+      "inspected_packet_ids": [
+        "sha256:57b2b352032b11f352def573c5c645174a518baf7df8abe6f6ffc1783adfdc98",
+        "sha256:f0eb74e6f82b045d538ecfa992e2bbbaca1179861ab0d3ba4f673bb687bc2368",
+        "sha256:28e07bd0ef5e88570622cd9ef0b74de8795c51e89c5fc92a9bc390ce25dc8963"
+      ],
+      "locally_valid_candidate_count": 2,
+      "model_calls": [
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 5.935,
+          "error": "",
+          "finish_reason": "stop",
+          "ok": true,
+          "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/stage-o-a-contract-full-20260804-4/cases/o-capability-consumer/calls/turn-01-prompt.json",
+          "prompt_sha256": "19792a9c7687011e5482766d8eaac60e1977864474b33f406a8d3aa10add6ad3",
+          "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/stage-o-a-contract-full-20260804-4/cases/o-capability-consumer/calls/turn-01-response.json",
+          "response_sha256": "f00de4069d14eb14cc7ac146f42370e24af851e5d1b12ce082fb35bcb08407c9",
+          "status_code": 200,
+          "turn": 1,
+          "usage": {
+            "completion_tokens": 853,
+            "completion_tokens_details": {
+              "reasoning_tokens": 542
+            },
+            "prompt_cache_hit_tokens": 3200,
+            "prompt_cache_miss_tokens": 74,
+            "prompt_tokens": 3274,
+            "prompt_tokens_details": {
+              "cached_tokens": 3200
+            },
+            "total_tokens": 4127
+          }
+        }
+      ],
+      "model_choice_preserved": true,
+      "objective": "prove_np_complete",
+      "positive": true,
+      "prompt_oracle_errors": [],
+      "protocol_accepted": true,
+      "protocol_errors": [],
+      "protocol_matches_expected": true,
+      "raw_terminal_action": {
+        "action": "select_packet",
+        "candidate_kind": "membership_packet",
+        "checked_packet_ids": [],
+        "dependencies": [
+          "dep:standard-axioms"
+        ],
+        "explanation": "Packet 57b2b352 satisfies global composition contract: direction identity, endpoints match, route segments connect consecutively from input to output, all preconditions/dependencies are in available_dependencies, candidate_source_hash matches bound_dependency_hash, no declared axioms or forbidden imports, and visibility is base_registry.",
+        "missing_conditions": [],
+        "packet_id": "sha256:57b2b352032b11f352def573c5c645174a518baf7df8abe6f6ffc1783adfdc98",
+        "schema_version": "hardness_stage_o_action_v1",
+        "session_id": "sha256:48e389297aa650f5ad165d42f204b074188ca4dc4d2ebbfa1b2ae349679622cf",
+        "typed_bindings": {
+          "capability_kind": "ComplexityReduction.Certificate.NativeTMNPComplete",
+          "direction": "identity",
+          "input_endpoint_id": "sha256:eed086339c65d9c40906c785daf674a820d79263bc6cf5610f61c8abe29738a6",
+          "output_endpoint_id": "sha256:96776b536e180cc073ed91c79a7b49660b1e5dfbd21a9bdacfc19835d8b9dd8d"
+        }
+      },
+      "replayed_from_resume": false,
+      "selected_packet_id": "sha256:57b2b352032b11f352def573c5c645174a518baf7df8abe6f6ffc1783adfdc98",
+      "status": "VERIFIED",
+      "usage": {
+        "completion_tokens": 853,
+        "prompt_cache_hit_tokens": 3200,
+        "prompt_cache_miss_tokens": 74,
+        "prompt_tokens": 3274,
+        "total_tokens": 4127
+      }
+    },
+    {
+      "candidate_count": 3,
+      "candidate_set_id": "sha256:8e185228fd136cc89ea96b87282c012ef9cccc6ea5a89529676eed93e0f5f451",
+      "case_task_wall_duration_seconds": 3.304,
+      "execution_position": 9,
+      "expected_action": "stop_authoring",
+      "external_api_calls_this_run": 1,
+      "globally_valid_candidate_count": 0,
+      "http_ok_count_this_run": 1,
+      "http_request_attempts_this_run": 1,
+      "id": "o-cycle-dag-blocked",
+      "input_kind": "presented_problem",
+      "inspected_packet_ids": [
+        "sha256:5510edca334718749c7fb37c7efafa79c57c6a05ec792cc32f62da289349e519",
+        "sha256:5517fafbee71133eff4ffbbf3175474514b862f845663c7b5c1ba3de443279df",
+        "sha256:89f405cd30946b17254d9996ade59d84f0025fa68d382d59c25ee48c0300989a"
+      ],
+      "locally_valid_candidate_count": 3,
+      "model_calls": [
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 3.264,
+          "error": "",
+          "finish_reason": "stop",
+          "ok": true,
+          "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/stage-o-a-contract-full-20260804-4/cases/o-cycle-dag-blocked/calls/turn-01-prompt.json",
+          "prompt_sha256": "3e014b5ee5ac55d6e5ab0eeb4599da4bc2d62e6bc4c4207dc619d134600f8d99",
+          "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/stage-o-a-contract-full-20260804-4/cases/o-cycle-dag-blocked/calls/turn-01-response.json",
+          "response_sha256": "d543ca5e65020165ab81816f9a7e027a664c827b1805953cdb01cdf94c9ed4a1",
+          "status_code": 200,
+          "turn": 1,
+          "usage": {
+            "completion_tokens": 396,
+            "completion_tokens_details": {
+              "reasoning_tokens": 163
+            },
+            "prompt_cache_hit_tokens": 3072,
+            "prompt_cache_miss_tokens": 62,
+            "prompt_tokens": 3134,
+            "prompt_tokens_details": {
+              "cached_tokens": 3072
+            },
+            "total_tokens": 3530
+          }
+        }
+      ],
+      "model_choice_preserved": true,
+      "objective": "reduce_to",
+      "positive": false,
+      "prompt_oracle_errors": [],
+      "protocol_accepted": true,
+      "protocol_errors": [],
+      "protocol_matches_expected": true,
+      "raw_terminal_action": {
+        "action": "stop_authoring",
+        "candidate_kind": null,
+        "checked_packet_ids": [
+          "sha256:5510edca334718749c7fb37c7efafa79c57c6a05ec792cc32f62da289349e519",
+          "sha256:5517fafbee71133eff4ffbbf3175474514b862f845663c7b5c1ba3de443279df",
+          "sha256:89f405cd30946b17254d9996ade59d84f0025fa68d382d59c25ee48c0300989a"
+        ],
+        "dependencies": [],
+        "explanation": "Every retrieved route packet declares precondition \"self\", which is a certificate-DAG cycle and is forbidden by the global validation rules.",
+        "missing_conditions": [
+          "precondition 'self' creates a certificate-DAG cycle"
+        ],
+        "packet_id": null,
+        "schema_version": "hardness_stage_o_action_v1",
+        "session_id": "sha256:a51e0ec8ef9cc5fa1fb95a3672d03f87ee51ac9fa4d42dbcc7fac8760bb46b3a",
+        "typed_bindings": {}
+      },
+      "replayed_from_resume": false,
+      "selected_packet_id": null,
+      "status": "VERIFIED",
+      "usage": {
+        "completion_tokens": 396,
+        "prompt_cache_hit_tokens": 3072,
+        "prompt_cache_miss_tokens": 62,
+        "prompt_tokens": 3134,
+        "total_tokens": 3530
+      }
+    },
+    {
+      "candidate_count": 3,
+      "candidate_set_id": "sha256:008a72df03412794aaeadf1eca7c48a4cf9b11007de9a961f9ba0bd3538a0030",
+      "case_task_wall_duration_seconds": 6.097,
+      "execution_position": 10,
+      "expected_action": "stop_authoring",
+      "external_api_calls_this_run": 1,
+      "globally_valid_candidate_count": 0,
+      "http_ok_count_this_run": 1,
+      "http_request_attempts_this_run": 1,
+      "id": "o-second-gap-precondition-missing",
+      "input_kind": "presented_problem",
+      "inspected_packet_ids": [
+        "sha256:1e477a38f3a0e944b1ca786ff07f50a43c7d55fa69d738d7e0b670c7f0d102e7",
+        "sha256:21b20f69fbac3d7090e634617d6ff69ac37d0e6e6d97d7723fecaf5abf6589aa",
+        "sha256:c2af9638068457537cb0cf23c850c99f69cfe89f4b310ea4d3dd6025ebb56b45"
+      ],
+      "locally_valid_candidate_count": 3,
+      "model_calls": [
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 6.058,
+          "error": "",
+          "finish_reason": "stop",
+          "ok": true,
+          "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/stage-o-a-contract-full-20260804-4/cases/o-second-gap-precondition-missing/calls/turn-01-prompt.json",
+          "prompt_sha256": "51ce5221bf43dbb013bdee2b46f77a1d04a3d493d0e52336f457af8ce86db4d0",
+          "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/stage-o-a-contract-full-20260804-4/cases/o-second-gap-precondition-missing/calls/turn-01-response.json",
+          "response_sha256": "0fc4d3b40821ad23b59f8fb1f0dc1766b0faca57c30bc8613c736fc4ba8641ef",
+          "status_code": 200,
+          "turn": 1,
+          "usage": {
+            "completion_tokens": 854,
+            "completion_tokens_details": {
+              "reasoning_tokens": 547
+            },
+            "prompt_cache_hit_tokens": 3072,
+            "prompt_cache_miss_tokens": 101,
+            "prompt_tokens": 3173,
+            "prompt_tokens_details": {
+              "cached_tokens": 3072
+            },
+            "total_tokens": 4027
+          }
+        }
+      ],
+      "model_choice_preserved": true,
+      "objective": "prove_np_complete",
+      "positive": false,
+      "prompt_oracle_errors": [],
+      "protocol_accepted": true,
+      "protocol_errors": [],
+      "protocol_matches_expected": true,
+      "raw_terminal_action": {
+        "action": "stop_authoring",
+        "candidate_kind": null,
+        "checked_packet_ids": [
+          "sha256:1e477a38f3a0e944b1ca786ff07f50a43c7d55fa69d738d7e0b670c7f0d102e7",
+          "sha256:21b20f69fbac3d7090e634617d6ff69ac37d0e6e6d97d7723fecaf5abf6589aa",
+          "sha256:c2af9638068457537cb0cf23c850c99f69cfe89f4b310ea4d3dd6025ebb56b45"
+        ],
+        "dependencies": [],
+        "explanation": "Every candidate route packet references a dependency not present in goal.available_dependencies: dep:missing-0, dep:missing-1, or dep:missing-2. No candidate satisfies the global dependency-set rule, so no packet can be selected.",
+        "missing_conditions": [
+          "dependency dep:missing-0 is not in available_dependencies",
+          "dependency dep:missing-1 is not in available_dependencies",
+          "dependency dep:missing-2 is not in available_dependencies"
+        ],
+        "packet_id": null,
+        "schema_version": "hardness_stage_o_action_v1",
+        "session_id": "sha256:a65bef087996389bc528390bf805c48e95a1dbe5b259411b2c63927b0157681e",
+        "typed_bindings": {}
+      },
+      "replayed_from_resume": false,
+      "selected_packet_id": null,
+      "status": "VERIFIED",
+      "usage": {
+        "completion_tokens": 854,
+        "prompt_cache_hit_tokens": 3072,
+        "prompt_cache_miss_tokens": 101,
+        "prompt_tokens": 3173,
+        "total_tokens": 4027
+      }
+    },
+    {
+      "candidate_count": 3,
+      "candidate_set_id": "sha256:3a637d67dfe2ce576b620d2f446106854b22f6997700c23a5d2cc1c8c44f7422",
+      "case_task_wall_duration_seconds": 9.632,
+      "execution_position": 11,
+      "expected_action": "stop_authoring",
+      "external_api_calls_this_run": 1,
+      "globally_valid_candidate_count": 0,
+      "http_ok_count_this_run": 1,
+      "http_request_attempts_this_run": 1,
+      "id": "o-type-correct-wrong-direction",
+      "input_kind": "presented_problem",
+      "inspected_packet_ids": [
+        "sha256:45e9fee77467d640e75fd8b5cbccc929c8440670481e1c9fc866512d994f47f7",
+        "sha256:806569acf6e83b585261608362a1ffc93f3f3df9407224f852549db7a51485b8",
+        "sha256:c62d20ed818b960466f0317036433e4e4efd9c72e935de8b9e51238358f021b0"
+      ],
+      "locally_valid_candidate_count": 0,
+      "model_calls": [
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 9.592,
+          "error": "",
+          "finish_reason": "stop",
+          "ok": true,
+          "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/stage-o-a-contract-full-20260804-4/cases/o-type-correct-wrong-direction/calls/turn-01-prompt.json",
+          "prompt_sha256": "0eb3c935dceca5c124e2c11908092da5feb581c5ad626af6f0bb6c1e0935f2f8",
+          "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/stage-o-a-contract-full-20260804-4/cases/o-type-correct-wrong-direction/calls/turn-01-response.json",
+          "response_sha256": "8f6dae22e6f88a95ea7ad2c108373916a6779f062c86a312f576b1a30d4c5eff",
+          "status_code": 200,
+          "turn": 1,
+          "usage": {
+            "completion_tokens": 1257,
+            "completion_tokens_details": {
+              "reasoning_tokens": 981
+            },
+            "prompt_cache_hit_tokens": 3072,
+            "prompt_cache_miss_tokens": 73,
+            "prompt_tokens": 3145,
+            "prompt_tokens_details": {
+              "cached_tokens": 3072
+            },
+            "total_tokens": 4402
+          }
+        }
+      ],
+      "model_choice_preserved": true,
+      "objective": "reduce_to",
+      "positive": false,
+      "prompt_oracle_errors": [],
+      "protocol_accepted": true,
+      "protocol_errors": [],
+      "protocol_matches_expected": true,
+      "raw_terminal_action": {
+        "action": "stop_authoring",
+        "candidate_kind": null,
+        "checked_packet_ids": [
+          "sha256:45e9fee77467d640e75fd8b5cbccc929c8440670481e1c9fc866512d994f47f7",
+          "sha256:806569acf6e83b585261608362a1ffc93f3f3df9407224f852549db7a51485b8",
+          "sha256:c62d20ed818b960466f0317036433e4e4efd9c72e935de8b9e51238358f021b0"
+        ],
+        "dependencies": [],
+        "explanation": "All inspected route packets satisfy endpoint, dependency, hash, route, visibility, import, and axiom checks, but they declare direction 'identity' while the required goal direction is 'source_to_target'. Direction must be preserved exactly, so no candidate is valid.",
+        "missing_conditions": [
+          "candidate direction 'identity' does not equal required direction 'source_to_target'"
+        ],
+        "packet_id": null,
+        "schema_version": "hardness_stage_o_action_v1",
+        "session_id": "sha256:78c247242cf3d3e560aefd823d5b2742feb409c9566e816318bf115ef4e6afb6",
+        "typed_bindings": {}
+      },
+      "replayed_from_resume": false,
+      "selected_packet_id": null,
+      "status": "VERIFIED",
+      "usage": {
+        "completion_tokens": 1257,
+        "prompt_cache_hit_tokens": 3072,
+        "prompt_cache_miss_tokens": 73,
+        "prompt_tokens": 3145,
+        "total_tokens": 4402
+      }
+    },
+    {
+      "candidate_count": 3,
+      "candidate_set_id": "sha256:1b4612a4bd6f4b696f0fa83e500811db03260b1ea8e1ff9bc2b904f330b19544",
+      "case_task_wall_duration_seconds": 11.903,
+      "execution_position": 12,
+      "expected_action": "stop_authoring",
+      "external_api_calls_this_run": 1,
+      "globally_valid_candidate_count": 0,
+      "http_ok_count_this_run": 1,
+      "http_request_attempts_this_run": 1,
+      "id": "o-locally-valid-globally-disconnected",
+      "input_kind": "presented_problem",
+      "inspected_packet_ids": [
+        "sha256:41b717e430527a8e1d0435fceccb935d6ac4cc525ae7ec19d0b7263d97796b49",
+        "sha256:4368844721b5ce54c35d36b2ad5c942136e91b6ecb3d1956cdfc4448d550cfc3",
+        "sha256:d8803ee5804d68759b44d5d6fd904447874768ed523db5c56e50006015151268"
+      ],
+      "locally_valid_candidate_count": 3,
+      "model_calls": [
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 11.86,
+          "error": "",
+          "finish_reason": "stop",
+          "ok": true,
+          "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/stage-o-a-contract-full-20260804-4/cases/o-locally-valid-globally-disconnected/calls/turn-01-prompt.json",
+          "prompt_sha256": "ef16930e27ee90682e36d8383f495f9940c903c969951871ce1ed60922106c42",
+          "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/stage-o-a-contract-full-20260804-4/cases/o-locally-valid-globally-disconnected/calls/turn-01-response.json",
+          "response_sha256": "ffa87ea76b23620f4729c2619a141c124c9a76b954da9868060c2929e6294ffc",
+          "status_code": 200,
+          "turn": 1,
+          "usage": {
+            "completion_tokens": 1753,
+            "completion_tokens_details": {
+              "reasoning_tokens": 1350
+            },
+            "prompt_cache_hit_tokens": 3072,
+            "prompt_cache_miss_tokens": 47,
+            "prompt_tokens": 3119,
+            "prompt_tokens_details": {
+              "cached_tokens": 3072
+            },
+            "total_tokens": 4872
+          }
+        }
+      ],
+      "model_choice_preserved": true,
+      "objective": "reduce_to",
+      "positive": false,
+      "prompt_oracle_errors": [],
+      "protocol_accepted": true,
+      "protocol_errors": [],
+      "protocol_matches_expected": true,
+      "raw_terminal_action": {
+        "action": "stop_authoring",
+        "candidate_kind": null,
+        "checked_packet_ids": [
+          "sha256:41b717e430527a8e1d0435fceccb935d6ac4cc525ae7ec19d0b7263d97796b49",
+          "sha256:4368844721b5ce54c35d36b2ad5c942136e91b6ecb3d1956cdfc4448d550cfc3",
+          "sha256:d8803ee5804d68759b44d5d6fd904447874768ed523db5c56e50006015151268"
+        ],
+        "dependencies": [],
+        "explanation": "All three inspected route packets have identical invalid route segments: the first segment ends at sha256:2b9d98913f75d3cf531cb9b04def51f23a3412d1612e27605d3a70397b20fb22, but the second segment starts at sha256:f33771ad828757d4a46d68260b63a407c7db87ce80befa3344331dcf6819af3b, so the route is not consecutive from the exact input to the exact output.",
+        "missing_conditions": [
+          "Route segments must start at the goal input, connect consecutively, and end at the goal output; all candidates have a gap because no segment starts at sha256:2b9d98913f75d3cf531cb9b04def51f23a3412d1612e27605d3a70397b20fb22 after the first route segment."
+        ],
+        "packet_id": null,
+        "schema_version": "hardness_stage_o_action_v1",
+        "session_id": "sha256:15122e46cf86c62e85b6ba80ffa0f97217eb884b4344ba2606892087c7ff47ef",
+        "typed_bindings": {}
+      },
+      "replayed_from_resume": false,
+      "selected_packet_id": null,
+      "status": "VERIFIED",
+      "usage": {
+        "completion_tokens": 1753,
+        "prompt_cache_hit_tokens": 3072,
+        "prompt_cache_miss_tokens": 47,
+        "prompt_tokens": 3119,
+        "total_tokens": 4872
+      }
+    },
+    {
+      "candidate_count": 3,
+      "candidate_set_id": "sha256:16e73b7de62f945bcd82cdf62ab437d939aa18d6f49926b805153342decfb1e3",
+      "case_task_wall_duration_seconds": 45.03,
+      "execution_position": 13,
+      "expected_action": "stop_authoring",
+      "external_api_calls_this_run": 1,
+      "globally_valid_candidate_count": 0,
+      "http_ok_count_this_run": 1,
+      "http_request_attempts_this_run": 2,
+      "id": "o-unsupported-checker",
+      "input_kind": "presented_problem",
+      "inspected_packet_ids": [
+        "sha256:42c86fcc9a1f1ed6ecb2d2d6b2a11e7068bf4da60e40da9d962c79938e5898eb",
+        "sha256:49427284dca5aec862e4623b15aeb154eb1d33692090971b57012ef5875899a6",
+        "sha256:db840011e5a55a8ca89a271cda0311523f4a1e75a2039e118c185602673d16f4"
+      ],
+      "locally_valid_candidate_count": 0,
+      "model_calls": [
+        {
+          "attempts": 2,
+          "called": true,
+          "duration_seconds": 44.979,
+          "error": "",
+          "finish_reason": "stop",
+          "ok": true,
+          "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/stage-o-a-contract-full-20260804-4/cases/o-unsupported-checker/calls/turn-01-prompt.json",
+          "prompt_sha256": "b8c33cbbea3212a463cf6e3ca1db247b210313c4704da1a6cd9bb6cbc19db56c",
+          "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/stage-o-a-contract-full-20260804-4/cases/o-unsupported-checker/calls/turn-01-response.json",
+          "response_sha256": "797f60bb7e852e77d4a50b8c3f03d0ada897f640d462b0fe32a70c4dfb7f3c9e",
+          "status_code": 200,
+          "turn": 1,
+          "usage": {
+            "completion_tokens": 1582,
+            "completion_tokens_details": {
+              "reasoning_tokens": 1289
+            },
+            "prompt_cache_hit_tokens": 3072,
+            "prompt_cache_miss_tokens": 97,
+            "prompt_tokens": 3169,
+            "prompt_tokens_details": {
+              "cached_tokens": 3072
+            },
+            "total_tokens": 4751
+          }
+        }
+      ],
+      "model_choice_preserved": true,
+      "objective": "prove_in_np",
+      "positive": false,
+      "prompt_oracle_errors": [],
+      "protocol_accepted": true,
+      "protocol_errors": [],
+      "protocol_matches_expected": true,
+      "raw_terminal_action": {
+        "action": "stop_authoring",
+        "candidate_kind": null,
+        "checked_packet_ids": [
+          "sha256:42c86fcc9a1f1ed6ecb2d2d6b2a11e7068bf4da60e40da9d962c79938e5898eb",
+          "sha256:49427284dca5aec862e4623b15aeb154eb1d33692090971b57012ef5875899a6",
+          "sha256:db840011e5a55a8ca89a271cda0311523f4a1e75a2039e118c185602673d16f4"
+        ],
+        "dependencies": [],
+        "explanation": "All inspected route packets have capability_kind ComplexityReduction.Certificate.UnsupportedChecker, but the goal requires ComplexityReduction.Certificate.NativeTMInNP. No packet satisfies the required capability kind, so no selection is valid.",
+        "missing_conditions": [
+          "No inspected packet has the required capability_kind ComplexityReduction.Certificate.NativeTMInNP; every candidate has ComplexityReduction.Certificate.UnsupportedChecker."
+        ],
+        "packet_id": null,
+        "schema_version": "hardness_stage_o_action_v1",
+        "session_id": "sha256:6c7f7d9ed164a5f4a2b0bfa94690ea4e8a0705789606af67bbbc28feb35b051e",
+        "typed_bindings": {}
+      },
+      "replayed_from_resume": false,
+      "selected_packet_id": null,
+      "status": "VERIFIED",
+      "usage": {
+        "completion_tokens": 1582,
+        "prompt_cache_hit_tokens": 3072,
+        "prompt_cache_miss_tokens": 97,
+        "prompt_tokens": 3169,
+        "total_tokens": 4751
+      }
+    },
+    {
+      "candidate_count": 3,
+      "candidate_set_id": "sha256:0bb927999a5320991a384583c9e3e3b118fc7782a11cb080fdb86e775f803446",
+      "case_task_wall_duration_seconds": 8.796,
+      "execution_position": 14,
+      "expected_action": "stop_authoring",
+      "external_api_calls_this_run": 1,
+      "globally_valid_candidate_count": 0,
+      "http_ok_count_this_run": 1,
+      "http_request_attempts_this_run": 1,
+      "id": "o-stale-gap1-invalidates-gap2",
+      "input_kind": "presented_problem",
+      "inspected_packet_ids": [
+        "sha256:c416206323bc38452f47bedee4665a5b2344fe27814a0a6dcd0a4ba610f3986a",
+        "sha256:d8c002989e73e22718ffbb4e8ef3dcbc93096dc2282b27cd1b0c5d13c4b7bae7",
+        "sha256:eeb0405dbd236d4cb061a06dab699689805f29f1acbfa353f3b6cc5c94c0715d"
+      ],
+      "locally_valid_candidate_count": 3,
+      "model_calls": [
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 8.759,
+          "error": "",
+          "finish_reason": "stop",
+          "ok": true,
+          "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/stage-o-a-contract-full-20260804-4/cases/o-stale-gap1-invalidates-gap2/calls/turn-01-prompt.json",
+          "prompt_sha256": "d5e35b549f4f31b59b2e8317ba3a0da52239b4acd884d7272cc03c243ccbd6fd",
+          "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/stage-o-a-contract-full-20260804-4/cases/o-stale-gap1-invalidates-gap2/calls/turn-01-response.json",
+          "response_sha256": "c00159381b3b585444e614366e3c2998452852b3b4b48901ce0387c4a47183a7",
+          "status_code": 200,
+          "turn": 1,
+          "usage": {
+            "completion_tokens": 1303,
+            "completion_tokens_details": {
+              "reasoning_tokens": 470
+            },
+            "prompt_cache_hit_tokens": 3200,
+            "prompt_cache_miss_tokens": 36,
+            "prompt_tokens": 3236,
+            "prompt_tokens_details": {
+              "cached_tokens": 3200
+            },
+            "total_tokens": 4539
+          }
+        }
+      ],
+      "model_choice_preserved": true,
+      "objective": "reduce_to",
+      "positive": false,
+      "prompt_oracle_errors": [],
+      "protocol_accepted": true,
+      "protocol_errors": [],
+      "protocol_matches_expected": true,
+      "raw_terminal_action": {
+        "action": "stop_authoring",
+        "candidate_kind": null,
+        "checked_packet_ids": [
+          "sha256:c416206323bc38452f47bedee4665a5b2344fe27814a0a6dcd0a4ba610f3986a",
+          "sha256:d8c002989e73e22718ffbb4e8ef3dcbc93096dc2282b27cd1b0c5d13c4b7bae7",
+          "sha256:eeb0405dbd236d4cb061a06dab699689805f29f1acbfa353f3b6cc5c94c0715d"
+        ],
+        "dependencies": [],
+        "explanation": "All three inspected route packets fail the global source/bound dependency hash equality rule: candidate_source_hash is sha256:22c6a732d7918ed56733cd6a5a21deee96f1bb0a71d7b5d757a96bc9329427a9, but the bound_dependency_hash values are sha256:8379fb9a98a57712e2da6b317bf4221ba2a0bc884bf0e97ba8f42350da929dc8, sha256:a354663ab824c76b8b4c09de8a503d1e8e50519627d0a87f9f6af2dfaf0bef50, and sha256:4848aae8213d57df7d08ec978652bb9e6499a2065000f326c8ba8cab351f300e respectively. Since the exact dependency hash does not match, no retrieved packet may be selected.",
+        "missing_conditions": [
+          "candidate_source_hash sha256:22c6a732d7918ed56733cd6a5a21deee96f1bb0a71d7b5d757a96bc9329427a9 must equal bound_dependency_hash sha256:8379fb9a98a57712e2da6b317bf4221ba2a0bc884bf0e97ba8f42350da929dc8 for packet sha256:c416206323bc38452f47bedee4665a5b2344fe27814a0a6dcd0a4ba610f3986a",
+          "candidate_source_hash sha256:22c6a732d7918ed56733cd6a5a21deee96f1bb0a71d7b5d757a96bc9329427a9 must equal bound_dependency_hash sha256:a354663ab824c76b8b4c09de8a503d1e8e50519627d0a87f9f6af2dfaf0bef50 for packet sha256:d8c002989e73e22718ffbb4e8ef3dcbc93096dc2282b27cd1b0c5d13c4b7bae7",
+          "candidate_source_hash sha256:22c6a732d7918ed56733cd6a5a21deee96f1bb0a71d7b5d757a96bc9329427a9 must equal bound_dependency_hash sha256:4848aae8213d57df7d08ec978652bb9e6499a2065000f326c8ba8cab351f300e for packet sha256:eeb0405dbd236d4cb061a06dab699689805f29f1acbfa353f3b6cc5c94c0715d"
+        ],
+        "packet_id": null,
+        "schema_version": "hardness_stage_o_action_v1",
+        "session_id": "sha256:8d792feec9b2b05d25d73d667a87c3126d79a89523b8779d3f67cbdbaacf0c4b",
+        "typed_bindings": {}
+      },
+      "replayed_from_resume": false,
+      "selected_packet_id": null,
+      "status": "VERIFIED",
+      "usage": {
+        "completion_tokens": 1303,
+        "prompt_cache_hit_tokens": 3200,
+        "prompt_cache_miss_tokens": 36,
+        "prompt_tokens": 3236,
+        "total_tokens": 4539
+      }
+    },
+    {
+      "candidate_count": 3,
+      "candidate_set_id": "sha256:00de58bb7e0d912e700e8efc2e6a3d7a8a917c4a68d8225f73b27e9d9b6a0211",
+      "case_task_wall_duration_seconds": 10.69,
+      "execution_position": 15,
+      "expected_action": "stop_authoring",
+      "external_api_calls_this_run": 1,
+      "globally_valid_candidate_count": 0,
+      "http_ok_count_this_run": 1,
+      "http_request_attempts_this_run": 1,
+      "id": "o-unpublished-cross-case-isolation",
+      "input_kind": "presented_problem",
+      "inspected_packet_ids": [
+        "sha256:22218d60e2d7422b9ac81608f3c0fd02fca7f6183e7da0073b557125c5602392",
+        "sha256:e211737a3f412340f9d9fc22a42ebaa64516b5b0da2fa7502e6e6883e3cbe7ab",
+        "sha256:fc9580cfbd0d9b1b6c61c02e6e48c35d1dd533f5ec5dd3418e579e7b36a18c94"
+      ],
+      "locally_valid_candidate_count": 3,
+      "model_calls": [
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 10.653,
+          "error": "",
+          "finish_reason": "stop",
+          "ok": true,
+          "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/stage-o-a-contract-full-20260804-4/cases/o-unpublished-cross-case-isolation/calls/turn-01-prompt.json",
+          "prompt_sha256": "b7978872329f1c37789833edd14e19ed30fe83352e24dc1fe526e79aa7fe04e4",
+          "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/stage-o-a-contract-full-20260804-4/cases/o-unpublished-cross-case-isolation/calls/turn-01-response.json",
+          "response_sha256": "862f88312ccacb7e1d139e7a82ebbeb29076561288b8f3de05ad1afcca554bfb",
+          "status_code": 200,
+          "turn": 1,
+          "usage": {
+            "completion_tokens": 1542,
+            "completion_tokens_details": {
+              "reasoning_tokens": 1252
+            },
+            "prompt_cache_hit_tokens": 3200,
+            "prompt_cache_miss_tokens": 50,
+            "prompt_tokens": 3250,
+            "prompt_tokens_details": {
+              "cached_tokens": 3200
+            },
+            "total_tokens": 4792
+          }
+        }
+      ],
+      "model_choice_preserved": true,
+      "objective": "prove_np_complete",
+      "positive": false,
+      "prompt_oracle_errors": [],
+      "protocol_accepted": true,
+      "protocol_errors": [],
+      "protocol_matches_expected": true,
+      "raw_terminal_action": {
+        "action": "stop_authoring",
+        "candidate_kind": null,
+        "checked_packet_ids": [
+          "sha256:22218d60e2d7422b9ac81608f3c0fd02fca7f6183e7da0073b557125c5602392",
+          "sha256:e211737a3f412340f9d9fc22a42ebaa64516b5b0da2fa7502e6e6883e3cbe7ab",
+          "sha256:fc9580cfbd0d9b1b6c61c02e6e48c35d1dd533f5ec5dd3418e579e7b36a18c94"
+        ],
+        "dependencies": [],
+        "explanation": "All three inspected route packets match the requested endpoints, direction, capability kind, dependency availability, source/bound hash, imports, axioms, and consecutive route segments, but each has visibility job_local_unpublished, which is not visible to this session. Therefore no candidate satisfies all public selection conditions.",
+        "missing_conditions": [
+          "visibility=job_local_unpublished is not selectable across case boundaries"
+        ],
+        "packet_id": null,
+        "schema_version": "hardness_stage_o_action_v1",
+        "session_id": "sha256:3b1068b19e1d35106b1f6721e1cd4d636049b2adf4b174fd5f2fa932c341d31a",
+        "typed_bindings": {}
+      },
+      "replayed_from_resume": false,
+      "selected_packet_id": null,
+      "status": "VERIFIED",
+      "usage": {
+        "completion_tokens": 1542,
+        "prompt_cache_hit_tokens": 3200,
+        "prompt_cache_miss_tokens": 50,
+        "prompt_tokens": 3250,
+        "total_tokens": 4792
+      }
+    },
+    {
+      "candidate_count": 3,
+      "candidate_set_id": "sha256:28befd6b0fb3158c0b5996e1a7857b1cae595f3d5cd7db344a93c917be14f492",
+      "case_task_wall_duration_seconds": 4.874,
+      "execution_position": 16,
+      "expected_action": "stop_authoring",
+      "external_api_calls_this_run": 1,
+      "globally_valid_candidate_count": 0,
+      "http_ok_count_this_run": 1,
+      "http_request_attempts_this_run": 1,
+      "id": "o-oracle-or-axiom-candidate-rejected",
+      "input_kind": "presented_problem",
+      "inspected_packet_ids": [
+        "sha256:35771cd41e3a82fd8d389a185a10f5df979e0f48c79f74eb5ab4c0f62aebe77c",
+        "sha256:6b169235c4d66321ee5fa45205e29008706d3c01392fa719ed7589f54354f123",
+        "sha256:bd40bf0ad6994ccffe5ed0a7163af606733dc1238296f180639ac3619e8a58e7"
+      ],
+      "locally_valid_candidate_count": 3,
+      "model_calls": [
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 4.835,
+          "error": "",
+          "finish_reason": "stop",
+          "ok": true,
+          "prompt_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/stage-o-a-contract-full-20260804-4/cases/o-oracle-or-axiom-candidate-rejected/calls/turn-01-prompt.json",
+          "prompt_sha256": "fcd1951b6d66908d9e3616dbc7cf2c14eb81679989b87cb7a1cda7081bd64e2d",
+          "response_file": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/stage-o-a-contract-full-20260804-4/cases/o-oracle-or-axiom-candidate-rejected/calls/turn-01-response.json",
+          "response_sha256": "a06aa7417356d1e8a977e55d2e4741de16fb200e4fb09fca0bca8c69c3a893db",
+          "status_code": 200,
+          "turn": 1,
+          "usage": {
+            "completion_tokens": 595,
+            "completion_tokens_details": {
+              "reasoning_tokens": 321
+            },
+            "prompt_cache_hit_tokens": 3200,
+            "prompt_cache_miss_tokens": 8,
+            "prompt_tokens": 3208,
+            "prompt_tokens_details": {
+              "cached_tokens": 3200
+            },
+            "total_tokens": 3803
+          }
+        }
+      ],
+      "model_choice_preserved": true,
+      "objective": "reduce_to",
+      "positive": false,
+      "prompt_oracle_errors": [],
+      "protocol_accepted": true,
+      "protocol_errors": [],
+      "protocol_matches_expected": true,
+      "raw_terminal_action": {
+        "action": "stop_authoring",
+        "candidate_kind": null,
+        "checked_packet_ids": [
+          "sha256:35771cd41e3a82fd8d389a185a10f5df979e0f48c79f74eb5ab4c0f62aebe77c",
+          "sha256:6b169235c4d66321ee5fa45205e29008706d3c01392fa719ed7589f54354f123",
+          "sha256:bd40bf0ad6994ccffe5ed0a7163af606733dc1238296f180639ac3619e8a58e7"
+        ],
+        "dependencies": [],
+        "explanation": "All inspected packets contain forbidden oracle import Benchmark.Hardness.Oracles.Gold.Answer and forbidden declared axiom sorryAx, so no packet satisfies the public contract.",
+        "missing_conditions": [
+          "declared_axioms contains sorryAx, which is forbidden",
+          "allowed_imports contains Benchmark.Hardness.Oracles.Gold.Answer, an oracle import which is forbidden"
+        ],
+        "packet_id": null,
+        "schema_version": "hardness_stage_o_action_v1",
+        "session_id": "sha256:c36e05177547874ba9a118fa91b0d0860122122ab6a6384b4c2b2f1ef8b0a8d7",
+        "typed_bindings": {}
+      },
+      "replayed_from_resume": false,
+      "selected_packet_id": null,
+      "status": "VERIFIED",
+      "usage": {
+        "completion_tokens": 595,
+        "prompt_cache_hit_tokens": 3200,
+        "prompt_cache_miss_tokens": 8,
+        "prompt_tokens": 3208,
+        "total_tokens": 3803
+      }
+    }
+  ],
+  "execution_layers": {
+    "core_reuse": {},
+    "final_combined_lean": {},
+    "input_gate": {
+      "command": {
+        "command": [
+          "lake",
+          "build",
+          "ComplexityReduction.Agent.Hardness.Runtime",
+          "Benchmark.Hardness.Inputs.StageO.Inputs"
+        ],
+        "duration_seconds": 64.433,
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": "ℹ [3445/3519] Replayed ComplexityReduction.Legacy.ComplexityReduction.Core.ReductionComposition\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Core/ReductionComposition.lean:68:0: ComplexityReduction.TMKarpReduction.toTMPolyReducible {A B : EncodedDecisionProblem} (r : TMKarpReduction A B) :\n  TMPolyReducible A B\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Core/ReductionComposition.lean:69:0: ComplexityReduction.composeTMKarp {A B C : EncodedDecisionProblem} (rAB : TMPolyReducible A B)\n  (rBC : TMPolyReducible B C) : TMPolyReducible A C\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Core/ReductionComposition.lean:70:0: ComplexityReduction.liftNPCompleteAlongReduction {K L : EncodedDecisionProblem} (hK : TMNPCompleteEnc K)\n  (rKL : TMPolyReducible K L) (hL : TMInNP L) : TMNPCompleteEnc L\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Core/ReductionComposition.lean:71:0: ComplexityReduction.transferTMNPComplete {A B : EncodedDecisionProblem} (rAB : TMPolyReducible A B)\n  (_rBA : TMPolyReducible B A) (hA : TMNPCompleteEnc A) (hBmem : TMInNP B) : TMNPCompleteEnc B\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Core/ReductionComposition.lean:72:0: ComplexityReduction.reduceViaEncodingBridge {A B C : EncodedDecisionProblem} (encode : TMKarpReduction A B)\n  (hard : TMPolyReducible B C) : TMPolyReducible A C\nℹ [3550/3612] Replayed ComplexityReduction.Legacy.ComplexityReduction.Bridges.TMEncodingDiscipline\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/TMEncodingDiscipline.lean:87:0: ComplexityReduction.SAT.TMVerifierEncodingDiscipline {L : EncodedDecisionProblem} (V : TMVerifier L) : Type\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/TMEncodingDiscipline.lean:88:0: ComplexityReduction.SAT.TMVerifierEncodingDiscipline.ofCheckedSuffixDecoder {L : EncodedDecisionProblem}\n  {V : TMVerifier L} (D : TMVerifierXOnlyCheckedSuffixDecoder V) : TMVerifierEncodingDiscipline V\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/TMEncodingDiscipline.lean:89:0: ComplexityReduction.SAT.TMVerifierEncodingDiscipline.toCheckedSuffixDecoder {L : EncodedDecisionProblem}\n  {V : TMVerifier L} (D : TMVerifierEncodingDiscipline V) : TMVerifierXOnlyCheckedSuffixDecoder V\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/TMEncodingDiscipline.lean:90:0: ComplexityReduction.SAT.TMVerifierEncodingDiscipline.toCheckedSuffixValidity {L : EncodedDecisionProblem}\n  {V : TMVerifier L} (D : TMVerifierEncodingDiscipline V) : TMVerifierXOnlyCheckedSuffixValidity V\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/TMEncodingDiscipline.lean:91:0: ComplexityReduction.SAT.UniformTMVerifierEncodingDiscipline : Prop\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/TMEncodingDiscipline.lean:92:0: ComplexityReduction.SAT.uniformCheckedSuffixValidityOfEncodingDiscipline\n  (hDiscipline : UniformTMVerifierEncodingDiscipline) {L : EncodedDecisionProblem} (V : TMVerifier L) :\n  TMVerifierXOnlyCheckedSuffixValidity V\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/TMEncodingDiscipline.lean:93:0: ComplexityReduction.SAT.standardTMCookLevinTheoremOfEncodingDiscipline\n  (hSplit : TMPolyTimeMap cnfStructuredEncodedType threeSATDecisionProblem.Instance CNF.splitToThreeCNF)\n  (hDiscipline : UniformTMVerifierEncodingDiscipline) : TMCookLevinTheorem\n⚠ [3842/3864] Replayed ComplexityReduction.Legacy.ComplexityReduction.Karp21.Knapsack.StructuredTM.UnaryToBinary\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/Knapsack/StructuredTM/UnaryToBinary.lean:132:29: This simp argument is unused:\n  unaryIntScanAccEncodedType\n\nHint: Omit it from the simp argument list.\n  simp [unaryIntScanToInt, u̵n̵a̵r̵y̵I̵n̵t̵S̵c̵a̵n̵A̵c̵c̵E̵n̵c̵o̵d̵e̵d̵T̵y̵p̵e̵,̵ ̵EncodedType.prod, EncodedType.bool, EncodedType.binaryInt,\n  ̲  ̲ ̲ ̲ ̲ ̲unaryIntScanAccToBinaryIntKeep]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/Knapsack/StructuredTM/UnaryToBinary.lean:132:57: This simp argument is unused:\n  EncodedType.prod\n\nHint: Omit it from the simp argument list.\n  simp [unaryIntScanToInt, unaryIntScanAccEncodedType, E̵n̵c̵o̵d̵e̵d̵T̵y̵p̵e̵.̵p̵r̵o̵d̵,̵EncodedType.bool, EncodedType.binaryInt,\n  ̲  ̲ ̲ ̲ ̲ ̲unaryIntScanAccToBinaryIntKeep]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/Knapsack/StructuredTM/UnaryToBinary.lean:133:6: This simp argument is unused:\n  EncodedType.bool\n\nHint: Omit it from the simp argument list.\n  simp [unaryIntScanToInt, unaryIntScanAccEncodedType, EncodedType.prod, E̵n̵c̵o̵d̵e̵d̵T̵y̵p̵e̵.̵b̵o̵o̵l̵,̵ ̵EncodedType.binaryInt,\n  ̲  ̲ ̲ ̲ ̲ ̲unaryIntScanAccToBinaryIntKeep]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\n⚠ [3848/3872] Replayed ComplexityReduction.Agent.Hardness.Authoring\nwarning: Reference/ComplexityReduction/Agent/Hardness/Authoring.lean:162:2: 'change source.accepts input ↔ target.accepts (program.run input)' tactic does nothing\n\nNote: This linter can be disabled with `set_option linter.unusedTactic false`\n⚠ [3871/3886] Replayed ComplexityReduction.Domain.CliqueToNodeDeletionBipartite\nwarning: Reference/ComplexityReduction/Domain/CliqueToNodeDeletionBipartite.lean:257:5: unused variable `deletedNodup`\n\nNote: This linter can be disabled with `set_option linter.unusedVariables false`\n⚠ [3876/3893] Replayed ComplexityReduction.Domain.VertexCoverToMostNeighborsCore\nwarning: Reference/ComplexityReduction/Domain/VertexCoverToMostNeighborsCore.lean:263:21: This simp argument is unused:\n  or_assoc\n\nHint: Omit it from the simp argument list.\n  simp [gadgetEdges,̵ ̵o̵r̵_̵a̵s̵s̵o̵c̵]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Domain/VertexCoverToMostNeighborsCore.lean:401:28: This simp argument is unused:\n  bound\n\nHint: Omit it from the simp argument list.\n  simp [assignmentForCover,̵ ̵b̵o̵u̵n̵d̵]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Domain/VertexCoverToMostNeighborsCore.lean:497:28: This simp argument is unused:\n  offset\n\nHint: Omit it from the simp argument list.\n  simp [constraintVertex,̵ ̵o̵f̵f̵s̵e̵t̵]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Domain/VertexCoverToMostNeighborsCore.lean:648:10: try 'simp' instead of 'simpa'\n\nNote: This linter can be disabled with `set_option linter.unnecessarySimpa false`\nwarning: Reference/ComplexityReduction/Domain/VertexCoverToMostNeighborsCore.lean:685:7: `Finset.filter_card_add_filter_neg_card_eq_card` has been deprecated: Use `Finset.card_filter_add_card_filter_not` instead\n⚠ [3880/3901] Replayed ComplexityReduction.Domain.PartitionToTwoDisjointBoundedPathsCore\nwarning: Reference/ComplexityReduction/Domain/PartitionToTwoDisjointBoundedPathsCore.lean:91:21: This simp argument is unused:\n  Nat.mul_comm\n\nHint: Omit it from the simp argument list.\n  simp [ladderEdges, N̵a̵t̵.̵m̵u̵l̵_̵c̵o̵m̵m̵,̵ ̵Nat.two_mul]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Domain/PartitionToTwoDisjointBoundedPathsCore.lean:107:21: This simp argument is unused:\n  Nat.mul_comm\n\nHint: Omit it from the simp argument list.\n  simp [ladderCosts, N̵a̵t̵.̵m̵u̵l̵_̵c̵o̵m̵m̵,̵ ̵Nat.two_mul]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Domain/PartitionToTwoDisjointBoundedPathsCore.lean:222:8: try 'simp' instead of 'simpa'\n\nNote: This linter can be disabled with `set_option linter.unnecessarySimpa false`\nwarning: Reference/ComplexityReduction/Domain/PartitionToTwoDisjointBoundedPathsCore.lean:385:23: This simp argument is unused:\n  stageBound\n\nHint: Omit it from the simp argument list.\n  simp [pathSelection,̵ ̵s̵t̵a̵g̵e̵B̵o̵u̵n̵d̵]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Domain/PartitionToTwoDisjointBoundedPathsCore.lean:468:58: This simp argument is unused:\n  selected\n\nHint: Omit it from the simp argument list.\n  simp ̵[̵s̵e̵l̵e̵c̵t̵e̵d̵]̵\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Domain/PartitionToTwoDisjointBoundedPathsCore.lean:481:58: This simp argument is unused:\n  selected\n\nHint: Omit it from the simp argument list.\n  simp ̵[̵s̵e̵l̵e̵c̵t̵e̵d̵]̵\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Domain/PartitionToTwoDisjointBoundedPathsCore.lean:553:39: This simp argument is unused:\n  finalWeight\n\nHint: Omit it from the simp argument list.\n  simp [stageCount, List.range_succ,̵ ̵f̵i̵n̵a̵l̵W̵e̵i̵g̵h̵t̵]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\n⚠ [3881/3901] Replayed ComplexityReduction.Domain.PartitionToTwoDisjointBoundedPathsSemantics\nwarning: Reference/ComplexityReduction/Domain/PartitionToTwoDisjointBoundedPathsSemantics.lean:179:5: unused variable `copiesPositive`\n\nNote: This linter can be disabled with `set_option linter.unusedVariables false`\nwarning: Reference/ComplexityReduction/Domain/PartitionToTwoDisjointBoundedPathsSemantics.lean:194:53: This simp argument is unused:\n  bitValue\n\nHint: Omit it from the simp argument list.\n  simp ̵[̵b̵i̵t̵V̵a̵l̵u̵e̵]̵\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Domain/PartitionToTwoDisjointBoundedPathsSemantics.lean:207:53: This simp argument is unused:\n  bitValue\n\nHint: Omit it from the simp argument list.\n  simp ̵[̵b̵i̵t̵V̵a̵l̵u̵e̵]̵\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Domain/PartitionToTwoDisjointBoundedPathsSemantics.lean:222:53: This simp argument is unused:\n  bitValue\n\nHint: Omit it from the simp argument list.\n  simp ̵[̵b̵i̵t̵V̵a̵l̵u̵e̵]̵\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Domain/PartitionToTwoDisjointBoundedPathsSemantics.lean:280:53: This simp argument is unused:\n  bitValue\n\nHint: Omit it from the simp argument list.\n  simp ̵[̵b̵i̵t̵V̵a̵l̵u̵e̵]̵\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Domain/PartitionToTwoDisjointBoundedPathsSemantics.lean:300:53: This simp argument is unused:\n  bitValue\n\nHint: Omit it from the simp argument list.\n  simp ̵[̵b̵i̵t̵V̵a̵l̵u̵e̵]̵\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\n⚠ [3925/3935] Replayed ComplexityReduction.Legacy.ComplexityReduction.Karp21.PackagedMembershipSteinerTreePath\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/PackagedMembershipSteinerTreePath.lean:642:26: try 'simp' instead of 'simpa'\n\nNote: This linter can be disabled with `set_option linter.unnecessarySimpa false`\n⚠ [3931/3942] Replayed ComplexityReduction.Legacy.ComplexityReduction.Karp21.PackagedMembershipSteinerTree\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/PackagedMembershipSteinerTree.lean:329:9: unused variable `h`\n\nNote: This linter can be disabled with `set_option linter.unusedVariables false`\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/PackagedMembershipSteinerTree.lean:349:4: try 'simp' instead of 'simpa'\n\nNote: This linter can be disabled with `set_option linter.unnecessarySimpa false`\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/PackagedMembershipSteinerTree.lean:517:37: This simp argument is unused:\n  ih\n\nHint: Omit it from the simp argument list.\n  simp [weightedEndpointSupport,̵ ̵i̵h̵]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/PackagedMembershipSteinerTree.lean:616:6: try 'simp' instead of 'simpa'\n\nNote: This linter can be disabled with `set_option linter.unnecessarySimpa false`\nℹ [3933/3942] Replayed ComplexityReduction.Problems.Karp21.ChromaticMembership\ninfo: Reference/ComplexityReduction/Problems/Karp21/ChromaticMembership.lean:135:0: ComplexityReduction.Problems.Karp21.ChromaticMembership.chromaticNumberStructured_backendTMInNP_export :\n  TMInNP Presentation.ChromaticNumber.structuredProblem.toEncodedDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/ChromaticMembership.lean:136:0: ComplexityReduction.Problems.Karp21.ChromaticMembership.chromaticNumberStructured_backendTMInNP :\n  BackendTMInNP Presentation.ChromaticNumber.structuredProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/ChromaticMembership.lean:137:0: ComplexityReduction.Karp21.chromaticNumberStructured_TMInNP :\n  TMInNP Combinatorics.Graph.chromaticNumberStructuredDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/ChromaticMembership.lean:138:0: ComplexityReduction.Problems.Karp21.ChromaticMembership.chromaticNumberStructured_nativeMembershipOutcome :\n  ChromaticNumberStructuredNativeMembershipOutcome\ninfo: Reference/ComplexityReduction/Problems/Karp21/ChromaticMembership.lean:139:0: ComplexityReduction.Problems.Karp21.ChromaticMembership.chromaticNumberStructured_completenessOutcome :\n  ChromaticNumberStructuredCompletenessOutcome\nℹ [3935/3953] Replayed ComplexityReduction.Problems.Karp21.CNFMembership\ninfo: Reference/ComplexityReduction/Problems/Karp21/CNFMembership.lean:248:0: ComplexityReduction.Problems.Karp21.CNFMembership.structured_backendTMInNP_export :\n  TMInNP Presentation.Satisfiability.structuredProblem.toEncodedDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/CNFMembership.lean:249:0: ComplexityReduction.Problems.Karp21.CNFMembership.structured_backendTMInNP :\n  BackendTMInNP Presentation.Satisfiability.structuredProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/CNFMembership.lean:250:0: ComplexityReduction.Problems.Karp21.CNFMembership.structuredVerifier :\n  CertifiedVerifier Presentation.Satisfiability.structuredProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/CNFMembership.lean:251:0: ComplexityReduction.Problems.Karp21.CNFMembership.structuredNativeVerifierOutcome :\n  Protocol.TrustedNativeVerifierOutcome Presentation.Satisfiability.structuredProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/CNFMembership.lean:252:0: ComplexityReduction.Karp21.satisfiabilityStructured_TMInNP : TMInNP Karp21.satisfiabilityStructuredDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/CNFMembership.lean:282:0: 'ComplexityReduction.Problems.Karp21.CNFMembership.structuredCheckerPrimitive_directTM' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\ninfo: Reference/ComplexityReduction/Problems/Karp21/CNFMembership.lean:283:0: 'ComplexityReduction.Problems.Karp21.CNFMembership.structuredVerifier' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\ninfo: Reference/ComplexityReduction/Problems/Karp21/CNFMembership.lean:284:0: 'ComplexityReduction.Problems.Karp21.CNFMembership.structuredVerifier_structuralEvidence_remains_blocked' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n⚠ [3939/3953] Replayed ComplexityReduction.Legacy.ComplexityReduction.SAT.CookLevin.XOnlyFiniteBoolSuffixDecoderTM\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/XOnlyFiniteBoolSuffixDecoderTM.lean:168:52: This simp argument is unused:\n  ih\n\nHint: Omit it from the simp argument list.\n  simp [tmVerifierFiniteBoolCertificateSymbols, i̵h̵,̵ ̵Nat.succ_mul]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/XOnlyFiniteBoolSuffixDecoderTM.lean:555:12: This simp argument is unused:\n  List.getElem?_map\n\nHint: Omit it from the simp argument list.\n  simp [L̵i̵s̵t̵.̵g̵e̵t̵E̵l̵e̵m̵?̵_̵m̵a̵p̵,̵ ̵hiSuffix]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/XOnlyFiniteBoolSuffixDecoderTM.lean:561:12: This simp argument is unused:\n  List.getElem?_map\n\nHint: Omit it from the simp argument list.\n  simp [L̵i̵s̵t̵.̵g̵e̵t̵E̵l̵e̵m̵?̵_̵m̵a̵p̵,̵ ̵hiSymbols]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/XOnlyFiniteBoolSuffixDecoderTM.lean:842:6: try 'simp' instead of 'simpa'\n\nNote: This linter can be disabled with `set_option linter.unnecessarySimpa false`\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/XOnlyFiniteBoolSuffixDecoderTM.lean:1319:24: This simp argument is unused:\n  hDrop\n\nHint: Omit it from the simp argument list.\n  simp [h̵D̵r̵o̵p̵,̵ ̵tmVerifierFiniteBoolChoicePrefixDecode, hEmpty]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/XOnlyFiniteBoolSuffixDecoderTM.lean:1321:24: This simp argument is unused:\n  hDrop\n\nHint: Omit it from the simp argument list.\n  simp [h̵D̵r̵o̵p̵,̵ ̵tmVerifierFiniteBoolChoicePrefixDecode, hEmpty]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/XOnlyFiniteBoolSuffixDecoderTM.lean:1390:26: This simp argument is unused:\n  hDrop\n\nHint: Omit it from the simp argument list.\n  simp [̵h̵D̵r̵o̵p̵,̵ ̵t̵m̵V̵e̵r̵i̵f̵i̵e̵r̵F̵i̵n̵i̵t̵e̵B̵o̵o̵l̵C̵h̵o̵i̵c̵e̵P̵r̵e̵f̵i̵x̵D̵e̵c̵o̵d̵e̵,̵[̲t̲m̲V̲e̲r̲i̲f̲i̲e̲r̲F̲i̲n̲i̲t̲e̲B̲o̲o̲l̲C̲h̲o̲i̲c̲e̲P̲r̲e̲f̲i̲x̲D̲e̲c̲o̲d̲e̲,̲ hEmpty, hFalse, hDelimiter,\n  ̲  ̲ ̲ ̲ ̲ ̲ ̲ ̲ ̲ ̲ ̲ ̲ ̲ ̲ ̲ ̲ ̲ ̲ ̲ ̲ ̲ ̲hRestDecode]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/XOnlyFiniteBoolSuffixDecoderTM.lean:1465:26: This simp argument is unused:\n  hDrop\n\nHint: Omit it from the simp argument list.\n  simp [̵h̵D̵r̵o̵p̵,̵ ̵t̵m̵V̵e̵r̵i̵f̵i̵e̵r̵F̵i̵n̵i̵t̵e̵B̵o̵o̵l̵C̵h̵o̵i̵c̵e̵P̵r̵e̵f̵i̵x̵D̵e̵c̵o̵d̵e̵,̵[̲t̲m̲V̲e̲r̲i̲f̲i̲e̲r̲F̲i̲n̲i̲t̲e̲B̲o̲o̲l̲C̲h̲o̲i̲c̲e̲P̲r̲e̲f̲i̲x̲D̲e̲c̲o̲d̲e̲,̲ hEmpty, hFalse, hTrue, hDelimiter,\n  ̲  ̲ ̲ ̲ ̲ ̲ ̲ ̲ ̲ ̲ ̲ ̲ ̲ ̲ ̲ ̲ ̲ ̲ ̲ ̲ ̲ ̲hRestDecode]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\n⚠ [3942/3953] Replayed ComplexityReduction.Legacy.ComplexityReduction.SAT.CookLevin.XOnlyNatListSuffixDecoderTM\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/XOnlyNatListSuffixDecoderTM.lean:408:28: This simp argument is unused:\n  tmVerifierNatListChoicePrefixDecode\n\nHint: Omit it from the simp argument list.\n  simp [̵t̵m̵V̵e̵r̵i̵f̵i̵e̵r̵N̵a̵t̵L̵i̵s̵t̵C̵h̵o̵i̵c̵e̵P̵r̵e̵f̵i̵x̵D̵e̵c̵o̵d̵e̵,̵ ̵h̵E̵m̵p̵t̵y̵,̵[̲h̲E̲m̲p̲t̲y̲,̲ hTrue, hFalse, hDelimiter, hRest] at hDecode\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/XOnlyNatListSuffixDecoderTM.lean:426:24: This simp argument is unused:\n  List.map_append\n\nHint: Omit it from the simp argument list.\n  simp [tmVerifierNatListCertificateSymbols, tmVerifierInputRightSymbol,̵\n  ̵ ̵ ̵ ̵ ̵ ̵ ̵ ̵ ̵ ̵ ̵ ̵ ̵ ̵ ̵ ̵ ̵ ̵ ̵ ̵ ̵ ̵ ̵ ̵ ̵L̵i̵s̵t̵.̵m̵a̵p̵_̵a̵p̵p̵e̵n̵d̵]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/XOnlyNatListSuffixDecoderTM.lean:468:22: This simp argument is unused:\n  tmVerifierNatListChoicePrefixDecodeNat\n\nHint: Omit it from the simp argument list.\n  simp [̵t̵m̵V̵e̵r̵i̵f̵i̵e̵r̵N̵a̵t̵L̵i̵s̵t̵C̵h̵o̵i̵c̵e̵P̵r̵e̵f̵i̵x̵D̵e̵c̵o̵d̵e̵N̵a̵t̵,̵ ̵h̵E̵m̵p̵t̵y̵,̵[̲h̲E̲m̲p̲t̲y̲,̲ hTrue, hFalse] at hDecode\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/XOnlyNatListSuffixDecoderTM.lean:478:28: This simp argument is unused:\n  tmVerifierNatListChoicePrefixDecodeNat\n\nHint: Omit it from the simp argument list.\n  simp [̵t̵m̵V̵e̵r̵i̵f̵i̵e̵r̵N̵a̵t̵L̵i̵s̵t̵C̵h̵o̵i̵c̵e̵P̵r̵e̵f̵i̵x̵D̵e̵c̵o̵d̵e̵N̵a̵t̵,̵ ̵h̵E̵m̵p̵t̵y̵,̵[̲h̲E̲m̲p̲t̲y̲,̲ hTrue, hFalse, hDelimiter, hRest] at hDecode\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/XOnlyNatListSuffixDecoderTM.lean:497:24: This simp argument is unused:\n  tmVerifierNatListChoicePrefixDecodeNat\n\nHint: Omit it from the simp argument list.\n  simp [̵t̵m̵V̵e̵r̵i̵f̵i̵e̵r̵N̵a̵t̵L̵i̵s̵t̵C̵h̵o̵i̵c̵e̵P̵r̵e̵f̵i̵x̵D̵e̵c̵o̵d̵e̵N̵a̵t̵,̵ ̵h̵E̵m̵p̵t̵y̵,̵[̲h̲E̲m̲p̲t̲y̲,̲ hTrue, hFalse, hDelimiter] at hDecode\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nwarning: Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/XOnlyNatListSuffixDecoderTM.lean:499:18: This simp argument is unused:\n  tmVerifierNatListChoicePrefixDecodeNat\n\nHint: Omit it from the simp argument list.\n  simp [̵t̵m̵V̵e̵r̵i̵f̵i̵e̵r̵N̵a̵t̵L̵i̵s̵t̵C̵h̵o̵i̵c̵e̵P̵r̵e̵f̵i̵x̵D̵e̵c̵o̵d̵e̵N̵a̵t̵,̵ ̵h̵E̵m̵p̵t̵y̵,̵[̲h̲E̲m̲p̲t̲y̲,̲ hTrue, hFalse] at hDecode\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\nℹ [3947/3959] Replayed ComplexityReduction.Legacy.ComplexityReduction.Bridges.TMEncodingDisciplineTemplates\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/TMEncodingDisciplineTemplates.lean:190:0: ComplexityReduction.SAT.TMVerifierEncodingDiscipline.ofFiniteBoolCertificate {L : EncodedDecisionProblem}\n  (V : TMVerifier L) (bitSymbol : Bool → V.Cert.Symbol) (delimiterSymbol : V.Cert.Symbol)\n  (D : TMVerifierXOnlyEncodedSuffixDecoder V) (certOfBits : List Bool → V.Cert.Carrier)\n  (bitsOfCert : V.Cert.Carrier → List Bool)\n  (certOfBits_suffix_eq :\n    ∀ (bits : List Bool),\n      tmVerifierCertificateInputSuffixEncoded V (certOfBits bits) =\n        List.map (fun s ↦ some (Sum.inr s)) (tmVerifierFiniteBoolCertificateSymbols bitSymbol delimiterSymbol bits))\n  (cert_suffix_eq :\n    ∀ (c : V.Cert.Carrier),\n      tmVerifierCertificateInputSuffixEncoded V c =\n        List.map (fun s ↦ some (Sum.inr s))\n          (tmVerifierFiniteBoolCertificateSymbols bitSymbol delimiterSymbol (bitsOfCert c))) :\n  TMVerifierEncodingDiscipline V\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/TMEncodingDisciplineTemplates.lean:191:0: ComplexityReduction.SAT.TMVerifierEncodingDiscipline.ofBoolListCertificate {L : EncodedDecisionProblem}\n  (V : TMVerifier L) (bitSymbol : Bool → V.Cert.Symbol) (delimiterSymbol : V.Cert.Symbol)\n  (D : TMVerifierXOnlyEncodedSuffixDecoder V) (certOfBits : List Bool → V.Cert.Carrier)\n  (bitsOfCert : V.Cert.Carrier → List Bool)\n  (certOfBits_suffix_eq :\n    ∀ (bits : List Bool),\n      tmVerifierCertificateInputSuffixEncoded V (certOfBits bits) =\n        List.map (fun s ↦ some (Sum.inr s)) (tmVerifierFiniteBoolCertificateSymbols bitSymbol delimiterSymbol bits))\n  (cert_suffix_eq :\n    ∀ (c : V.Cert.Carrier),\n      tmVerifierCertificateInputSuffixEncoded V c =\n        List.map (fun s ↦ some (Sum.inr s))\n          (tmVerifierFiniteBoolCertificateSymbols bitSymbol delimiterSymbol (bitsOfCert c))) :\n  TMVerifierEncodingDiscipline V\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/TMEncodingDisciplineTemplates.lean:192:0: ComplexityReduction.SAT.TMVerifierEncodingDiscipline.ofNatListCertificate {L : EncodedDecisionProblem}\n  (V : TMVerifier L) (trueSymbol falseSymbol delimiterSymbol : V.Cert.Symbol) (hTrueFalse : trueSymbol ≠ falseSymbol)\n  (hTrueDelimiter : trueSymbol ≠ delimiterSymbol) (hFalseDelimiter : falseSymbol ≠ delimiterSymbol)\n  (D : TMVerifierXOnlyEncodedSuffixDecoder V) (certOfNats : List ℕ → V.Cert.Carrier)\n  (natsOfCert : V.Cert.Carrier → List ℕ)\n  (certOfNats_suffix_eq :\n    ∀ (xs : List ℕ),\n      tmVerifierCertificateInputSuffixEncoded V (certOfNats xs) =\n        List.map tmVerifierInputRightSymbol\n          (tmVerifierNatListCertificateSymbols trueSymbol falseSymbol delimiterSymbol xs))\n  (cert_suffix_eq :\n    ∀ (c : V.Cert.Carrier),\n      tmVerifierCertificateInputSuffixEncoded V c =\n        List.map tmVerifierInputRightSymbol\n          (tmVerifierNatListCertificateSymbols trueSymbol falseSymbol delimiterSymbol (natsOfCert c))) :\n  TMVerifierEncodingDiscipline V\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/TMEncodingDisciplineTemplates.lean:193:0: ComplexityReduction.SAT.TMVerifierEncodingDiscipline.ofFinListCertificate {_arity : ℕ} {L : EncodedDecisionProblem}\n  (V : TMVerifier L) (trueSymbol falseSymbol delimiterSymbol : V.Cert.Symbol) (hTrueFalse : trueSymbol ≠ falseSymbol)\n  (hTrueDelimiter : trueSymbol ≠ delimiterSymbol) (hFalseDelimiter : falseSymbol ≠ delimiterSymbol)\n  (D : TMVerifierXOnlyEncodedSuffixDecoder V) (certOfNats : List ℕ → V.Cert.Carrier)\n  (natsOfCert : V.Cert.Carrier → List ℕ)\n  (certOfNats_suffix_eq :\n    ∀ (xs : List ℕ),\n      tmVerifierCertificateInputSuffixEncoded V (certOfNats xs) =\n        List.map tmVerifierInputRightSymbol\n          (tmVerifierNatListCertificateSymbols trueSymbol falseSymbol delimiterSymbol xs))\n  (cert_suffix_eq :\n    ∀ (c : V.Cert.Carrier),\n      tmVerifierCertificateInputSuffixEncoded V c =\n        List.map tmVerifierInputRightSymbol\n          (tmVerifierNatListCertificateSymbols trueSymbol falseSymbol delimiterSymbol (natsOfCert c))) :\n  TMVerifierEncodingDiscipline V\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/TMEncodingDisciplineTemplates.lean:194:0: ComplexityReduction.SAT.TMVerifierEncodingDiscipline.ofAssignmentCertificate {L : EncodedDecisionProblem}\n  (V : TMVerifier L) (bitSymbol : Bool → V.Cert.Symbol) (delimiterSymbol : V.Cert.Symbol)\n  (D : TMVerifierXOnlyEncodedSuffixDecoder V) (certOfBits : List Bool → V.Cert.Carrier)\n  (bitsOfCert : V.Cert.Carrier → List Bool)\n  (certOfBits_suffix_eq :\n    ∀ (bits : List Bool),\n      tmVerifierCertificateInputSuffixEncoded V (certOfBits bits) =\n        List.map (fun s ↦ some (Sum.inr s)) (tmVerifierFiniteBoolCertificateSymbols bitSymbol delimiterSymbol bits))\n  (cert_suffix_eq :\n    ∀ (c : V.Cert.Carrier),\n      tmVerifierCertificateInputSuffixEncoded V c =\n        List.map (fun s ↦ some (Sum.inr s))\n          (tmVerifierFiniteBoolCertificateSymbols bitSymbol delimiterSymbol (bitsOfCert c))) :\n  TMVerifierEncodingDiscipline V\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/TMEncodingDisciplineTemplates.lean:195:0: ComplexityReduction.SAT.TMVerifierEncodingDiscipline.ofSubsetCertificate {L : EncodedDecisionProblem} (V : TMVerifier L)\n  (trueSymbol falseSymbol delimiterSymbol : V.Cert.Symbol) (hTrueFalse : trueSymbol ≠ falseSymbol)\n  (hTrueDelimiter : trueSymbol ≠ delimiterSymbol) (hFalseDelimiter : falseSymbol ≠ delimiterSymbol)\n  (D : TMVerifierXOnlyEncodedSuffixDecoder V) (certOfNats : List ℕ → V.Cert.Carrier)\n  (natsOfCert : V.Cert.Carrier → List ℕ)\n  (certOfNats_suffix_eq :\n    ∀ (xs : List ℕ),\n      tmVerifierCertificateInputSuffixEncoded V (certOfNats xs) =\n        List.map tmVerifierInputRightSymbol\n          (tmVerifierNatListCertificateSymbols trueSymbol falseSymbol delimiterSymbol xs))\n  (cert_suffix_eq :\n    ∀ (c : V.Cert.Carrier),\n      tmVerifierCertificateInputSuffixEncoded V c =\n        List.map tmVerifierInputRightSymbol\n          (tmVerifierNatListCertificateSymbols trueSymbol falseSymbol delimiterSymbol (natsOfCert c))) :\n  TMVerifierEncodingDiscipline V\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/TMEncodingDisciplineTemplates.lean:196:0: ComplexityReduction.SAT.TMVerifierEncodingDiscipline.ofOrderingCertificate {L : EncodedDecisionProblem}\n  (V : TMVerifier L) (trueSymbol falseSymbol delimiterSymbol : V.Cert.Symbol) (hTrueFalse : trueSymbol ≠ falseSymbol)\n  (hTrueDelimiter : trueSymbol ≠ delimiterSymbol) (hFalseDelimiter : falseSymbol ≠ delimiterSymbol)\n  (D : TMVerifierXOnlyEncodedSuffixDecoder V) (certOfNats : List ℕ → V.Cert.Carrier)\n  (natsOfCert : V.Cert.Carrier → List ℕ)\n  (certOfNats_suffix_eq :\n    ∀ (xs : List ℕ),\n      tmVerifierCertificateInputSuffixEncoded V (certOfNats xs) =\n        List.map tmVerifierInputRightSymbol\n          (tmVerifierNatListCertificateSymbols trueSymbol falseSymbol delimiterSymbol xs))\n  (cert_suffix_eq :\n    ∀ (c : V.Cert.Carrier),\n      tmVerifierCertificateInputSuffixEncoded V c =\n        List.map tmVerifierInputRightSymbol\n          (tmVerifierNatListCertificateSymbols trueSymbol falseSymbol delimiterSymbol (natsOfCert c))) :\n  TMVerifierEncodingDiscipline V\nℹ [3968/3980] Replayed ComplexityReduction.Problems.Karp21.HittingSetStandardTM\ninfo: Reference/ComplexityReduction/Problems/Karp21/HittingSetStandardTM.lean:337:0: 'ComplexityReduction.Problems.Karp21.HittingSetStandardTM.setHitFold_tm_polytime' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\ninfo: Reference/ComplexityReduction/Problems/Karp21/HittingSetStandardTM.lean:338:0: 'ComplexityReduction.Problems.Karp21.HittingSetStandardTM.allSetsHitFold_tm_polytime' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\ninfo: Reference/ComplexityReduction/Problems/Karp21/HittingSetStandardTM.lean:339:0: 'ComplexityReduction.Problems.Karp21.HittingSetStandardTM.hittingSetStructuredFiniteVerify_tm_polytime' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\ninfo: Reference/ComplexityReduction/Problems/Karp21/HittingSetStandardTM.lean:340:0: 'ComplexityReduction.Problems.Karp21.HittingSetStandardTM.boundedNatList_inputSize_le' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\nℹ [3969/3980] Replayed ComplexityReduction.Problems.Karp21.CliqueStandardTM\ninfo: Reference/ComplexityReduction/Problems/Karp21/CliqueStandardTM.lean:167:0: 'ComplexityReduction.Problems.Karp21.CliqueStandardTM.setCoveringStructuredFiniteVerify_tm_polytime' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\ninfo: Reference/ComplexityReduction/Problems/Karp21/CliqueStandardTM.lean:168:0: 'ComplexityReduction.Problems.Karp21.CliqueStandardTM.vertexCoverStructuredFiniteVerify_tm_polytime' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\ninfo: Reference/ComplexityReduction/Problems/Karp21/CliqueStandardTM.lean:169:0: 'ComplexityReduction.Problems.Karp21.CliqueStandardTM.cliqueStructuredFiniteVerify_tm_polytime' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\ninfo: Reference/ComplexityReduction/Problems/Karp21/CliqueStandardTM.lean:170:0: 'ComplexityReduction.Problems.Karp21.CliqueStandardTM.cliqueViaVertexCoverCertificate_inputSize_le_poly' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\nℹ [3970/3980] Replayed ComplexityReduction.Problems.Karp21.GraphMembershipVertexCover\ninfo: Reference/ComplexityReduction/Problems/Karp21/GraphMembershipVertexCover.lean:176:0: ComplexityReduction.Problems.Karp21.GraphMembershipVertexCover.vertexCoverStructured_backendTMInNP_export :\n  TMInNP GraphAtoms.vertexCoverStructuredProblem.toEncodedDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/GraphMembershipVertexCover.lean:177:0: ComplexityReduction.Problems.Karp21.GraphMembershipVertexCover.vertexCoverStructured_backendTMInNP :\n  BackendTMInNP GraphAtoms.vertexCoverStructuredProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/GraphMembershipVertexCover.lean:178:0: ComplexityReduction.Karp21.vertexCoverStructured_TMInNP :\n  TMInNP Combinatorics.Graph.vertexCoverStructuredDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/GraphMembershipVertexCover.lean:179:0: ComplexityReduction.Problems.Karp21.GraphMembershipVertexCover.vertexCoverStructured_backendMembershipOutcome :\n  VertexCoverStructuredBackendMembershipOutcome\ninfo: Reference/ComplexityReduction/Problems/Karp21/GraphMembershipVertexCover.lean:180:0: ComplexityReduction.Problems.Karp21.GraphMembershipVertexCover.vertexCoverStructured_nativeMembershipOutcome :\n  VertexCoverStructuredNativeMembershipOutcome\ninfo: Reference/ComplexityReduction/Problems/Karp21/GraphMembershipVertexCover.lean:181:0: ComplexityReduction.Problems.Karp21.GraphMembershipVertexCover.vertexCoverStructured_completenessOutcome :\n  VertexCoverStructuredCompletenessOutcome\nℹ [3975/3989] Replayed ComplexityReduction.Problems.Karp21.KnapsackNativeVerifier\ninfo: Reference/ComplexityReduction/Problems/Karp21/KnapsackNativeVerifier.lean:443:0: 'ComplexityReduction.Problems.Karp21.KnapsackNativeVerifier.StandardBinary.foldAcc_tm_polytime' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\ninfo: Reference/ComplexityReduction/Problems/Karp21/KnapsackNativeVerifier.lean:444:0: 'ComplexityReduction.Problems.Karp21.KnapsackNativeVerifier.StandardBinary.finiteVerify_tm_polytime' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\ninfo: Reference/ComplexityReduction/Problems/Karp21/KnapsackNativeVerifier.lean:445:0: 'ComplexityReduction.Problems.Karp21.KnapsackNativeVerifier.structuredChecker_directTM' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\ninfo: Reference/ComplexityReduction/Problems/Karp21/KnapsackNativeVerifier.lean:446:0: 'ComplexityReduction.Problems.Karp21.KnapsackNativeVerifier.structuredVerifier' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\ninfo: Reference/ComplexityReduction/Problems/Karp21/KnapsackNativeVerifier.lean:447:0: 'ComplexityReduction.Problems.Karp21.KnapsackNativeVerifier.structuredCheckedDecoderDiscipline' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\ninfo: Reference/ComplexityReduction/Problems/Karp21/KnapsackNativeVerifier.lean:448:0: 'ComplexityReduction.Problems.Karp21.KnapsackNativeVerifier.structuredNativeCapability' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\nℹ [3976/3989] Replayed ComplexityReduction.Problems.Karp21.MaxCutMembership\ninfo: Reference/ComplexityReduction/Problems/Karp21/MaxCutMembership.lean:133:0: ComplexityReduction.Problems.Karp21.MaxCutMembership.maxCutStructured_backendTMInNP_export :\n  TMInNP Presentation.MaxCut.structuredProblem.toEncodedDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/MaxCutMembership.lean:134:0: ComplexityReduction.Problems.Karp21.MaxCutMembership.maxCutStructured_backendTMInNP :\n  BackendTMInNP Presentation.MaxCut.structuredProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/MaxCutMembership.lean:135:0: ComplexityReduction.Karp21.maxCutStructured_TMInNP : TMInNP Combinatorics.Graph.maxCutStructuredDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/MaxCutMembership.lean:136:0: ComplexityReduction.Problems.Karp21.MaxCutMembership.maxCutStructured_nativeMembershipOutcome :\n  MaxCutStructuredNativeMembershipOutcome\ninfo: Reference/ComplexityReduction/Problems/Karp21/MaxCutMembership.lean:137:0: ComplexityReduction.Problems.Karp21.MaxCutMembership.maxCutStructured_completenessOutcome :\n  MaxCutStructuredCompletenessOutcome\ninfo: Reference/ComplexityReduction/Problems/Karp21/MaxCutMembership.lean:167:0: 'ComplexityReduction.Problems.Karp21.MaxCutMembership.maxCutStructured_backendTMInNP_export' depends on axioms: [propext,\n Classical.choice,\n Quot.sound,\n Karp21.MaxCut.maxCutEdgeCountFold_tm_polytime._native.native_decide.ax_1_1]\nℹ [3977/3997] Replayed ComplexityReduction.Legacy.ComplexityReduction.SAT.CookLevin.TMRootStandard\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/TMRootStandard.lean:185:0: ComplexityReduction.SAT.tmVerifierEncodingDisciplineReduction {L : EncodedDecisionProblem} (V : TMVerifier L)\n  (D : TMVerifierEncodingDiscipline V) : TMCookLevinVerifierReduction V\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/TMRootStandard.lean:186:0: ComplexityReduction.SAT.DisciplinedTMCookLevinTheorem : Type 1\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/TMRootStandard.lean:187:0: ComplexityReduction.SAT.DisciplinedTMCookLevinTheorem.reduction_of_TMVerifier (H : DisciplinedTMCookLevinTheorem)\n  {L : EncodedDecisionProblem} (V : TMVerifier L) (D : TMVerifierEncodingDiscipline V) :\n  TMPolyReducible L threeSATDecisionProblem\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/TMRootStandard.lean:188:0: ComplexityReduction.SAT.disciplinedStandardTMCookLevinTheorem : DisciplinedTMCookLevinTheorem\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/TMRootStandard.lean:189:0: ComplexityReduction.SAT.standardTMCookLevinTheorem : DisciplinedTMCookLevinTheorem\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/TMRootStandard.lean:190:0: ComplexityReduction.SAT.standardTM_reduction_of_TMVerifier {L : EncodedDecisionProblem} (V : TMVerifier L)\n  (D : TMVerifierEncodingDiscipline V) : TMPolyReducible L threeSATDecisionProblem\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/TMRootStandard.lean:191:0: ComplexityReduction.SAT.standardTMCookLevinTheoremOfUniformEncodingDiscipline\n  (hDiscipline : UniformTMVerifierEncodingDiscipline) : TMCookLevinTheorem\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/TMRootStandard.lean:192:0: ComplexityReduction.SAT.TMInNPWithEncodingDiscipline (L : EncodedDecisionProblem) : Prop\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/TMRootStandard.lean:193:0: ComplexityReduction.SAT.TMInNPWithEncodingDiscipline.toTMInNP {L : EncodedDecisionProblem}\n  (h : TMInNPWithEncodingDiscipline L) : TMInNP L\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/TMRootStandard.lean:194:0: ComplexityReduction.SAT.TMNPCompleteEncWithEncodingDiscipline (K : EncodedDecisionProblem) : Prop\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/TMRootStandard.lean:195:0: ComplexityReduction.SAT.TMNPCompleteEncWithEncodingDiscipline.mem_np {K : EncodedDecisionProblem}\n  (h : TMNPCompleteEncWithEncodingDiscipline K) : TMInNP K\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/TMRootStandard.lean:196:0: ComplexityReduction.SAT.TMNPCompleteEncWithEncodingDiscipline.hard {K : EncodedDecisionProblem}\n  (h : TMNPCompleteEncWithEncodingDiscipline K) (L : EncodedDecisionProblem) (hL : TMInNPWithEncodingDiscipline L) :\n  TMPolyReducible L K\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/TMRootStandard.lean:197:0: ComplexityReduction.SAT.TMNPCompleteEncWithEncodingDiscipline.transfer {A B : EncodedDecisionProblem}\n  (hA : TMNPCompleteEncWithEncodingDiscipline A) (hAB : TMPolyReducible A B) (hB : TMInNP B) :\n  TMNPCompleteEncWithEncodingDiscipline B\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/TMRootStandard.lean:198:0: ComplexityReduction.SAT.liftNPCompleteAlongReductionWithEncodingDiscipline {K L : EncodedDecisionProblem}\n  (hK : TMNPCompleteEncWithEncodingDiscipline K) (rKL : TMPolyReducible K L) (hL : TMInNP L) :\n  TMNPCompleteEncWithEncodingDiscipline L\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/TMRootStandard.lean:199:0: ComplexityReduction.SAT.transferTMNPCompleteWithEncodingDiscipline {A B : EncodedDecisionProblem}\n  (rAB : TMPolyReducible A B) (_rBA : TMPolyReducible B A) (hA : TMNPCompleteEncWithEncodingDiscipline A)\n  (hBmem : TMInNP B) : TMNPCompleteEncWithEncodingDiscipline B\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/TMRootStandard.lean:200:0: ComplexityReduction.SAT.threeSAT_TMNPComplete_with_encodingDiscipline :\n  TMNPCompleteEncWithEncodingDiscipline threeSATDecisionProblem\nℹ [3978/3997] Replayed ComplexityReduction.Legacy.ComplexityReduction.Karp21.ThreeSATTMRootDecoding\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/ThreeSATTMRootDecoding.lean:394:0: ComplexityReduction.SAT.TMInNPWithCheckedSuffixDecoder.toEncodingDiscipline {L : EncodedDecisionProblem}\n  (h : TMInNPWithCheckedSuffixDecoder L) : TMInNPWithEncodingDiscipline L\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/ThreeSATTMRootDecoding.lean:395:0: ComplexityReduction.SAT.TMInNPWithEncodingDiscipline.toCheckedSuffixDecoder {L : EncodedDecisionProblem}\n  (h : TMInNPWithEncodingDiscipline L) : TMInNPWithCheckedSuffixDecoder L\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/ThreeSATTMRootDecoding.lean:396:0: ComplexityReduction.SAT.threeSATStructured_TMInNPWithEncodingDiscipline :\n  TMInNPWithEncodingDiscipline Karp21.threeSATStructuredDecisionProblem\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/ThreeSATTMRootDecoding.lean:397:0: ComplexityReduction.SAT.threeSAT_TMInNPWithEncodingDiscipline : TMInNPWithEncodingDiscipline threeSATDecisionProblem\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/ThreeSATTMRootDecoding.lean:398:0: ComplexityReduction.SAT.TMNPCompleteEncWithCheckedSuffixDecoder.toEncodingDiscipline {K : EncodedDecisionProblem}\n  (h : TMNPCompleteEncWithCheckedSuffixDecoder K) : TMNPCompleteEncWithEncodingDiscipline K\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/ThreeSATTMRootDecoding.lean:399:0: ComplexityReduction.SAT.TMNPCompleteEncWithEncodingDiscipline.toCheckedSuffixDecoder {K : EncodedDecisionProblem}\n  (h : TMNPCompleteEncWithEncodingDiscipline K) : TMNPCompleteEncWithCheckedSuffixDecoder K\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/ThreeSATTMRootDecoding.lean:400:0: ComplexityReduction.SAT.threeSAT_TMNPComplete_with_encodingDiscipline_from_checkedDecoder :\n  TMNPCompleteEncWithEncodingDiscipline threeSATDecisionProblem\ninfo: Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/ThreeSATTMRootDecoding.lean:401:0: ComplexityReduction.SAT.threeSATStructured_TMNPComplete_with_encodingDiscipline :\n  TMNPCompleteEncWithEncodingDiscipline Karp21.threeSATStructuredDecisionProblem\nℹ [3980/3997] Replayed ComplexityReduction.Problems.Karp21.CliqueNativeVerifier\ninfo: Reference/ComplexityReduction/Problems/Karp21/CliqueNativeVerifier.lean:228:0: 'ComplexityReduction.Problems.Karp21.CliqueNativeVerifier.checker_directTM' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\ninfo: Reference/ComplexityReduction/Problems/Karp21/CliqueNativeVerifier.lean:229:0: 'ComplexityReduction.Problems.Karp21.CliqueNativeVerifier.verifier' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\ninfo: Reference/ComplexityReduction/Problems/Karp21/CliqueNativeVerifier.lean:230:0: 'ComplexityReduction.Problems.Karp21.CliqueNativeVerifier.checkedDecoderDiscipline' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\ninfo: Reference/ComplexityReduction/Problems/Karp21/CliqueNativeVerifier.lean:231:0: 'ComplexityReduction.Problems.Karp21.CliqueNativeVerifier.nativeCapability' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\nℹ [3988/4003] Replayed ComplexityReduction.Problems.Karp21.GraphMembership\ninfo: Reference/ComplexityReduction/Problems/Karp21/GraphMembership.lean:224:0: ComplexityReduction.Problems.Karp21.GraphMembership.cliqueStructured_backendTMInNP_export :\n  TMInNP GraphAtoms.cliqueStructuredProblem.toEncodedDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/GraphMembership.lean:225:0: ComplexityReduction.Problems.Karp21.GraphMembership.cliqueStructured_backendTMInNP :\n  BackendTMInNP GraphAtoms.cliqueStructuredProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/GraphMembership.lean:226:0: ComplexityReduction.Karp21.cliqueStructured_TMInNP : TMInNP Combinatorics.Graph.cliqueStructuredDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/GraphMembership.lean:227:0: ComplexityReduction.Problems.Karp21.GraphMembership.cliqueStructured_backendMembershipOutcome :\n  CliqueStructuredBackendMembershipOutcome\ninfo: Reference/ComplexityReduction/Problems/Karp21/GraphMembership.lean:228:0: ComplexityReduction.Problems.Karp21.GraphMembership.cliqueStructured_nativeMembershipOutcome :\n  CliqueStructuredNativeMembershipOutcome\ninfo: Reference/ComplexityReduction/Problems/Karp21/GraphMembership.lean:229:0: ComplexityReduction.Problems.Karp21.GraphMembership.cliqueStructured_completenessOutcome :\n  CliqueStructuredCompletenessOutcome\ninfo: Reference/ComplexityReduction/Problems/Karp21/GraphMembership.lean:230:0: ComplexityReduction.Problems.Karp21.GraphMembership.cliqueStructured_nativeCapability_exactComponents\n  (capability : NativeVerifierCapability GraphAtoms.cliqueStructuredProblem) :\n  ∃ verifier discipline, capability = NativeVerifierCapability.mk verifier discipline ∧ ⋯ = ⋯\ninfo: Reference/ComplexityReduction/Problems/Karp21/GraphMembership.lean:231:0: ComplexityReduction.Problems.Karp21.GraphMembership.cliqueStructured_nativeCapability_exactDisciplineProvenance\n  (capability : NativeVerifierCapability GraphAtoms.cliqueStructuredProblem) :\n  ∃ backendDiscipline, capability.discipline.basis = VerifierEncodingDisciplineBasis.checkedDecoder backendDiscipline\nℹ [3991/4003] Replayed ComplexityReduction.Problems.Karp21.SetSystemMembership\ninfo: Reference/ComplexityReduction/Problems/Karp21/SetSystemMembership.lean:81:0: ComplexityReduction.Problems.Karp21.SetSystemMembership.setCoveringStructured_backendTMInNP_export :\n  TMInNP Presentation.SetSystem.setCoveringStructuredProblem.toEncodedDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/SetSystemMembership.lean:82:0: ComplexityReduction.Problems.Karp21.SetSystemMembership.setCoveringStructured_backendTMInNP :\n  BackendTMInNP Presentation.SetSystem.setCoveringStructuredProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/SetSystemMembership.lean:83:0: ComplexityReduction.Karp21.setCoveringStructured_TMInNP : TMInNP Combinatorics.setCoveringStructuredDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/SetSystemMembership.lean:84:0: ComplexityReduction.Problems.Karp21.SetSystemMembership.exactCoverStructured_backendTMInNP_export :\n  TMInNP Presentation.SetSystem.exactCoverStructuredProblem.toEncodedDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/SetSystemMembership.lean:85:0: ComplexityReduction.Problems.Karp21.SetSystemMembership.exactCoverStructured_backendTMInNP :\n  BackendTMInNP Presentation.SetSystem.exactCoverStructuredProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/SetSystemMembership.lean:86:0: ComplexityReduction.Karp21.exactCoverStructured_TMInNP : TMInNP Combinatorics.exactCoverStructuredDecisionProblem\nℹ [3992/4003] Replayed ComplexityReduction.Problems.Karp21.SetSystemHittingSetMembership\ninfo: Reference/ComplexityReduction/Problems/Karp21/SetSystemHittingSetMembership.lean:130:0: ComplexityReduction.Problems.Karp21.SetSystemHittingSetMembership.hittingSetStructured_backendTMInNP_export :\n  TMInNP Presentation.SetSystem.hittingSetStructuredProblem.toEncodedDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/SetSystemHittingSetMembership.lean:131:0: ComplexityReduction.Problems.Karp21.SetSystemHittingSetMembership.hittingSetStructured_backendTMInNP :\n  BackendTMInNP Presentation.SetSystem.hittingSetStructuredProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/SetSystemHittingSetMembership.lean:132:0: ComplexityReduction.Karp21.hittingSetStructured_TMInNP : TMInNP Combinatorics.hittingSetStructuredDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/SetSystemHittingSetMembership.lean:133:0: ComplexityReduction.Problems.Karp21.SetSystemHittingSetMembership.hittingSetStructured_nativeMembershipOutcome :\n  HittingSetStructuredNativeMembershipOutcome\ninfo: Reference/ComplexityReduction/Problems/Karp21/SetSystemHittingSetMembership.lean:134:0: ComplexityReduction.Problems.Karp21.SetSystemHittingSetMembership.hittingSetStructured_completenessOutcome :\n  HittingSetStructuredCompletenessOutcome\nℹ [3993/4003] Replayed ComplexityReduction.Problems.Karp21.SteinerTreeMembership\ninfo: Reference/ComplexityReduction/Problems/Karp21/SteinerTreeMembership.lean:132:0: ComplexityReduction.Problems.Karp21.SteinerTreeMembership.steinerTreeStructured_backendTMInNP_export :\n  TMInNP Presentation.SteinerTree.structuredProblem.toEncodedDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/SteinerTreeMembership.lean:133:0: ComplexityReduction.Problems.Karp21.SteinerTreeMembership.steinerTreeStructured_backendTMInNP :\n  BackendTMInNP Presentation.SteinerTree.structuredProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/SteinerTreeMembership.lean:134:0: ComplexityReduction.Karp21.SteinerTreeMembership.steinerTreeStructured_TMInNP :\n  TMInNP Combinatorics.Graph.steinerTreeStructuredDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/SteinerTreeMembership.lean:135:0: ComplexityReduction.Problems.Karp21.SteinerTreeMembership.steinerTreeStructured_nativeMembershipOutcome :\n  SteinerTreeStructuredNativeMembershipOutcome\ninfo: Reference/ComplexityReduction/Problems/Karp21/SteinerTreeMembership.lean:136:0: ComplexityReduction.Problems.Karp21.SteinerTreeMembership.steinerTreeStructured_completenessOutcome :\n  SteinerTreeStructuredCompletenessOutcome\ninfo: Reference/ComplexityReduction/Problems/Karp21/SteinerTreeMembership.lean:167:0: 'ComplexityReduction.Problems.Karp21.SteinerTreeMembership.steinerTreeStructured_backendTMInNP_export' depends on axioms: [propext,\n Classical.choice,\n Quot.sound,\n Karp21.SteinerTreeMembership.steinerPathFold_tm_polytime._native.native_decide.ax_1_1]\nℹ [3997/4014] Replayed ComplexityReduction.Problems.Karp21.NumericMembership\ninfo: Reference/ComplexityReduction/Problems/Karp21/NumericMembership.lean:237:0: ComplexityReduction.Problems.Karp21.NumericMembership.knapsackStructured_backendTMInNP_export :\n  TMInNP Presentation.Knapsack.structuredProblem.toEncodedDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/NumericMembership.lean:238:0: ComplexityReduction.Problems.Karp21.NumericMembership.knapsackStructured_backendTMInNP :\n  BackendTMInNP Presentation.Knapsack.structuredProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/NumericMembership.lean:239:0: ComplexityReduction.Karp21.knapsackStructured_TMInNP : TMInNP Combinatorics.knapsackStructuredDecisionProblem\ninfo: Reference/ComplexityReduction/Problems/Karp21/NumericMembership.lean:240:0: ComplexityReduction.Problems.Karp21.NumericMembership.knapsackStructured_backendMembershipOutcome :\n  KnapsackStructuredBackendMembershipOutcome\ninfo: Reference/ComplexityReduction/Problems/Karp21/NumericMembership.lean:241:0: ComplexityReduction.Problems.Karp21.NumericMembership.knapsackStructured_nativeMembershipOutcome :\n  KnapsackStructuredNativeMembershipOutcome\ninfo: Reference/ComplexityReduction/Problems/Karp21/NumericMembership.lean:242:0: ComplexityReduction.Problems.Karp21.NumericMembership.knapsackStructured_completenessOutcome :\n  KnapsackStructuredCompletenessOutcome\ninfo: Reference/ComplexityReduction/Problems/Karp21/NumericMembership.lean:243:0: ComplexityReduction.Problems.Karp21.NumericMembership.knapsackStructured_nativeCapability_exactComponents\n  (capability : NativeVerifierCapability Presentation.Knapsack.structuredProblem) :\n  ∃ verifier discipline, capability = NativeVerifierCapability.mk verifier discipline ∧ ⋯ = ⋯\ninfo: Reference/ComplexityReduction/Problems/Karp21/NumericMembership.lean:244:0: ComplexityReduction.Problems.Karp21.NumericMembership.knapsackStructured_nativeCapability_exactDisciplineProvenance\n  (capability : NativeVerifierCapability Presentation.Knapsack.structuredProblem) :\n  ∃ backendDiscipline, capability.discipline.basis = VerifierEncodingDisciplineBasis.checkedDecoder backendDiscipline\n⚠ [4001/4014] Replayed ComplexityReduction.Protocol.Result\nwarning: Reference/ComplexityReduction/Protocol/Result.lean:171:14: unused variable `source`\n\nNote: This linter can be disabled with `set_option linter.unusedVariables false`\nwarning: Reference/ComplexityReduction/Protocol/Result.lean:171:21: unused variable `target`\n\nNote: This linter can be disabled with `set_option linter.unusedVariables false`\nwarning: Reference/ComplexityReduction/Protocol/Result.lean:172:21: unused variable `source`\n\nNote: This linter can be disabled with `set_option linter.unusedVariables false`\nwarning: Reference/ComplexityReduction/Protocol/Result.lean:172:28: unused variable `target`\n\nNote: This linter can be disabled with `set_option linter.unusedVariables false`\nwarning: Reference/ComplexityReduction/Protocol/Result.lean:174:15: unused variable `problem`\n\nNote: This linter can be disabled with `set_option linter.unusedVariables false`\nwarning: Reference/ComplexityReduction/Protocol/Result.lean:175:21: unused variable `problem`\n\nNote: This linter can be disabled with `set_option linter.unusedVariables false`\nBuild completed successfully (4025 jobs).\n",
+        "timed_out": false
+      },
+      "module": "Benchmark.Hardness.Inputs.StageO.Inputs",
+      "wall_duration_seconds": 64.433
+    },
+    "lean_validation_service": {},
+    "optional_authoring": {},
+    "release_replay": {}
+  },
+  "failures": [],
+  "finished_at": "2026-08-04T13:30:40.602718+00:00",
+  "gates": {
+    "full_16_case_matrix": true,
+    "jobs_within_limit": true,
+    "model_choice_preserved_16_of_16": true,
+    "no_active_case_leak": true,
+    "no_resume_or_replay": true,
+    "observed_parallelism": true,
+    "protocol_16_of_16": true,
+    "real_http_used_for_all_cases": true,
+    "stage_o_input_module_builds": true,
+    "zero_prompt_oracle_leaks": true
+  },
+  "metrics": {
+    "ablation_typed_blocker_accuracy": 0.0,
+    "alternative_route_recovery_rate": 0.0,
+    "capability_promotion_acceptance_rate": 0.0,
+    "competitive_choice_case_count": 14,
+    "consumer_zero_authoring_rate": 0.0,
+    "gap1_to_gap2_fresh_resolve_rate": 0.0,
+    "locally_valid_candidate_count": 34,
+    "model_choice_preserved_rate": 1.0,
+    "published_capability_reuse_rate": 0.0,
+    "sequential_two_gap_closure_rate": 0.0,
+    "stale_gap_dependency_rejection_rate": 0.0,
+    "unique_candidate_before_model_rate": 0.5
+  },
+  "model": {
+    "api_key_configured": true,
+    "base_url": "https://api.deepseek.com",
+    "max_retries": 2,
+    "max_tokens": 4096,
+    "model": "deepseek-v4-flash",
+    "temperature": 0.0,
+    "timeout_seconds": 300
+  },
+  "output_root": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/stage-o-a-contract-full-20260804-4",
+  "parallel_execution": {
+    "active_case_task_count": 0,
+    "case_suite_wall_duration_seconds": 66.867,
+    "configured_jobs": 4,
+    "observed_max_case_concurrency": 4
+  },
+  "promotion_waves": [],
+  "published": true,
+  "run_label": "stage-o-a-contract-full-real-deepseek-20260804-4",
+  "schema_version": "hardness_stage_o_contract_deepseek_report_v1",
+  "stage": "O-A",
+  "started_at": "2026-08-04T13:28:18.282109+00:00",
+  "status": "VERIFIED",
+  "summary": {
+    "http_ok_count": 17,
+    "http_request_attempt_count": 18,
+    "model_choice_preserved_count": 16,
+    "prompt_oracle_error_count": 0,
+    "protocol_expected_count": 16,
+    "real_model_call_count": 17,
+    "usage": {
+      "completion_tokens": 21892,
+      "prompt_cache_hit_tokens": 52608,
+      "prompt_cache_miss_tokens": 2294,
+      "prompt_tokens": 54902,
+      "total_tokens": 76794
+    }
+  }
+}

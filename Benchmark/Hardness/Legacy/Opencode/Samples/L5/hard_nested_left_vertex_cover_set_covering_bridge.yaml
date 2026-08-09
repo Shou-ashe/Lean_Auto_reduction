@@ -1,0 +1,42 @@
+schema_version: opencode_decision_problem_sample_file_v1
+id: hard_nested_left_vertex_cover_set_covering_bridge
+name: hard_nested_left_vertex_cover_set_covering_bridge_problem
+input_language: nested_left_vertex_cover_interface
+problem_family: graph_interface
+problem_statement: 'Input is a pair whose first field is a pair of a standard Vertex Cover instance and a Boolean audit flag, and whose second field is another Boolean audit flag. Both flags are ignored: decide whether the Vertex Cover instance is accepting.'
+certificate_contract: lean_proposition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction
+
+  noncomputable section
+
+  abbrev sourceProblem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.Combinatorics.Graph.vertexCoverDecisionProblem
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    { Instance := ComplexityReduction.EncodedType.prod
+        (ComplexityReduction.EncodedType.prod
+          sourceProblem.Instance
+          ComplexityReduction.EncodedType.bool)
+        ComplexityReduction.EncodedType.bool
+      isYes := fun p => sourceProblem.isYes p.1.1 }
+lean_target_type: |
+  ∃ normalizedProblem : ComplexityReduction.EncodedDecisionProblem,
+    normalizedProblem = ComplexityReduction.Combinatorics.Graph.vertexCoverDecisionProblem ∧
+      ∃ encodingBridgeCertificate :
+        ComplexityReduction.ProblemEquivM ComplexityReduction.CostedPolyTimeModel problem normalizedProblem,
+        ∃ normalizedRouteTarget : ComplexityReduction.EncodedDecisionProblem,
+          normalizedRouteTarget = ComplexityReduction.Combinatorics.setCoveringDecisionProblem ∧
+            ∃ normalizedReductionCertificate :
+              ComplexityReduction.KarpReductionM ComplexityReduction.CostedPolyTimeModel normalizedProblem normalizedRouteTarget,
+              ∃ liftedReductionCertificate :
+                ComplexityReduction.PolyReducibleM ComplexityReduction.CostedPolyTimeModel problem normalizedRouteTarget,
+                ComplexityReduction.InNPEnc ComplexityReduction.CostedPolyTimeModel normalizedRouteTarget ∧
+                  ComplexityReduction.InNPEnc ComplexityReduction.CostedPolyTimeModel problem
+difficulty: encoding_bridge_hard
+difficulty_tags:
+- graph
+- nonidentity_bridge
+- nested_projection
+- costed_adapter

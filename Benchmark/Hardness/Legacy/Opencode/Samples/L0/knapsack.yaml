@@ -1,0 +1,22 @@
+schema_version: opencode_decision_problem_sample_file_v1
+id: knapsack
+name: knapsack_problem
+input_language: knapsack
+problem_family: numeric
+problem_statement: Given item weights and values together with capacity and target value bounds, decide whether some subset fits within capacity and reaches the target value.
+certificate_contract: lean_proposition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction
+
+  noncomputable section
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.Combinatorics.knapsackKarpDecisionProblem
+lean_target_type: |
+  ComplexityReduction.InNPEnc ComplexityReduction.CostedPolyTimeModel problem
+difficulty: medium
+difficulty_tags:
+- numeric
+- binary_encoding
+- subset_witness

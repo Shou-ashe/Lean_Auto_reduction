@@ -1,0 +1,41 @@
+{
+  "schema_version": "hardness_np_hard_input_registry_v1",
+  "entries": [
+    {
+      "stable_id": "canonical-three-sat-exact",
+      "module": "ComplexityReduction.Certificate.NativeCookLevin",
+      "problem": "ComplexityReduction.Certificate.NativeCookLevin.canonicalThreeSAT",
+      "canonical_module": "ComplexityReduction.Certificate.NativeCookLevin",
+      "canonical_problem": "ComplexityReduction.Certificate.NativeCookLevin.canonicalThreeSAT",
+      "normalization_kind": "exact",
+      "supported": true
+    },
+    {
+      "stable_id": "canonical-three-sat",
+      "module": "Benchmark.Hardness.Inputs.Completeness.RegisteredThreeSAT",
+      "problem": "Benchmark.Hardness.Inputs.Completeness.RegisteredThreeSAT.source",
+      "canonical_module": "ComplexityReduction.Certificate.NativeCookLevin",
+      "canonical_problem": "ComplexityReduction.Certificate.NativeCookLevin.canonicalThreeSAT",
+      "normalization_kind": "alias",
+      "supported": true
+    },
+    {
+      "stable_id": "canonical-three-sat-wrapper",
+      "module": "Benchmark.Hardness.Inputs.NPHardGeneralization.InputNormalization",
+      "problem": "Benchmark.Hardness.Inputs.NPHardGeneralization.InputNormalization.wrappedThreeSAT",
+      "canonical_module": "ComplexityReduction.Certificate.NativeCookLevin",
+      "canonical_problem": "ComplexityReduction.Certificate.NativeCookLevin.canonicalThreeSAT",
+      "normalization_kind": "wrapper",
+      "supported": true
+    },
+    {
+      "stable_id": "canonical-three-sat-bare-encoding",
+      "module": "Benchmark.Hardness.Inputs.NPHardGeneralization.InputNormalization",
+      "problem": "Benchmark.Hardness.Inputs.NPHardGeneralization.InputNormalization.bareThreeSATEncoding",
+      "canonical_module": "ComplexityReduction.Certificate.NativeCookLevin",
+      "canonical_problem": "ComplexityReduction.Certificate.NativeCookLevin.canonicalThreeSAT",
+      "normalization_kind": "wrapper",
+      "supported": true
+    }
+  ]
+}

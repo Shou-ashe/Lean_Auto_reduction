@@ -1,0 +1,12 @@
+{
+  "schema_version": "hardness_benchmark_expected_v1",
+  "case_id": "authoring-semantic-proof",
+  "authoritative": false,
+  "expected_lane": "typed_authoring",
+  "baseline_status": "BLOCKED",
+  "baseline_failure_code": "missing_semantic_proof",
+  "final_status": "VERIFIED",
+  "final_failure_code": null,
+  "requires_real_model_call": true,
+  "coverage": ["reduction_capability", "gadget_packet", "fenced_model_body"]
+}

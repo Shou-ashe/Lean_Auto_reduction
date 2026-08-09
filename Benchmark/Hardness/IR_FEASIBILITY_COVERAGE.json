@@ -1,0 +1,102 @@
+{
+  "schema_version": "hardness_ir_feasibility_coverage_v1",
+  "recorded_at": "2026-07-30",
+  "authoritative": false,
+  "scope": "existing_library_declarations_only",
+  "library_changes": false,
+  "benchmark_local_reduction_facades": 0,
+  "coverage": {
+    "family_count": 3,
+    "logical_matched_pair_count": 6,
+    "execution_case_count": 12,
+    "families": {
+      "graph-role-graph": {"source_form_count": 1, "target_form_count": 1},
+      "clause-csp": {"source_form_count": 3, "target_form_count": 1},
+      "incidence-eon": {"source_form_count": 2, "target_form_count": 1}
+    }
+  },
+  "validation": {
+    "production_inventory_edge_count": 75,
+    "route_audit": "passed",
+    "input_module_build": "passed",
+    "kernel_regression_module": "Benchmark.Hardness.IRFeasibilityRegression",
+    "kernel_regression_build": "passed",
+    "full_agent_suite_run": "pending"
+  },
+  "matched_pairs": [
+    {
+      "matched_pair_id": "graph-to-role-graph",
+      "family_id": "graph-role-graph",
+      "flat_route": ["ComplexityReduction.Routes.GraphToRoleGraph.finalRoute"],
+      "ir_route": [
+        "ComplexityReduction.Domain.GraphToGraphIRAdapter.sourceAdapter",
+        "ComplexityReduction.Domain.GraphIRRoleAssignmentGadget.sharedGadget"
+      ]
+    },
+    {
+      "matched_pair_id": "structured-cnf-to-csp",
+      "family_id": "clause-csp",
+      "flat_route": ["ComplexityReduction.Routes.ClauseToCSP.finalRoute"],
+      "ir_route": [
+        "ComplexityReduction.Domain.CNFToThreeSATStandardTM.sharedGadget",
+        "ComplexityReduction.Domain.ThreeSATToThreeSATLikeStandardTM.sharedGadget"
+      ]
+    },
+    {
+      "matched_pair_id": "two-cnf-to-csp",
+      "family_id": "clause-csp",
+      "flat_route": [
+        "ComplexityReduction.Routes.ClauseToCSP.IngressAdapters.twoCNFToCSPRoute"
+      ],
+      "ir_route": [
+        "ComplexityReduction.Routes.ClauseToCSP.IngressAdapters.twoCNFIngress",
+        "ComplexityReduction.Domain.ThreeSATToThreeSATLikeStandardTM.sharedGadget"
+      ]
+    },
+    {
+      "matched_pair_id": "three-sat-to-csp",
+      "family_id": "clause-csp",
+      "flat_route": [
+        "ComplexityReduction.Routes.ClauseToCSP.IngressAdapters.threeSATToCSPRoute"
+      ],
+      "ir_route": [
+        "ComplexityReduction.Domain.ThreeSATToThreeSATLikeStandardTM.sharedGadget"
+      ]
+    },
+    {
+      "matched_pair_id": "exact-cover-to-eon",
+      "family_id": "incidence-eon",
+      "flat_route": ["ComplexityReduction.Routes.IncidenceToRoleGraph.originalRoute"],
+      "ir_route": [
+        "ComplexityReduction.Domain.SetSystemToIncidenceAdapter.sourceAdapter",
+        "ComplexityReduction.Domain.IncidenceToExactlyOneNeighborGadget.sharedGadget"
+      ]
+    },
+    {
+      "matched_pair_id": "modified-exact-cover-to-eon",
+      "family_id": "incidence-eon",
+      "flat_route": ["ComplexityReduction.Routes.IncidenceToRoleGraph.modifiedRoute"],
+      "ir_route": [
+        "ComplexityReduction.Domain.ModifiedExactCoverInput.modifiedSourceAdapter",
+        "ComplexityReduction.Domain.IncidenceToExactlyOneNeighborGadget.sharedGadget"
+      ]
+    }
+  ],
+  "unavailable_pairs": [
+    {
+      "family_id": "incidence-eon",
+      "target_form_id": "fixed-role-graph",
+      "reason": "The existing explicit egress is a typed direct-TM blocker, so no matched flat/IR positive pair is admitted."
+    },
+    {
+      "family_id": "clause-csp",
+      "target_form_id": "parameterized-table-csp-to-clause",
+      "reason": "The existing route is parameterized by a table language; no closed benchmark application has yet been selected."
+    }
+  ],
+  "remaining_limitations": [
+    "Catalog interface counts are still global rather than family/hub-aware slices.",
+    "Final-facade provenance has not yet been expanded into semantic atomic leaves in reports.",
+    "The full 12-case Agent benchmark has not yet been run through all current per-case process stages."
+  ]
+}

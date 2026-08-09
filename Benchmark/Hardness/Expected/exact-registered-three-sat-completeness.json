@@ -1,0 +1,7 @@
+{
+  "schema_version": "hardness_benchmark_expected_v1",
+  "case_id": "exact-registered-three-sat-completeness",
+  "authoritative": false,
+  "final_status": "VERIFIED",
+  "coverage": ["prove_np_complete", "registered_native_completeness", "zero_atom_result"]
+}

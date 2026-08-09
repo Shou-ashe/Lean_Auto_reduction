@@ -1,0 +1,8 @@
+{
+  "schema_version": "hardness_benchmark_expected_v1",
+  "case_id": "completeness-wrong-direction",
+  "authoritative": false,
+  "final_status": "BLOCKED",
+  "final_failure_code": "missing_native_completeness",
+  "coverage": ["prove_np_complete", "forward_direction_required"]
+}

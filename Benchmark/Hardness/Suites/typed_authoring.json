@@ -1,0 +1,328 @@
+{
+  "schema_version": "hardness_benchmark_suite_v1",
+  "suite_id": "typed-authoring",
+  "description": "Stage-M typed optional authoring with certificate DAG validation, packet selection, bounded finite-witness membership, and fail-closed adversarial cases.",
+  "cases": [
+    {
+      "id": "authoring-lawful-presentation",
+      "module": "Benchmark.Hardness.Inputs.Authoring.LawfulPresentation",
+      "source": "Benchmark.Hardness.Inputs.Authoring.LawfulPresentation.source",
+      "membership": null,
+      "target": "Benchmark.Hardness.Inputs.Authoring.LawfulPresentation.target",
+      "objective": "reduce_to",
+      "target_policy": "fixed",
+      "planner": "deterministic",
+      "execution_layer": "optional_authoring",
+      "verification_profile": "strict-release",
+      "evaluation_lane": "typed_authoring",
+      "enabled": true,
+      "min_agent_phase": 13,
+      "authoring_policy": {"enabled": true, "mode": "deterministic-template", "attempt_budget": 1},
+      "typed_authoring": {
+        "schema_version": "hardness_typed_authoring_request_v1",
+        "active_node": "presentation_capability",
+        "expected_capability_head": "ComplexityReduction.Encoding.StructuralRepresentationCertificate",
+        "allowed_packet_kinds": ["gadget_packet"],
+        "required_checker_combinators": [],
+        "witness_shape": "none",
+        "model_selection_required": true
+      },
+      "expected": {
+        "baseline_status": "BLOCKED",
+        "baseline_failure_code": "missing_lawful_presentation",
+        "final_status": "VERIFIED",
+        "final_failure_code": null
+      },
+      "coverage": {
+        "required_gap_reason": "lawfulPresentation",
+        "required_packet_kind": "gadget_packet",
+        "required_authoring_template": "lawful_presentation",
+        "expected_gap_closure_count": 1
+      },
+      "resources": {"lean_timeout_seconds": 1200, "model_timeout_seconds": 300, "model_max_tokens": 4096, "max_model_calls": 2},
+      "tags": ["stage-m", "typed-authoring", "presentation", "positive"],
+      "group_id": "stage-m-positive"
+    },
+    {
+      "id": "authoring-semantic-proof",
+      "module": "Benchmark.Hardness.Inputs.ModelAuthoring.SemanticProof",
+      "source": "Benchmark.Hardness.Inputs.ModelAuthoring.SemanticProofCore.source",
+      "membership": null,
+      "target": "Benchmark.Hardness.Inputs.ModelAuthoring.SemanticProofCore.target",
+      "objective": "reduce_to",
+      "target_policy": "fixed",
+      "planner": "deterministic",
+      "execution_layer": "optional_authoring",
+      "verification_profile": "strict-release",
+      "evaluation_lane": "typed_authoring",
+      "enabled": true,
+      "min_agent_phase": 13,
+      "authoring_policy": {"enabled": true, "mode": "model-required", "attempt_budget": 4},
+      "typed_authoring": {
+        "schema_version": "hardness_typed_authoring_request_v1",
+        "active_node": "reduction_capability",
+        "expected_capability_head": "ComplexityReduction.Certificate.CertifiedReduction",
+        "allowed_packet_kinds": ["gadget_packet", "tm_certificate_packet"],
+        "required_checker_combinators": [],
+        "witness_shape": "none",
+        "model_selection_required": true
+      },
+      "expected": {
+        "baseline_status": "BLOCKED",
+        "baseline_failure_code": "missing_semantic_proof",
+        "final_status": "VERIFIED",
+        "final_failure_code": null
+      },
+      "coverage": {
+        "required_gap_reason": "semanticProof",
+        "required_packet_kind": "gadget_packet",
+        "required_authoring_template": "program_indexed_model",
+        "expected_gap_closure_count": 1,
+        "require_fenced_model_body": true
+      },
+      "resources": {"lean_timeout_seconds": 1200, "model_timeout_seconds": 600, "model_max_tokens": 16384, "max_model_calls": 5},
+      "tags": ["stage-m", "typed-authoring", "semantic-proof", "model-body", "positive"],
+      "group_id": "stage-m-positive"
+    },
+    {
+      "id": "authoring-single-edge-program",
+      "module": "Benchmark.Hardness.Inputs.TypedAuthoring.SingleEdgeProgram",
+      "source": "Benchmark.Hardness.Inputs.TypedAuthoring.SingleEdgeProgram.source",
+      "membership": null,
+      "target": "Benchmark.Hardness.Inputs.TypedAuthoring.SingleEdgeProgram.target",
+      "objective": "reduce_to",
+      "target_policy": "fixed",
+      "planner": "deterministic",
+      "execution_layer": "optional_authoring",
+      "verification_profile": "strict-release",
+      "evaluation_lane": "typed_authoring",
+      "enabled": true,
+      "min_agent_phase": 13,
+      "authoring_policy": {"enabled": true, "mode": "deterministic-template", "attempt_budget": 1},
+      "typed_authoring": {
+        "schema_version": "hardness_typed_authoring_request_v1",
+        "active_node": "reduction_capability",
+        "expected_capability_head": "ComplexityReduction.Certificate.CertifiedReduction",
+        "allowed_packet_kinds": ["tm_certificate_packet"],
+        "required_checker_combinators": [],
+        "witness_shape": "none",
+        "model_selection_required": true
+      },
+      "expected": {
+        "baseline_status": "BLOCKED",
+        "baseline_failure_code": "missing_reduction_capability",
+        "final_status": "VERIFIED",
+        "final_failure_code": null
+      },
+      "coverage": {
+        "required_gap_reason": "reductionCapability",
+        "required_packet_kind": "tm_certificate_packet",
+        "required_authoring_template": "program_indexed_reduction",
+        "expected_gap_closure_count": 1
+      },
+      "resources": {"lean_timeout_seconds": 1200, "model_timeout_seconds": 300, "model_max_tokens": 4096, "max_model_calls": 2},
+      "tags": ["stage-m", "typed-authoring", "single-edge", "program-indexed", "positive"],
+      "group_id": "stage-m-positive"
+    },
+    {
+      "id": "authoring-bounded-subset-membership",
+      "module": "Benchmark.Hardness.Inputs.TypedAuthoring.BoundedSubsetMembership",
+      "source": "Benchmark.Hardness.Inputs.TypedAuthoring.BoundedSubsetMembership.source",
+      "membership": null,
+      "target": null,
+      "objective": "prove_in_np",
+      "target_policy": "open",
+      "planner": "deterministic",
+      "execution_layer": "optional_authoring",
+      "verification_profile": "strict-release",
+      "evaluation_lane": "typed_authoring",
+      "enabled": true,
+      "min_agent_phase": 13,
+      "authoring_policy": {"enabled": true, "mode": "deterministic-template", "attempt_budget": 1},
+      "typed_authoring": {
+        "schema_version": "hardness_typed_authoring_request_v1",
+        "active_node": "membership_capability",
+        "expected_capability_head": "ComplexityReduction.Certificate.NativeTMInNP",
+        "allowed_packet_kinds": ["membership_packet"],
+        "required_checker_combinators": ["list_nat", "nodup", "vertices_within_bounds", "cardinality_budget", "nat_budget", "local_predicate"],
+        "witness_shape": "bounded_subset",
+        "model_selection_required": true
+      },
+      "expected": {
+        "baseline_status": "BLOCKED",
+        "baseline_failure_code": "missing_verifier_program",
+        "final_status": "VERIFIED",
+        "final_failure_code": null
+      },
+      "coverage": {
+        "required_gap_reason": "verifierProgram",
+        "required_packet_kind": "membership_packet",
+        "required_authoring_template": "native_membership",
+        "expected_gap_closure_count": 1
+      },
+      "resources": {"lean_timeout_seconds": 1800, "model_timeout_seconds": 300, "model_max_tokens": 4096, "max_model_calls": 2},
+      "tags": ["stage-m", "typed-authoring", "membership", "bounded-subset", "positive"],
+      "group_id": "stage-m-positive"
+    },
+    {
+      "id": "authoring-pair-list-membership",
+      "module": "Benchmark.Hardness.Inputs.TypedAuthoring.PairListMembership",
+      "source": "Benchmark.Hardness.Inputs.TypedAuthoring.PairListMembership.source",
+      "membership": null,
+      "target": null,
+      "objective": "prove_in_np",
+      "target_policy": "open",
+      "planner": "deterministic",
+      "execution_layer": "optional_authoring",
+      "verification_profile": "strict-release",
+      "evaluation_lane": "typed_authoring",
+      "enabled": true,
+      "min_agent_phase": 13,
+      "authoring_policy": {"enabled": true, "mode": "deterministic-template", "attempt_budget": 1},
+      "typed_authoring": {
+        "schema_version": "hardness_typed_authoring_request_v1",
+        "active_node": "membership_capability",
+        "expected_capability_head": "ComplexityReduction.Certificate.NativeTMInNP",
+        "allowed_packet_kinds": ["membership_packet"],
+        "required_checker_combinators": ["list_nat", "pair_list", "path_legality", "disjointness", "local_predicate"],
+        "witness_shape": "pair_list",
+        "model_selection_required": true
+      },
+      "expected": {
+        "baseline_status": "BLOCKED",
+        "baseline_failure_code": "missing_checker_combinator:pair_list",
+        "final_status": "VERIFIED",
+        "final_failure_code": null
+      },
+      "coverage": {
+        "required_gap_reason": "checkerCombinatorPairList",
+        "required_packet_kind": "membership_packet",
+        "required_authoring_template": "native_membership",
+        "expected_gap_closure_count": 1
+      },
+      "resources": {"lean_timeout_seconds": 1800, "model_timeout_seconds": 300, "model_max_tokens": 4096, "max_model_calls": 2},
+      "tags": ["stage-m", "typed-authoring", "membership", "pair-list", "positive"],
+      "group_id": "stage-m-positive"
+    },
+    {
+      "id": "authoring-missing-direct-tm",
+      "module": "Benchmark.Hardness.Inputs.Authoring.MissingDirectTM",
+      "source": "Benchmark.Hardness.Inputs.Authoring.MissingDirectTM.source",
+      "membership": null,
+      "target": "Benchmark.Hardness.Inputs.Authoring.MissingDirectTM.target",
+      "objective": "reduce_to",
+      "target_policy": "fixed",
+      "planner": "deterministic",
+      "execution_layer": "optional_authoring",
+      "verification_profile": "strict-release",
+      "evaluation_lane": "typed_authoring",
+      "enabled": true,
+      "min_agent_phase": 13,
+      "authoring_policy": {"enabled": true, "mode": "deterministic-template", "attempt_budget": 1},
+      "typed_authoring": {
+        "schema_version": "hardness_typed_authoring_request_v1",
+        "active_node": "reduction_capability",
+        "expected_capability_head": "ComplexityReduction.Certificate.CertifiedReduction",
+        "allowed_packet_kinds": ["tm_certificate_packet"],
+        "required_checker_combinators": [],
+        "witness_shape": "none",
+        "model_selection_required": false
+      },
+      "expected": {
+        "baseline_status": "BLOCKED",
+        "baseline_failure_code": "missing_direct_tm",
+        "final_status": "BLOCKED",
+        "final_failure_code": "missing_direct_tm"
+      },
+      "coverage": {
+        "required_gap_reason": "directTM",
+        "required_packet_kind": "tm_certificate_packet",
+        "maximum_authoring_attempts": 0,
+        "negative_class": "typed_blocker"
+      },
+      "resources": {"lean_timeout_seconds": 1200, "model_timeout_seconds": 300, "model_max_tokens": 4096, "max_model_calls": 1},
+      "tags": ["stage-m", "typed-authoring", "direct-tm", "negative"],
+      "group_id": "stage-m-negative"
+    },
+    {
+      "id": "authoring-unsupported-checker",
+      "module": "Benchmark.Hardness.Inputs.TypedAuthoring.UnsupportedChecker",
+      "source": "Benchmark.Hardness.Inputs.TypedAuthoring.UnsupportedChecker.source",
+      "membership": null,
+      "target": null,
+      "objective": "prove_in_np",
+      "target_policy": "open",
+      "planner": "deterministic",
+      "execution_layer": "optional_authoring",
+      "verification_profile": "strict-release",
+      "evaluation_lane": "typed_authoring",
+      "enabled": true,
+      "min_agent_phase": 13,
+      "authoring_policy": {"enabled": true, "mode": "deterministic-template", "attempt_budget": 1},
+      "typed_authoring": {
+        "schema_version": "hardness_typed_authoring_request_v1",
+        "active_node": "membership_capability",
+        "expected_capability_head": "ComplexityReduction.Certificate.NativeTMInNP",
+        "allowed_packet_kinds": ["membership_packet"],
+        "required_checker_combinators": ["unsupported_local_checker"],
+        "witness_shape": "hypergraph_steiner",
+        "model_selection_required": false
+      },
+      "expected": {
+        "baseline_status": "BLOCKED",
+        "baseline_failure_code": "missing_checker_combinator:unsupported_local_checker",
+        "final_status": "BLOCKED",
+        "final_failure_code": "missing_checker_combinator:unsupported_local_checker"
+      },
+      "coverage": {
+        "required_gap_reason": "checkerCombinatorUnsupported",
+        "required_packet_kind": "membership_packet",
+        "maximum_authoring_attempts": 0,
+        "negative_class": "unsupported_checker"
+      },
+      "resources": {"lean_timeout_seconds": 1200, "model_timeout_seconds": 300, "model_max_tokens": 4096, "max_model_calls": 1},
+      "tags": ["stage-m", "typed-authoring", "membership", "unsupported-checker", "negative"],
+      "group_id": "stage-m-negative"
+    },
+    {
+      "id": "authoring-wrong-endpoint-or-axiom",
+      "module": "Benchmark.Hardness.Inputs.TypedAuthoring.WrongEndpointOrAxiom",
+      "source": "Benchmark.Hardness.Inputs.TypedAuthoring.WrongEndpointOrAxiom.source",
+      "membership": null,
+      "target": "Benchmark.Hardness.Inputs.TypedAuthoring.WrongEndpointOrAxiom.target",
+      "objective": "reduce_to",
+      "target_policy": "fixed",
+      "planner": "deterministic",
+      "execution_layer": "optional_authoring",
+      "verification_profile": "strict-release",
+      "evaluation_lane": "typed_authoring",
+      "enabled": true,
+      "min_agent_phase": 13,
+      "authoring_policy": {"enabled": true, "mode": "deterministic-template", "attempt_budget": 1},
+      "typed_authoring": {
+        "schema_version": "hardness_typed_authoring_request_v1",
+        "active_node": "reduction_capability",
+        "expected_capability_head": "ComplexityReduction.Certificate.CertifiedReduction",
+        "allowed_packet_kinds": ["tm_certificate_packet"],
+        "required_checker_combinators": [],
+        "witness_shape": "none",
+        "model_selection_required": false
+      },
+      "expected": {
+        "baseline_status": "BLOCKED",
+        "baseline_failure_code": "missing_reduction_capability",
+        "final_status": "BLOCKED",
+        "final_failure_code": "candidate_packet_rejected"
+      },
+      "coverage": {
+        "required_gap_reason": "reductionCapability",
+        "required_packet_kind": "tm_certificate_packet",
+        "negative_class": "adversarial_packet",
+        "required_rejection_codes": ["endpoint_mismatch", "wrong_direction", "oracle_import_forbidden", "nonstandard_axiom_forbidden"]
+      },
+      "resources": {"lean_timeout_seconds": 1200, "model_timeout_seconds": 300, "model_max_tokens": 4096, "max_model_calls": 1},
+      "tags": ["stage-m", "typed-authoring", "endpoint", "axiom-gate", "negative"],
+      "group_id": "stage-m-negative"
+    }
+  ]
+}

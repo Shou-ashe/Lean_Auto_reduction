@@ -1,0 +1,8 @@
+{
+  "schema_version": "hardness_benchmark_expected_v1",
+  "case_id": "missing-native-membership-gap",
+  "authoritative": false,
+  "final_status": "BLOCKED",
+  "final_failure_code": "missing_native_membership",
+  "gap_reason": "nativeMembership"
+}

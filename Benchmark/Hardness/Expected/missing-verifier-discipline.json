@@ -1,0 +1,9 @@
+{
+  "schema_version": "hardness_benchmark_expected_v1",
+  "case_id": "missing-verifier-discipline",
+  "authoritative": false,
+  "enabled": true,
+  "min_agent_phase": 2,
+  "final_status": "FAILED",
+  "final_failure_code": "input_declaration_rejected"
+}

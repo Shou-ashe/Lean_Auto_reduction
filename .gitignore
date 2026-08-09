@@ -1,0 +1,32 @@
+# Local environment and credentials
+.env
+.env.*
+!.env.example
+.venv/
+venv/
+
+# Personal Codex/agent configuration
+.codex/
+.agents/
+
+# Python caches and build products
+.pytest_cache/
+__pycache__/
+**/__pycache__/
+*.py[cod]
+.coverage
+htmlcov/
+build/
+dist/
+*.egg-info/
+
+# Lean dependencies and generated build state
+Lean/.lake/
+Lean/.stage-p-worker-smoke/
+
+# Local agent runs and temporary artifacts
+.reduction-agent/
+tmp/
+
+# Operating-system metadata
+.DS_Store

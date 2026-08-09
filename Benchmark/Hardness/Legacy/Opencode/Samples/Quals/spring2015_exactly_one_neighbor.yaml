@@ -1,0 +1,41 @@
+schema_version: opencode_decision_problem_sample_file_v1
+id: spring2015_exactly_one_neighbor
+name: spring2015_exactly_one_neighbor_problem
+input_language: exactly_one_neighbor_constrained_set
+problem_family: graph
+problem_statement: |
+  UW-Madison Theory Qual, Spring 2015, Problem 1. Given a graph G = (V, E) and
+  a subset R subset of V, decide whether there exists a subset S subset of V
+  such that every vertex in R has exactly one neighbor in S. Prove that this
+  problem is NP-complete. (This is the efficient-domination / exact-one-in-
+  neighborhood constraint; the standard hardness route is from Exact Cover by
+  3-Sets or a related catalog NPC source.)
+certificate_contract: lean_proposition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction_IR.Combinatorics.Graph.ExactlyOneNeighbor
+
+  noncomputable section
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction_IR.exactlyOneNeighborDecisionProblem
+lean_target_type: |
+  ComplexityReduction.NPCompleteEnc ComplexityReduction.CostedPolyTimeModel problem
+expected:
+  phase1:
+    outcome: verified_certificate
+    canonical_target: ComplexityReduction_IR.exactlyOneNeighborDecisionProblem
+    certificate_tracks:
+      lower_bound: verified
+      membership: verified
+      npcomplete: verified
+    missing_obligations: []
+difficulty: quals_reduction
+difficulty_tags:
+- graph
+- np_complete
+- exact_one_neighbor
+- efficient_domination
+- exact_cover_source
+- real_exam
+- uw_madison_quals

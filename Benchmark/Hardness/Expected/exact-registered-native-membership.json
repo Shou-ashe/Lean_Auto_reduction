@@ -1,0 +1,7 @@
+{
+  "schema_version": "hardness_benchmark_expected_v1",
+  "case_id": "exact-registered-native-membership",
+  "authoritative": false,
+  "final_status": "VERIFIED",
+  "coverage": ["prove_in_np", "exact_native_membership", "zero_atom_result"]
+}

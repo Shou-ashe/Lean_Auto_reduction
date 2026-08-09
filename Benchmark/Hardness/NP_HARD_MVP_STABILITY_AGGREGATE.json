@@ -1,0 +1,107 @@
+{
+  "active_plan_sha256": "0a50c6165408d7bb043e4fe5581f191f77edcc9894e6ca30a01fe31eb8dc8d1f",
+  "direction": "hardness_seed_to_problem",
+  "final_lean_type": "ComplexityReduction.Certificate.NativeTMNPHard",
+  "gates": {
+    "all_real_api_calls": true,
+    "all_runs_passed": true,
+    "deletion_audit_stable": true,
+    "exactly_three_fresh_runs": true,
+    "execution_plan_stable": true,
+    "independent_release_replay_stable": true,
+    "no_shortcut_or_secret_leak": true,
+    "outcome_direction_endpoint_provenance_stable": true,
+    "persistent_worker_stable": true,
+    "run_reports_are_distinct": true,
+    "standard_axiom_audit_stable": true
+  },
+  "generated_at": "2026-08-07T13:24:02.981066+00:00",
+  "metrics": {
+    "canonical_case_count_per_run": 6,
+    "compiler_inserted_math_token_count": 0,
+    "full_run_success_rate": 1.0,
+    "total_case_executions": 24
+  },
+  "objective": "prove_np_hard",
+  "passed": true,
+  "real_api_calls_total": 3,
+  "run_count": 3,
+  "runs": [
+    {
+      "candidate_body_sha256": "sha256:e55ae0f9400496341c6c745db3326f728575d658cc44ed85014c614dfbeee163",
+      "generated_at": "2026-08-07T13:20:02.082902+00:00",
+      "model": {
+        "api_key_configured": true,
+        "base_url": "https://api.deepseek.com",
+        "max_retries": 0,
+        "max_tokens": 3000,
+        "model": "deepseek-chat",
+        "reasoning_effort": null,
+        "temperature": 0.0,
+        "timeout_seconds": 60
+      },
+      "model_calls": 1,
+      "model_response_sha256": "sha256:abdaa13ef5d498b0c17072b39a30f54bba75c05a6c2f95fcdc0f12f693c977d0",
+      "output_root": "tmp/np-hard-r-d-stability-success-1",
+      "passed": true,
+      "report_file": "Benchmark/Hardness/NP_HARD_MVP_STABILITY_1_REPORT.json",
+      "report_sha256": "cdbaed73e65fda2dad2c72cf06db72b281d9b7e830aa2649a6f23c6d3d6f6303",
+      "run_id": "ba93b069ca04d8b7511c4767f2cbb2b42d2ee7adb3d3445cc256c8291385479c",
+      "started_at": "2026-08-07T13:18:36.334151+00:00"
+    },
+    {
+      "candidate_body_sha256": "sha256:e55ae0f9400496341c6c745db3326f728575d658cc44ed85014c614dfbeee163",
+      "generated_at": "2026-08-07T13:21:54.781533+00:00",
+      "model": {
+        "api_key_configured": true,
+        "base_url": "https://api.deepseek.com",
+        "max_retries": 0,
+        "max_tokens": 3000,
+        "model": "deepseek-chat",
+        "reasoning_effort": null,
+        "temperature": 0.0,
+        "timeout_seconds": 60
+      },
+      "model_calls": 1,
+      "model_response_sha256": "sha256:dedd4f69593b8d5ea9413ebba6ac9190ede215c9005d79e8e986b73e6e613c7f",
+      "output_root": "tmp/np-hard-r-d-stability-success-2",
+      "passed": true,
+      "report_file": "Benchmark/Hardness/NP_HARD_MVP_STABILITY_2_REPORT.json",
+      "report_sha256": "6f966bda755cc0eff6052f960a37ae58a57259dd713f3727e7039eddba19dc60",
+      "run_id": "9d94503de9561375bc3056ede9250f51077eace49266326015171b0867ea72bc",
+      "started_at": "2026-08-07T13:20:24.715849+00:00"
+    },
+    {
+      "candidate_body_sha256": "sha256:e55ae0f9400496341c6c745db3326f728575d658cc44ed85014c614dfbeee163",
+      "generated_at": "2026-08-07T13:23:32.795934+00:00",
+      "model": {
+        "api_key_configured": true,
+        "base_url": "https://api.deepseek.com",
+        "max_retries": 0,
+        "max_tokens": 3000,
+        "model": "deepseek-chat",
+        "reasoning_effort": null,
+        "temperature": 0.0,
+        "timeout_seconds": 60
+      },
+      "model_calls": 1,
+      "model_response_sha256": "sha256:dedd4f69593b8d5ea9413ebba6ac9190ede215c9005d79e8e986b73e6e613c7f",
+      "output_root": "tmp/np-hard-r-d-stability-success-3",
+      "passed": true,
+      "report_file": "Benchmark/Hardness/NP_HARD_MVP_STABILITY_3_REPORT.json",
+      "report_sha256": "ed5300c349bf0b36aa7b700b571c32c4a5d12cbcbfa575cbd08f1fa1c4634797",
+      "run_id": "1446e95a87be7596ca8b714577efb75d012ea08b8d2804cb43610af1aa3fe324",
+      "started_at": "2026-08-07T13:22:03.973145+00:00"
+    }
+  ],
+  "schema_version": "hardness_np_hard_mvp_stability_aggregate_v1",
+  "stable_projection": {
+    "deletion_failure": "no_forward_path_from_hardness_seed",
+    "direction": "hardness_seed_to_problem",
+    "hub": "ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem",
+    "initial_failure": "no_forward_path_from_hardness_seed",
+    "provenance": "model_generated",
+    "status": "VERIFIED",
+    "target": "Benchmark.Hardness.Inputs.NPHardMVP.ModelAuthoredTaggedThreeSAT.source"
+  }
+}

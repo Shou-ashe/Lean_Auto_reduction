@@ -1,0 +1,22 @@
+schema_version: opencode_decision_problem_sample_file_v1
+id: chromatic_number
+name: chromatic_number_problem
+input_language: chromatic_number
+problem_family: coloring
+problem_statement: Given an undirected graph G and an integer k, decide whether G admits a proper vertex coloring using at most k colors.
+certificate_contract: lean_proposition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction
+
+  noncomputable section
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.Combinatorics.Graph.chromaticNumberDecisionProblem
+lean_target_type: |
+  ComplexityReduction.InNPEnc ComplexityReduction.CostedPolyTimeModel problem
+difficulty: hard
+difficulty_tags:
+- coloring
+- assignment_witness
+- edge_constraint_check

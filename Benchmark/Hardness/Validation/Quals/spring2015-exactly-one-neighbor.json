@@ -1,0 +1,20 @@
+{
+  "schema_version": "hardness_quals_manual_validation_v1",
+  "case_id": "spring2015-exactly-one-neighbor-formalization",
+  "validation_kind": "independent_manual_validation",
+  "review_status": "accepted",
+  "reviewed_on": "2026-08-03",
+  "public_module_sha256": "1525487958511ced1d36ed6f01b3047e994fe6160e51e74fa536e1171f348ab8",
+  "checks": {
+    "natural_language_semantics_reviewed": true,
+    "exact_presented_problem_reviewed": true,
+    "lawful_structured_encoding_reviewed": true,
+    "predicate_equivalence_reviewed": true,
+    "benchmark_feasibility_reviewed": true
+  },
+  "oracle_visible_to_model": false,
+  "gold_route_visible_to_model": false,
+  "production_aggregate_imported": false,
+  "catalog_entry_created_by_validation": false,
+  "note": "Independent validation covers only the public exam predicate, exact production endpoint, lawful codec, and benchmark feasibility. It grants no hardness or membership capability and is never included in a model prompt."
+}

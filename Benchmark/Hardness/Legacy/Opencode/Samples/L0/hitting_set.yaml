@@ -1,0 +1,22 @@
+schema_version: opencode_decision_problem_sample_file_v1
+id: hitting_set
+name: hitting_set_problem
+input_language: hitting_set
+problem_family: set_system
+problem_statement: Given a family of finite sets and an integer k, decide whether there is a set of at most k elements that intersects every member of the family.
+certificate_contract: lean_proposition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction
+
+  noncomputable section
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.Combinatorics.hittingSetDecisionProblem
+lean_target_type: |
+  ComplexityReduction.InNPEnc ComplexityReduction.CostedPolyTimeModel problem
+difficulty: medium
+difficulty_tags:
+- set_system
+- transversal_witness
+- universal_family_check

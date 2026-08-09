@@ -1,0 +1,22 @@
+schema_version: opencode_decision_problem_sample_file_v1
+id: horn3_csp
+name: horn3_csp_problem
+input_language: horn3_boolean_csp
+problem_family: boolean_csp
+problem_statement: Given an instance over the fixed ternary Horn Boolean CSP language, decide whether all constraints can be simultaneously satisfied.
+certificate_contract: lean_proposition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction
+
+  noncomputable section
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.CSP.Examples.horn3DecisionProblem
+lean_target_type: |
+  ComplexityReduction.InNPEnc ComplexityReduction.CostedPolyTimeModel problem
+difficulty: medium
+difficulty_tags:
+- csp
+- horn
+- finite_boolean_language

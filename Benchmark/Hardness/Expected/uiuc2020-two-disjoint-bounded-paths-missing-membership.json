@@ -1,0 +1,11 @@
+{
+  "schema_version": "hardness_benchmark_expected_v1",
+  "case_id": "uiuc2020-two-disjoint-bounded-paths-missing-membership",
+  "authoritative": false,
+  "expected_lane": "quals_adversarial",
+  "baseline_status": "BLOCKED",
+  "baseline_failure_code": "missing_native_membership",
+  "final_status": "BLOCKED",
+  "final_failure_code": "missing_native_membership",
+  "coverage": ["missing_membership", "pre_model_blocker", "zero_authoring"]
+}

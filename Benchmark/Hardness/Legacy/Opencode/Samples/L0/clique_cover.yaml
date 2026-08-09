@@ -1,0 +1,22 @@
+schema_version: opencode_decision_problem_sample_file_v1
+id: clique_cover
+name: clique_cover_problem
+input_language: clique_cover
+problem_family: graph_covering
+problem_statement: Given an undirected graph G and an integer k, decide whether the vertices of G can be covered by at most k cliques.
+certificate_contract: lean_proposition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction
+
+  noncomputable section
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.Combinatorics.Graph.cliqueCoverDecisionProblem
+lean_target_type: |
+  ComplexityReduction.InNPEnc ComplexityReduction.CostedPolyTimeModel problem
+difficulty: hard
+difficulty_tags:
+- graph_covering
+- partition_witness
+- clique_checks

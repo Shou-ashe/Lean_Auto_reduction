@@ -1,0 +1,36 @@
+schema_version: opencode_decision_problem_sample_file_v1
+id: clique_audit_interface
+name: clique_audit_interface_problem
+input_language: graph_interface_adapter_clique_audit
+problem_family: graph
+problem_statement: Given an undirected graph and an integer k, decide whether there is a k-clique. The formal interface also carries an audit check that always accepts and must be included in the problem predicate.
+certificate_contract: lean_proposition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction.Karp21
+
+  noncomputable section
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    { Instance := ComplexityReduction.Combinatorics.Graph.cliqueEncodedType
+      isYes := fun I => ComplexityReduction.Combinatorics.Graph.Clique I ∧ True }
+
+  abbrev referenceProblem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.Combinatorics.Graph.cliqueDecisionProblem
+lean_target_type: |
+  ∃ e : ComplexityReduction.ProblemEquivM
+      ComplexityReduction.CostedPolyTimeModel problem referenceProblem,
+    ∃ h : ComplexityReduction.PolyReducibleM
+        ComplexityReduction.CostedPolyTimeModel problem referenceProblem,
+      h = ComplexityReduction.ProblemEquivM.toReducible e ∧
+        ComplexityReduction.InNPEnc
+          ComplexityReduction.CostedPolyTimeModel referenceProblem ∧
+          ComplexityReduction.InNPEnc
+            ComplexityReduction.CostedPolyTimeModel problem
+difficulty: interface_adapter
+difficulty_tags:
+- graph
+- interface_adapter
+- problem_equiv
+- semantic_equivalence
+- costed_adapter

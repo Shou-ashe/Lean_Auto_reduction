@@ -1,0 +1,36 @@
+schema_version: opencode_decision_problem_sample_file_v1
+id: vertex_cover_disabled_exception_interface
+name: vertex_cover_disabled_exception_interface_problem
+input_language: graph_interface_adapter_vertex_cover_exception
+problem_family: graph
+problem_statement: Given an undirected graph and an integer k, decide whether the disabled exception branch accepts first, or otherwise whether there is a vertex cover of size at most k. The exception branch is permanently false.
+certificate_contract: lean_proposition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction.Karp21
+
+  noncomputable section
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    { Instance := ComplexityReduction.Combinatorics.Graph.vertexCoverEncodedType
+      isYes := fun I => False ∨ ComplexityReduction.Combinatorics.Graph.VertexCover I }
+
+  abbrev referenceProblem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.Combinatorics.Graph.vertexCoverDecisionProblem
+lean_target_type: |
+  ∃ e : ComplexityReduction.ProblemEquivM
+      ComplexityReduction.CostedPolyTimeModel problem referenceProblem,
+    ∃ h : ComplexityReduction.PolyReducibleM
+        ComplexityReduction.CostedPolyTimeModel problem referenceProblem,
+      h = ComplexityReduction.ProblemEquivM.toReducible e ∧
+        ComplexityReduction.InNPEnc
+          ComplexityReduction.CostedPolyTimeModel referenceProblem ∧
+          ComplexityReduction.InNPEnc
+            ComplexityReduction.CostedPolyTimeModel problem
+difficulty: interface_adapter
+difficulty_tags:
+- graph
+- interface_adapter
+- problem_equiv
+- semantic_equivalence
+- costed_adapter

@@ -1,0 +1,14 @@
+{
+  "schema_version": "hardness_benchmark_expected_v1",
+  "case_id": "closed-family-template-authoring",
+  "authoritative": false,
+  "baseline_status": "BLOCKED",
+  "baseline_failure_code": "unresolved_family_premise",
+  "final_status": "VERIFIED",
+  "coverage": [
+    "closed_family_instantiation",
+    "job_local_candidate",
+    "canonical_head_validation",
+    "deterministic_replay"
+  ]
+}

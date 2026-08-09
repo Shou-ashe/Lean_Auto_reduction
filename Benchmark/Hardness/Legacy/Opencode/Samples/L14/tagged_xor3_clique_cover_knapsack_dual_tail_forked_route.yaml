@@ -1,0 +1,89 @@
+schema_version: opencode_lean_proposition_sample_file_v1
+id: tagged_xor3_clique_cover_knapsack_dual_tail_forked_route
+name: tagged_xor3_clique_cover_knapsack_dual_tail_forked_route_problem
+benchmark_level: L14
+input_language: tagged_xor3_clique_cover_knapsack_dual_tail_forked_route
+problem_family: forked_mixed_gadget_route_composition
+certificate_contract: lean_proposition
+route_target_policy: any
+problem_statement: "Input is an XOR-3 CSP instance behind a Boolean audit tag. Prove NP membership by normalizing the interface, using the XOR-3-to-3SAT gadget, and then independently extending the shared 3-SAT pivot through a graph-coloring-to-clique-cover route tail and a numeric 0-1-IP-to-knapsack route tail."
+difficulty: forked_mixed_gadget_route_synthesis
+difficulty_tags:
+  - csp
+  - gadget_composition
+  - forked_route
+  - dual_target
+  - alternate_graph_tail
+  - clique_cover_target
+  - numeric_target
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction
+
+  noncomputable section
+
+  abbrev sourceProblem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.CSP.Examples.xor3DecisionProblem
+
+  abbrev graphTargetProblem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.Combinatorics.Graph.cliqueCoverDecisionProblem
+
+  abbrev numericTargetProblem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.Combinatorics.knapsackKarpDecisionProblem
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    { Instance := ComplexityReduction.EncodedType.prod
+        ComplexityReduction.EncodedType.bool
+        sourceProblem.Instance
+      isYes := fun p => sourceProblem.isYes p.2 }
+lean_target_type: |
+  ∃ normalizedProblem : ComplexityReduction.EncodedDecisionProblem,
+    ∃ graphRouteTarget : ComplexityReduction.EncodedDecisionProblem,
+      ∃ numericRouteTarget : ComplexityReduction.EncodedDecisionProblem,
+        ∃ _encodingBridgeCertificate :
+          ComplexityReduction.ProblemEquivM
+            ComplexityReduction.CostedPolyTimeModel
+            problem
+            normalizedProblem,
+          ∃ _sourceToSatGadget :
+            ComplexityReduction.KarpReductionM
+              ComplexityReduction.CostedPolyTimeModel
+              normalizedProblem
+              ComplexityReduction.SAT.threeSATDecisionProblem,
+            ∃ _satToGraphRoute :
+              ComplexityReduction.KarpReductionM
+                ComplexityReduction.CostedPolyTimeModel
+                ComplexityReduction.SAT.threeSATDecisionProblem
+                graphRouteTarget,
+              ∃ _graphToFinalRoute :
+                ComplexityReduction.KarpReductionM
+                  ComplexityReduction.CostedPolyTimeModel
+                  graphRouteTarget
+                  graphTargetProblem,
+                ∃ _satToNumericRoute :
+                  ComplexityReduction.KarpReductionM
+                    ComplexityReduction.CostedPolyTimeModel
+                    ComplexityReduction.SAT.threeSATDecisionProblem
+                    numericRouteTarget,
+                  ∃ _numericToFinalRoute :
+                    ComplexityReduction.KarpReductionM
+                      ComplexityReduction.CostedPolyTimeModel
+                      numericRouteTarget
+                      numericTargetProblem,
+                    ComplexityReduction.PolyReducibleM
+                      ComplexityReduction.CostedPolyTimeModel
+                      problem
+                      graphTargetProblem ∧
+                    ComplexityReduction.PolyReducibleM
+                      ComplexityReduction.CostedPolyTimeModel
+                      problem
+                      numericTargetProblem ∧
+                    ComplexityReduction.InNPEnc
+                      ComplexityReduction.CostedPolyTimeModel
+                      graphTargetProblem ∧
+                    ComplexityReduction.InNPEnc
+                      ComplexityReduction.CostedPolyTimeModel
+                      numericTargetProblem ∧
+                    ComplexityReduction.InNPEnc
+                      ComplexityReduction.CostedPolyTimeModel
+                      problem

@@ -1,0 +1,22 @@
+schema_version: opencode_decision_problem_sample_file_v1
+id: max_cut
+name: max_cut_problem
+input_language: max_cut
+problem_family: graph
+problem_statement: Given an unweighted graph and a threshold B, decide whether some partition of the vertices has at least B crossing edges.
+certificate_contract: lean_proposition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction
+
+  noncomputable section
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.Combinatorics.Graph.maxCutDecisionProblem
+lean_target_type: |
+  ComplexityReduction.InNPEnc ComplexityReduction.CostedPolyTimeModel problem
+difficulty: hard
+difficulty_tags:
+- graph
+- partition_witness
+- threshold_bound

@@ -1,0 +1,11 @@
+{
+  "schema_version": "hardness_benchmark_expected_v1",
+  "case_id": "uiuc2022-seeing-set-missing-reduction",
+  "authoritative": false,
+  "expected_lane": "quals_adversarial",
+  "baseline_status": "BLOCKED",
+  "baseline_failure_code": "no_registry_path",
+  "final_status": "BLOCKED",
+  "final_failure_code": "no_registry_path",
+  "coverage": ["missing_reduction", "pre_model_blocker", "zero_authoring"]
+}

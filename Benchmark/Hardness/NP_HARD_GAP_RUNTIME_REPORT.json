@@ -1,0 +1,1122 @@
+{
+  "active_plan_sha256": "e90f37f833be1677c2191d8c0bec793411283c75fb9a162b661d4c47f122a8d2",
+  "cases": [
+    {
+      "case_id": "nphg-author-sat-proof-only",
+      "gap_node_count": 1,
+      "interrupted": null,
+      "matched": true,
+      "requires_multi_gap": false,
+      "requires_nontrivial_semantics": false,
+      "runtime": {
+        "accepted_nodes": [
+          "semantic-proof"
+        ],
+        "checkpoint_file_sha256": "sha256:5a8257ccd4669a3bb26139f3f0ace96ef9304ce25724af8124c777f63e90b89d",
+        "checkpoint_path": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-gap-runtime-g-c-final/cases/nphg-author-sat-proof-only/checkpoint.json",
+        "commands": [
+          {
+            "command": [
+              "lake",
+              "env",
+              "lean",
+              "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-gap-runtime-g-c-final/cases/nphg-author-sat-proof-only/published/599e0913c2f4b25933a9275bf3b98ed74d2550461140562a96da159f8891639f/FreshCore.lean"
+            ],
+            "duration_seconds": 2.833,
+            "exit_code": 0,
+            "stderr": "",
+            "stdout": "Generated.NPHardV2.C13bcf8b0dc04dfed.Authoring.semanticCorrect\n  (input : ComplexityReduction.Certificate.NativeCookLevin.canonicalThreeSAT.Instance) :\n  ComplexityReduction.Certificate.NativeCookLevin.canonicalThreeSAT.accepts input ↔\n    Benchmark.Hardness.Inputs.NPHardMVP.ModelAuthoredTaggedThreeSAT.source.accepts\n      (Benchmark.Hardness.Inputs.NPHardMVP.ModelAuthoredTaggedThreeSAT.forwardProgram.run input)\n",
+            "timed_out": false
+          },
+          {
+            "command": [
+              "lake",
+              "env",
+              "lean",
+              "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-gap-runtime-g-c-final/cases/nphg-author-sat-proof-only/Final.lean"
+            ],
+            "duration_seconds": 3.545,
+            "exit_code": 0,
+            "stderr": "",
+            "stdout": "",
+            "timed_out": false
+          },
+          {
+            "command": [
+              "lake",
+              "env",
+              "lean",
+              "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-gap-runtime-g-c-final/cases/nphg-author-sat-proof-only/Replay.lean"
+            ],
+            "duration_seconds": 3.793,
+            "exit_code": 0,
+            "stderr": "",
+            "stdout": "",
+            "timed_out": false
+          }
+        ],
+        "failure_code": null,
+        "failure_message": null,
+        "fresh_core_rediscoveries": 1,
+        "model_calls": 1,
+        "result": {
+          "accepted_nodes": [
+            "semantic-proof"
+          ],
+          "candidate_hashes": {
+            "semantic-proof": "sha256:e635bd40a15482f662148516b12feaab6fef8231f1cec7dfb93457b738541a70"
+          },
+          "final_certificate": "sha256:7aff67df89ff877b9aab77b4f3eea03a8995407520d8879d13de77e365cbab88",
+          "lean_diagnostics": [
+            "every node accepted by the persistent worker and fresh Core",
+            "exact NativeTMNPHard target finalized and replayed"
+          ],
+          "model_calls": [
+            {
+              "attempt": 1,
+              "called": true,
+              "duration_seconds": 0.0,
+              "error": null,
+              "finish_reason": "stop",
+              "node_id": "semantic-proof",
+              "ok": true,
+              "provider_attempts": 1,
+              "response_sha256": "sha256:874e656474cc807376ef17bfbaca2bf5987d715472e236aca4f9ced1454156fe",
+              "status_code": 200,
+              "usage": {
+                "fixture_tokens": 0
+              }
+            }
+          ],
+          "outcome": "accepted",
+          "policy_diagnostics": [
+            "source-to-target direction and exact endpoints remained frozen"
+          ],
+          "remaining_nodes": [],
+          "replay_certificate": "sha256:d60255dbd01509f4db7009cf0b9feb2c6b49f53610d76fdce9d911ae0abce751",
+          "request_id": "sha256:0ec1d415def09ee0d1b22bbbffd23ec9aff9f43cd8d20f27badb87c0a29989d1",
+          "schema_version": "hardness_np_hard_authoring_result_v2"
+        },
+        "resumed": false,
+        "schema_version": "hardness_np_hard_gap_runtime_result_v1",
+        "status": "VERIFIED",
+        "task_request_id": "sha256:0ec1d415def09ee0d1b22bbbffd23ec9aff9f43cd8d20f27badb87c0a29989d1",
+        "worker_results": [
+          {
+            "cache_hit": false,
+            "cache_key": "sha256:b09d4c6bb41404771ac8554ba3de2a213da46de39ca033ab77fb014570ca6cd7",
+            "command": null,
+            "dependency_sha256": [
+              "sha256:01ead5c8dc779be47ba4c6d2ffd2c95f8fc79cfd1158ec67f74f9318488dace9",
+              "sha256:a7f25cb8e9d263a7e385795814b19c85bc95ab2da2d9805e5efc80a45d7ae0af",
+              "sha256:2a85b2fb0fe05b7865672f4cd50ede71cf8d3e000ba998fdbd8e34761e2a627a",
+              "sha256:e635bd40a15482f662148516b12feaab6fef8231f1cec7dfb93457b738541a70"
+            ],
+            "diagnostics": [],
+            "diagnostics_sha256": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "fallback_used": false,
+            "owner": "sha256:0ec1d415def09ee0d1b22bbbffd23ec9aff9f43cd8d20f27badb87c0a29989d1",
+            "schema_version": "hardness_stage_p_lean_worker_result_v1",
+            "session_id": "sha256:8dcd25a6582e3f7cae2a36f1435679ed60a0a98facebb31ec1d3322bd8fa3f1a",
+            "source_path": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-gap-runtime-g-c-final/cases/nphg-author-sat-proof-only/work/Candidate.lean",
+            "source_sha256": "sha256:599e0913c2f4b25933a9275bf3b98ed74d2550461140562a96da159f8891639f",
+            "verified": true,
+            "wall_duration_seconds": 3.669229,
+            "worker_generation": 1,
+            "worker_index": 0
+          }
+        ]
+      },
+      "task_class": "semantic_proof"
+    },
+    {
+      "case_id": "nphg-author-graph-proof-only",
+      "gap_node_count": 2,
+      "interrupted": null,
+      "matched": true,
+      "requires_multi_gap": false,
+      "requires_nontrivial_semantics": true,
+      "runtime": {
+        "accepted_nodes": [
+          "mapping-invariant",
+          "semantic-iff"
+        ],
+        "checkpoint_file_sha256": "sha256:fffd9b4db2e37162e7f209b82f4ad33dea36af72200709c0e3800426c509858d",
+        "checkpoint_path": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-gap-runtime-g-c-final/cases/nphg-author-graph-proof-only/checkpoint.json",
+        "commands": [
+          {
+            "command": [
+              "lake",
+              "env",
+              "lean",
+              "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-gap-runtime-g-c-final/cases/nphg-author-graph-proof-only/published/5ae62cc5325bc8bce782e46390684bcdec2adbb046e40f6d47ecaaf73a61b8d8/FreshCore.lean"
+            ],
+            "duration_seconds": 2.983,
+            "exit_code": 0,
+            "stderr": "",
+            "stdout": "Generated.NPHardV2.C2871aec4588b5eb2.Authoring.mappingInvariantProof\n  (input : ComplexityReduction.Problems.Karp21.GraphAtoms.cliqueStructuredProblem.Instance) :\n  Benchmark.Hardness.Inputs.NPHardGeneralization.GraphProofOnly.mappingInvariant input\n    (Benchmark.Hardness.Inputs.NPHardGeneralization.GraphProofOnly.forwardProgram.run input)\n",
+            "timed_out": false
+          },
+          {
+            "command": [
+              "lake",
+              "env",
+              "lean",
+              "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-gap-runtime-g-c-final/cases/nphg-author-graph-proof-only/published/c8efb3c67885905ecd804e15c3b857fcd0f4e2228d53614bf76c951157709b0c/FreshCore.lean"
+            ],
+            "duration_seconds": 3.021,
+            "exit_code": 0,
+            "stderr": "",
+            "stdout": "Generated.NPHardV2.C2871aec4588b5eb2.Authoring.semanticCorrect\n  (input : ComplexityReduction.Problems.Karp21.GraphAtoms.cliqueStructuredProblem.Instance) :\n  ComplexityReduction.Problems.Karp21.GraphAtoms.cliqueStructuredProblem.accepts input ↔\n    Benchmark.Hardness.Inputs.NPHardGeneralization.GraphProofOnly.source.accepts\n      (Benchmark.Hardness.Inputs.NPHardGeneralization.GraphProofOnly.forwardProgram.run input)\n",
+            "timed_out": false
+          },
+          {
+            "command": [
+              "lake",
+              "env",
+              "lean",
+              "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-gap-runtime-g-c-final/cases/nphg-author-graph-proof-only/Final.lean"
+            ],
+            "duration_seconds": 3.331,
+            "exit_code": 0,
+            "stderr": "",
+            "stdout": "",
+            "timed_out": false
+          },
+          {
+            "command": [
+              "lake",
+              "env",
+              "lean",
+              "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-gap-runtime-g-c-final/cases/nphg-author-graph-proof-only/Replay.lean"
+            ],
+            "duration_seconds": 3.188,
+            "exit_code": 0,
+            "stderr": "",
+            "stdout": "",
+            "timed_out": false
+          }
+        ],
+        "failure_code": null,
+        "failure_message": null,
+        "fresh_core_rediscoveries": 2,
+        "model_calls": 2,
+        "result": {
+          "accepted_nodes": [
+            "mapping-invariant",
+            "semantic-iff"
+          ],
+          "candidate_hashes": {
+            "mapping-invariant": "sha256:0b98b2ed9484810224c8fe6c1387da272e808e50bd473f0095774ee47bab2d6f",
+            "semantic-iff": "sha256:6f3abdc3da20e55eb2b69ef8288473d3270962923f108778ef0cdc0b35fc8c15"
+          },
+          "final_certificate": "sha256:8cc3c3991ff8712a623d749884dcb92fb80bf6f35e4199ba43aeafa48e8a5cf3",
+          "lean_diagnostics": [
+            "every node accepted by the persistent worker and fresh Core",
+            "exact NativeTMNPHard target finalized and replayed"
+          ],
+          "model_calls": [
+            {
+              "attempt": 1,
+              "called": true,
+              "duration_seconds": 0.0,
+              "error": null,
+              "finish_reason": "stop",
+              "node_id": "mapping-invariant",
+              "ok": true,
+              "provider_attempts": 1,
+              "response_sha256": "sha256:c67ebdec70bd4f5899dbf43dd7ed3443de0e539f8a02d07b830d467a89e5f58e",
+              "status_code": 200,
+              "usage": {
+                "fixture_tokens": 0
+              }
+            },
+            {
+              "attempt": 1,
+              "called": true,
+              "duration_seconds": 0.0,
+              "error": null,
+              "finish_reason": "stop",
+              "node_id": "semantic-iff",
+              "ok": true,
+              "provider_attempts": 1,
+              "response_sha256": "sha256:7eed0ae50423bf51345006227c9375a02c46f04d3ffb1f895f96e56aa25c1bc7",
+              "status_code": 200,
+              "usage": {
+                "fixture_tokens": 0
+              }
+            }
+          ],
+          "outcome": "accepted",
+          "policy_diagnostics": [
+            "source-to-target direction and exact endpoints remained frozen"
+          ],
+          "remaining_nodes": [],
+          "replay_certificate": "sha256:1b9c1683c24103413348255dc5d60f9394721ae10b1476accd321812476c9e00",
+          "request_id": "sha256:832de87f32e823d55a63bf4c2415bd6dbded058a35fc1f76d53889123c5f3f38",
+          "schema_version": "hardness_np_hard_authoring_result_v2"
+        },
+        "resumed": false,
+        "schema_version": "hardness_np_hard_gap_runtime_result_v1",
+        "status": "VERIFIED",
+        "task_request_id": "sha256:832de87f32e823d55a63bf4c2415bd6dbded058a35fc1f76d53889123c5f3f38",
+        "worker_results": [
+          {
+            "cache_hit": false,
+            "cache_key": "sha256:0bf747afd606ef5375ca0bba1d766c287b91c1cf89c152c485a17991b2aeae36",
+            "command": null,
+            "dependency_sha256": [
+              "sha256:21c6c900966f5cb1c30d2ee24b005db16374140091010edb9d9f44c17267d515",
+              "sha256:a7f25cb8e9d263a7e385795814b19c85bc95ab2da2d9805e5efc80a45d7ae0af",
+              "sha256:e0367d654ee112022baa2f14856be41aaa545c6f3e85b2cbb1ede562ab2071c4",
+              "sha256:0b98b2ed9484810224c8fe6c1387da272e808e50bd473f0095774ee47bab2d6f"
+            ],
+            "diagnostics": [],
+            "diagnostics_sha256": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "fallback_used": false,
+            "owner": "sha256:832de87f32e823d55a63bf4c2415bd6dbded058a35fc1f76d53889123c5f3f38",
+            "schema_version": "hardness_stage_p_lean_worker_result_v1",
+            "session_id": "sha256:0c509b4195b0ddfd89c149fe79f8e0f6e17ebc53290ee69e99a652439150683b",
+            "source_path": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-gap-runtime-g-c-final/cases/nphg-author-graph-proof-only/work/Candidate.lean",
+            "source_sha256": "sha256:5ae62cc5325bc8bce782e46390684bcdec2adbb046e40f6d47ecaaf73a61b8d8",
+            "verified": true,
+            "wall_duration_seconds": 3.990719,
+            "worker_generation": 1,
+            "worker_index": 0
+          },
+          {
+            "cache_hit": false,
+            "cache_key": "sha256:45ddbc5267fa4c06d72c1659a73e40d19551f57d14ecc2017f1dba2a1c171297",
+            "command": null,
+            "dependency_sha256": [
+              "sha256:0b98b2ed9484810224c8fe6c1387da272e808e50bd473f0095774ee47bab2d6f",
+              "sha256:5ae62cc5325bc8bce782e46390684bcdec2adbb046e40f6d47ecaaf73a61b8d8",
+              "sha256:21c6c900966f5cb1c30d2ee24b005db16374140091010edb9d9f44c17267d515",
+              "sha256:a7f25cb8e9d263a7e385795814b19c85bc95ab2da2d9805e5efc80a45d7ae0af",
+              "sha256:e0367d654ee112022baa2f14856be41aaa545c6f3e85b2cbb1ede562ab2071c4",
+              "sha256:6f3abdc3da20e55eb2b69ef8288473d3270962923f108778ef0cdc0b35fc8c15"
+            ],
+            "diagnostics": [],
+            "diagnostics_sha256": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "fallback_used": false,
+            "owner": "sha256:832de87f32e823d55a63bf4c2415bd6dbded058a35fc1f76d53889123c5f3f38",
+            "schema_version": "hardness_stage_p_lean_worker_result_v1",
+            "session_id": "sha256:0c509b4195b0ddfd89c149fe79f8e0f6e17ebc53290ee69e99a652439150683b",
+            "source_path": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-gap-runtime-g-c-final/cases/nphg-author-graph-proof-only/work/Candidate.lean",
+            "source_sha256": "sha256:c8efb3c67885905ecd804e15c3b857fcd0f4e2228d53614bf76c951157709b0c",
+            "verified": true,
+            "wall_duration_seconds": 0.210087,
+            "worker_generation": 1,
+            "worker_index": 0
+          }
+        ]
+      },
+      "task_class": "semantic_proof"
+    },
+    {
+      "case_id": "nphg-author-set-system-composition",
+      "gap_node_count": 2,
+      "interrupted": null,
+      "matched": true,
+      "requires_multi_gap": true,
+      "requires_nontrivial_semantics": false,
+      "runtime": {
+        "accepted_nodes": [
+          "composed-program",
+          "semantic-proof"
+        ],
+        "checkpoint_file_sha256": "sha256:f5f330c05731942f024fd89ef6f2736430a3683af94b880470c17f9615a78920",
+        "checkpoint_path": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-gap-runtime-g-c-final/cases/nphg-author-set-system-composition/checkpoint.json",
+        "commands": [
+          {
+            "command": [
+              "lake",
+              "env",
+              "lean",
+              "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-gap-runtime-g-c-final/cases/nphg-author-set-system-composition/published/69f189baca0f46356463733a28a3aaaf30e02b0d465e0fb7bbd3f955a7b3098d/FreshCore.lean"
+            ],
+            "duration_seconds": 2.804,
+            "exit_code": 0,
+            "stderr": "",
+            "stdout": "Generated.NPHardV2.C0249284bb293bc74.Authoring.composedProgram :\n  ComplexityReduction.Program.PolyProg\n    ComplexityReduction.Presentation.SetSystem.exactCoverStructuredProblem.representation\n    Benchmark.Hardness.Inputs.NPHardGeneralization.SetSystemProgramComposition.source.representation\n",
+            "timed_out": false
+          },
+          {
+            "command": [
+              "lake",
+              "env",
+              "lean",
+              "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-gap-runtime-g-c-final/cases/nphg-author-set-system-composition/published/25bd4d2431170ea5d82ab9d59886aea131cc14c780a792ca507626d56ee3a630/FreshCore.lean"
+            ],
+            "duration_seconds": 2.599,
+            "exit_code": 0,
+            "stderr": "",
+            "stdout": "Generated.NPHardV2.C0249284bb293bc74.Authoring.semanticCorrect\n  (input : ComplexityReduction.Presentation.SetSystem.exactCoverStructuredProblem.Instance) :\n  ComplexityReduction.Presentation.SetSystem.exactCoverStructuredProblem.accepts input ↔\n    Benchmark.Hardness.Inputs.NPHardGeneralization.SetSystemProgramComposition.source.accepts\n      (Generated.NPHardV2.C0249284bb293bc74.Authoring.composedProgram.run input)\n",
+            "timed_out": false
+          },
+          {
+            "command": [
+              "lake",
+              "env",
+              "lean",
+              "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-gap-runtime-g-c-final/cases/nphg-author-set-system-composition/Final.lean"
+            ],
+            "duration_seconds": 3.442,
+            "exit_code": 0,
+            "stderr": "",
+            "stdout": "",
+            "timed_out": false
+          },
+          {
+            "command": [
+              "lake",
+              "env",
+              "lean",
+              "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-gap-runtime-g-c-final/cases/nphg-author-set-system-composition/Replay.lean"
+            ],
+            "duration_seconds": 3.584,
+            "exit_code": 0,
+            "stderr": "",
+            "stdout": "",
+            "timed_out": false
+          }
+        ],
+        "failure_code": null,
+        "failure_message": null,
+        "fresh_core_rediscoveries": 2,
+        "model_calls": 2,
+        "result": {
+          "accepted_nodes": [
+            "composed-program",
+            "semantic-proof"
+          ],
+          "candidate_hashes": {
+            "composed-program": "sha256:77e75acfe6332b2f1dfba84e45eaff7804d9595be386db26c063eee61aba8e7e",
+            "semantic-proof": "sha256:e635bd40a15482f662148516b12feaab6fef8231f1cec7dfb93457b738541a70"
+          },
+          "final_certificate": "sha256:b06f27da2d2e6fdb19fd10b0287b1782bdcd074772cba0fbe0b4493df53f61a5",
+          "lean_diagnostics": [
+            "every node accepted by the persistent worker and fresh Core",
+            "exact NativeTMNPHard target finalized and replayed"
+          ],
+          "model_calls": [
+            {
+              "attempt": 1,
+              "called": true,
+              "duration_seconds": 0.0,
+              "error": null,
+              "finish_reason": "stop",
+              "node_id": "composed-program",
+              "ok": true,
+              "provider_attempts": 1,
+              "response_sha256": "sha256:59b294b9126877b85e1862f569990bcf2a2fe71d599e3393120ecc586aefdc5d",
+              "status_code": 200,
+              "usage": {
+                "fixture_tokens": 0
+              }
+            },
+            {
+              "attempt": 1,
+              "called": true,
+              "duration_seconds": 0.0,
+              "error": null,
+              "finish_reason": "stop",
+              "node_id": "semantic-proof",
+              "ok": true,
+              "provider_attempts": 1,
+              "response_sha256": "sha256:85257764a0ca6d6764e9bc73459e0de685d8f39e7b8ced853790a408a9b219a2",
+              "status_code": 200,
+              "usage": {
+                "fixture_tokens": 0
+              }
+            }
+          ],
+          "outcome": "accepted",
+          "policy_diagnostics": [
+            "source-to-target direction and exact endpoints remained frozen"
+          ],
+          "remaining_nodes": [],
+          "replay_certificate": "sha256:8805806b7878d1300125ec92f9794e8ed33a355dfd84d55a27e04475654a3498",
+          "request_id": "sha256:d4d16c63f75e354e0b4500291a7070c620f95656604d20a3f47a27e996d41402",
+          "schema_version": "hardness_np_hard_authoring_result_v2"
+        },
+        "resumed": false,
+        "schema_version": "hardness_np_hard_gap_runtime_result_v1",
+        "status": "VERIFIED",
+        "task_request_id": "sha256:d4d16c63f75e354e0b4500291a7070c620f95656604d20a3f47a27e996d41402",
+        "worker_results": [
+          {
+            "cache_hit": false,
+            "cache_key": "sha256:a99a89cff8270fdcd263762c5b52fb558f0d0012fe27a9014eee1192392f773a",
+            "command": null,
+            "dependency_sha256": [
+              "sha256:785416ca851022c56f44f98613d24bd0c33f0e172df33675f967279c49cd6373",
+              "sha256:a7f25cb8e9d263a7e385795814b19c85bc95ab2da2d9805e5efc80a45d7ae0af",
+              "sha256:511f88d87ed30e2e5b936273e394572eb2dd5e0334296285681f86d9b4f2bdfb",
+              "sha256:77e75acfe6332b2f1dfba84e45eaff7804d9595be386db26c063eee61aba8e7e"
+            ],
+            "diagnostics": [],
+            "diagnostics_sha256": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "fallback_used": false,
+            "owner": "sha256:d4d16c63f75e354e0b4500291a7070c620f95656604d20a3f47a27e996d41402",
+            "schema_version": "hardness_stage_p_lean_worker_result_v1",
+            "session_id": "sha256:1705bcbd2e5657569430f54c4fe4c5c437cd9d1f0637f790197c12e872fbb608",
+            "source_path": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-gap-runtime-g-c-final/cases/nphg-author-set-system-composition/work/Candidate.lean",
+            "source_sha256": "sha256:69f189baca0f46356463733a28a3aaaf30e02b0d465e0fb7bbd3f955a7b3098d",
+            "verified": true,
+            "wall_duration_seconds": 3.581797,
+            "worker_generation": 1,
+            "worker_index": 0
+          },
+          {
+            "cache_hit": false,
+            "cache_key": "sha256:b2370e0945fdea76132101895ff3d7898676725f356acb07b7ab0acf855c0f1b",
+            "command": null,
+            "dependency_sha256": [
+              "sha256:77e75acfe6332b2f1dfba84e45eaff7804d9595be386db26c063eee61aba8e7e",
+              "sha256:69f189baca0f46356463733a28a3aaaf30e02b0d465e0fb7bbd3f955a7b3098d",
+              "sha256:785416ca851022c56f44f98613d24bd0c33f0e172df33675f967279c49cd6373",
+              "sha256:a7f25cb8e9d263a7e385795814b19c85bc95ab2da2d9805e5efc80a45d7ae0af",
+              "sha256:511f88d87ed30e2e5b936273e394572eb2dd5e0334296285681f86d9b4f2bdfb",
+              "sha256:e635bd40a15482f662148516b12feaab6fef8231f1cec7dfb93457b738541a70"
+            ],
+            "diagnostics": [],
+            "diagnostics_sha256": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "fallback_used": false,
+            "owner": "sha256:d4d16c63f75e354e0b4500291a7070c620f95656604d20a3f47a27e996d41402",
+            "schema_version": "hardness_stage_p_lean_worker_result_v1",
+            "session_id": "sha256:1705bcbd2e5657569430f54c4fe4c5c437cd9d1f0637f790197c12e872fbb608",
+            "source_path": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-gap-runtime-g-c-final/cases/nphg-author-set-system-composition/work/Candidate.lean",
+            "source_sha256": "sha256:25bd4d2431170ea5d82ab9d59886aea131cc14c780a792ca507626d56ee3a630",
+            "verified": true,
+            "wall_duration_seconds": 0.203322,
+            "worker_generation": 1,
+            "worker_index": 0
+          }
+        ]
+      },
+      "task_class": "program_composition"
+    },
+    {
+      "case_id": "nphg-author-numeric-composition",
+      "gap_node_count": 2,
+      "interrupted": null,
+      "matched": true,
+      "requires_multi_gap": true,
+      "requires_nontrivial_semantics": false,
+      "runtime": {
+        "accepted_nodes": [
+          "composed-program",
+          "semantic-proof"
+        ],
+        "checkpoint_file_sha256": "sha256:072316a0c505413c32b333fe1b27ca3ed7cf283d06ec8387867d6a0b6def71f6",
+        "checkpoint_path": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-gap-runtime-g-c-final/cases/nphg-author-numeric-composition/checkpoint.json",
+        "commands": [
+          {
+            "command": [
+              "lake",
+              "env",
+              "lean",
+              "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-gap-runtime-g-c-final/cases/nphg-author-numeric-composition/published/4c0a6e010451a2ea725906a74a3561dde1f773d5ad1e0d19999af44d3718e51d/FreshCore.lean"
+            ],
+            "duration_seconds": 2.62,
+            "exit_code": 0,
+            "stderr": "",
+            "stdout": "Generated.NPHardV2.C136a8e1425010e2f.Authoring.composedProgram :\n  ComplexityReduction.Program.PolyProg ComplexityReduction.Presentation.ZeroOneIP.structuredProblem.representation\n    Benchmark.Hardness.Inputs.NPHardGeneralization.NumericProgramComposition.source.representation\n",
+            "timed_out": false
+          },
+          {
+            "command": [
+              "lake",
+              "env",
+              "lean",
+              "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-gap-runtime-g-c-final/cases/nphg-author-numeric-composition/published/eaee2d53b2892dde5ca121c48996a6b31fffcc285bfe99c186135ee8d06a6911/FreshCore.lean"
+            ],
+            "duration_seconds": 2.711,
+            "exit_code": 0,
+            "stderr": "",
+            "stdout": "Generated.NPHardV2.C136a8e1425010e2f.Authoring.semanticCorrect\n  (input : ComplexityReduction.Presentation.ZeroOneIP.structuredProblem.Instance) :\n  ComplexityReduction.Presentation.ZeroOneIP.structuredProblem.accepts input ↔\n    Benchmark.Hardness.Inputs.NPHardGeneralization.NumericProgramComposition.source.accepts\n      (Generated.NPHardV2.C136a8e1425010e2f.Authoring.composedProgram.run input)\n",
+            "timed_out": false
+          },
+          {
+            "command": [
+              "lake",
+              "env",
+              "lean",
+              "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-gap-runtime-g-c-final/cases/nphg-author-numeric-composition/Final.lean"
+            ],
+            "duration_seconds": 3.421,
+            "exit_code": 0,
+            "stderr": "",
+            "stdout": "",
+            "timed_out": false
+          },
+          {
+            "command": [
+              "lake",
+              "env",
+              "lean",
+              "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-gap-runtime-g-c-final/cases/nphg-author-numeric-composition/Replay.lean"
+            ],
+            "duration_seconds": 3.343,
+            "exit_code": 0,
+            "stderr": "",
+            "stdout": "",
+            "timed_out": false
+          }
+        ],
+        "failure_code": null,
+        "failure_message": null,
+        "fresh_core_rediscoveries": 2,
+        "model_calls": 2,
+        "result": {
+          "accepted_nodes": [
+            "composed-program",
+            "semantic-proof"
+          ],
+          "candidate_hashes": {
+            "composed-program": "sha256:0cc1bbefb790c5dcb6b9e8acbb7dea20a6f02459e3f52f9df39f3b1a79b10540",
+            "semantic-proof": "sha256:318b92ee729376d728799cf1e701ac0035f7b8483101e9c8225cffb80daab991"
+          },
+          "final_certificate": "sha256:54959a9892cae77985a21513bda33e4d6d69bdec9a37be2eca9fe88b7079d68b",
+          "lean_diagnostics": [
+            "every node accepted by the persistent worker and fresh Core",
+            "exact NativeTMNPHard target finalized and replayed"
+          ],
+          "model_calls": [
+            {
+              "attempt": 1,
+              "called": true,
+              "duration_seconds": 0.0,
+              "error": null,
+              "finish_reason": "stop",
+              "node_id": "composed-program",
+              "ok": true,
+              "provider_attempts": 1,
+              "response_sha256": "sha256:a2169187db6fd3171ff43bae521d774ca8acbf7a7f853dfb0aca5ce8131f9305",
+              "status_code": 200,
+              "usage": {
+                "fixture_tokens": 0
+              }
+            },
+            {
+              "attempt": 1,
+              "called": true,
+              "duration_seconds": 0.0,
+              "error": null,
+              "finish_reason": "stop",
+              "node_id": "semantic-proof",
+              "ok": true,
+              "provider_attempts": 1,
+              "response_sha256": "sha256:f8c8ca5e70f661ec0ffcf70bb0fc6b6b2cb4f5ddfc32b8e1b9c62520e9e877c0",
+              "status_code": 200,
+              "usage": {
+                "fixture_tokens": 0
+              }
+            }
+          ],
+          "outcome": "accepted",
+          "policy_diagnostics": [
+            "source-to-target direction and exact endpoints remained frozen"
+          ],
+          "remaining_nodes": [],
+          "replay_certificate": "sha256:3e31893ba3a52ec371c56e5669a3e4ce2f507bbe405ce4c80d007e38089c65ed",
+          "request_id": "sha256:12150b54cc2d581795e05854966e93184cc1187ee781a8223de3df335b53473b",
+          "schema_version": "hardness_np_hard_authoring_result_v2"
+        },
+        "resumed": false,
+        "schema_version": "hardness_np_hard_gap_runtime_result_v1",
+        "status": "VERIFIED",
+        "task_request_id": "sha256:12150b54cc2d581795e05854966e93184cc1187ee781a8223de3df335b53473b",
+        "worker_results": [
+          {
+            "cache_hit": false,
+            "cache_key": "sha256:2482210b86bb88bb8564676cfae6368dd006e676dd5b21bdc2beef9b93c30fda",
+            "command": null,
+            "dependency_sha256": [
+              "sha256:c33bfc0b4040065dded35770a490eaf9959c27ee6f8d5f6aa843109e66a86de3",
+              "sha256:a7f25cb8e9d263a7e385795814b19c85bc95ab2da2d9805e5efc80a45d7ae0af",
+              "sha256:a10ca8966b9caac8891522e04b12a30dde3fd1c08b90faf444e5b0edda8690a6",
+              "sha256:0cc1bbefb790c5dcb6b9e8acbb7dea20a6f02459e3f52f9df39f3b1a79b10540"
+            ],
+            "diagnostics": [],
+            "diagnostics_sha256": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "fallback_used": false,
+            "owner": "sha256:12150b54cc2d581795e05854966e93184cc1187ee781a8223de3df335b53473b",
+            "schema_version": "hardness_stage_p_lean_worker_result_v1",
+            "session_id": "sha256:09ca22a54147edebf0cb63bc84f2ef713d1c264fbe54df73f874df9013da55d6",
+            "source_path": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-gap-runtime-g-c-final/cases/nphg-author-numeric-composition/work/Candidate.lean",
+            "source_sha256": "sha256:4c0a6e010451a2ea725906a74a3561dde1f773d5ad1e0d19999af44d3718e51d",
+            "verified": true,
+            "wall_duration_seconds": 3.460622,
+            "worker_generation": 1,
+            "worker_index": 0
+          },
+          {
+            "cache_hit": false,
+            "cache_key": "sha256:3e83f749f8891d651255204a5ce388d4bdfc55e99be744813fbbc8077696a1ec",
+            "command": null,
+            "dependency_sha256": [
+              "sha256:0cc1bbefb790c5dcb6b9e8acbb7dea20a6f02459e3f52f9df39f3b1a79b10540",
+              "sha256:4c0a6e010451a2ea725906a74a3561dde1f773d5ad1e0d19999af44d3718e51d",
+              "sha256:c33bfc0b4040065dded35770a490eaf9959c27ee6f8d5f6aa843109e66a86de3",
+              "sha256:a7f25cb8e9d263a7e385795814b19c85bc95ab2da2d9805e5efc80a45d7ae0af",
+              "sha256:a10ca8966b9caac8891522e04b12a30dde3fd1c08b90faf444e5b0edda8690a6",
+              "sha256:318b92ee729376d728799cf1e701ac0035f7b8483101e9c8225cffb80daab991"
+            ],
+            "diagnostics": [],
+            "diagnostics_sha256": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "fallback_used": false,
+            "owner": "sha256:12150b54cc2d581795e05854966e93184cc1187ee781a8223de3df335b53473b",
+            "schema_version": "hardness_stage_p_lean_worker_result_v1",
+            "session_id": "sha256:09ca22a54147edebf0cb63bc84f2ef713d1c264fbe54df73f874df9013da55d6",
+            "source_path": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-gap-runtime-g-c-final/cases/nphg-author-numeric-composition/work/Candidate.lean",
+            "source_sha256": "sha256:eaee2d53b2892dde5ca121c48996a6b31fffcc285bfe99c186135ee8d06a6911",
+            "verified": true,
+            "wall_duration_seconds": 0.209058,
+            "worker_generation": 1,
+            "worker_index": 0
+          }
+        ]
+      },
+      "task_class": "program_composition"
+    },
+    {
+      "case_id": "nphg-author-graph-program-synthesis",
+      "gap_node_count": 5,
+      "interrupted": {
+        "accepted_nodes": [
+          "reduction-executable",
+          "poly-program"
+        ],
+        "checkpoint_file_sha256": "sha256:872e86e799749dd7e7554d2bf111c0b64d9aed7c4601d9d58383b24a25543091",
+        "checkpoint_path": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-gap-runtime-g-c-final/cases/nphg-author-graph-program-synthesis/checkpoint.json",
+        "commands": [
+          {
+            "command": [
+              "lake",
+              "env",
+              "lean",
+              "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-gap-runtime-g-c-final/cases/nphg-author-graph-program-synthesis/published/1d20e416c8a101cfff17a4a627e3c074189319e2c10a65ddb5216d24629c47a4/FreshCore.lean"
+            ],
+            "duration_seconds": 2.804,
+            "exit_code": 0,
+            "stderr": "",
+            "stdout": "Generated.NPHardV2.Ce776f0900a2475dc.Authoring.synthesizedExecutable :\n  ComplexityReduction.Problems.Karp21.GraphAtoms.vertexCoverStructuredProblem.Instance →\n    Benchmark.Hardness.Inputs.NPHardGeneralization.GraphProgramSynthesis.source.Instance\n",
+            "timed_out": false
+          },
+          {
+            "command": [
+              "lake",
+              "env",
+              "lean",
+              "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-gap-runtime-g-c-final/cases/nphg-author-graph-program-synthesis/published/6da86df067156b63f961cedb6c289f9c2bf3a168975ad963e4853d9245b1c3fb/FreshCore.lean"
+            ],
+            "duration_seconds": 2.843,
+            "exit_code": 0,
+            "stderr": "",
+            "stdout": "Generated.NPHardV2.Ce776f0900a2475dc.Authoring.synthesizedProgram :\n  ComplexityReduction.Program.PolyProg\n    ComplexityReduction.Problems.Karp21.GraphAtoms.vertexCoverStructuredProblem.representation\n    Benchmark.Hardness.Inputs.NPHardGeneralization.GraphProgramSynthesis.source.representation\n",
+            "timed_out": false
+          }
+        ],
+        "failure_code": null,
+        "failure_message": null,
+        "fresh_core_rediscoveries": 2,
+        "model_calls": 2,
+        "result": null,
+        "resumed": false,
+        "schema_version": "hardness_np_hard_gap_runtime_result_v1",
+        "status": "CHECKPOINTED",
+        "task_request_id": "sha256:52b8ba8e71a8cbc26c8e0a67278d162dc6264f5d8afe186c77250a29db7b87a0",
+        "worker_results": [
+          {
+            "cache_hit": false,
+            "cache_key": "sha256:7fe66ac1c42ca4f7ee98a184197cb1886f6b490005cf7672ce47ce408a029663",
+            "command": null,
+            "dependency_sha256": [
+              "sha256:1a5b73aab53e0ecd16511450d697690cd506dee5d9e0c1e2b0ee373409cfd57b",
+              "sha256:a7f25cb8e9d263a7e385795814b19c85bc95ab2da2d9805e5efc80a45d7ae0af",
+              "sha256:e0367d654ee112022baa2f14856be41aaa545c6f3e85b2cbb1ede562ab2071c4",
+              "sha256:b9411c389ddf2a477b22084f38dbb4d1bc274f568fa84e5e078fb9bb7002358f"
+            ],
+            "diagnostics": [],
+            "diagnostics_sha256": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "fallback_used": false,
+            "owner": "sha256:52b8ba8e71a8cbc26c8e0a67278d162dc6264f5d8afe186c77250a29db7b87a0",
+            "schema_version": "hardness_stage_p_lean_worker_result_v1",
+            "session_id": "sha256:509eee96a767945c35799ab002a6d3c67ee14f367a4f9506d4c809afddacb988",
+            "source_path": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-gap-runtime-g-c-final/cases/nphg-author-graph-program-synthesis/work/Candidate.lean",
+            "source_sha256": "sha256:1d20e416c8a101cfff17a4a627e3c074189319e2c10a65ddb5216d24629c47a4",
+            "verified": true,
+            "wall_duration_seconds": 3.4631,
+            "worker_generation": 1,
+            "worker_index": 0
+          },
+          {
+            "cache_hit": false,
+            "cache_key": "sha256:1a368f3b3ee0ac9407273b65b696801cd784b893296d4efcce7c8659b1292255",
+            "command": null,
+            "dependency_sha256": [
+              "sha256:b9411c389ddf2a477b22084f38dbb4d1bc274f568fa84e5e078fb9bb7002358f",
+              "sha256:1d20e416c8a101cfff17a4a627e3c074189319e2c10a65ddb5216d24629c47a4",
+              "sha256:1a5b73aab53e0ecd16511450d697690cd506dee5d9e0c1e2b0ee373409cfd57b",
+              "sha256:a7f25cb8e9d263a7e385795814b19c85bc95ab2da2d9805e5efc80a45d7ae0af",
+              "sha256:e0367d654ee112022baa2f14856be41aaa545c6f3e85b2cbb1ede562ab2071c4",
+              "sha256:f802998f2ea9ff90ac0888c50d4aac71b326d0804f89a80ae1d3bd18c773577e"
+            ],
+            "diagnostics": [],
+            "diagnostics_sha256": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "fallback_used": false,
+            "owner": "sha256:52b8ba8e71a8cbc26c8e0a67278d162dc6264f5d8afe186c77250a29db7b87a0",
+            "schema_version": "hardness_stage_p_lean_worker_result_v1",
+            "session_id": "sha256:509eee96a767945c35799ab002a6d3c67ee14f367a4f9506d4c809afddacb988",
+            "source_path": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-gap-runtime-g-c-final/cases/nphg-author-graph-program-synthesis/work/Candidate.lean",
+            "source_sha256": "sha256:6da86df067156b63f961cedb6c289f9c2bf3a168975ad963e4853d9245b1c3fb",
+            "verified": true,
+            "wall_duration_seconds": 0.207609,
+            "worker_generation": 1,
+            "worker_index": 0
+          }
+        ]
+      },
+      "matched": true,
+      "requires_multi_gap": true,
+      "requires_nontrivial_semantics": true,
+      "runtime": {
+        "accepted_nodes": [
+          "reduction-executable",
+          "poly-program",
+          "program-run-coherence",
+          "mapping-invariant",
+          "semantic-iff"
+        ],
+        "checkpoint_file_sha256": "sha256:65692de3527d07011230bd355fb89c140f761aad543514d8eddd279ea0ccaf01",
+        "checkpoint_path": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-gap-runtime-g-c-final/cases/nphg-author-graph-program-synthesis/checkpoint.json",
+        "commands": [
+          {
+            "command": [
+              "lake",
+              "env",
+              "lean",
+              "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-gap-runtime-g-c-final/cases/nphg-author-graph-program-synthesis/published/1d20e416c8a101cfff17a4a627e3c074189319e2c10a65ddb5216d24629c47a4/Candidate.lean"
+            ],
+            "duration_seconds": 2.52,
+            "exit_code": 0,
+            "stderr": "",
+            "stdout": "",
+            "timed_out": false
+          },
+          {
+            "command": [
+              "lake",
+              "env",
+              "lean",
+              "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-gap-runtime-g-c-final/cases/nphg-author-graph-program-synthesis/published/6da86df067156b63f961cedb6c289f9c2bf3a168975ad963e4853d9245b1c3fb/Candidate.lean"
+            ],
+            "duration_seconds": 2.706,
+            "exit_code": 0,
+            "stderr": "",
+            "stdout": "",
+            "timed_out": false
+          },
+          {
+            "command": [
+              "lake",
+              "env",
+              "lean",
+              "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-gap-runtime-g-c-final/cases/nphg-author-graph-program-synthesis/published/857f546c4911a2e7664656d91bd9553ea75c3d9722d6fc9e6c81876274434485/FreshCore.lean"
+            ],
+            "duration_seconds": 2.629,
+            "exit_code": 0,
+            "stderr": "",
+            "stdout": "Generated.NPHardV2.Ce776f0900a2475dc.Authoring.programRunCoherence\n  (input : ComplexityReduction.Problems.Karp21.GraphAtoms.vertexCoverStructuredProblem.Instance) :\n  Generated.NPHardV2.Ce776f0900a2475dc.Authoring.synthesizedProgram.run input =\n    Generated.NPHardV2.Ce776f0900a2475dc.Authoring.synthesizedExecutable input\n",
+            "timed_out": false
+          },
+          {
+            "command": [
+              "lake",
+              "env",
+              "lean",
+              "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-gap-runtime-g-c-final/cases/nphg-author-graph-program-synthesis/published/dc6e5a84167fd91fd11b7b3c2c882257766d47034e1fa022d37b807b5eeebad0/FreshCore.lean"
+            ],
+            "duration_seconds": 2.593,
+            "exit_code": 0,
+            "stderr": "",
+            "stdout": "Generated.NPHardV2.Ce776f0900a2475dc.Authoring.mappingInvariantProof\n  (input : ComplexityReduction.Problems.Karp21.GraphAtoms.vertexCoverStructuredProblem.Instance) :\n  Benchmark.Hardness.Inputs.NPHardGeneralization.GraphProgramSynthesis.mappingInvariant input\n    (Generated.NPHardV2.Ce776f0900a2475dc.Authoring.synthesizedProgram.run input)\n",
+            "timed_out": false
+          },
+          {
+            "command": [
+              "lake",
+              "env",
+              "lean",
+              "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-gap-runtime-g-c-final/cases/nphg-author-graph-program-synthesis/published/39f8b56b98ed70d12b01a4b7ec45479527990cf0636f3236c6ef8b61d4acead7/FreshCore.lean"
+            ],
+            "duration_seconds": 2.614,
+            "exit_code": 0,
+            "stderr": "",
+            "stdout": "Generated.NPHardV2.Ce776f0900a2475dc.Authoring.semanticCorrect\n  (input : ComplexityReduction.Problems.Karp21.GraphAtoms.vertexCoverStructuredProblem.Instance) :\n  ComplexityReduction.Problems.Karp21.GraphAtoms.vertexCoverStructuredProblem.accepts input ↔\n    Benchmark.Hardness.Inputs.NPHardGeneralization.GraphProgramSynthesis.source.accepts\n      (Generated.NPHardV2.Ce776f0900a2475dc.Authoring.synthesizedProgram.run input)\n",
+            "timed_out": false
+          },
+          {
+            "command": [
+              "lake",
+              "env",
+              "lean",
+              "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-gap-runtime-g-c-final/cases/nphg-author-graph-program-synthesis/Final.lean"
+            ],
+            "duration_seconds": 3.058,
+            "exit_code": 0,
+            "stderr": "",
+            "stdout": "",
+            "timed_out": false
+          },
+          {
+            "command": [
+              "lake",
+              "env",
+              "lean",
+              "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-gap-runtime-g-c-final/cases/nphg-author-graph-program-synthesis/Replay.lean"
+            ],
+            "duration_seconds": 2.994,
+            "exit_code": 0,
+            "stderr": "",
+            "stdout": "",
+            "timed_out": false
+          }
+        ],
+        "failure_code": null,
+        "failure_message": null,
+        "fresh_core_rediscoveries": 5,
+        "model_calls": 5,
+        "result": {
+          "accepted_nodes": [
+            "reduction-executable",
+            "poly-program",
+            "program-run-coherence",
+            "mapping-invariant",
+            "semantic-iff"
+          ],
+          "candidate_hashes": {
+            "mapping-invariant": "sha256:bc9a6049cc32fc34a58bc7bfcfa03fa0484c7323710bee99e2f6b508898c1ef5",
+            "poly-program": "sha256:f802998f2ea9ff90ac0888c50d4aac71b326d0804f89a80ae1d3bd18c773577e",
+            "program-run-coherence": "sha256:e635bd40a15482f662148516b12feaab6fef8231f1cec7dfb93457b738541a70",
+            "reduction-executable": "sha256:b9411c389ddf2a477b22084f38dbb4d1bc274f568fa84e5e078fb9bb7002358f",
+            "semantic-iff": "sha256:f2d35469aeba11b45f581011e81535fb294334b8265859d34a8a4140a67f7e16"
+          },
+          "final_certificate": "sha256:2621ca4a4f56b88fc6c2b44f6128449c2e02d19172f2680950afff5d18707d1f",
+          "lean_diagnostics": [
+            "every node accepted by the persistent worker and fresh Core",
+            "exact NativeTMNPHard target finalized and replayed"
+          ],
+          "model_calls": [
+            {
+              "attempt": 1,
+              "called": true,
+              "duration_seconds": 0.0,
+              "error": null,
+              "finish_reason": "stop",
+              "node_id": "reduction-executable",
+              "ok": true,
+              "provider_attempts": 1,
+              "response_sha256": "sha256:ff435f5e6908207010dfe2c44be5ae649492241fe46186f3bde89b8e18daf2fd",
+              "status_code": 200,
+              "usage": {
+                "fixture_tokens": 0
+              }
+            },
+            {
+              "attempt": 1,
+              "called": true,
+              "duration_seconds": 0.0,
+              "error": null,
+              "finish_reason": "stop",
+              "node_id": "poly-program",
+              "ok": true,
+              "provider_attempts": 1,
+              "response_sha256": "sha256:c65bf2a143e4e091c6a2bb1f2a9e7da4707223ff2ca9abaaf203c8b8b80a3cd2",
+              "status_code": 200,
+              "usage": {
+                "fixture_tokens": 0
+              }
+            },
+            {
+              "attempt": 1,
+              "called": true,
+              "duration_seconds": 0.0,
+              "error": null,
+              "finish_reason": "stop",
+              "node_id": "program-run-coherence",
+              "ok": true,
+              "provider_attempts": 1,
+              "response_sha256": "sha256:9a92cc2924aa9cc810fa5faded371a142a205b32df15865b0390bb18b3c4c6f8",
+              "status_code": 200,
+              "usage": {
+                "fixture_tokens": 0
+              }
+            },
+            {
+              "attempt": 1,
+              "called": true,
+              "duration_seconds": 0.0,
+              "error": null,
+              "finish_reason": "stop",
+              "node_id": "mapping-invariant",
+              "ok": true,
+              "provider_attempts": 1,
+              "response_sha256": "sha256:e41ead5ea4921bad1912e165e6150c53de74463fb5acf84f901c9f2feb130b16",
+              "status_code": 200,
+              "usage": {
+                "fixture_tokens": 0
+              }
+            },
+            {
+              "attempt": 1,
+              "called": true,
+              "duration_seconds": 0.0,
+              "error": null,
+              "finish_reason": "stop",
+              "node_id": "semantic-iff",
+              "ok": true,
+              "provider_attempts": 1,
+              "response_sha256": "sha256:a5e386360bc1da517a968be062abe60a0bbc106ad9776ccfda743c050f3a1141",
+              "status_code": 200,
+              "usage": {
+                "fixture_tokens": 0
+              }
+            }
+          ],
+          "outcome": "accepted",
+          "policy_diagnostics": [
+            "source-to-target direction and exact endpoints remained frozen"
+          ],
+          "remaining_nodes": [],
+          "replay_certificate": "sha256:4f6fa848f67a8413afc41f76b23ed34683db5f1b54d6b861d672de6be859eea5",
+          "request_id": "sha256:52b8ba8e71a8cbc26c8e0a67278d162dc6264f5d8afe186c77250a29db7b87a0",
+          "schema_version": "hardness_np_hard_authoring_result_v2"
+        },
+        "resumed": true,
+        "schema_version": "hardness_np_hard_gap_runtime_result_v1",
+        "status": "VERIFIED",
+        "task_request_id": "sha256:52b8ba8e71a8cbc26c8e0a67278d162dc6264f5d8afe186c77250a29db7b87a0",
+        "worker_results": [
+          {
+            "cache_hit": false,
+            "cache_key": "sha256:e663af893998343bbca9270bed3b0f5e36b69ec15be1600febfd60e811e7b440",
+            "command": null,
+            "dependency_sha256": [
+              "sha256:f802998f2ea9ff90ac0888c50d4aac71b326d0804f89a80ae1d3bd18c773577e",
+              "sha256:6da86df067156b63f961cedb6c289f9c2bf3a168975ad963e4853d9245b1c3fb",
+              "sha256:b9411c389ddf2a477b22084f38dbb4d1bc274f568fa84e5e078fb9bb7002358f",
+              "sha256:1d20e416c8a101cfff17a4a627e3c074189319e2c10a65ddb5216d24629c47a4",
+              "sha256:1a5b73aab53e0ecd16511450d697690cd506dee5d9e0c1e2b0ee373409cfd57b",
+              "sha256:a7f25cb8e9d263a7e385795814b19c85bc95ab2da2d9805e5efc80a45d7ae0af",
+              "sha256:e0367d654ee112022baa2f14856be41aaa545c6f3e85b2cbb1ede562ab2071c4",
+              "sha256:e635bd40a15482f662148516b12feaab6fef8231f1cec7dfb93457b738541a70"
+            ],
+            "diagnostics": [],
+            "diagnostics_sha256": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "fallback_used": false,
+            "owner": "sha256:52b8ba8e71a8cbc26c8e0a67278d162dc6264f5d8afe186c77250a29db7b87a0",
+            "schema_version": "hardness_stage_p_lean_worker_result_v1",
+            "session_id": "sha256:509eee96a767945c35799ab002a6d3c67ee14f367a4f9506d4c809afddacb988",
+            "source_path": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-gap-runtime-g-c-final/cases/nphg-author-graph-program-synthesis/work/Candidate.lean",
+            "source_sha256": "sha256:857f546c4911a2e7664656d91bd9553ea75c3d9722d6fc9e6c81876274434485",
+            "verified": true,
+            "wall_duration_seconds": 3.086342,
+            "worker_generation": 1,
+            "worker_index": 0
+          },
+          {
+            "cache_hit": false,
+            "cache_key": "sha256:c7fac1f1487f377cf91e466a7723ad220646d63b525712db56dee0bee72f26e2",
+            "command": null,
+            "dependency_sha256": [
+              "sha256:f802998f2ea9ff90ac0888c50d4aac71b326d0804f89a80ae1d3bd18c773577e",
+              "sha256:6da86df067156b63f961cedb6c289f9c2bf3a168975ad963e4853d9245b1c3fb",
+              "sha256:e635bd40a15482f662148516b12feaab6fef8231f1cec7dfb93457b738541a70",
+              "sha256:857f546c4911a2e7664656d91bd9553ea75c3d9722d6fc9e6c81876274434485",
+              "sha256:b9411c389ddf2a477b22084f38dbb4d1bc274f568fa84e5e078fb9bb7002358f",
+              "sha256:1d20e416c8a101cfff17a4a627e3c074189319e2c10a65ddb5216d24629c47a4",
+              "sha256:1a5b73aab53e0ecd16511450d697690cd506dee5d9e0c1e2b0ee373409cfd57b",
+              "sha256:a7f25cb8e9d263a7e385795814b19c85bc95ab2da2d9805e5efc80a45d7ae0af",
+              "sha256:e0367d654ee112022baa2f14856be41aaa545c6f3e85b2cbb1ede562ab2071c4",
+              "sha256:bc9a6049cc32fc34a58bc7bfcfa03fa0484c7323710bee99e2f6b508898c1ef5"
+            ],
+            "diagnostics": [],
+            "diagnostics_sha256": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "fallback_used": false,
+            "owner": "sha256:52b8ba8e71a8cbc26c8e0a67278d162dc6264f5d8afe186c77250a29db7b87a0",
+            "schema_version": "hardness_stage_p_lean_worker_result_v1",
+            "session_id": "sha256:509eee96a767945c35799ab002a6d3c67ee14f367a4f9506d4c809afddacb988",
+            "source_path": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-gap-runtime-g-c-final/cases/nphg-author-graph-program-synthesis/work/Candidate.lean",
+            "source_sha256": "sha256:dc6e5a84167fd91fd11b7b3c2c882257766d47034e1fa022d37b807b5eeebad0",
+            "verified": true,
+            "wall_duration_seconds": 0.209752,
+            "worker_generation": 1,
+            "worker_index": 0
+          },
+          {
+            "cache_hit": false,
+            "cache_key": "sha256:b318c46ad68ad35efa87fed841006c4d0a54812f414d472b92c4b795aecfa9c9",
+            "command": null,
+            "dependency_sha256": [
+              "sha256:bc9a6049cc32fc34a58bc7bfcfa03fa0484c7323710bee99e2f6b508898c1ef5",
+              "sha256:dc6e5a84167fd91fd11b7b3c2c882257766d47034e1fa022d37b807b5eeebad0",
+              "sha256:f802998f2ea9ff90ac0888c50d4aac71b326d0804f89a80ae1d3bd18c773577e",
+              "sha256:6da86df067156b63f961cedb6c289f9c2bf3a168975ad963e4853d9245b1c3fb",
+              "sha256:e635bd40a15482f662148516b12feaab6fef8231f1cec7dfb93457b738541a70",
+              "sha256:857f546c4911a2e7664656d91bd9553ea75c3d9722d6fc9e6c81876274434485",
+              "sha256:b9411c389ddf2a477b22084f38dbb4d1bc274f568fa84e5e078fb9bb7002358f",
+              "sha256:1d20e416c8a101cfff17a4a627e3c074189319e2c10a65ddb5216d24629c47a4",
+              "sha256:1a5b73aab53e0ecd16511450d697690cd506dee5d9e0c1e2b0ee373409cfd57b",
+              "sha256:a7f25cb8e9d263a7e385795814b19c85bc95ab2da2d9805e5efc80a45d7ae0af",
+              "sha256:e0367d654ee112022baa2f14856be41aaa545c6f3e85b2cbb1ede562ab2071c4",
+              "sha256:f2d35469aeba11b45f581011e81535fb294334b8265859d34a8a4140a67f7e16"
+            ],
+            "diagnostics": [],
+            "diagnostics_sha256": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "fallback_used": false,
+            "owner": "sha256:52b8ba8e71a8cbc26c8e0a67278d162dc6264f5d8afe186c77250a29db7b87a0",
+            "schema_version": "hardness_stage_p_lean_worker_result_v1",
+            "session_id": "sha256:509eee96a767945c35799ab002a6d3c67ee14f367a4f9506d4c809afddacb988",
+            "source_path": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-gap-runtime-g-c-final/cases/nphg-author-graph-program-synthesis/work/Candidate.lean",
+            "source_sha256": "sha256:39f8b56b98ed70d12b01a4b7ec45479527990cf0636f3236c6ef8b61d4acead7",
+            "verified": true,
+            "wall_duration_seconds": 0.211248,
+            "worker_generation": 1,
+            "worker_index": 0
+          }
+        ]
+      },
+      "task_class": "program_synthesis"
+    }
+  ],
+  "generated_at": "2026-08-07T16:19:42.073736+00:00",
+  "metrics": {
+    "accepted_node_count": 12,
+    "checkpoint_resume_verified_count": 1,
+    "compiler_inserted_math_token_count": 0,
+    "exact_native_np_hard_final_count": 5,
+    "fresh_core_rediscovery_count": 12,
+    "independent_replay_count": 5,
+    "model_calls": 12,
+    "multi_gap_verified_count": 4,
+    "nontrivial_semantic_verified_count": 2,
+    "persistent_worker_count_per_session": 1,
+    "program_synthesis_verified_count": 1,
+    "task_count": 5,
+    "verified_task_count": 5,
+    "worker_fallback_count": 0
+  },
+  "passed": true,
+  "qualification_scope": "sequential_multi_gap_runtime_offline_fixture_model",
+  "schema_version": "hardness_np_hard_gap_runtime_report_v1",
+  "stage": "G-C",
+  "suite_sha256": "e6c37b4ad314342bf556e14afea1ef2907c2384b5d4d7f6ccb03bda8ae5dfbeb",
+  "tamper_audits": {
+    "candidate_byte_rejected": true,
+    "checkpoint_byte_rejected": true,
+    "dependency_snapshot_rejected": true
+  }
+}

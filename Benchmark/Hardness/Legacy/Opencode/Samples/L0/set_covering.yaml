@@ -1,0 +1,22 @@
+schema_version: opencode_decision_problem_sample_file_v1
+id: set_covering
+name: set_covering_problem
+input_language: set_covering
+problem_family: set_system
+problem_statement: Given a finite universe, a family of subsets, and an integer k, decide whether at most k subsets cover the universe.
+certificate_contract: lean_proposition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction
+
+  noncomputable section
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.Combinatorics.setCoveringDecisionProblem
+lean_target_type: |
+  ComplexityReduction.InNPEnc ComplexityReduction.CostedPolyTimeModel problem
+difficulty: medium
+difficulty_tags:
+- set_system
+- subset_family_witness
+- cover_check

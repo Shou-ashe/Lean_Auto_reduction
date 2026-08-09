@@ -1,0 +1,147 @@
+{
+  "schema_version": "hardness_main_h_b_full_report_v1",
+  "stage": "H-B",
+  "generated_at": "2026-08-08T00:00:00+08:00",
+  "passed": true,
+  "source_control": {
+    "git_available": false,
+    "reason": "workspace .git directory contains no readable repository metadata; source hashes are authoritative",
+    "tested_active_plan_sha256": "962c2c92c87cf0563f2da16a170846ad6d86e13469e8bcac85e06d5dc48c1e19",
+    "completed_active_plan_sha256": "898deb0e445e53265b81c71d7d46a3eb664c05509a2fa1461dc9b5036762473a",
+    "source_sha256": {
+      "scripts/prove_np_hard.py": "46f19b608f6b49f83d8c0b09197e0ed36127c3c6cf8a4d9ee65da6f4e3f66dff",
+      "scripts/run_np_hard_h_b_heldout.py": "0c53dec982efa24d2f2be911a340bd1388868bba3abf63ede2703eba13793e85",
+      "agent/hardness/np_hard_orchestrator.py": "776c07fd3eb73d260d6ef9da1f17ad9fd5605bd783ff6e93fcf9dd2f2ebe8c72",
+      "agent/hardness/np_hard_authoring.py": "f32197c5c59eb090352c1f8d77540654d92020d220e2739f2b7ed349a59fcd1b",
+      "agent/hardness/np_hard_authoring_planner.py": "664c0193a4960cb87aff0d69c8c64e7a19ef917d7b08b25951de5f02981fd2a6",
+      "agent/hardness/np_hard_gap_runtime.py": "8aadf4ab6034959c2e633e3f58ca091b2723ff30cafc26b2e024ddec3a34d8e8",
+      "agent/hardness/np_hard_release_benchmark.py": "0394cc64eef09c7a3bac941414f48d27dd82e2040ecf198990735ff9a658d827",
+      "Lean/Reference/ComplexityReduction/Agent/Hardness/AuthoringPlanner.lean": "261706ff60e51607ee68fa198bd86a3ece098caae24ef21c14f0f0cdfb67fa40",
+      "Lean/Reference/ComplexityReduction/Agent/Hardness/Gap.lean": "f11bf83633093ed1ed05cfd3d277af49ddc81ac72b2a55f17e84298b987fcee5",
+      "tests/test_hardness_np_hard_authoring_planner_v2.py": "e9d279346e0418cf4a4aa6f6851b25486479bf24e878c2160ebcb8b07787a44f"
+    }
+  },
+  "lean": {
+    "toolchain": "leanprover/lean4:v4.29.0",
+    "toolchain_file_sha256": "651c8accb402b0c071cd336e9d3dc0a55516b1bfb434ddc4801f14936785b1d2",
+    "lake_manifest_sha256": "7b9ebbed765572606d98ef3e13b2a3036325a9d5bd860a111bdd73db1104aec7"
+  },
+  "model": {
+    "provider": "DeepSeek",
+    "base_url": "https://api.deepseek.com",
+    "model": "deepseek-chat",
+    "temperature": 0.0,
+    "max_retries": 0,
+    "credentials_recorded": false
+  },
+  "gates": {
+    "related_test_suite": {
+      "passed": true,
+      "test_count": 48,
+      "failed": 0,
+      "duration_seconds": 385.77
+    },
+    "full_test_suite": {
+      "passed": true,
+      "test_count": 686,
+      "failed": 0,
+      "duration_seconds": 384.11
+    },
+    "offline_release_contract": {
+      "passed": true,
+      "output_dir": "tmp/h-b-offline-20260808-v1",
+      "report_file": "Benchmark/Hardness/NP_HARD_RELEASE_OFFLINE_REPORT.json",
+      "report_sha256": "d79bdfae565e7eb85f352f9167821e9849ac20a8e9096c6cf31c9ca5f089b14b",
+      "case_count": 12,
+      "existing_route_verified": 5,
+      "authoring_public_blockers_confirmed": 5,
+      "safety_negative_count": 2,
+      "gold_compile_count": 5,
+      "replay_verified_count": 5,
+      "fresh_core_rediscovery_count": 12,
+      "independent_replay_count": 5,
+      "worker_fallback_count": 0
+    },
+    "main_benchmark_45": {
+      "passed": true,
+      "output_dir": "tmp/h-b-main45-real-deepseek-chat-20260808-v1",
+      "report_file": "tmp/h-b-main45-real-deepseek-chat-20260808-v1/report.json",
+      "report_sha256": "a7e72ac0b1ac7ea29e8a97ad10b530fb68b3761407f6b52d1121453fd9a0ff60",
+      "executed": 45,
+      "matched": 45,
+      "failed": 0,
+      "real_api_calls": 1,
+      "http_ok_count": 1,
+      "token_usage": {
+        "prompt_tokens": 2024,
+        "completion_tokens": 155,
+        "total_tokens": 2179
+      },
+      "kernel_replay_axiom_audit_passed": true
+    },
+    "release_stability_3_rounds": {
+      "passed": true,
+      "output_dir": "tmp/h-b-release-stability-real-20260808-v1",
+      "report_file": "Benchmark/Hardness/NP_HARD_RELEASE_STABILITY_AGGREGATE.json",
+      "report_sha256": "5acb86a9d6e845493df076a171ecdd2cc267f4bf57cd5e1cc8b6361020a85c20",
+      "round_count": 3,
+      "executed": 36,
+      "matched": 36,
+      "real_api_calls": 36,
+      "model_authoring_verified": 15,
+      "existing_route_model_calls": 0,
+      "safety_negatives_matched": 6,
+      "deletion_audit_count": 15,
+      "worker_fallback_count": 0,
+      "token_usage": {
+        "prompt_tokens": 103692,
+        "completion_tokens": 7683,
+        "total_tokens": 111375,
+        "prompt_cache_hit_tokens": 72704,
+        "prompt_cache_miss_tokens": 30988
+      }
+    },
+    "held_out_production_entry": {
+      "passed": true,
+      "output_dir": "tmp/h-b-heldout-real-20260808-v1",
+      "report_file": "Benchmark/Hardness/NP_HARD_H_B_HELDOUT_REPORT.json",
+      "report_sha256": "a344acfca4c7742203aef86400a8c9d99cc365dfc5bcc5b4fb4ccc9eb57e56d6",
+      "executed": 1,
+      "verified": 1,
+      "planner_model_calls": 0,
+      "planned_node_count": 2,
+      "real_api_calls": 2,
+      "http_ok_count": 2,
+      "deletion_audit_node_count": 2,
+      "worker_fallback_count": 0,
+      "token_usage": {
+        "prompt_tokens": 5473,
+        "completion_tokens": 455,
+        "total_tokens": 5928
+      }
+    }
+  },
+  "audit_notes": {
+    "production_planner_input": [
+      "module",
+      "problem",
+      "budgets"
+    ],
+    "suite_authored_task_passed_to_orchestrator": false,
+    "planner_model_calls": 0,
+    "lean_observation_authority": "exact elaborated types and definitional equality",
+    "covered_authoring_classes": {
+      "semantic_proof": 2,
+      "program_composition": 2,
+      "program_synthesis": 1
+    },
+    "stable_blockers_verified": [
+      "ambiguous_hub",
+      "missing_capability",
+      "wrong_direction"
+    ],
+    "prompt_contains_api_credentials": false,
+    "planner_outputs_content_addressed": true,
+    "raw_model_outputs_retained_in_fresh_output_directories": true
+  }
+}

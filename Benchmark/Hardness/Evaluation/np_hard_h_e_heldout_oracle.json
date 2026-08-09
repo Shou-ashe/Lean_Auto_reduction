@@ -1,0 +1,19 @@
+{
+  "schema_version": "hardness_np_hard_h_e_evaluation_oracle_v1",
+  "suite_id": "np-hard-h-e-heldout",
+  "note": "Evaluation-only expectations. This file is never imported, prompted, or passed to the production orchestrator.",
+  "cases": [
+    {"id": "he-existing-membership-free", "status": "VERIFIED", "failure_code": null, "validation_mode": "production_entry", "requires_model": false, "task_class": null, "gap_count": 0},
+    {"id": "he-existing-clique", "status": "VERIFIED", "failure_code": null, "validation_mode": "production_entry", "requires_model": false, "task_class": null, "gap_count": 0},
+    {"id": "he-existing-vertex-cover", "status": "VERIFIED", "failure_code": null, "validation_mode": "production_entry", "requires_model": false, "task_class": null, "gap_count": 0},
+    {"id": "he-existing-exact-cover", "status": "VERIFIED", "failure_code": null, "validation_mode": "production_entry", "requires_model": false, "task_class": null, "gap_count": 0},
+    {"id": "he-author-single-gap-sat", "status": "VERIFIED", "failure_code": null, "validation_mode": "production_entry", "requires_model": true, "task_class": "semantic_proof", "gap_count": 1},
+    {"id": "he-author-cross-module-composition", "status": "VERIFIED", "failure_code": null, "validation_mode": "production_entry", "requires_model": true, "task_class": "program_composition", "gap_count": 2},
+    {"id": "he-author-numeric-composition", "status": "VERIFIED", "failure_code": null, "validation_mode": "production_entry", "requires_model": true, "task_class": "program_composition", "gap_count": 2},
+    {"id": "he-author-graph-program-synthesis", "status": "VERIFIED", "failure_code": null, "validation_mode": "production_entry", "requires_model": true, "task_class": "program_synthesis", "gap_count": 5},
+    {"id": "he-negative-reverse-only", "status": "BLOCKED", "failure_code": "wrong_direction_only", "validation_mode": "production_entry", "requires_model": false, "task_class": null, "gap_count": 0},
+    {"id": "he-negative-missing-presentation", "status": "BLOCKED", "failure_code": "missing_lawful_presentation", "validation_mode": "production_entry", "requires_model": false, "task_class": null, "gap_count": 0},
+    {"id": "he-negative-ambiguous-presentation", "status": "BLOCKED", "failure_code": "ambiguous_lawful_presentation", "validation_mode": "production_entry", "requires_model": false, "task_class": null, "gap_count": 0},
+    {"id": "he-negative-wrong-endpoint", "status": "BLOCKED", "failure_code": "candidate_wrong_endpoint", "validation_mode": "endpoint_mutation_audit", "requires_model": false, "task_class": null, "gap_count": 0}
+  ]
+}

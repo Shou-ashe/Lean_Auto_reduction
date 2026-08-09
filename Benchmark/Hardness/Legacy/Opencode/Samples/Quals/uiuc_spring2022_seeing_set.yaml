@@ -1,0 +1,59 @@
+schema_version: opencode_decision_problem_sample_file_v1
+id: uiuc_spring2022_seeing_set
+name: uiuc_spring2022_seeing_set_problem
+input_language: directed_reachability_seeing_set
+problem_family: graph
+problem_statement: |
+  UIUC Theory Qual, Spring 2022, Algorithms Problem 1.B. Let G = (V, E) be a
+  directed graph with integer vertex weights w : V -> Z. A set S subset of V
+  "sees" a vertex v if there is a directed path from some node in S to v.
+  Given G, the weights w, a target set X subset of V, and a budget b, decide
+  whether there is a set S with total weight at most b that sees every vertex
+  in X. Prove that this problem is NP-hard (the exam asks for the minimum-
+  weight seeing set; the decision version is stated here). The standard
+  hardness route is from Set Cover / Hitting Set.
+certificate_contract: lean_proposition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction
+
+  noncomputable section
+
+  def SeeingSet.Reaches (g : ComplexityReduction.Combinatorics.Graph.GraphInput) (u v : Nat) : Prop :=
+    Relation.ReflTransGen (fun a b => ComplexityReduction.Combinatorics.Graph.HasDirectedEdge g a b) u v
+
+  structure SeeingSetInput where
+    graph : ComplexityReduction.Combinatorics.Graph.GraphInput
+    weight : Nat → Int
+    X : List Nat
+    budget : Int
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    { Instance := ComplexityReduction.EncodedType.raw SeeingSetInput
+      isYes := fun I =>
+        ∃ S : List Nat,
+          S.Nodup ∧
+            ComplexityReduction.Combinatorics.Graph.VerticesWithinBounds I.graph S ∧
+            (S.map I.weight).sum ≤ I.budget ∧
+            ∀ v ∈ I.X, ∃ u ∈ S, SeeingSet.Reaches I.graph u v }
+lean_target_type: |
+  ComplexityReduction.NPCompleteEnc ComplexityReduction.CostedPolyTimeModel problem
+expected:
+  phase1:
+    outcome: typed_missing_obligation
+    certificate_tracks:
+      lower_bound: typed_missing_obligation
+      membership: typed_missing_obligation
+      npcomplete: typed_missing_obligation
+    missing_obligations:
+    - missing_source_view_bridge
+    - missing_target_bridge
+    - missing_membership_packet
+difficulty: quals_reduction
+difficulty_tags:
+- graph
+- np_complete
+- reachability
+- set_cover_source
+- real_exam
+- uiuc_quals

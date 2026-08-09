@@ -1,0 +1,427 @@
+{
+  "active_plan_sha256": "4a57d20b60c2b0ceab463a44aea2587c29d9c71464bc8eea698f0bc97fa03d7d",
+  "canonical_suite": {
+    "cases": [
+      {
+        "actual_failure_code": null,
+        "actual_status": "VERIFIED",
+        "artifact_file": "tmp/np-hard-r-d-stability-success-2/canonical-suite/np-hard-canonical-three-sat/Artifact.lean",
+        "artifact_sha256": "680d2c685de5032434919a1b516238f6a94e6b1d63ffd5f809a4d14ae32ad293",
+        "case_id": "np-hard-canonical-three-sat",
+        "direction": "hardness_seed_to_problem",
+        "evidence_kind": "transported_hardness",
+        "expected_failure_code": null,
+        "expected_status": "VERIFIED",
+        "hub_declaration": "ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem",
+        "independent_replay": true,
+        "matched_expectation": true,
+        "model_calls": 0,
+        "module": "Benchmark.Hardness.Inputs.Completeness.RegisteredThreeSAT",
+        "problem_declaration": "Benchmark.Hardness.Inputs.Completeness.RegisteredThreeSAT.source",
+        "registry_fingerprint": "lean:7750857790505183205",
+        "route_atom_count": 0,
+        "route_atoms": [],
+        "tags": [
+          "positive",
+          "zero-path",
+          "native-completeness-seed"
+        ]
+      },
+      {
+        "actual_failure_code": null,
+        "actual_status": "VERIFIED",
+        "artifact_file": "tmp/np-hard-r-d-stability-success-2/canonical-suite/np-hard-three-sat-to-clique/Artifact.lean",
+        "artifact_sha256": "9d34d26fc856adce4098c04b77fdd956fe878bbfaa6ba0c889480fc8d0a45190",
+        "case_id": "np-hard-three-sat-to-clique",
+        "direction": "hardness_seed_to_problem",
+        "evidence_kind": "transported_hardness",
+        "expected_failure_code": null,
+        "expected_status": "VERIFIED",
+        "hub_declaration": "ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem",
+        "independent_replay": true,
+        "matched_expectation": true,
+        "model_calls": 0,
+        "module": "Benchmark.Hardness.Inputs.Completeness.TransportedClique",
+        "problem_declaration": "Benchmark.Hardness.Inputs.Completeness.TransportedClique.source",
+        "registry_fingerprint": "lean:7750857790505183205",
+        "route_atom_count": 1,
+        "route_atoms": [
+          "ComplexityReduction.Routes.ThreeSATToClique.sharedGadget"
+        ],
+        "tags": [
+          "positive",
+          "existing-route",
+          "clique"
+        ]
+      },
+      {
+        "actual_failure_code": null,
+        "actual_status": "VERIFIED",
+        "artifact_file": "tmp/np-hard-r-d-stability-success-2/canonical-suite/np-hard-without-target-membership/Artifact.lean",
+        "artifact_sha256": "7e9f6e02c7940477fad05df1a09f3ceb6e9f7fa488ae3261ba0e689dc3017680",
+        "case_id": "np-hard-without-target-membership",
+        "direction": "hardness_seed_to_problem",
+        "evidence_kind": "transported_hardness",
+        "expected_failure_code": null,
+        "expected_status": "VERIFIED",
+        "hub_declaration": "ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem",
+        "independent_replay": true,
+        "matched_expectation": true,
+        "model_calls": 0,
+        "module": "Benchmark.Hardness.Inputs.Completeness.MissingTargetMembership",
+        "problem_declaration": "Benchmark.Hardness.Inputs.Completeness.MissingTargetMembership.source",
+        "registry_fingerprint": "lean:16388365991807611528",
+        "route_atom_count": 1,
+        "route_atoms": [
+          "Benchmark.Hardness.Inputs.Completeness.MissingTargetMembership.forward"
+        ],
+        "tags": [
+          "positive",
+          "membership-not-required",
+          "existing-route"
+        ]
+      },
+      {
+        "actual_failure_code": null,
+        "actual_status": "VERIFIED",
+        "artifact_file": "tmp/np-hard-r-d-stability-success-2/canonical-suite/np-hard-three-sat-to-vertex-cover/Artifact.lean",
+        "artifact_sha256": "d23c66cec5704b97becc5a76516affb53604dcb153213081f0dbb38a5bf1b80e",
+        "case_id": "np-hard-three-sat-to-vertex-cover",
+        "direction": "hardness_seed_to_problem",
+        "evidence_kind": "transported_hardness",
+        "expected_failure_code": null,
+        "expected_status": "VERIFIED",
+        "hub_declaration": "ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem",
+        "independent_replay": true,
+        "matched_expectation": true,
+        "model_calls": 0,
+        "module": "ComplexityReduction.Problems.Karp21.GraphAtoms",
+        "problem_declaration": "ComplexityReduction.Problems.Karp21.GraphAtoms.vertexCoverStructuredProblem",
+        "registry_fingerprint": "lean:7750857790505183205",
+        "route_atom_count": 2,
+        "route_atoms": [
+          "ComplexityReduction.Routes.ThreeSATToClique.sharedGadget",
+          "ComplexityReduction.Routes.CliqueToVertexCover.certifiedReduction"
+        ],
+        "tags": [
+          "positive",
+          "multi-edge",
+          "vertex-cover"
+        ]
+      },
+      {
+        "actual_failure_code": "wrong_direction_only",
+        "actual_status": "BLOCKED",
+        "artifact_file": null,
+        "artifact_sha256": null,
+        "case_id": "np-hard-reverse-only",
+        "direction": "hardness_seed_to_problem",
+        "evidence_kind": null,
+        "expected_failure_code": "wrong_direction_only",
+        "expected_status": "BLOCKED",
+        "hub_declaration": null,
+        "independent_replay": false,
+        "matched_expectation": true,
+        "model_calls": 0,
+        "module": "Benchmark.Hardness.Inputs.Completeness.WrongDirection",
+        "problem_declaration": "Benchmark.Hardness.Inputs.Completeness.WrongDirection.source",
+        "registry_fingerprint": "lean:17351329758244747493",
+        "route_atom_count": null,
+        "route_atoms": [],
+        "tags": [
+          "negative",
+          "directionality",
+          "reverse-only"
+        ]
+      },
+      {
+        "actual_failure_code": "no_forward_path_from_hardness_seed",
+        "actual_status": "BLOCKED",
+        "artifact_file": null,
+        "artifact_sha256": null,
+        "case_id": "np-hard-no-forward-path",
+        "direction": "hardness_seed_to_problem",
+        "evidence_kind": null,
+        "expected_failure_code": "no_forward_path_from_hardness_seed",
+        "expected_status": "BLOCKED",
+        "hub_declaration": null,
+        "independent_replay": false,
+        "matched_expectation": true,
+        "model_calls": 0,
+        "module": "Benchmark.Hardness.Inputs.Membership.DeterministicAuthoring",
+        "problem_declaration": "Benchmark.Hardness.Inputs.Membership.DeterministicAuthoring.source",
+        "registry_fingerprint": "lean:7315634998078491563",
+        "route_atom_count": null,
+        "route_atoms": [],
+        "tags": [
+          "negative",
+          "no-forward-path",
+          "authoring-disabled"
+        ]
+      }
+    ],
+    "metrics": {
+      "case_count": 6,
+      "exact_final_hardness_rate": 1.0,
+      "independent_replay_rate": 1.0,
+      "model_calls": 0,
+      "multi_edge_success_rate": 1.0,
+      "negative_case_count": 2,
+      "positive_case_count": 4,
+      "reduce_to_known_hardness_counted_as_success": 0,
+      "target_membership_independence_rate": 1.0,
+      "typed_negative_accuracy": 1.0,
+      "wrong_direction_rejection_rate": 1.0
+    },
+    "passed": true,
+    "report_file": "tmp/np-hard-r-d-stability-success-2/canonical-suite-report.json",
+    "report_sha256": "6e0b77e1edf01f0bff33c573b1a202b24ad5d4ff0f4c9e16c40da8fc50c15c13"
+  },
+  "deletion_body_audit": {
+    "failure_code": "no_forward_path_from_hardness_seed",
+    "model_calls": 0,
+    "report_file": "tmp/np-hard-r-d-stability-success-2/deletion-audit/report.json",
+    "report_sha256": "2236834a6e3542a8161e512b807781281ccc78fd912355be2df7bc9977d3db93",
+    "status": "BLOCKED"
+  },
+  "direction": "hardness_seed_to_problem",
+  "final_lean_type": "ComplexityReduction.Certificate.NativeTMNPHard",
+  "fresh_output_required": true,
+  "gates": {
+    "authored_job_verified": true,
+    "candidate_policy_safe": true,
+    "canonical_suite_passed": true,
+    "deletion_restores_blocker": true,
+    "direction_frozen": true,
+    "endpoints_frozen": true,
+    "fresh_core_selected_authored_atom": true,
+    "independent_final_and_release": true,
+    "initial_gap_was_real": true,
+    "model_source_provenance": true,
+    "no_resume_or_response_replay": true,
+    "no_secret_leak": true,
+    "persistent_candidate_worker": true,
+    "real_model_called": true,
+    "real_model_http_ok": true,
+    "standard_axiom_audit": true,
+    "worker_closed_before_final_authority": true
+  },
+  "generated_at": "2026-08-07T13:21:54.781533+00:00",
+  "metrics": {
+    "canonical_case_count": 6,
+    "compiler_inserted_math_token_count": 0,
+    "deletion_audit_case_count": 1,
+    "exact_final_np_hardness_rate": 1.0,
+    "independent_replay_rate": 1.0,
+    "persistent_worker_validation_rate": 1.0,
+    "real_api_calls": 1,
+    "real_model_case_count": 1,
+    "total_case_count": 8
+  },
+  "model": {
+    "api_key_configured": true,
+    "base_url": "https://api.deepseek.com",
+    "max_retries": 0,
+    "max_tokens": 3000,
+    "model": "deepseek-chat",
+    "reasoning_effort": null,
+    "temperature": 0.0,
+    "timeout_seconds": 60
+  },
+  "objective": "prove_np_hard",
+  "output_root": "tmp/np-hard-r-d-stability-success-2",
+  "passed": true,
+  "real_model_authoring": {
+    "artifact_file": "tmp/np-hard-r-d-stability-success-2/real-model-authoring/Artifact.lean",
+    "artifact_sha256": "448abe230c1306ab124fa22ad2905a0681aa1c7544bd5f2df3f09be059a63411",
+    "calls": [
+      {
+        "attempt": 1,
+        "attempts": 1,
+        "called": true,
+        "duration_seconds": 1.23,
+        "finish_reason": "stop",
+        "ok": true,
+        "response_sha256": "sha256:dedd4f69593b8d5ea9413ebba6ac9190ede215c9005d79e8e986b73e6e613c7f",
+        "status_code": 200,
+        "usage": {
+          "completion_tokens": 86,
+          "prompt_cache_hit_tokens": 1152,
+          "prompt_cache_miss_tokens": 128,
+          "prompt_tokens": 1280,
+          "prompt_tokens_details": {
+            "cached_tokens": 1152
+          },
+          "total_tokens": 1366
+        }
+      }
+    ],
+    "candidate_body_sha256": "sha256:e55ae0f9400496341c6c745db3326f728575d658cc44ed85014c614dfbeee163",
+    "candidate_source_sha256": "sha256:896428187a280ca130595efbbe061b1224de420a8089d8cfd3082484cfcc673b",
+    "final_artifact_command": {
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-r-d-stability-success-2/real-model-authoring/Artifact.lean"
+      ],
+      "duration_seconds": 3.774,
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "",
+      "timed_out": false
+    },
+    "fresh_resolution": {
+      "atoms": [
+        "Generated.NPHard.Cb29befc62ab1d83d.AuthoredForward.authoredForwardReduction"
+      ],
+      "completeness_declaration": "ComplexityReduction.Certificate.NativeCookLevin.canonicalThreeSATNativeCompleteness",
+      "direction": "hardness_seed_to_problem",
+      "evidence_kind": "transported_hardness",
+      "final_composition_count": 0,
+      "hardness_declaration": null,
+      "hub_declaration": "ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem",
+      "registry_fingerprint": "lean:1542794761174050626",
+      "request_id": "lean:1682829703",
+      "roles": [
+        "sharedGadget"
+      ],
+      "unique_dependency_count": 1
+    },
+    "independent_release_replay_command": {
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-r-d-stability-success-2/real-model-authoring/Artifact.lean"
+      ],
+      "duration_seconds": 3.773,
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "",
+      "timed_out": false
+    },
+    "initial_failure_code": "no_forward_path_from_hardness_seed",
+    "job_id": "sha256:b29befc62ab1d83dcd0716d420c1c6dccb2f3137fb689eb2692e64f7a8120c5d",
+    "model_calls": 1,
+    "model_response_sha256": "sha256:dedd4f69593b8d5ea9413ebba6ac9190ede215c9005d79e8e986b73e6e613c7f",
+    "provenance_kind": "model_generated",
+    "publication": {
+      "attempt": 1,
+      "body_sha256": "sha256:e55ae0f9400496341c6c745db3326f728575d658cc44ed85014c614dfbeee163",
+      "compiler_inserted_math_token_count": 0,
+      "direction": "hardness_seed_to_problem",
+      "model_calls": 1,
+      "model_response_sha256": "sha256:dedd4f69593b8d5ea9413ebba6ac9190ede215c9005d79e8e986b73e6e613c7f",
+      "provenance_kind": "model_generated",
+      "schema_version": "hardness_np_hard_authoring_publication_v1",
+      "source_declaration": "ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem",
+      "source_file": "tmp/np-hard-r-d-stability-success-2/real-model-authoring/published/896428187a280ca130595efbbe061b1224de420a8089d8cfd3082484cfcc673b/src/Generated/NPHard/Cb29befc62ab1d83d/AuthoredForward.lean",
+      "source_relative_path": "src/Generated/NPHard/Cb29befc62ab1d83d/AuthoredForward.lean",
+      "source_sha256": "sha256:896428187a280ca130595efbbe061b1224de420a8089d8cfd3082484cfcc673b",
+      "target_declaration": "Benchmark.Hardness.Inputs.NPHardMVP.ModelAuthoredTaggedThreeSAT.source",
+      "task": {
+        "candidate_declaration": "Generated.NPHard.Cb29befc62ab1d83d.AuthoredForward.authoredForwardReduction",
+        "candidate_module": "Generated.NPHard.Cb29befc62ab1d83d.AuthoredForward",
+        "direction": "hardness_seed_to_problem",
+        "exact_type": "ComplexityReduction.Certificate.CertifiedReduction ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem Benchmark.Hardness.Inputs.NPHardMVP.ModelAuthoredTaggedThreeSAT.source",
+        "gap_id": "sha256:f162ebb73eb2231f788ba3602c4cf55f56e4368d8b4ed085116cb486d0f1237d",
+        "hub_declaration": "ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem",
+        "input_module": "Benchmark.Hardness.Inputs.NPHardMVP.ModelAuthoredTaggedThreeSAT",
+        "input_problem_declaration": "Benchmark.Hardness.Inputs.NPHardMVP.ModelAuthoredTaggedThreeSAT.source",
+        "input_source_sha256": "01ead5c8dc779be47ba4c6d2ffd2c95f8fc79cfd1158ec67f74f9318488dace9",
+        "max_attempts": 4,
+        "registry_fingerprint": "lean:17003872372039737758",
+        "request_id": "lean:1682829703",
+        "schema_version": "hardness_np_hard_authoring_task_v1",
+        "seed_evidence_declaration": "ComplexityReduction.Certificate.NativeCookLevin.canonicalThreeSATNativeCompleteness",
+        "seed_evidence_kind": "native_completeness_projection"
+      }
+    },
+    "report_file": "tmp/np-hard-r-d-stability-success-2/real-model-authoring/report.json",
+    "report_sha256": "9d94503de9561375bc3056ede9250f51077eace49266326015171b0867ea72bc",
+    "status": "VERIFIED",
+    "task": {
+      "candidate_declaration": "Generated.NPHard.Cb29befc62ab1d83d.AuthoredForward.authoredForwardReduction",
+      "candidate_module": "Generated.NPHard.Cb29befc62ab1d83d.AuthoredForward",
+      "direction": "hardness_seed_to_problem",
+      "exact_type": "ComplexityReduction.Certificate.CertifiedReduction ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem Benchmark.Hardness.Inputs.NPHardMVP.ModelAuthoredTaggedThreeSAT.source",
+      "gap_id": "sha256:f162ebb73eb2231f788ba3602c4cf55f56e4368d8b4ed085116cb486d0f1237d",
+      "hub_declaration": "ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem",
+      "input_module": "Benchmark.Hardness.Inputs.NPHardMVP.ModelAuthoredTaggedThreeSAT",
+      "input_problem_declaration": "Benchmark.Hardness.Inputs.NPHardMVP.ModelAuthoredTaggedThreeSAT.source",
+      "input_source_sha256": "01ead5c8dc779be47ba4c6d2ffd2c95f8fc79cfd1158ec67f74f9318488dace9",
+      "max_attempts": 4,
+      "registry_fingerprint": "lean:17003872372039737758",
+      "request_id": "lean:1682829703",
+      "schema_version": "hardness_np_hard_authoring_task_v1",
+      "seed_evidence_declaration": "ComplexityReduction.Certificate.NativeCookLevin.canonicalThreeSATNativeCompleteness",
+      "seed_evidence_kind": "native_completeness_projection"
+    },
+    "worker": {
+      "after_close": {
+        "active_session_count": 0,
+        "cache_entry_count": 0,
+        "cache_hit_count": 0,
+        "cache_miss_count": 1,
+        "cold_fallback_count": 0,
+        "invalidation_count": 0,
+        "maximum_workers": 1,
+        "service_root": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-r-d-stability-success-2/real-model-authoring/authoring/lean-worker-service",
+        "worker_crash_count": 0,
+        "worker_restart_count": 0,
+        "worker_start_count": 1,
+        "workers_alive": [
+          false
+        ]
+      },
+      "allow_cold_fallback": false,
+      "during_authoring": {
+        "active_session_count": 1,
+        "cache_entry_count": 0,
+        "cache_hit_count": 0,
+        "cache_miss_count": 1,
+        "cold_fallback_count": 0,
+        "invalidation_count": 0,
+        "maximum_workers": 1,
+        "service_root": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-r-d-stability-success-2/real-model-authoring/authoring/lean-worker-service",
+        "worker_crash_count": 0,
+        "worker_restart_count": 0,
+        "worker_start_count": 1,
+        "workers_alive": [
+          true
+        ]
+      },
+      "final_authority": false,
+      "results": [
+        {
+          "cache_hit": false,
+          "cache_key": "sha256:7c3015c3b119cb2af898a0a42057d07e45d6e8ac1bdd67e259a29772a04c2ef5",
+          "command": null,
+          "dependency_sha256": [
+            "sha256:5c434b32a7fdc75438c52676ccb10624e98235cf82e7f0f4c38b4ccf4de10468"
+          ],
+          "diagnostics": [],
+          "diagnostics_sha256": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "fallback_used": false,
+          "owner": "np-hard-b29befc62ab1d83d",
+          "schema_version": "hardness_stage_p_lean_worker_result_v1",
+          "session_id": "sha256:095fab5af12f5e2ce2eacab467d5f7d465acfad05cefbd4fca7905f0f2d5076a",
+          "source_path": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-r-d-stability-success-2/real-model-authoring/authoring/Candidate.lean",
+          "source_sha256": "sha256:896428187a280ca130595efbbe061b1224de420a8089d8cfd3082484cfcc673b",
+          "verified": true,
+          "wall_duration_seconds": 2.963284,
+          "worker_generation": 1,
+          "worker_index": 0
+        }
+      ],
+      "validation_authority": "persistent_lean_worker"
+    }
+  },
+  "response_replay": false,
+  "resume": false,
+  "run_id": "9d94503de9561375bc3056ede9250f51077eace49266326015171b0867ea72bc",
+  "schema_version": "hardness_np_hard_mvp_stability_run_v1",
+  "started_at": "2026-08-07T13:20:24.715849+00:00",
+  "suite_sha256": "3efe5f1cb320e0ba91a53b92241d1f67f109a61fd8532324db7059edaf2c22ed"
+}

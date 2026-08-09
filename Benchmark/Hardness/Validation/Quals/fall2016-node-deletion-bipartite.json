@@ -1,0 +1,20 @@
+{
+  "schema_version": "hardness_quals_manual_validation_v1",
+  "case_id": "fall2016-node-deletion-bipartite-formalization",
+  "validation_kind": "independent_manual_validation",
+  "review_status": "accepted",
+  "reviewed_on": "2026-08-03",
+  "public_module_sha256": "9a125dde74e04ab5ceef6dc415431a55987e9a743b5cd7494b2e6717890cc777",
+  "checks": {
+    "natural_language_semantics_reviewed": true,
+    "exact_presented_problem_reviewed": true,
+    "lawful_structured_encoding_reviewed": true,
+    "predicate_equivalence_reviewed": true,
+    "benchmark_feasibility_reviewed": true
+  },
+  "oracle_visible_to_model": false,
+  "gold_route_visible_to_model": false,
+  "production_aggregate_imported": false,
+  "catalog_entry_created_by_validation": false,
+  "note": "Independent validation covers the exact undirected deletion-and-coloring predicate and lawful finite wrapper. It grants no hardness, membership, or completeness capability and is never included in a model prompt."
+}

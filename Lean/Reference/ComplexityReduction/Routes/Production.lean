@@ -1,0 +1,53 @@
+/-
+Copyright (c) 2026.
+Released under Apache 2.0 license as described in the file LICENSE.
+-/
+
+import ComplexityReduction.Routes.RoleGraphToRoleGraph.UnifiedIdentity
+import ComplexityReduction.Routes.GraphToRoleGraph.Unified
+import ComplexityReduction.Routes.ClauseToCSP.Unified
+import ComplexityReduction.Routes.ClauseToCSP.IngressAdapters
+import ComplexityReduction.Routes.CSPToClause.Unified
+import ComplexityReduction.Routes.TwoCNFToCNF.Unified
+import ComplexityReduction.Routes.ThreeSATToClique.Unified
+import ComplexityReduction.Routes.ThreeSATToClique.IngressAdapters
+import ComplexityReduction.Routes.SatisfiabilityToClique.IngressAdapters
+import ComplexityReduction.Routes.ThreeSATToChromaticNumber.Unified
+import ComplexityReduction.Routes.ThreeSATToZeroOneIP.Unified
+import ComplexityReduction.Routes.ThreeSATToCNF.Unified
+import ComplexityReduction.Routes.ChromaticNumberToCliqueCover.Unified
+import ComplexityReduction.Routes.FiniteDomainCSP.Unified
+import ComplexityReduction.Routes.CliqueToVertexCover.Unified
+import ComplexityReduction.Routes.SetCoveringToHittingSet.Unified
+import ComplexityReduction.Routes.SetCoveringToExactCover.Unified
+import ComplexityReduction.Routes.ModifiedExactCoverToExactCover.Unified
+import ComplexityReduction.Routes.IncidenceToRoleGraph.Unified
+import ComplexityReduction.Routes.VertexCoverToDirectedHamiltonianCircuit.Unified
+import ComplexityReduction.Routes.FeedbackNodeSetToFeedbackArcSet.Unified
+import ComplexityReduction.Routes.DirectedHamiltonianCircuitToUndirectedHamiltonianCircuit.Unified
+import ComplexityReduction.Routes.ChromaticNumberToExactCover.Unified
+import ComplexityReduction.Routes.SetCoveringToSatisfiability.Unified
+import ComplexityReduction.Routes.ExactCoverToSteinerTree.Unified
+import ComplexityReduction.Routes.PartitionToMaxCut.Unified
+import ComplexityReduction.Routes.KnapsackToPartition.Unified
+import ComplexityReduction.Routes.KnapsackToJobSequencing.Unified
+import ComplexityReduction.Routes.KnapsackBinaryToJobSequencingBinary.Unified
+import ComplexityReduction.Routes.KnapsackBinaryToPartitionBinary.Unified
+import ComplexityReduction.Routes.KnapsackToKnapsackBinary.Unified
+import ComplexityReduction.Routes.ZeroOneIPToZeroOneIPBinary.Unified
+import ComplexityReduction.Routes.ZeroOneIPBinaryToKnapsackBinary.Unified
+import ComplexityReduction.Routes.PartitionToPartitionBinary.Unified
+import ComplexityReduction.Routes.MaxCutToMaxCutBinary.Unified
+import ComplexityReduction.Domain.CliqueToNodeDeletionBipartite
+import ComplexityReduction.Domain.VertexCoverToMostNeighbors
+import ComplexityReduction.Domain.PartitionToTwoDisjointBoundedPaths
+
+/-!
+Production route aggregate for the canonical V2 architecture.
+
+Every imported route is free of transitive Legacy, descriptor, packet,
+provider, slot, boundary, AgentSurface, and regression imports.  A route that
+still depends on a legacy direct-TM adapter remains an explicit compatibility
+leaf until it is migrated to a component-indexed typed program path; it is not
+made a production registry candidate by this aggregate.
+-/

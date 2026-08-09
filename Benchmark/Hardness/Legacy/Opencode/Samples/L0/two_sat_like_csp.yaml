@@ -1,0 +1,22 @@
+schema_version: opencode_decision_problem_sample_file_v1
+id: two_sat_like_csp
+name: two_sat_like_csp_problem
+input_language: two_sat_like_boolean_csp
+problem_family: boolean_csp
+problem_statement: Given an instance of the fixed Boolean CSP language containing the usual binary 2SAT-style clause relation, decide whether all constraints can be satisfied.
+certificate_contract: lean_proposition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction
+
+  noncomputable section
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.CSP.Examples.twoSATDecisionProblem
+lean_target_type: |
+  ComplexityReduction.InNPEnc ComplexityReduction.CostedPolyTimeModel problem
+difficulty: easy
+difficulty_tags:
+- csp
+- bounded_clause_width
+- finite_boolean_language

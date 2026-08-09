@@ -1,0 +1,7 @@
+{
+  "schema_version": "hardness_benchmark_expected_v1",
+  "case_id": "existing-route",
+  "authoritative": false,
+  "final_status": "VERIFIED",
+  "coverage": ["existing_registry_route", "deterministic_replay", "axiom_gate"]
+}

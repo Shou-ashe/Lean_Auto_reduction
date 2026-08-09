@@ -1,0 +1,22 @@
+schema_version: opencode_decision_problem_sample_file_v1
+id: job_sequencing
+name: job_sequencing_problem
+input_language: job_sequencing
+problem_family: scheduling
+problem_statement: Given jobs with processing times, deadlines, and penalties or profits together with a bound, decide whether there is a schedule meeting the bound.
+certificate_contract: lean_proposition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction
+
+  noncomputable section
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.Combinatorics.jobSequencingDecisionProblem
+lean_target_type: |
+  ComplexityReduction.InNPEnc ComplexityReduction.CostedPolyTimeModel problem
+difficulty: hard
+difficulty_tags:
+- scheduling
+- permutation_witness
+- numeric_bound

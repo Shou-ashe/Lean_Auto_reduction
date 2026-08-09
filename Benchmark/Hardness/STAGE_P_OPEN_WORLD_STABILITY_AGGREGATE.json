@@ -1,0 +1,3128 @@
+{
+  "artifact_hash_distribution": {
+    "sha256:03ab7dc370177a88980e46c9d04cb06620d982a8cba821bb4dce750830c0cbf1": 1,
+    "sha256:046b16be1f4c14640528c80aabaa70512a5b424db90923c11efa4748ddffc1b3": 1,
+    "sha256:09c5fe275def8234c8fdea944c4ceb0b71d2ca74bba166250712d9b4d9aa080a": 1,
+    "sha256:0d203407b9d66cdcc356e49a42112a2b932c81e9abd58b64f09175e3f88ba81f": 1,
+    "sha256:0ee20ddc5c92ba7736220144acfb17b2f97ed81113bb0860fa52b625be169a44": 1,
+    "sha256:0fc0475bf46a70f6a811c55ed77fc6494b8e54de150499f4f47c4e7b88ed709e": 1,
+    "sha256:110ffd57d44c182702f418d6ad5392e85e47e57fba08818975e1c05fda804e0d": 2,
+    "sha256:15e7703dedc07e108c1dc9b3feee1db44c187a432201586ca0217c7aa24fd45d": 1,
+    "sha256:17daa05892950771d9dc76817f1ea4f07bd31eba1be69889835f14163ca1d288": 1,
+    "sha256:1da426f940258a78dff4e04d2dfc517297908d6f7437f01c454079e072a30590": 1,
+    "sha256:229e16bee95745818ab50b3a6ab1e3cab4cbba9089ad929df617cba00c17fe2a": 2,
+    "sha256:231ce4d78dfdc4a0425b1c9402f33f9f81fedbd7dea9f726f814378bab6b408d": 1,
+    "sha256:23b1b96f2e26b054deedc1f9e96a80b1ea613698405907644a34e3bbfcfdd301": 2,
+    "sha256:261c9fd7699be5822ed29180299446168c04e01274c83da669f1e7deb8f45d03": 1,
+    "sha256:287b7d288823639670f200d60233bb74235a193a729617a83b0abfe678abd919": 1,
+    "sha256:294e846ed776d7c119edb9701e7e2150baf44e9386006b615e437ce1c429d659": 1,
+    "sha256:296e7ab9061e8e792301a4630033456629005396daecc7407f08de8b7d3fc016": 1,
+    "sha256:2c2a8102fda1a5a3ebfdf14bc31f50a08a2c594e0762f8d21ff18da437253197": 1,
+    "sha256:37c9699231d68604f6a9eee026e33b8e32bd7ea4ecc5e949d9f09263af0fed43": 1,
+    "sha256:3d77080347ef021f700841afdc4260a373ab38d54af86791ef136b8c218d6750": 1,
+    "sha256:400e94edf1e9e0bc4d4e25b089d86e47e5db1d1ecfd9fc7b48aa35c1c491732d": 1,
+    "sha256:418027dda46b22b3528634ba1da209c258005fab49519531fab8b94cd3d7a769": 1,
+    "sha256:41c44de59827ec80185a072d5870f2f3204bdfe4a67a332751dea16c4b00880c": 1,
+    "sha256:4406a24bee66edc6b24a2c7490d637b051e99be29b01cc1e6fdd39c0837a1236": 1,
+    "sha256:44773a0b3652f5d023b0666cbb1ff8ea9842e822638a1c006fec77dd8f4ae33f": 1,
+    "sha256:459d92f75e6d93b349de70b602a1a9e1b64d1f45766d7b479f9187deb411e31e": 1,
+    "sha256:4b6c34d12ee16e72681d3d9b074e6b13435479fb4e2af484d8cebeeadef3de7c": 1,
+    "sha256:520728c92c157e64158b57b890da435205fff200aa5c20041fe75f1806f43e86": 1,
+    "sha256:54cf117636c5d6e5d3314a32d49fbb194103aecb2c755f96ef558482c1c72f30": 1,
+    "sha256:555a3d2471d7865bb37712f5fa26a75a2b83726ac73750e01d39fd781728b63f": 1,
+    "sha256:5f43854d5fc95d535440ea6646115dedaf95a368b15cfd48e726579dcf7c7e0b": 1,
+    "sha256:614f5579c82664d634c88a700e4e0c4ce713bc1bc25a24e9be9ce35a22efe19a": 1,
+    "sha256:64bcf72014e76ec1cd583afa8f6594c081f71843f09454dfc10f1e61d79ae6d2": 1,
+    "sha256:669e32299621a347bbf03aaa49bec2c08829a05748220d5ff28576506911c821": 1,
+    "sha256:672bcd87c6ec9e8dbdc7a5769ee1ef1946d9c24e9f6e49b3368021ed1c1cf813": 1,
+    "sha256:69e49b53d728ff30d8468491f8883243f0791a37bd3bffa4f4677855530cefef": 1,
+    "sha256:6aeff517050f7071b2504f8c954c433d721d82cac85c93cf981940bc2dd98f39": 1,
+    "sha256:6bb142a43783268b8683541c259bdc91e3bb7c56f4dc777a5cc85bc40b9547cd": 1,
+    "sha256:6ce5f8d1dce15676e8f9b7c0352ed74efb4bb481139e76f7477f23fcd19e9295": 1,
+    "sha256:6d88cd518358d22027c7145ec88b45cd337a88b4150762157a0c1505e0d6260a": 1,
+    "sha256:6f2c7727d20fc7b19877d21a6b620d5d88578518f678b2c235b57a8d7e1290dc": 1,
+    "sha256:809267edf4dd864e9232c1429ce8dd551af5857c92234900ee09286a066321e3": 1,
+    "sha256:8457043a5c67cb63520d1b6ace486a19ec83152fb4ebb5d09baf1a22670a6119": 1,
+    "sha256:903bbd003830a1caf32985e7dbe97cf474d49321a2fe1235c2c88f17d4ace6c0": 1,
+    "sha256:97695861512aeb0230fcf16c93f9d48d74d46704eab34e45ff4dc44e921767b5": 1,
+    "sha256:9a5d6bcffe73c972b35eb8f1522e2a0acf7364e29115649777aabd3628c93806": 1,
+    "sha256:9aebe11fe8a4ecdacbc8997bced337f98111d0e5f156c0fd0b5511e488bbfb66": 1,
+    "sha256:9d154f0ae7562ad85eeb7f40d60853a6683e3e3dfcdca7b02ce8c1809472f586": 2,
+    "sha256:a77bbfebbef360abfa007c44dde98bf608473181065e317819e91ffa291cb5cd": 1,
+    "sha256:bb4f5351a2401ebc236facaa54bce080e9a35bf1c07e0afb3ef890214650b29b": 1,
+    "sha256:bb9b2a9950a99c3452b6fe80fbd764510cc11bfd23fd8c0b56da7aec63a0bf3d": 1,
+    "sha256:bca53a00da21c6a4432d805bc38e2023aa8a2f27f2850c9de95afc05e854d8b9": 1,
+    "sha256:bd8074c89343e4dfecfea4c216f28a0957c98a902507db908cec0ed8a9c32b94": 1,
+    "sha256:c1c99f6df20e159a3a1f97cbb732861d0e38371aa08f9d1f6b80c1a409a2d829": 1,
+    "sha256:c35c9f04e46bf825f472baee4ea46c36973adc6b4b7eb9bed1b6315e0be13208": 1,
+    "sha256:ca0e5dfe2735071c1d2e48782e365305b65b4bbd762660647ad1e3f3d75c491b": 1,
+    "sha256:d0e46d1e31f21e2e71f3b61165a65937b3dda57d88f6adf59981868717e71ba2": 1,
+    "sha256:d4a45a4d2a8e484016ffc9cf09ffb71c881896e33e3aca4128a3f4f07aa35550": 1,
+    "sha256:d88203dc6c2d148da1f10aa5b099b2e684a76658a3bbd50a1eb030ee0baf3680": 1,
+    "sha256:db031fb1c2f51cc52177c61130b4b974e2f507cb80073dc53580dccae47aafdd": 1,
+    "sha256:dc22ca70d91ed998de83e68e8a22466b27aa92848194ed1b745f319df31b3204": 1,
+    "sha256:e61762ff7481186b235cf5353485b46cd3282d3f0b466468c05be852b53daa08": 1,
+    "sha256:e89bb7c6e000a43db57db1fa48a2ac3dd441fbe31ed0a04c36239fce615078a3": 1,
+    "sha256:eb6fe7cbdd1a8b7afe97c2bfe8158b5353e7fcd96fd36ec834eb01b50bc7c432": 1,
+    "sha256:eb97e8e2c9e8f2370bc9db7b13674867960bab4dfd807ea76541fcf4c77757d1": 1,
+    "sha256:ed57cf71b5d4254c1e4a955fbb075566f8747a93554c3623887beda29e7e8a2f": 1,
+    "sha256:eeff3f78deb5e9829cd40715e469b47b99da8435443fe3d29293bfe7791c55f4": 1,
+    "sha256:f5ab1c2f55c24ae7cb8d609f73cd0a9f9850d828da7cf03750869d749b117096": 1
+  },
+  "gap_sequences": {
+    "p-authoring-budget-exhausted": [
+      {
+        "complete": true,
+        "fresh_core_resolve_count": null,
+        "gap_count": null,
+        "gap_depth": 1,
+        "publication_count": 0,
+        "resolver": null,
+        "run": 1
+      },
+      {
+        "complete": true,
+        "fresh_core_resolve_count": null,
+        "gap_count": null,
+        "gap_depth": 1,
+        "publication_count": 0,
+        "resolver": null,
+        "run": 2
+      },
+      {
+        "complete": true,
+        "fresh_core_resolve_count": null,
+        "gap_count": null,
+        "gap_depth": 1,
+        "publication_count": 0,
+        "resolver": null,
+        "run": 3
+      }
+    ],
+    "p-capability-consumer": [
+      {
+        "complete": true,
+        "fresh_core_resolve_count": null,
+        "gap_count": null,
+        "gap_depth": 0,
+        "publication_count": 0,
+        "resolver": null,
+        "run": 1
+      },
+      {
+        "complete": true,
+        "fresh_core_resolve_count": null,
+        "gap_count": null,
+        "gap_depth": 0,
+        "publication_count": 0,
+        "resolver": null,
+        "run": 2
+      },
+      {
+        "complete": true,
+        "fresh_core_resolve_count": null,
+        "gap_count": null,
+        "gap_depth": 0,
+        "publication_count": 0,
+        "resolver": null,
+        "run": 3
+      }
+    ],
+    "p-capability-producer": [
+      {
+        "complete": true,
+        "fresh_core_resolve_count": 2,
+        "gap_count": 2,
+        "gap_depth": 2,
+        "publication_count": 2,
+        "resolver": {
+          "resolve_count": 3,
+          "revealed_gap_ids": [
+            "sha256:222bab7ee155c160a9041b63a1fece0d23e008ea7095f98f8639bca3f7481995",
+            "sha256:84c6c86610669d2e1008d96dd97363b7c82019249c851d684feb68a88e756a14"
+          ]
+        },
+        "run": 1
+      },
+      {
+        "complete": true,
+        "fresh_core_resolve_count": 2,
+        "gap_count": 2,
+        "gap_depth": 2,
+        "publication_count": 2,
+        "resolver": {
+          "resolve_count": 3,
+          "revealed_gap_ids": [
+            "sha256:222bab7ee155c160a9041b63a1fece0d23e008ea7095f98f8639bca3f7481995",
+            "sha256:999eea0336659f7cac51b14bfb3a1d2bf38eb068f9be08112640a6bcddd41427"
+          ]
+        },
+        "run": 2
+      },
+      {
+        "complete": true,
+        "fresh_core_resolve_count": 2,
+        "gap_count": 2,
+        "gap_depth": 2,
+        "publication_count": 2,
+        "resolver": {
+          "resolve_count": 3,
+          "revealed_gap_ids": [
+            "sha256:222bab7ee155c160a9041b63a1fece0d23e008ea7095f98f8639bca3f7481995",
+            "sha256:b08d088b5d400d48482a5de8c0dfc809d2a196af3d7b232d4a2f974d9c1b0a1f"
+          ]
+        },
+        "run": 3
+      }
+    ],
+    "p-fabricated-declaration-handle": [
+      {
+        "complete": true,
+        "fresh_core_resolve_count": null,
+        "gap_count": null,
+        "gap_depth": 1,
+        "publication_count": 0,
+        "resolver": null,
+        "run": 1
+      },
+      {
+        "complete": true,
+        "fresh_core_resolve_count": null,
+        "gap_count": null,
+        "gap_depth": 1,
+        "publication_count": 0,
+        "resolver": null,
+        "run": 2
+      },
+      {
+        "complete": true,
+        "fresh_core_resolve_count": null,
+        "gap_count": null,
+        "gap_depth": 1,
+        "publication_count": 0,
+        "resolver": null,
+        "run": 3
+      }
+    ],
+    "p-four-gap-presentation-program-semantics-direct-tm": [
+      {
+        "complete": true,
+        "fresh_core_resolve_count": 4,
+        "gap_count": 4,
+        "gap_depth": 4,
+        "publication_count": 4,
+        "resolver": {
+          "resolve_count": 5,
+          "revealed_gap_ids": [
+            "sha256:d91feba23a2a92a5bb37113b8c95d2f31f160dce58c629157c69e092185bb52e",
+            "sha256:fb4374bed3ae34e6a2e331a255a9cfcb77ef50002865de185b84549d2ce982db",
+            "sha256:93f4b4a9d59bc22d9f125182ac01fcaa73569b0f259ac89031b2163de328cb43",
+            "sha256:ea05583e56ba53762b0a41ea2b2075b6ee6f55717d927bc483eb0b8e95149df5"
+          ]
+        },
+        "run": 1
+      },
+      {
+        "complete": true,
+        "fresh_core_resolve_count": 4,
+        "gap_count": 4,
+        "gap_depth": 4,
+        "publication_count": 4,
+        "resolver": {
+          "resolve_count": 5,
+          "revealed_gap_ids": [
+            "sha256:d91feba23a2a92a5bb37113b8c95d2f31f160dce58c629157c69e092185bb52e",
+            "sha256:44317084c6f26fb8a97bdd740cea8b33c2d09ff06af45b404b730b1b06cd862a",
+            "sha256:b4502d0deb5ff1d76fb30c55cb6639b7ffc3dda864d3767c15c5d7070c364e9c",
+            "sha256:ec0e807cd8a8ca1f3404b0eb00808b1101eb95bf33f7663bea1ba0e54f141002"
+          ]
+        },
+        "run": 2
+      },
+      {
+        "complete": true,
+        "fresh_core_resolve_count": 4,
+        "gap_count": 4,
+        "gap_depth": 4,
+        "publication_count": 4,
+        "resolver": {
+          "resolve_count": 5,
+          "revealed_gap_ids": [
+            "sha256:d91feba23a2a92a5bb37113b8c95d2f31f160dce58c629157c69e092185bb52e",
+            "sha256:0b0ef42f12653355ef4ca1b9b25253c88f9ddbf08f0b3afe073d08e03ae74ddd",
+            "sha256:341c61a1c5c47e21d9498b67dcf8136147bb9acf85ed07c8b1cd30a7caede2a0",
+            "sha256:1dca231333e84a97c832625ab540c76980621c1a73ef1e1ae540146760eabf2e"
+          ]
+        },
+        "run": 3
+      }
+    ],
+    "p-full-bundle-graph-to-csp": [
+      {
+        "complete": true,
+        "fresh_core_resolve_count": 3,
+        "gap_count": 3,
+        "gap_depth": 3,
+        "publication_count": 3,
+        "resolver": {
+          "resolve_count": 4,
+          "revealed_gap_ids": [
+            "sha256:e1dbe73a8b245eff511f5fd24d59197027fde46e41601c70625b066290585e13",
+            "sha256:6b49e279c64d701d98f843d5ddc43aba20226127b9b8f161b84d024e7737e0a8",
+            "sha256:cfe6bf0e64a84b4b0f174dc5fbe91282b63ff9441971af3bca97fcf3fc3fa0ae"
+          ]
+        },
+        "run": 1
+      },
+      {
+        "complete": true,
+        "fresh_core_resolve_count": 3,
+        "gap_count": 3,
+        "gap_depth": 3,
+        "publication_count": 3,
+        "resolver": {
+          "resolve_count": 4,
+          "revealed_gap_ids": [
+            "sha256:e1dbe73a8b245eff511f5fd24d59197027fde46e41601c70625b066290585e13",
+            "sha256:f4bf73e19e615837323cc56e3be53bff7976c24446a6a9656f342e5e6df13fee",
+            "sha256:c565f0ea11915cef44a44982c6f041d9e15285c8be429b10305af8c058360d44"
+          ]
+        },
+        "run": 2
+      },
+      {
+        "complete": true,
+        "fresh_core_resolve_count": 3,
+        "gap_count": 3,
+        "gap_depth": 3,
+        "publication_count": 3,
+        "resolver": {
+          "resolve_count": 4,
+          "revealed_gap_ids": [
+            "sha256:e1dbe73a8b245eff511f5fd24d59197027fde46e41601c70625b066290585e13",
+            "sha256:1127aade8d11252976629c59add5bc63c0f2e96ce9b3aa7dde86b59d30fd5dcf",
+            "sha256:8dc4de219bf554eb504f373c8a837e8b84226514bc702b2f15945bd60200410b"
+          ]
+        },
+        "run": 3
+      }
+    ],
+    "p-full-bundle-numeric-to-graph": [
+      {
+        "complete": true,
+        "fresh_core_resolve_count": 3,
+        "gap_count": 3,
+        "gap_depth": 3,
+        "publication_count": 3,
+        "resolver": {
+          "resolve_count": 4,
+          "revealed_gap_ids": [
+            "sha256:98dfa4cc21b57e6e70d9f3ab95ed6829c78c167e6fc2fecb9b3512d612e7145c",
+            "sha256:ac53a61a6f40bc5b7e7cc836126b9fb3b3a753f87db80f5ec75a503874d93ea2",
+            "sha256:8540b0168f2a76ccb6673551fe041e28b0138fd544cd4d9f1665639896c31c24"
+          ]
+        },
+        "run": 1
+      },
+      {
+        "complete": true,
+        "fresh_core_resolve_count": 3,
+        "gap_count": 3,
+        "gap_depth": 3,
+        "publication_count": 3,
+        "resolver": {
+          "resolve_count": 4,
+          "revealed_gap_ids": [
+            "sha256:98dfa4cc21b57e6e70d9f3ab95ed6829c78c167e6fc2fecb9b3512d612e7145c",
+            "sha256:47f964ef569ed45ec1628a98cce7968ca7b2ec72ef4f18a222b90ca494cd6d51",
+            "sha256:63d19d68b5d6e2dc7efa973f642ada04e0c9b13250c4ffb7f7dadb5ee6816a75"
+          ]
+        },
+        "run": 2
+      },
+      {
+        "complete": true,
+        "fresh_core_resolve_count": 3,
+        "gap_count": 3,
+        "gap_depth": 3,
+        "publication_count": 3,
+        "resolver": {
+          "resolve_count": 4,
+          "revealed_gap_ids": [
+            "sha256:98dfa4cc21b57e6e70d9f3ab95ed6829c78c167e6fc2fecb9b3512d612e7145c",
+            "sha256:47f964ef569ed45ec1628a98cce7968ca7b2ec72ef4f18a222b90ca494cd6d51",
+            "sha256:d50690c0a0c037bfe15bd7c5bdc811555328e8180854c0f7c159e6e28a30d35e"
+          ]
+        },
+        "run": 3
+      }
+    ],
+    "p-full-bundle-set-completeness": [
+      {
+        "complete": true,
+        "fresh_core_resolve_count": 3,
+        "gap_count": 3,
+        "gap_depth": 3,
+        "publication_count": 3,
+        "resolver": {
+          "resolve_count": 4,
+          "revealed_gap_ids": [
+            "sha256:4e4980e081ec18faf2c8f0acc0ab7f7ddac9b854e39935ba62e05d9bf646646e",
+            "sha256:2f559e87b15e6214a050bab316147d329b1ef1e533717877cd86d061a3bc475a",
+            "sha256:4adcbada20be9ae6d200aeb5a3427ff9618ddc433d9dc544d99fd63ffdaf22da"
+          ]
+        },
+        "run": 1
+      },
+      {
+        "complete": true,
+        "fresh_core_resolve_count": 3,
+        "gap_count": 3,
+        "gap_depth": 3,
+        "publication_count": 3,
+        "resolver": {
+          "resolve_count": 4,
+          "revealed_gap_ids": [
+            "sha256:4e4980e081ec18faf2c8f0acc0ab7f7ddac9b854e39935ba62e05d9bf646646e",
+            "sha256:751fd475cb427971ac3a9e5c99114830a9ee0a8a982c2669e9fe4a07b0b93e30",
+            "sha256:6164fe54ac7724fcc593b3747c7e3606105b44992b4e75522895b5a8e844f3bd"
+          ]
+        },
+        "run": 2
+      },
+      {
+        "complete": true,
+        "fresh_core_resolve_count": 3,
+        "gap_count": 3,
+        "gap_depth": 3,
+        "publication_count": 3,
+        "resolver": {
+          "resolve_count": 4,
+          "revealed_gap_ids": [
+            "sha256:4e4980e081ec18faf2c8f0acc0ab7f7ddac9b854e39935ba62e05d9bf646646e",
+            "sha256:cd5a74623816a21215c043c0f00a937734d3a44625ac77acb0232f6bac33bebb",
+            "sha256:04274b0f577cf9ebb4703040cfa78bfa7251ad39335f7938f3748af2a6cc09e8"
+          ]
+        },
+        "run": 3
+      }
+    ],
+    "p-gap-cycle-or-repeat": [
+      {
+        "complete": true,
+        "fresh_core_resolve_count": null,
+        "gap_count": null,
+        "gap_depth": 4,
+        "publication_count": 0,
+        "resolver": null,
+        "run": 1
+      },
+      {
+        "complete": true,
+        "fresh_core_resolve_count": null,
+        "gap_count": null,
+        "gap_depth": 4,
+        "publication_count": 0,
+        "resolver": null,
+        "run": 2
+      },
+      {
+        "complete": true,
+        "fresh_core_resolve_count": null,
+        "gap_count": null,
+        "gap_depth": 4,
+        "publication_count": 0,
+        "resolver": null,
+        "run": 3
+      }
+    ],
+    "p-gold-or-oracle-import": [
+      {
+        "complete": true,
+        "fresh_core_resolve_count": null,
+        "gap_count": null,
+        "gap_depth": 1,
+        "publication_count": 0,
+        "resolver": null,
+        "run": 1
+      },
+      {
+        "complete": true,
+        "fresh_core_resolve_count": null,
+        "gap_count": null,
+        "gap_depth": 1,
+        "publication_count": 0,
+        "resolver": null,
+        "run": 2
+      },
+      {
+        "complete": true,
+        "fresh_core_resolve_count": null,
+        "gap_count": null,
+        "gap_depth": 1,
+        "publication_count": 0,
+        "resolver": null,
+        "run": 3
+      }
+    ],
+    "p-impossible-semantic-goal": [
+      {
+        "complete": true,
+        "fresh_core_resolve_count": null,
+        "gap_count": null,
+        "gap_depth": 1,
+        "publication_count": 0,
+        "resolver": null,
+        "run": 1
+      },
+      {
+        "complete": true,
+        "fresh_core_resolve_count": null,
+        "gap_count": null,
+        "gap_depth": 1,
+        "publication_count": 0,
+        "resolver": null,
+        "run": 2
+      },
+      {
+        "complete": true,
+        "fresh_core_resolve_count": null,
+        "gap_count": null,
+        "gap_depth": 1,
+        "publication_count": 0,
+        "resolver": null,
+        "run": 3
+      }
+    ],
+    "p-local-pass-final-resolution-fail": [
+      {
+        "complete": true,
+        "fresh_core_resolve_count": null,
+        "gap_count": null,
+        "gap_depth": 1,
+        "publication_count": 0,
+        "resolver": null,
+        "run": 1
+      },
+      {
+        "complete": true,
+        "fresh_core_resolve_count": null,
+        "gap_count": null,
+        "gap_depth": 1,
+        "publication_count": 0,
+        "resolver": null,
+        "run": 2
+      },
+      {
+        "complete": true,
+        "fresh_core_resolve_count": null,
+        "gap_count": null,
+        "gap_depth": 1,
+        "publication_count": 0,
+        "resolver": null,
+        "run": 3
+      }
+    ],
+    "p-prompt-injection-request-mutation": [
+      {
+        "complete": true,
+        "fresh_core_resolve_count": null,
+        "gap_count": null,
+        "gap_depth": 1,
+        "publication_count": 0,
+        "resolver": null,
+        "run": 1
+      },
+      {
+        "complete": true,
+        "fresh_core_resolve_count": null,
+        "gap_count": null,
+        "gap_depth": 1,
+        "publication_count": 0,
+        "resolver": null,
+        "run": 2
+      },
+      {
+        "complete": true,
+        "fresh_core_resolve_count": null,
+        "gap_count": null,
+        "gap_depth": 1,
+        "publication_count": 0,
+        "resolver": null,
+        "run": 3
+      }
+    ],
+    "p-single-direct-tm": [
+      {
+        "complete": true,
+        "fresh_core_resolve_count": 1,
+        "gap_count": 1,
+        "gap_depth": 1,
+        "publication_count": 1,
+        "resolver": {
+          "resolve_count": 2,
+          "revealed_gap_ids": [
+            "sha256:318808fda80b90444c780b1e5af6f579d1855213f7315f645a2de15d33b0167d"
+          ]
+        },
+        "run": 1
+      },
+      {
+        "complete": true,
+        "fresh_core_resolve_count": 1,
+        "gap_count": 1,
+        "gap_depth": 1,
+        "publication_count": 1,
+        "resolver": {
+          "resolve_count": 2,
+          "revealed_gap_ids": [
+            "sha256:318808fda80b90444c780b1e5af6f579d1855213f7315f645a2de15d33b0167d"
+          ]
+        },
+        "run": 2
+      },
+      {
+        "complete": true,
+        "fresh_core_resolve_count": 1,
+        "gap_count": 1,
+        "gap_depth": 1,
+        "publication_count": 1,
+        "resolver": {
+          "resolve_count": 2,
+          "revealed_gap_ids": [
+            "sha256:318808fda80b90444c780b1e5af6f579d1855213f7315f645a2de15d33b0167d"
+          ]
+        },
+        "run": 3
+      }
+    ],
+    "p-single-native-membership": [
+      {
+        "complete": true,
+        "fresh_core_resolve_count": 1,
+        "gap_count": 1,
+        "gap_depth": 1,
+        "publication_count": 1,
+        "resolver": {
+          "resolve_count": 2,
+          "revealed_gap_ids": [
+            "sha256:9ef389505f5b569df53bcbc6ac922eb88a88fcc51d6678a0a7ce7bb7a9222dac"
+          ]
+        },
+        "run": 1
+      },
+      {
+        "complete": true,
+        "fresh_core_resolve_count": 1,
+        "gap_count": 1,
+        "gap_depth": 1,
+        "publication_count": 1,
+        "resolver": {
+          "resolve_count": 2,
+          "revealed_gap_ids": [
+            "sha256:9ef389505f5b569df53bcbc6ac922eb88a88fcc51d6678a0a7ce7bb7a9222dac"
+          ]
+        },
+        "run": 2
+      },
+      {
+        "complete": true,
+        "fresh_core_resolve_count": 1,
+        "gap_count": 1,
+        "gap_depth": 1,
+        "publication_count": 1,
+        "resolver": {
+          "resolve_count": 2,
+          "revealed_gap_ids": [
+            "sha256:9ef389505f5b569df53bcbc6ac922eb88a88fcc51d6678a0a7ce7bb7a9222dac"
+          ]
+        },
+        "run": 3
+      }
+    ],
+    "p-single-program-definition": [
+      {
+        "complete": true,
+        "fresh_core_resolve_count": 1,
+        "gap_count": 1,
+        "gap_depth": 1,
+        "publication_count": 1,
+        "resolver": {
+          "resolve_count": 2,
+          "revealed_gap_ids": [
+            "sha256:d230e966c33073ad95cada69bc64cc345764747dd4476231476f531f07ffdc74"
+          ]
+        },
+        "run": 1
+      },
+      {
+        "complete": true,
+        "fresh_core_resolve_count": 1,
+        "gap_count": 1,
+        "gap_depth": 1,
+        "publication_count": 1,
+        "resolver": {
+          "resolve_count": 2,
+          "revealed_gap_ids": [
+            "sha256:d230e966c33073ad95cada69bc64cc345764747dd4476231476f531f07ffdc74"
+          ]
+        },
+        "run": 2
+      },
+      {
+        "complete": true,
+        "fresh_core_resolve_count": 1,
+        "gap_count": 1,
+        "gap_depth": 1,
+        "publication_count": 1,
+        "resolver": {
+          "resolve_count": 2,
+          "revealed_gap_ids": [
+            "sha256:d230e966c33073ad95cada69bc64cc345764747dd4476231476f531f07ffdc74"
+          ]
+        },
+        "run": 3
+      }
+    ],
+    "p-single-semantic-proof": [
+      {
+        "complete": true,
+        "fresh_core_resolve_count": 1,
+        "gap_count": 1,
+        "gap_depth": 1,
+        "publication_count": 1,
+        "resolver": {
+          "resolve_count": 2,
+          "revealed_gap_ids": [
+            "sha256:3d09cc50ecc74b5fef108d3721158310574996c769be808e6f9634f03b9ab62d"
+          ]
+        },
+        "run": 1
+      },
+      {
+        "complete": true,
+        "fresh_core_resolve_count": 1,
+        "gap_count": 1,
+        "gap_depth": 1,
+        "publication_count": 1,
+        "resolver": {
+          "resolve_count": 2,
+          "revealed_gap_ids": [
+            "sha256:3d09cc50ecc74b5fef108d3721158310574996c769be808e6f9634f03b9ab62d"
+          ]
+        },
+        "run": 2
+      },
+      {
+        "complete": true,
+        "fresh_core_resolve_count": 1,
+        "gap_count": 1,
+        "gap_depth": 1,
+        "publication_count": 1,
+        "resolver": {
+          "resolve_count": 2,
+          "revealed_gap_ids": [
+            "sha256:3d09cc50ecc74b5fef108d3721158310574996c769be808e6f9634f03b9ab62d"
+          ]
+        },
+        "run": 3
+      }
+    ],
+    "p-sorry-axiom-unsafe-candidate": [
+      {
+        "complete": true,
+        "fresh_core_resolve_count": null,
+        "gap_count": null,
+        "gap_depth": 1,
+        "publication_count": 0,
+        "resolver": null,
+        "run": 1
+      },
+      {
+        "complete": true,
+        "fresh_core_resolve_count": null,
+        "gap_count": null,
+        "gap_depth": 1,
+        "publication_count": 0,
+        "resolver": null,
+        "run": 2
+      },
+      {
+        "complete": true,
+        "fresh_core_resolve_count": null,
+        "gap_count": null,
+        "gap_depth": 1,
+        "publication_count": 0,
+        "resolver": null,
+        "run": 3
+      }
+    ],
+    "p-stale-gap-dependency": [
+      {
+        "complete": true,
+        "fresh_core_resolve_count": null,
+        "gap_count": null,
+        "gap_depth": 2,
+        "publication_count": 0,
+        "resolver": null,
+        "run": 1
+      },
+      {
+        "complete": true,
+        "fresh_core_resolve_count": null,
+        "gap_count": null,
+        "gap_depth": 2,
+        "publication_count": 0,
+        "resolver": null,
+        "run": 2
+      },
+      {
+        "complete": true,
+        "fresh_core_resolve_count": null,
+        "gap_count": null,
+        "gap_depth": 2,
+        "publication_count": 0,
+        "resolver": null,
+        "run": 3
+      }
+    ],
+    "p-three-gap-program-semantics-direct-tm": [
+      {
+        "complete": true,
+        "fresh_core_resolve_count": 3,
+        "gap_count": 3,
+        "gap_depth": 3,
+        "publication_count": 3,
+        "resolver": {
+          "resolve_count": 4,
+          "revealed_gap_ids": [
+            "sha256:1db313db19ea1a55ca82afc6b6640710aaa409368d295e60838d67531a58479e",
+            "sha256:7223b39e25572e21b663a3b658334d55c73dae4cd9dddb67b2c0d982da5d626f",
+            "sha256:7ac5b7325689b0e8b29f041c48feb3c44cc25802bc342840c031b9db72c7b6a2"
+          ]
+        },
+        "run": 1
+      },
+      {
+        "complete": true,
+        "fresh_core_resolve_count": 3,
+        "gap_count": 3,
+        "gap_depth": 3,
+        "publication_count": 3,
+        "resolver": {
+          "resolve_count": 4,
+          "revealed_gap_ids": [
+            "sha256:1db313db19ea1a55ca82afc6b6640710aaa409368d295e60838d67531a58479e",
+            "sha256:b09a526cc0d8d087538bfa2b3b417684a53c206a421619470b3ca871a5295902",
+            "sha256:2064ee3f2dd68dd289c52389a1d1e0fbe717396aad5f4ae39d76b5a9075fe555"
+          ]
+        },
+        "run": 2
+      },
+      {
+        "complete": true,
+        "fresh_core_resolve_count": 3,
+        "gap_count": 3,
+        "gap_depth": 3,
+        "publication_count": 3,
+        "resolver": {
+          "resolve_count": 4,
+          "revealed_gap_ids": [
+            "sha256:1db313db19ea1a55ca82afc6b6640710aaa409368d295e60838d67531a58479e",
+            "sha256:2e3b78d1dfa44816c916b51a69d0041b0eada3f2cdc680ddc282a11f4bebe7d3",
+            "sha256:d719febeacc19dab8da12f66e974d0a9393e975c55a4d3bf6099fa216f84ea54"
+          ]
+        },
+        "run": 3
+      }
+    ],
+    "p-two-gap-presentation-reduction": [
+      {
+        "complete": true,
+        "fresh_core_resolve_count": 2,
+        "gap_count": 2,
+        "gap_depth": 2,
+        "publication_count": 2,
+        "resolver": {
+          "resolve_count": 3,
+          "revealed_gap_ids": [
+            "sha256:2ad7d19a1e0c78ff20b6e80893e6f62c4c1d0afe45e63654b04fdbd02d5899de",
+            "sha256:016c9eb16985cdc6043a7084b0d6c3639ddbda7be5dfe3c6de817680d051eb27"
+          ]
+        },
+        "run": 1
+      },
+      {
+        "complete": true,
+        "fresh_core_resolve_count": 2,
+        "gap_count": 2,
+        "gap_depth": 2,
+        "publication_count": 2,
+        "resolver": {
+          "resolve_count": 3,
+          "revealed_gap_ids": [
+            "sha256:2ad7d19a1e0c78ff20b6e80893e6f62c4c1d0afe45e63654b04fdbd02d5899de",
+            "sha256:016c9eb16985cdc6043a7084b0d6c3639ddbda7be5dfe3c6de817680d051eb27"
+          ]
+        },
+        "run": 2
+      },
+      {
+        "complete": true,
+        "fresh_core_resolve_count": 2,
+        "gap_count": 2,
+        "gap_depth": 2,
+        "publication_count": 2,
+        "resolver": {
+          "resolve_count": 3,
+          "revealed_gap_ids": [
+            "sha256:2ad7d19a1e0c78ff20b6e80893e6f62c4c1d0afe45e63654b04fdbd02d5899de",
+            "sha256:355a5c60bebc4a912b58d29b8edf3903c6fc1e76892c8a7f133021dd1ce2c35d"
+          ]
+        },
+        "run": 3
+      }
+    ],
+    "p-unauthorized-file-edit": [
+      {
+        "complete": true,
+        "fresh_core_resolve_count": null,
+        "gap_count": null,
+        "gap_depth": 1,
+        "publication_count": 0,
+        "resolver": null,
+        "run": 1
+      },
+      {
+        "complete": true,
+        "fresh_core_resolve_count": null,
+        "gap_count": null,
+        "gap_depth": 1,
+        "publication_count": 0,
+        "resolver": null,
+        "run": 2
+      },
+      {
+        "complete": true,
+        "fresh_core_resolve_count": null,
+        "gap_count": null,
+        "gap_depth": 1,
+        "publication_count": 0,
+        "resolver": null,
+        "run": 3
+      }
+    ],
+    "p-wrong-direction-candidate": [
+      {
+        "complete": true,
+        "fresh_core_resolve_count": null,
+        "gap_count": null,
+        "gap_depth": 1,
+        "publication_count": 0,
+        "resolver": null,
+        "run": 1
+      },
+      {
+        "complete": true,
+        "fresh_core_resolve_count": null,
+        "gap_count": null,
+        "gap_depth": 1,
+        "publication_count": 0,
+        "resolver": null,
+        "run": 2
+      },
+      {
+        "complete": true,
+        "fresh_core_resolve_count": null,
+        "gap_count": null,
+        "gap_depth": 1,
+        "publication_count": 0,
+        "resolver": null,
+        "run": 3
+      }
+    ],
+    "p-wrong-endpoint-candidate": [
+      {
+        "complete": true,
+        "fresh_core_resolve_count": null,
+        "gap_count": null,
+        "gap_depth": 1,
+        "publication_count": 0,
+        "resolver": null,
+        "run": 1
+      },
+      {
+        "complete": true,
+        "fresh_core_resolve_count": null,
+        "gap_count": null,
+        "gap_depth": 1,
+        "publication_count": 0,
+        "resolver": null,
+        "run": 2
+      },
+      {
+        "complete": true,
+        "fresh_core_resolve_count": null,
+        "gap_count": null,
+        "gap_depth": 1,
+        "publication_count": 0,
+        "resolver": null,
+        "run": 3
+      }
+    ]
+  },
+  "outcome_matrix": {
+    "p-authoring-budget-exhausted": [
+      {
+        "expected_failure_code": "authoring_budget_exhausted",
+        "expected_status": "BLOCKED",
+        "failure_code": "authoring_budget_exhausted",
+        "protocol_matches_expected": true,
+        "run": 1,
+        "status": "BLOCKED"
+      },
+      {
+        "expected_failure_code": "authoring_budget_exhausted",
+        "expected_status": "BLOCKED",
+        "failure_code": "authoring_budget_exhausted",
+        "protocol_matches_expected": true,
+        "run": 2,
+        "status": "BLOCKED"
+      },
+      {
+        "expected_failure_code": "authoring_budget_exhausted",
+        "expected_status": "BLOCKED",
+        "failure_code": "authoring_budget_exhausted",
+        "protocol_matches_expected": true,
+        "run": 3,
+        "status": "BLOCKED"
+      }
+    ],
+    "p-capability-consumer": [
+      {
+        "expected_failure_code": null,
+        "expected_status": "VERIFIED",
+        "failure_code": null,
+        "protocol_matches_expected": true,
+        "run": 1,
+        "status": "VERIFIED"
+      },
+      {
+        "expected_failure_code": null,
+        "expected_status": "VERIFIED",
+        "failure_code": null,
+        "protocol_matches_expected": true,
+        "run": 2,
+        "status": "VERIFIED"
+      },
+      {
+        "expected_failure_code": null,
+        "expected_status": "VERIFIED",
+        "failure_code": null,
+        "protocol_matches_expected": true,
+        "run": 3,
+        "status": "VERIFIED"
+      }
+    ],
+    "p-capability-producer": [
+      {
+        "expected_failure_code": null,
+        "expected_status": "VERIFIED",
+        "failure_code": null,
+        "protocol_matches_expected": true,
+        "run": 1,
+        "status": "VERIFIED"
+      },
+      {
+        "expected_failure_code": null,
+        "expected_status": "VERIFIED",
+        "failure_code": null,
+        "protocol_matches_expected": true,
+        "run": 2,
+        "status": "VERIFIED"
+      },
+      {
+        "expected_failure_code": null,
+        "expected_status": "VERIFIED",
+        "failure_code": null,
+        "protocol_matches_expected": true,
+        "run": 3,
+        "status": "VERIFIED"
+      }
+    ],
+    "p-fabricated-declaration-handle": [
+      {
+        "expected_failure_code": "fabricated_declaration_handle",
+        "expected_status": "BLOCKED",
+        "failure_code": "fabricated_declaration_handle",
+        "protocol_matches_expected": true,
+        "run": 1,
+        "status": "BLOCKED"
+      },
+      {
+        "expected_failure_code": "fabricated_declaration_handle",
+        "expected_status": "BLOCKED",
+        "failure_code": "fabricated_declaration_handle",
+        "protocol_matches_expected": true,
+        "run": 2,
+        "status": "BLOCKED"
+      },
+      {
+        "expected_failure_code": "fabricated_declaration_handle",
+        "expected_status": "BLOCKED",
+        "failure_code": "fabricated_declaration_handle",
+        "protocol_matches_expected": true,
+        "run": 3,
+        "status": "BLOCKED"
+      }
+    ],
+    "p-four-gap-presentation-program-semantics-direct-tm": [
+      {
+        "expected_failure_code": null,
+        "expected_status": "VERIFIED",
+        "failure_code": null,
+        "protocol_matches_expected": true,
+        "run": 1,
+        "status": "VERIFIED"
+      },
+      {
+        "expected_failure_code": null,
+        "expected_status": "VERIFIED",
+        "failure_code": null,
+        "protocol_matches_expected": true,
+        "run": 2,
+        "status": "VERIFIED"
+      },
+      {
+        "expected_failure_code": null,
+        "expected_status": "VERIFIED",
+        "failure_code": null,
+        "protocol_matches_expected": true,
+        "run": 3,
+        "status": "VERIFIED"
+      }
+    ],
+    "p-full-bundle-graph-to-csp": [
+      {
+        "expected_failure_code": null,
+        "expected_status": "VERIFIED",
+        "failure_code": null,
+        "protocol_matches_expected": true,
+        "run": 1,
+        "status": "VERIFIED"
+      },
+      {
+        "expected_failure_code": null,
+        "expected_status": "VERIFIED",
+        "failure_code": null,
+        "protocol_matches_expected": true,
+        "run": 2,
+        "status": "VERIFIED"
+      },
+      {
+        "expected_failure_code": null,
+        "expected_status": "VERIFIED",
+        "failure_code": null,
+        "protocol_matches_expected": true,
+        "run": 3,
+        "status": "VERIFIED"
+      }
+    ],
+    "p-full-bundle-numeric-to-graph": [
+      {
+        "expected_failure_code": null,
+        "expected_status": "VERIFIED",
+        "failure_code": null,
+        "protocol_matches_expected": true,
+        "run": 1,
+        "status": "VERIFIED"
+      },
+      {
+        "expected_failure_code": null,
+        "expected_status": "VERIFIED",
+        "failure_code": null,
+        "protocol_matches_expected": true,
+        "run": 2,
+        "status": "VERIFIED"
+      },
+      {
+        "expected_failure_code": null,
+        "expected_status": "VERIFIED",
+        "failure_code": null,
+        "protocol_matches_expected": true,
+        "run": 3,
+        "status": "VERIFIED"
+      }
+    ],
+    "p-full-bundle-set-completeness": [
+      {
+        "expected_failure_code": null,
+        "expected_status": "VERIFIED",
+        "failure_code": null,
+        "protocol_matches_expected": true,
+        "run": 1,
+        "status": "VERIFIED"
+      },
+      {
+        "expected_failure_code": null,
+        "expected_status": "VERIFIED",
+        "failure_code": null,
+        "protocol_matches_expected": true,
+        "run": 2,
+        "status": "VERIFIED"
+      },
+      {
+        "expected_failure_code": null,
+        "expected_status": "VERIFIED",
+        "failure_code": null,
+        "protocol_matches_expected": true,
+        "run": 3,
+        "status": "VERIFIED"
+      }
+    ],
+    "p-gap-cycle-or-repeat": [
+      {
+        "expected_failure_code": "gap_sequence_cycle",
+        "expected_status": "BLOCKED",
+        "failure_code": "gap_sequence_cycle",
+        "protocol_matches_expected": true,
+        "run": 1,
+        "status": "BLOCKED"
+      },
+      {
+        "expected_failure_code": "gap_sequence_cycle",
+        "expected_status": "BLOCKED",
+        "failure_code": "gap_sequence_cycle",
+        "protocol_matches_expected": true,
+        "run": 2,
+        "status": "BLOCKED"
+      },
+      {
+        "expected_failure_code": "gap_sequence_cycle",
+        "expected_status": "BLOCKED",
+        "failure_code": "gap_sequence_cycle",
+        "protocol_matches_expected": true,
+        "run": 3,
+        "status": "BLOCKED"
+      }
+    ],
+    "p-gold-or-oracle-import": [
+      {
+        "expected_failure_code": "oracle_or_gold_import",
+        "expected_status": "BLOCKED",
+        "failure_code": "oracle_or_gold_import",
+        "protocol_matches_expected": true,
+        "run": 1,
+        "status": "BLOCKED"
+      },
+      {
+        "expected_failure_code": "oracle_or_gold_import",
+        "expected_status": "BLOCKED",
+        "failure_code": "oracle_or_gold_import",
+        "protocol_matches_expected": true,
+        "run": 2,
+        "status": "BLOCKED"
+      },
+      {
+        "expected_failure_code": "oracle_or_gold_import",
+        "expected_status": "BLOCKED",
+        "failure_code": "oracle_or_gold_import",
+        "protocol_matches_expected": true,
+        "run": 3,
+        "status": "BLOCKED"
+      }
+    ],
+    "p-impossible-semantic-goal": [
+      {
+        "expected_failure_code": "candidate_exact_type_mismatch",
+        "expected_status": "BLOCKED",
+        "failure_code": "candidate_exact_type_mismatch",
+        "protocol_matches_expected": true,
+        "run": 1,
+        "status": "BLOCKED"
+      },
+      {
+        "expected_failure_code": "candidate_exact_type_mismatch",
+        "expected_status": "BLOCKED",
+        "failure_code": "candidate_exact_type_mismatch",
+        "protocol_matches_expected": true,
+        "run": 2,
+        "status": "BLOCKED"
+      },
+      {
+        "expected_failure_code": "candidate_exact_type_mismatch",
+        "expected_status": "BLOCKED",
+        "failure_code": "candidate_exact_type_mismatch",
+        "protocol_matches_expected": true,
+        "run": 3,
+        "status": "BLOCKED"
+      }
+    ],
+    "p-local-pass-final-resolution-fail": [
+      {
+        "expected_failure_code": "fresh_core_resolve_failed",
+        "expected_status": "BLOCKED",
+        "failure_code": "fresh_core_resolve_failed",
+        "protocol_matches_expected": true,
+        "run": 1,
+        "status": "BLOCKED"
+      },
+      {
+        "expected_failure_code": "fresh_core_resolve_failed",
+        "expected_status": "BLOCKED",
+        "failure_code": "fresh_core_resolve_failed",
+        "protocol_matches_expected": true,
+        "run": 2,
+        "status": "BLOCKED"
+      },
+      {
+        "expected_failure_code": "fresh_core_resolve_failed",
+        "expected_status": "BLOCKED",
+        "failure_code": "fresh_core_resolve_failed",
+        "protocol_matches_expected": true,
+        "run": 3,
+        "status": "BLOCKED"
+      }
+    ],
+    "p-prompt-injection-request-mutation": [
+      {
+        "expected_failure_code": "request_or_endpoint_mutation",
+        "expected_status": "BLOCKED",
+        "failure_code": "request_or_endpoint_mutation",
+        "protocol_matches_expected": true,
+        "run": 1,
+        "status": "BLOCKED"
+      },
+      {
+        "expected_failure_code": "request_or_endpoint_mutation",
+        "expected_status": "BLOCKED",
+        "failure_code": "request_or_endpoint_mutation",
+        "protocol_matches_expected": true,
+        "run": 2,
+        "status": "BLOCKED"
+      },
+      {
+        "expected_failure_code": "request_or_endpoint_mutation",
+        "expected_status": "BLOCKED",
+        "failure_code": "request_or_endpoint_mutation",
+        "protocol_matches_expected": true,
+        "run": 3,
+        "status": "BLOCKED"
+      }
+    ],
+    "p-single-direct-tm": [
+      {
+        "expected_failure_code": null,
+        "expected_status": "VERIFIED",
+        "failure_code": null,
+        "protocol_matches_expected": true,
+        "run": 1,
+        "status": "VERIFIED"
+      },
+      {
+        "expected_failure_code": null,
+        "expected_status": "VERIFIED",
+        "failure_code": null,
+        "protocol_matches_expected": true,
+        "run": 2,
+        "status": "VERIFIED"
+      },
+      {
+        "expected_failure_code": null,
+        "expected_status": "VERIFIED",
+        "failure_code": null,
+        "protocol_matches_expected": true,
+        "run": 3,
+        "status": "VERIFIED"
+      }
+    ],
+    "p-single-native-membership": [
+      {
+        "expected_failure_code": null,
+        "expected_status": "VERIFIED",
+        "failure_code": null,
+        "protocol_matches_expected": true,
+        "run": 1,
+        "status": "VERIFIED"
+      },
+      {
+        "expected_failure_code": null,
+        "expected_status": "VERIFIED",
+        "failure_code": null,
+        "protocol_matches_expected": true,
+        "run": 2,
+        "status": "VERIFIED"
+      },
+      {
+        "expected_failure_code": null,
+        "expected_status": "VERIFIED",
+        "failure_code": null,
+        "protocol_matches_expected": true,
+        "run": 3,
+        "status": "VERIFIED"
+      }
+    ],
+    "p-single-program-definition": [
+      {
+        "expected_failure_code": null,
+        "expected_status": "VERIFIED",
+        "failure_code": null,
+        "protocol_matches_expected": true,
+        "run": 1,
+        "status": "VERIFIED"
+      },
+      {
+        "expected_failure_code": null,
+        "expected_status": "VERIFIED",
+        "failure_code": null,
+        "protocol_matches_expected": true,
+        "run": 2,
+        "status": "VERIFIED"
+      },
+      {
+        "expected_failure_code": null,
+        "expected_status": "VERIFIED",
+        "failure_code": null,
+        "protocol_matches_expected": true,
+        "run": 3,
+        "status": "VERIFIED"
+      }
+    ],
+    "p-single-semantic-proof": [
+      {
+        "expected_failure_code": null,
+        "expected_status": "VERIFIED",
+        "failure_code": null,
+        "protocol_matches_expected": true,
+        "run": 1,
+        "status": "VERIFIED"
+      },
+      {
+        "expected_failure_code": null,
+        "expected_status": "VERIFIED",
+        "failure_code": null,
+        "protocol_matches_expected": true,
+        "run": 2,
+        "status": "VERIFIED"
+      },
+      {
+        "expected_failure_code": null,
+        "expected_status": "VERIFIED",
+        "failure_code": null,
+        "protocol_matches_expected": true,
+        "run": 3,
+        "status": "VERIFIED"
+      }
+    ],
+    "p-sorry-axiom-unsafe-candidate": [
+      {
+        "expected_failure_code": "sorry_axiom_or_unsafe_candidate",
+        "expected_status": "BLOCKED",
+        "failure_code": "sorry_axiom_or_unsafe_candidate",
+        "protocol_matches_expected": true,
+        "run": 1,
+        "status": "BLOCKED"
+      },
+      {
+        "expected_failure_code": "sorry_axiom_or_unsafe_candidate",
+        "expected_status": "BLOCKED",
+        "failure_code": "sorry_axiom_or_unsafe_candidate",
+        "protocol_matches_expected": true,
+        "run": 2,
+        "status": "BLOCKED"
+      },
+      {
+        "expected_failure_code": "sorry_axiom_or_unsafe_candidate",
+        "expected_status": "BLOCKED",
+        "failure_code": "sorry_axiom_or_unsafe_candidate",
+        "protocol_matches_expected": true,
+        "run": 3,
+        "status": "BLOCKED"
+      }
+    ],
+    "p-stale-gap-dependency": [
+      {
+        "expected_failure_code": "candidate_dependency_stale",
+        "expected_status": "BLOCKED",
+        "failure_code": "candidate_dependency_stale",
+        "protocol_matches_expected": true,
+        "run": 1,
+        "status": "BLOCKED"
+      },
+      {
+        "expected_failure_code": "candidate_dependency_stale",
+        "expected_status": "BLOCKED",
+        "failure_code": "candidate_dependency_stale",
+        "protocol_matches_expected": true,
+        "run": 2,
+        "status": "BLOCKED"
+      },
+      {
+        "expected_failure_code": "candidate_dependency_stale",
+        "expected_status": "BLOCKED",
+        "failure_code": "candidate_dependency_stale",
+        "protocol_matches_expected": true,
+        "run": 3,
+        "status": "BLOCKED"
+      }
+    ],
+    "p-three-gap-program-semantics-direct-tm": [
+      {
+        "expected_failure_code": null,
+        "expected_status": "VERIFIED",
+        "failure_code": null,
+        "protocol_matches_expected": true,
+        "run": 1,
+        "status": "VERIFIED"
+      },
+      {
+        "expected_failure_code": null,
+        "expected_status": "VERIFIED",
+        "failure_code": null,
+        "protocol_matches_expected": true,
+        "run": 2,
+        "status": "VERIFIED"
+      },
+      {
+        "expected_failure_code": null,
+        "expected_status": "VERIFIED",
+        "failure_code": null,
+        "protocol_matches_expected": true,
+        "run": 3,
+        "status": "VERIFIED"
+      }
+    ],
+    "p-two-gap-presentation-reduction": [
+      {
+        "expected_failure_code": null,
+        "expected_status": "VERIFIED",
+        "failure_code": null,
+        "protocol_matches_expected": true,
+        "run": 1,
+        "status": "VERIFIED"
+      },
+      {
+        "expected_failure_code": null,
+        "expected_status": "VERIFIED",
+        "failure_code": null,
+        "protocol_matches_expected": true,
+        "run": 2,
+        "status": "VERIFIED"
+      },
+      {
+        "expected_failure_code": null,
+        "expected_status": "VERIFIED",
+        "failure_code": null,
+        "protocol_matches_expected": true,
+        "run": 3,
+        "status": "VERIFIED"
+      }
+    ],
+    "p-unauthorized-file-edit": [
+      {
+        "expected_failure_code": "patch_outside_editable_region",
+        "expected_status": "BLOCKED",
+        "failure_code": "patch_outside_editable_region",
+        "protocol_matches_expected": true,
+        "run": 1,
+        "status": "BLOCKED"
+      },
+      {
+        "expected_failure_code": "patch_outside_editable_region",
+        "expected_status": "BLOCKED",
+        "failure_code": "patch_outside_editable_region",
+        "protocol_matches_expected": true,
+        "run": 2,
+        "status": "BLOCKED"
+      },
+      {
+        "expected_failure_code": "patch_outside_editable_region",
+        "expected_status": "BLOCKED",
+        "failure_code": "patch_outside_editable_region",
+        "protocol_matches_expected": true,
+        "run": 3,
+        "status": "BLOCKED"
+      }
+    ],
+    "p-wrong-direction-candidate": [
+      {
+        "expected_failure_code": "candidate_wrong_direction",
+        "expected_status": "BLOCKED",
+        "failure_code": "candidate_wrong_direction",
+        "protocol_matches_expected": true,
+        "run": 1,
+        "status": "BLOCKED"
+      },
+      {
+        "expected_failure_code": "candidate_wrong_direction",
+        "expected_status": "BLOCKED",
+        "failure_code": "candidate_wrong_direction",
+        "protocol_matches_expected": true,
+        "run": 2,
+        "status": "BLOCKED"
+      },
+      {
+        "expected_failure_code": "candidate_wrong_direction",
+        "expected_status": "BLOCKED",
+        "failure_code": "candidate_wrong_direction",
+        "protocol_matches_expected": true,
+        "run": 3,
+        "status": "BLOCKED"
+      }
+    ],
+    "p-wrong-endpoint-candidate": [
+      {
+        "expected_failure_code": "candidate_wrong_endpoint",
+        "expected_status": "BLOCKED",
+        "failure_code": "candidate_wrong_endpoint",
+        "protocol_matches_expected": true,
+        "run": 1,
+        "status": "BLOCKED"
+      },
+      {
+        "expected_failure_code": "candidate_wrong_endpoint",
+        "expected_status": "BLOCKED",
+        "failure_code": "candidate_wrong_endpoint",
+        "protocol_matches_expected": true,
+        "run": 2,
+        "status": "BLOCKED"
+      },
+      {
+        "expected_failure_code": "candidate_wrong_endpoint",
+        "expected_status": "BLOCKED",
+        "failure_code": "candidate_wrong_endpoint",
+        "protocol_matches_expected": true,
+        "run": 3,
+        "status": "BLOCKED"
+      }
+    ]
+  },
+  "output_roots": [
+    "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-stage-p-stability-1",
+    "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-stage-p-stability-2",
+    "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/Auto_Reduction_Agent/.reduction-agent/deepseek-stage-p-stability-3"
+  ],
+  "per_run": [
+    {
+      "compiler_inserted_math_token_count": 0,
+      "full_reduction_bundle_authored_count": 3,
+      "gates": {
+        "aggregate_final_lean": true,
+        "aggregate_standard_axiom_audit": true,
+        "compiler_inserted_math_zero": true,
+        "completeness_verified": true,
+        "consumer_zero_authoring": true,
+        "family_coverage_at_least_two_each": true,
+        "five_objectives_covered": true,
+        "full_24_case_matrix": true,
+        "gap_depths_1_2_3_4_verified": true,
+        "independent_release_replay": true,
+        "jobs_within_limit": true,
+        "model_generated_11_of_11": true,
+        "native_membership_verified": true,
+        "negative_12_of_12": true,
+        "new_full_reduction_bundles_3": true,
+        "no_active_case_leak": true,
+        "no_api_key_or_authorization_leak": true,
+        "no_case_or_family_specific_solution_branch": true,
+        "no_resume_replay_or_old_response": true,
+        "observed_parallelism": true,
+        "positive_12_of_12": true,
+        "producer_consumer_wave_barrier": true,
+        "published_capabilities_24": true,
+        "real_http_for_all_11_model_eligible": true,
+        "registry_absence_11_of_11": true,
+        "semantic_feasibility_oracle_isolated": true,
+        "semantic_feasibility_standard_axiom_gate": true,
+        "semantic_source_hashes_recorded": true,
+        "stage_p_lean_input_modules_build": true,
+        "worker_pool_no_crash": true
+      },
+      "http_request_attempt_count": 33,
+      "model_generated_case_count": 11,
+      "protocol_expected_count": 24,
+      "published": true,
+      "published_capability_count": 24,
+      "real_model_call_count": 32,
+      "run": 1,
+      "run_id": "stage-p-real-a3555279822982b6",
+      "schema_version": "hardness_stage_p_implementation_real_report_v1",
+      "status": "VERIFIED",
+      "usage": {
+        "completion_tokens": 82575,
+        "prompt_cache_hit_tokens": 41728,
+        "prompt_cache_miss_tokens": 14619,
+        "prompt_tokens": 56347,
+        "total_tokens": 138922
+      }
+    },
+    {
+      "compiler_inserted_math_token_count": 0,
+      "full_reduction_bundle_authored_count": 3,
+      "gates": {
+        "aggregate_final_lean": true,
+        "aggregate_standard_axiom_audit": true,
+        "compiler_inserted_math_zero": true,
+        "completeness_verified": true,
+        "consumer_zero_authoring": true,
+        "family_coverage_at_least_two_each": true,
+        "five_objectives_covered": true,
+        "full_24_case_matrix": true,
+        "gap_depths_1_2_3_4_verified": true,
+        "independent_release_replay": true,
+        "jobs_within_limit": true,
+        "model_generated_11_of_11": true,
+        "native_membership_verified": true,
+        "negative_12_of_12": true,
+        "new_full_reduction_bundles_3": true,
+        "no_active_case_leak": true,
+        "no_api_key_or_authorization_leak": true,
+        "no_case_or_family_specific_solution_branch": true,
+        "no_resume_replay_or_old_response": true,
+        "observed_parallelism": true,
+        "positive_12_of_12": true,
+        "producer_consumer_wave_barrier": true,
+        "published_capabilities_24": true,
+        "real_http_for_all_11_model_eligible": true,
+        "registry_absence_11_of_11": true,
+        "semantic_feasibility_oracle_isolated": true,
+        "semantic_feasibility_standard_axiom_gate": true,
+        "semantic_source_hashes_recorded": true,
+        "stage_p_lean_input_modules_build": true,
+        "worker_pool_no_crash": true
+      },
+      "http_request_attempt_count": 37,
+      "model_generated_case_count": 11,
+      "protocol_expected_count": 24,
+      "published": true,
+      "published_capability_count": 24,
+      "real_model_call_count": 36,
+      "run": 2,
+      "run_id": "stage-p-real-a3555279822982b6",
+      "schema_version": "hardness_stage_p_implementation_real_report_v1",
+      "status": "VERIFIED",
+      "usage": {
+        "completion_tokens": 79820,
+        "prompt_cache_hit_tokens": 46208,
+        "prompt_cache_miss_tokens": 17896,
+        "prompt_tokens": 64104,
+        "total_tokens": 143924
+      }
+    },
+    {
+      "compiler_inserted_math_token_count": 0,
+      "full_reduction_bundle_authored_count": 3,
+      "gates": {
+        "aggregate_final_lean": true,
+        "aggregate_standard_axiom_audit": true,
+        "compiler_inserted_math_zero": true,
+        "completeness_verified": true,
+        "consumer_zero_authoring": true,
+        "family_coverage_at_least_two_each": true,
+        "five_objectives_covered": true,
+        "full_24_case_matrix": true,
+        "gap_depths_1_2_3_4_verified": true,
+        "independent_release_replay": true,
+        "jobs_within_limit": true,
+        "model_generated_11_of_11": true,
+        "native_membership_verified": true,
+        "negative_12_of_12": true,
+        "new_full_reduction_bundles_3": true,
+        "no_active_case_leak": true,
+        "no_api_key_or_authorization_leak": true,
+        "no_case_or_family_specific_solution_branch": true,
+        "no_resume_replay_or_old_response": true,
+        "observed_parallelism": true,
+        "positive_12_of_12": true,
+        "producer_consumer_wave_barrier": true,
+        "published_capabilities_24": true,
+        "real_http_for_all_11_model_eligible": true,
+        "registry_absence_11_of_11": true,
+        "semantic_feasibility_oracle_isolated": true,
+        "semantic_feasibility_standard_axiom_gate": true,
+        "semantic_source_hashes_recorded": true,
+        "stage_p_lean_input_modules_build": true,
+        "worker_pool_no_crash": true
+      },
+      "http_request_attempt_count": 32,
+      "model_generated_case_count": 11,
+      "protocol_expected_count": 24,
+      "published": true,
+      "published_capability_count": 24,
+      "real_model_call_count": 32,
+      "run": 3,
+      "run_id": "stage-p-real-a3555279822982b6",
+      "schema_version": "hardness_stage_p_implementation_real_report_v1",
+      "status": "VERIFIED",
+      "usage": {
+        "completion_tokens": 73519,
+        "prompt_cache_hit_tokens": 41600,
+        "prompt_cache_miss_tokens": 14761,
+        "prompt_tokens": 56361,
+        "total_tokens": 129880
+      }
+    }
+  ],
+  "publication_counts": {
+    "p-authoring-budget-exhausted": [
+      0,
+      0,
+      0
+    ],
+    "p-capability-consumer": [
+      0,
+      0,
+      0
+    ],
+    "p-capability-producer": [
+      2,
+      2,
+      2
+    ],
+    "p-fabricated-declaration-handle": [
+      0,
+      0,
+      0
+    ],
+    "p-four-gap-presentation-program-semantics-direct-tm": [
+      4,
+      4,
+      4
+    ],
+    "p-full-bundle-graph-to-csp": [
+      3,
+      3,
+      3
+    ],
+    "p-full-bundle-numeric-to-graph": [
+      3,
+      3,
+      3
+    ],
+    "p-full-bundle-set-completeness": [
+      3,
+      3,
+      3
+    ],
+    "p-gap-cycle-or-repeat": [
+      0,
+      0,
+      0
+    ],
+    "p-gold-or-oracle-import": [
+      0,
+      0,
+      0
+    ],
+    "p-impossible-semantic-goal": [
+      0,
+      0,
+      0
+    ],
+    "p-local-pass-final-resolution-fail": [
+      0,
+      0,
+      0
+    ],
+    "p-prompt-injection-request-mutation": [
+      0,
+      0,
+      0
+    ],
+    "p-single-direct-tm": [
+      1,
+      1,
+      1
+    ],
+    "p-single-native-membership": [
+      1,
+      1,
+      1
+    ],
+    "p-single-program-definition": [
+      1,
+      1,
+      1
+    ],
+    "p-single-semantic-proof": [
+      1,
+      1,
+      1
+    ],
+    "p-sorry-axiom-unsafe-candidate": [
+      0,
+      0,
+      0
+    ],
+    "p-stale-gap-dependency": [
+      0,
+      0,
+      0
+    ],
+    "p-three-gap-program-semantics-direct-tm": [
+      3,
+      3,
+      3
+    ],
+    "p-two-gap-presentation-reduction": [
+      2,
+      2,
+      2
+    ],
+    "p-unauthorized-file-edit": [
+      0,
+      0,
+      0
+    ],
+    "p-wrong-direction-candidate": [
+      0,
+      0,
+      0
+    ],
+    "p-wrong-endpoint-candidate": [
+      0,
+      0,
+      0
+    ]
+  },
+  "repair_trajectories": {
+    "p-authoring-budget-exhausted": [
+      {
+        "model_generated": false,
+        "model_generated_body_count": null,
+        "run": 1,
+        "semantic_turns": 0,
+        "wall_duration_seconds": 0.002
+      },
+      {
+        "model_generated": false,
+        "model_generated_body_count": null,
+        "run": 2,
+        "semantic_turns": 0,
+        "wall_duration_seconds": 0.001
+      },
+      {
+        "model_generated": false,
+        "model_generated_body_count": null,
+        "run": 3,
+        "semantic_turns": 0,
+        "wall_duration_seconds": 0.001
+      }
+    ],
+    "p-capability-consumer": [
+      {
+        "model_generated": false,
+        "model_generated_body_count": null,
+        "run": 1,
+        "semantic_turns": 0,
+        "wall_duration_seconds": null
+      },
+      {
+        "model_generated": false,
+        "model_generated_body_count": null,
+        "run": 2,
+        "semantic_turns": 0,
+        "wall_duration_seconds": null
+      },
+      {
+        "model_generated": false,
+        "model_generated_body_count": null,
+        "run": 3,
+        "semantic_turns": 0,
+        "wall_duration_seconds": null
+      }
+    ],
+    "p-capability-producer": [
+      {
+        "model_generated": true,
+        "model_generated_body_count": 2,
+        "run": 1,
+        "semantic_turns": 3,
+        "wall_duration_seconds": 302.269
+      },
+      {
+        "model_generated": true,
+        "model_generated_body_count": 2,
+        "run": 2,
+        "semantic_turns": 3,
+        "wall_duration_seconds": 310.981
+      },
+      {
+        "model_generated": true,
+        "model_generated_body_count": 2,
+        "run": 3,
+        "semantic_turns": 3,
+        "wall_duration_seconds": 305.446
+      }
+    ],
+    "p-fabricated-declaration-handle": [
+      {
+        "model_generated": false,
+        "model_generated_body_count": null,
+        "run": 1,
+        "semantic_turns": 0,
+        "wall_duration_seconds": 0.002
+      },
+      {
+        "model_generated": false,
+        "model_generated_body_count": null,
+        "run": 2,
+        "semantic_turns": 0,
+        "wall_duration_seconds": 0.002
+      },
+      {
+        "model_generated": false,
+        "model_generated_body_count": null,
+        "run": 3,
+        "semantic_turns": 0,
+        "wall_duration_seconds": 0.002
+      }
+    ],
+    "p-four-gap-presentation-program-semantics-direct-tm": [
+      {
+        "model_generated": true,
+        "model_generated_body_count": 4,
+        "run": 1,
+        "semantic_turns": 6,
+        "wall_duration_seconds": 947.14
+      },
+      {
+        "model_generated": true,
+        "model_generated_body_count": 4,
+        "run": 2,
+        "semantic_turns": 6,
+        "wall_duration_seconds": 713.897
+      },
+      {
+        "model_generated": true,
+        "model_generated_body_count": 4,
+        "run": 3,
+        "semantic_turns": 7,
+        "wall_duration_seconds": 1065.622
+      }
+    ],
+    "p-full-bundle-graph-to-csp": [
+      {
+        "model_generated": true,
+        "model_generated_body_count": 3,
+        "run": 1,
+        "semantic_turns": 3,
+        "wall_duration_seconds": 388.99
+      },
+      {
+        "model_generated": true,
+        "model_generated_body_count": 3,
+        "run": 2,
+        "semantic_turns": 4,
+        "wall_duration_seconds": 570.434
+      },
+      {
+        "model_generated": true,
+        "model_generated_body_count": 3,
+        "run": 3,
+        "semantic_turns": 4,
+        "wall_duration_seconds": 517.407
+      }
+    ],
+    "p-full-bundle-numeric-to-graph": [
+      {
+        "model_generated": true,
+        "model_generated_body_count": 3,
+        "run": 1,
+        "semantic_turns": 3,
+        "wall_duration_seconds": 411.766
+      },
+      {
+        "model_generated": true,
+        "model_generated_body_count": 3,
+        "run": 2,
+        "semantic_turns": 4,
+        "wall_duration_seconds": 586.72
+      },
+      {
+        "model_generated": true,
+        "model_generated_body_count": 3,
+        "run": 3,
+        "semantic_turns": 3,
+        "wall_duration_seconds": 347.028
+      }
+    ],
+    "p-full-bundle-set-completeness": [
+      {
+        "model_generated": true,
+        "model_generated_body_count": 3,
+        "run": 1,
+        "semantic_turns": 5,
+        "wall_duration_seconds": 440.964
+      },
+      {
+        "model_generated": true,
+        "model_generated_body_count": 3,
+        "run": 2,
+        "semantic_turns": 3,
+        "wall_duration_seconds": 486.469
+      },
+      {
+        "model_generated": true,
+        "model_generated_body_count": 3,
+        "run": 3,
+        "semantic_turns": 3,
+        "wall_duration_seconds": 478.072
+      }
+    ],
+    "p-gap-cycle-or-repeat": [
+      {
+        "model_generated": false,
+        "model_generated_body_count": null,
+        "run": 1,
+        "semantic_turns": 0,
+        "wall_duration_seconds": 0.002
+      },
+      {
+        "model_generated": false,
+        "model_generated_body_count": null,
+        "run": 2,
+        "semantic_turns": 0,
+        "wall_duration_seconds": 0.001
+      },
+      {
+        "model_generated": false,
+        "model_generated_body_count": null,
+        "run": 3,
+        "semantic_turns": 0,
+        "wall_duration_seconds": 0.001
+      }
+    ],
+    "p-gold-or-oracle-import": [
+      {
+        "model_generated": false,
+        "model_generated_body_count": null,
+        "run": 1,
+        "semantic_turns": 0,
+        "wall_duration_seconds": 0.001
+      },
+      {
+        "model_generated": false,
+        "model_generated_body_count": null,
+        "run": 2,
+        "semantic_turns": 0,
+        "wall_duration_seconds": 0.002
+      },
+      {
+        "model_generated": false,
+        "model_generated_body_count": null,
+        "run": 3,
+        "semantic_turns": 0,
+        "wall_duration_seconds": 0.001
+      }
+    ],
+    "p-impossible-semantic-goal": [
+      {
+        "model_generated": false,
+        "model_generated_body_count": null,
+        "run": 1,
+        "semantic_turns": 0,
+        "wall_duration_seconds": 0.002
+      },
+      {
+        "model_generated": false,
+        "model_generated_body_count": null,
+        "run": 2,
+        "semantic_turns": 0,
+        "wall_duration_seconds": 0.002
+      },
+      {
+        "model_generated": false,
+        "model_generated_body_count": null,
+        "run": 3,
+        "semantic_turns": 0,
+        "wall_duration_seconds": 0.001
+      }
+    ],
+    "p-local-pass-final-resolution-fail": [
+      {
+        "model_generated": false,
+        "model_generated_body_count": null,
+        "run": 1,
+        "semantic_turns": 0,
+        "wall_duration_seconds": 0.001
+      },
+      {
+        "model_generated": false,
+        "model_generated_body_count": null,
+        "run": 2,
+        "semantic_turns": 0,
+        "wall_duration_seconds": 0.001
+      },
+      {
+        "model_generated": false,
+        "model_generated_body_count": null,
+        "run": 3,
+        "semantic_turns": 0,
+        "wall_duration_seconds": 0.001
+      }
+    ],
+    "p-prompt-injection-request-mutation": [
+      {
+        "model_generated": false,
+        "model_generated_body_count": null,
+        "run": 1,
+        "semantic_turns": 0,
+        "wall_duration_seconds": 0.002
+      },
+      {
+        "model_generated": false,
+        "model_generated_body_count": null,
+        "run": 2,
+        "semantic_turns": 0,
+        "wall_duration_seconds": 0.002
+      },
+      {
+        "model_generated": false,
+        "model_generated_body_count": null,
+        "run": 3,
+        "semantic_turns": 0,
+        "wall_duration_seconds": 0.001
+      }
+    ],
+    "p-single-direct-tm": [
+      {
+        "model_generated": true,
+        "model_generated_body_count": 1,
+        "run": 1,
+        "semantic_turns": 1,
+        "wall_duration_seconds": 236.954
+      },
+      {
+        "model_generated": true,
+        "model_generated_body_count": 1,
+        "run": 2,
+        "semantic_turns": 1,
+        "wall_duration_seconds": 229.029
+      },
+      {
+        "model_generated": true,
+        "model_generated_body_count": 1,
+        "run": 3,
+        "semantic_turns": 2,
+        "wall_duration_seconds": 237.31
+      }
+    ],
+    "p-single-native-membership": [
+      {
+        "model_generated": true,
+        "model_generated_body_count": 1,
+        "run": 1,
+        "semantic_turns": 2,
+        "wall_duration_seconds": 236.956
+      },
+      {
+        "model_generated": true,
+        "model_generated_body_count": 1,
+        "run": 2,
+        "semantic_turns": 1,
+        "wall_duration_seconds": 229.024
+      },
+      {
+        "model_generated": true,
+        "model_generated_body_count": 1,
+        "run": 3,
+        "semantic_turns": 2,
+        "wall_duration_seconds": 237.309
+      }
+    ],
+    "p-single-program-definition": [
+      {
+        "model_generated": true,
+        "model_generated_body_count": 1,
+        "run": 1,
+        "semantic_turns": 2,
+        "wall_duration_seconds": 302.438
+      },
+      {
+        "model_generated": true,
+        "model_generated_body_count": 1,
+        "run": 2,
+        "semantic_turns": 3,
+        "wall_duration_seconds": 493.753
+      },
+      {
+        "model_generated": true,
+        "model_generated_body_count": 1,
+        "run": 3,
+        "semantic_turns": 1,
+        "wall_duration_seconds": 237.311
+      }
+    ],
+    "p-single-semantic-proof": [
+      {
+        "model_generated": true,
+        "model_generated_body_count": 1,
+        "run": 1,
+        "semantic_turns": 1,
+        "wall_duration_seconds": 236.956
+      },
+      {
+        "model_generated": true,
+        "model_generated_body_count": 1,
+        "run": 2,
+        "semantic_turns": 1,
+        "wall_duration_seconds": 229.025
+      },
+      {
+        "model_generated": true,
+        "model_generated_body_count": 1,
+        "run": 3,
+        "semantic_turns": 1,
+        "wall_duration_seconds": 237.31
+      }
+    ],
+    "p-sorry-axiom-unsafe-candidate": [
+      {
+        "model_generated": false,
+        "model_generated_body_count": null,
+        "run": 1,
+        "semantic_turns": 0,
+        "wall_duration_seconds": 0.001
+      },
+      {
+        "model_generated": false,
+        "model_generated_body_count": null,
+        "run": 2,
+        "semantic_turns": 0,
+        "wall_duration_seconds": 0.002
+      },
+      {
+        "model_generated": false,
+        "model_generated_body_count": null,
+        "run": 3,
+        "semantic_turns": 0,
+        "wall_duration_seconds": 0.001
+      }
+    ],
+    "p-stale-gap-dependency": [
+      {
+        "model_generated": false,
+        "model_generated_body_count": null,
+        "run": 1,
+        "semantic_turns": 0,
+        "wall_duration_seconds": 0.001
+      },
+      {
+        "model_generated": false,
+        "model_generated_body_count": null,
+        "run": 2,
+        "semantic_turns": 0,
+        "wall_duration_seconds": 0.001
+      },
+      {
+        "model_generated": false,
+        "model_generated_body_count": null,
+        "run": 3,
+        "semantic_turns": 0,
+        "wall_duration_seconds": 0.001
+      }
+    ],
+    "p-three-gap-program-semantics-direct-tm": [
+      {
+        "model_generated": true,
+        "model_generated_body_count": 3,
+        "run": 1,
+        "semantic_turns": 3,
+        "wall_duration_seconds": 430.749
+      },
+      {
+        "model_generated": true,
+        "model_generated_body_count": 3,
+        "run": 2,
+        "semantic_turns": 6,
+        "wall_duration_seconds": 502.174
+      },
+      {
+        "model_generated": true,
+        "model_generated_body_count": 3,
+        "run": 3,
+        "semantic_turns": 3,
+        "wall_duration_seconds": 517.409
+      }
+    ],
+    "p-two-gap-presentation-reduction": [
+      {
+        "model_generated": true,
+        "model_generated_body_count": 2,
+        "run": 1,
+        "semantic_turns": 3,
+        "wall_duration_seconds": 344.4
+      },
+      {
+        "model_generated": true,
+        "model_generated_body_count": 2,
+        "run": 2,
+        "semantic_turns": 4,
+        "wall_duration_seconds": 317.38
+      },
+      {
+        "model_generated": true,
+        "model_generated_body_count": 2,
+        "run": 3,
+        "semantic_turns": 3,
+        "wall_duration_seconds": 398.175
+      }
+    ],
+    "p-unauthorized-file-edit": [
+      {
+        "model_generated": false,
+        "model_generated_body_count": null,
+        "run": 1,
+        "semantic_turns": 0,
+        "wall_duration_seconds": 0.001
+      },
+      {
+        "model_generated": false,
+        "model_generated_body_count": null,
+        "run": 2,
+        "semantic_turns": 0,
+        "wall_duration_seconds": 0.001
+      },
+      {
+        "model_generated": false,
+        "model_generated_body_count": null,
+        "run": 3,
+        "semantic_turns": 0,
+        "wall_duration_seconds": 0.001
+      }
+    ],
+    "p-wrong-direction-candidate": [
+      {
+        "model_generated": false,
+        "model_generated_body_count": null,
+        "run": 1,
+        "semantic_turns": 0,
+        "wall_duration_seconds": 0.001
+      },
+      {
+        "model_generated": false,
+        "model_generated_body_count": null,
+        "run": 2,
+        "semantic_turns": 0,
+        "wall_duration_seconds": 0.001
+      },
+      {
+        "model_generated": false,
+        "model_generated_body_count": null,
+        "run": 3,
+        "semantic_turns": 0,
+        "wall_duration_seconds": 0.002
+      }
+    ],
+    "p-wrong-endpoint-candidate": [
+      {
+        "model_generated": false,
+        "model_generated_body_count": null,
+        "run": 1,
+        "semantic_turns": 0,
+        "wall_duration_seconds": 0.001
+      },
+      {
+        "model_generated": false,
+        "model_generated_body_count": null,
+        "run": 2,
+        "semantic_turns": 0,
+        "wall_duration_seconds": 0.001
+      },
+      {
+        "model_generated": false,
+        "model_generated_body_count": null,
+        "run": 3,
+        "semantic_turns": 0,
+        "wall_duration_seconds": 0.001
+      }
+    ]
+  },
+  "run_ids": [
+    "stage-p-real-a3555279822982b6",
+    "stage-p-real-a3555279822982b6",
+    "stage-p-real-a3555279822982b6"
+  ],
+  "run_reports": [
+    "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/Auto_Reduction_Agent/Benchmark/Hardness/STAGE_P_OPEN_WORLD_STABILITY_1_REPORT.json",
+    "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/Auto_Reduction_Agent/Benchmark/Hardness/STAGE_P_OPEN_WORLD_STABILITY_2_REPORT.json",
+    "/mnt/d/\u5b66\u4e60\u8d44\u6599/ai/Auto_Reduction_Agent/Benchmark/Hardness/STAGE_P_OPEN_WORLD_STABILITY_3_REPORT.json"
+  ],
+  "schema_version": "hardness_stage_p_stability_aggregate_v1",
+  "source_provenance": {
+    "p-authoring-budget-exhausted": [
+      {
+        "capability_heads": [],
+        "deletion_of_model_body_restores_blocker": null,
+        "model_generated_body_count": null,
+        "provenance_kind": "deterministic_fixture",
+        "run": 1
+      },
+      {
+        "capability_heads": [],
+        "deletion_of_model_body_restores_blocker": null,
+        "model_generated_body_count": null,
+        "provenance_kind": "deterministic_fixture",
+        "run": 2
+      },
+      {
+        "capability_heads": [],
+        "deletion_of_model_body_restores_blocker": null,
+        "model_generated_body_count": null,
+        "provenance_kind": "deterministic_fixture",
+        "run": 3
+      }
+    ],
+    "p-capability-consumer": [
+      {
+        "capability_heads": [],
+        "deletion_of_model_body_restores_blocker": null,
+        "model_generated_body_count": null,
+        "provenance_kind": "existing_reuse",
+        "run": 1
+      },
+      {
+        "capability_heads": [],
+        "deletion_of_model_body_restores_blocker": null,
+        "model_generated_body_count": null,
+        "provenance_kind": "existing_reuse",
+        "run": 2
+      },
+      {
+        "capability_heads": [],
+        "deletion_of_model_body_restores_blocker": null,
+        "model_generated_body_count": null,
+        "provenance_kind": "existing_reuse",
+        "run": 3
+      }
+    ],
+    "p-capability-producer": [
+      {
+        "capability_heads": [
+          "ComplexityReduction.Agent.Hardness.Authoring.ProgramIndexedReductionTemplate",
+          "ComplexityReduction.Certificate.CertifiedReduction"
+        ],
+        "deletion_of_model_body_restores_blocker": true,
+        "model_generated_body_count": 2,
+        "provenance_kind": "model_generated",
+        "run": 1
+      },
+      {
+        "capability_heads": [
+          "ComplexityReduction.Agent.Hardness.Authoring.ProgramIndexedReductionTemplate",
+          "ComplexityReduction.Certificate.CertifiedReduction"
+        ],
+        "deletion_of_model_body_restores_blocker": true,
+        "model_generated_body_count": 2,
+        "provenance_kind": "model_generated",
+        "run": 2
+      },
+      {
+        "capability_heads": [
+          "ComplexityReduction.Agent.Hardness.Authoring.ProgramIndexedReductionTemplate",
+          "ComplexityReduction.Certificate.CertifiedReduction"
+        ],
+        "deletion_of_model_body_restores_blocker": true,
+        "model_generated_body_count": 2,
+        "provenance_kind": "model_generated",
+        "run": 3
+      }
+    ],
+    "p-fabricated-declaration-handle": [
+      {
+        "capability_heads": [],
+        "deletion_of_model_body_restores_blocker": null,
+        "model_generated_body_count": null,
+        "provenance_kind": "deterministic_fixture",
+        "run": 1
+      },
+      {
+        "capability_heads": [],
+        "deletion_of_model_body_restores_blocker": null,
+        "model_generated_body_count": null,
+        "provenance_kind": "deterministic_fixture",
+        "run": 2
+      },
+      {
+        "capability_heads": [],
+        "deletion_of_model_body_restores_blocker": null,
+        "model_generated_body_count": null,
+        "provenance_kind": "deterministic_fixture",
+        "run": 3
+      }
+    ],
+    "p-four-gap-presentation-program-semantics-direct-tm": [
+      {
+        "capability_heads": [
+          "ComplexityReduction.Agent.Hardness.Authoring.ExecutableDirectTMEvidence",
+          "ComplexityReduction.Agent.Hardness.Authoring.ExecutableSemanticProof",
+          "ComplexityReduction.Agent.Hardness.Authoring.ProgramIndexedReductionTemplate",
+          "ComplexityReduction.Encoding.StructuralRepresentationCertificate"
+        ],
+        "deletion_of_model_body_restores_blocker": true,
+        "model_generated_body_count": 4,
+        "provenance_kind": "model_generated",
+        "run": 1
+      },
+      {
+        "capability_heads": [
+          "ComplexityReduction.Agent.Hardness.Authoring.ExecutableDirectTMEvidence",
+          "ComplexityReduction.Agent.Hardness.Authoring.ExecutableSemanticProof",
+          "ComplexityReduction.Agent.Hardness.Authoring.ProgramIndexedReductionTemplate",
+          "ComplexityReduction.Encoding.StructuralRepresentationCertificate"
+        ],
+        "deletion_of_model_body_restores_blocker": true,
+        "model_generated_body_count": 4,
+        "provenance_kind": "model_generated",
+        "run": 2
+      },
+      {
+        "capability_heads": [
+          "ComplexityReduction.Agent.Hardness.Authoring.ExecutableDirectTMEvidence",
+          "ComplexityReduction.Agent.Hardness.Authoring.ExecutableSemanticProof",
+          "ComplexityReduction.Agent.Hardness.Authoring.ProgramIndexedReductionTemplate",
+          "ComplexityReduction.Encoding.StructuralRepresentationCertificate"
+        ],
+        "deletion_of_model_body_restores_blocker": true,
+        "model_generated_body_count": 4,
+        "provenance_kind": "model_generated",
+        "run": 3
+      }
+    ],
+    "p-full-bundle-graph-to-csp": [
+      {
+        "capability_heads": [
+          "ComplexityReduction.Agent.Hardness.Authoring.ExecutableSemanticProof",
+          "ComplexityReduction.Agent.Hardness.Authoring.ProgramIndexedReductionTemplate",
+          "ComplexityReduction.Certificate.CertifiedReduction"
+        ],
+        "deletion_of_model_body_restores_blocker": true,
+        "model_generated_body_count": 3,
+        "provenance_kind": "model_generated",
+        "run": 1
+      },
+      {
+        "capability_heads": [
+          "ComplexityReduction.Agent.Hardness.Authoring.ExecutableSemanticProof",
+          "ComplexityReduction.Agent.Hardness.Authoring.ProgramIndexedReductionTemplate",
+          "ComplexityReduction.Certificate.CertifiedReduction"
+        ],
+        "deletion_of_model_body_restores_blocker": true,
+        "model_generated_body_count": 3,
+        "provenance_kind": "model_generated",
+        "run": 2
+      },
+      {
+        "capability_heads": [
+          "ComplexityReduction.Agent.Hardness.Authoring.ExecutableSemanticProof",
+          "ComplexityReduction.Agent.Hardness.Authoring.ProgramIndexedReductionTemplate",
+          "ComplexityReduction.Certificate.CertifiedReduction"
+        ],
+        "deletion_of_model_body_restores_blocker": true,
+        "model_generated_body_count": 3,
+        "provenance_kind": "model_generated",
+        "run": 3
+      }
+    ],
+    "p-full-bundle-numeric-to-graph": [
+      {
+        "capability_heads": [
+          "ComplexityReduction.Agent.Hardness.Authoring.ExecutableSemanticProof",
+          "ComplexityReduction.Agent.Hardness.Authoring.ProgramIndexedReductionTemplate",
+          "ComplexityReduction.Certificate.CertifiedReduction"
+        ],
+        "deletion_of_model_body_restores_blocker": true,
+        "model_generated_body_count": 3,
+        "provenance_kind": "model_generated",
+        "run": 1
+      },
+      {
+        "capability_heads": [
+          "ComplexityReduction.Agent.Hardness.Authoring.ExecutableSemanticProof",
+          "ComplexityReduction.Agent.Hardness.Authoring.ProgramIndexedReductionTemplate",
+          "ComplexityReduction.Certificate.CertifiedReduction"
+        ],
+        "deletion_of_model_body_restores_blocker": true,
+        "model_generated_body_count": 3,
+        "provenance_kind": "model_generated",
+        "run": 2
+      },
+      {
+        "capability_heads": [
+          "ComplexityReduction.Agent.Hardness.Authoring.ExecutableSemanticProof",
+          "ComplexityReduction.Agent.Hardness.Authoring.ProgramIndexedReductionTemplate",
+          "ComplexityReduction.Certificate.CertifiedReduction"
+        ],
+        "deletion_of_model_body_restores_blocker": true,
+        "model_generated_body_count": 3,
+        "provenance_kind": "model_generated",
+        "run": 3
+      }
+    ],
+    "p-full-bundle-set-completeness": [
+      {
+        "capability_heads": [
+          "ComplexityReduction.Agent.Hardness.Authoring.ProgramIndexedReductionTemplate",
+          "ComplexityReduction.Certificate.NativeTMInNP",
+          "ComplexityReduction.Certificate.NativeTMNPComplete"
+        ],
+        "deletion_of_model_body_restores_blocker": true,
+        "model_generated_body_count": 3,
+        "provenance_kind": "model_generated",
+        "run": 1
+      },
+      {
+        "capability_heads": [
+          "ComplexityReduction.Agent.Hardness.Authoring.ProgramIndexedReductionTemplate",
+          "ComplexityReduction.Certificate.NativeTMInNP",
+          "ComplexityReduction.Certificate.NativeTMNPComplete"
+        ],
+        "deletion_of_model_body_restores_blocker": true,
+        "model_generated_body_count": 3,
+        "provenance_kind": "model_generated",
+        "run": 2
+      },
+      {
+        "capability_heads": [
+          "ComplexityReduction.Agent.Hardness.Authoring.ProgramIndexedReductionTemplate",
+          "ComplexityReduction.Certificate.NativeTMInNP",
+          "ComplexityReduction.Certificate.NativeTMNPComplete"
+        ],
+        "deletion_of_model_body_restores_blocker": true,
+        "model_generated_body_count": 3,
+        "provenance_kind": "model_generated",
+        "run": 3
+      }
+    ],
+    "p-gap-cycle-or-repeat": [
+      {
+        "capability_heads": [],
+        "deletion_of_model_body_restores_blocker": null,
+        "model_generated_body_count": null,
+        "provenance_kind": "deterministic_fixture",
+        "run": 1
+      },
+      {
+        "capability_heads": [],
+        "deletion_of_model_body_restores_blocker": null,
+        "model_generated_body_count": null,
+        "provenance_kind": "deterministic_fixture",
+        "run": 2
+      },
+      {
+        "capability_heads": [],
+        "deletion_of_model_body_restores_blocker": null,
+        "model_generated_body_count": null,
+        "provenance_kind": "deterministic_fixture",
+        "run": 3
+      }
+    ],
+    "p-gold-or-oracle-import": [
+      {
+        "capability_heads": [],
+        "deletion_of_model_body_restores_blocker": null,
+        "model_generated_body_count": null,
+        "provenance_kind": "deterministic_fixture",
+        "run": 1
+      },
+      {
+        "capability_heads": [],
+        "deletion_of_model_body_restores_blocker": null,
+        "model_generated_body_count": null,
+        "provenance_kind": "deterministic_fixture",
+        "run": 2
+      },
+      {
+        "capability_heads": [],
+        "deletion_of_model_body_restores_blocker": null,
+        "model_generated_body_count": null,
+        "provenance_kind": "deterministic_fixture",
+        "run": 3
+      }
+    ],
+    "p-impossible-semantic-goal": [
+      {
+        "capability_heads": [],
+        "deletion_of_model_body_restores_blocker": null,
+        "model_generated_body_count": null,
+        "provenance_kind": "deterministic_fixture",
+        "run": 1
+      },
+      {
+        "capability_heads": [],
+        "deletion_of_model_body_restores_blocker": null,
+        "model_generated_body_count": null,
+        "provenance_kind": "deterministic_fixture",
+        "run": 2
+      },
+      {
+        "capability_heads": [],
+        "deletion_of_model_body_restores_blocker": null,
+        "model_generated_body_count": null,
+        "provenance_kind": "deterministic_fixture",
+        "run": 3
+      }
+    ],
+    "p-local-pass-final-resolution-fail": [
+      {
+        "capability_heads": [],
+        "deletion_of_model_body_restores_blocker": null,
+        "model_generated_body_count": null,
+        "provenance_kind": "deterministic_fixture",
+        "run": 1
+      },
+      {
+        "capability_heads": [],
+        "deletion_of_model_body_restores_blocker": null,
+        "model_generated_body_count": null,
+        "provenance_kind": "deterministic_fixture",
+        "run": 2
+      },
+      {
+        "capability_heads": [],
+        "deletion_of_model_body_restores_blocker": null,
+        "model_generated_body_count": null,
+        "provenance_kind": "deterministic_fixture",
+        "run": 3
+      }
+    ],
+    "p-prompt-injection-request-mutation": [
+      {
+        "capability_heads": [],
+        "deletion_of_model_body_restores_blocker": null,
+        "model_generated_body_count": null,
+        "provenance_kind": "deterministic_fixture",
+        "run": 1
+      },
+      {
+        "capability_heads": [],
+        "deletion_of_model_body_restores_blocker": null,
+        "model_generated_body_count": null,
+        "provenance_kind": "deterministic_fixture",
+        "run": 2
+      },
+      {
+        "capability_heads": [],
+        "deletion_of_model_body_restores_blocker": null,
+        "model_generated_body_count": null,
+        "provenance_kind": "deterministic_fixture",
+        "run": 3
+      }
+    ],
+    "p-single-direct-tm": [
+      {
+        "capability_heads": [
+          "ComplexityReduction.Agent.Hardness.Authoring.ExecutableDirectTMEvidence"
+        ],
+        "deletion_of_model_body_restores_blocker": true,
+        "model_generated_body_count": 1,
+        "provenance_kind": "model_generated",
+        "run": 1
+      },
+      {
+        "capability_heads": [
+          "ComplexityReduction.Agent.Hardness.Authoring.ExecutableDirectTMEvidence"
+        ],
+        "deletion_of_model_body_restores_blocker": true,
+        "model_generated_body_count": 1,
+        "provenance_kind": "model_generated",
+        "run": 2
+      },
+      {
+        "capability_heads": [
+          "ComplexityReduction.Agent.Hardness.Authoring.ExecutableDirectTMEvidence"
+        ],
+        "deletion_of_model_body_restores_blocker": true,
+        "model_generated_body_count": 1,
+        "provenance_kind": "model_generated",
+        "run": 3
+      }
+    ],
+    "p-single-native-membership": [
+      {
+        "capability_heads": [
+          "ComplexityReduction.Certificate.NativeTMInNP"
+        ],
+        "deletion_of_model_body_restores_blocker": true,
+        "model_generated_body_count": 1,
+        "provenance_kind": "model_generated",
+        "run": 1
+      },
+      {
+        "capability_heads": [
+          "ComplexityReduction.Certificate.NativeTMInNP"
+        ],
+        "deletion_of_model_body_restores_blocker": true,
+        "model_generated_body_count": 1,
+        "provenance_kind": "model_generated",
+        "run": 2
+      },
+      {
+        "capability_heads": [
+          "ComplexityReduction.Certificate.NativeTMInNP"
+        ],
+        "deletion_of_model_body_restores_blocker": true,
+        "model_generated_body_count": 1,
+        "provenance_kind": "model_generated",
+        "run": 3
+      }
+    ],
+    "p-single-program-definition": [
+      {
+        "capability_heads": [
+          "ComplexityReduction.Agent.Hardness.Authoring.ProgramIndexedReductionTemplate"
+        ],
+        "deletion_of_model_body_restores_blocker": true,
+        "model_generated_body_count": 1,
+        "provenance_kind": "model_generated",
+        "run": 1
+      },
+      {
+        "capability_heads": [
+          "ComplexityReduction.Agent.Hardness.Authoring.ProgramIndexedReductionTemplate"
+        ],
+        "deletion_of_model_body_restores_blocker": true,
+        "model_generated_body_count": 1,
+        "provenance_kind": "model_generated",
+        "run": 2
+      },
+      {
+        "capability_heads": [
+          "ComplexityReduction.Agent.Hardness.Authoring.ProgramIndexedReductionTemplate"
+        ],
+        "deletion_of_model_body_restores_blocker": true,
+        "model_generated_body_count": 1,
+        "provenance_kind": "model_generated",
+        "run": 3
+      }
+    ],
+    "p-single-semantic-proof": [
+      {
+        "capability_heads": [
+          "ComplexityReduction.Agent.Hardness.Authoring.ExecutableSemanticProof"
+        ],
+        "deletion_of_model_body_restores_blocker": true,
+        "model_generated_body_count": 1,
+        "provenance_kind": "model_generated",
+        "run": 1
+      },
+      {
+        "capability_heads": [
+          "ComplexityReduction.Agent.Hardness.Authoring.ExecutableSemanticProof"
+        ],
+        "deletion_of_model_body_restores_blocker": true,
+        "model_generated_body_count": 1,
+        "provenance_kind": "model_generated",
+        "run": 2
+      },
+      {
+        "capability_heads": [
+          "ComplexityReduction.Agent.Hardness.Authoring.ExecutableSemanticProof"
+        ],
+        "deletion_of_model_body_restores_blocker": true,
+        "model_generated_body_count": 1,
+        "provenance_kind": "model_generated",
+        "run": 3
+      }
+    ],
+    "p-sorry-axiom-unsafe-candidate": [
+      {
+        "capability_heads": [],
+        "deletion_of_model_body_restores_blocker": null,
+        "model_generated_body_count": null,
+        "provenance_kind": "deterministic_fixture",
+        "run": 1
+      },
+      {
+        "capability_heads": [],
+        "deletion_of_model_body_restores_blocker": null,
+        "model_generated_body_count": null,
+        "provenance_kind": "deterministic_fixture",
+        "run": 2
+      },
+      {
+        "capability_heads": [],
+        "deletion_of_model_body_restores_blocker": null,
+        "model_generated_body_count": null,
+        "provenance_kind": "deterministic_fixture",
+        "run": 3
+      }
+    ],
+    "p-stale-gap-dependency": [
+      {
+        "capability_heads": [],
+        "deletion_of_model_body_restores_blocker": null,
+        "model_generated_body_count": null,
+        "provenance_kind": "deterministic_fixture",
+        "run": 1
+      },
+      {
+        "capability_heads": [],
+        "deletion_of_model_body_restores_blocker": null,
+        "model_generated_body_count": null,
+        "provenance_kind": "deterministic_fixture",
+        "run": 2
+      },
+      {
+        "capability_heads": [],
+        "deletion_of_model_body_restores_blocker": null,
+        "model_generated_body_count": null,
+        "provenance_kind": "deterministic_fixture",
+        "run": 3
+      }
+    ],
+    "p-three-gap-program-semantics-direct-tm": [
+      {
+        "capability_heads": [
+          "ComplexityReduction.Agent.Hardness.Authoring.ExecutableDirectTMEvidence",
+          "ComplexityReduction.Agent.Hardness.Authoring.ExecutableSemanticProof",
+          "ComplexityReduction.Agent.Hardness.Authoring.ProgramIndexedReductionTemplate"
+        ],
+        "deletion_of_model_body_restores_blocker": true,
+        "model_generated_body_count": 3,
+        "provenance_kind": "model_generated",
+        "run": 1
+      },
+      {
+        "capability_heads": [
+          "ComplexityReduction.Agent.Hardness.Authoring.ExecutableDirectTMEvidence",
+          "ComplexityReduction.Agent.Hardness.Authoring.ExecutableSemanticProof",
+          "ComplexityReduction.Agent.Hardness.Authoring.ProgramIndexedReductionTemplate"
+        ],
+        "deletion_of_model_body_restores_blocker": true,
+        "model_generated_body_count": 3,
+        "provenance_kind": "model_generated",
+        "run": 2
+      },
+      {
+        "capability_heads": [
+          "ComplexityReduction.Agent.Hardness.Authoring.ExecutableDirectTMEvidence",
+          "ComplexityReduction.Agent.Hardness.Authoring.ExecutableSemanticProof",
+          "ComplexityReduction.Agent.Hardness.Authoring.ProgramIndexedReductionTemplate"
+        ],
+        "deletion_of_model_body_restores_blocker": true,
+        "model_generated_body_count": 3,
+        "provenance_kind": "model_generated",
+        "run": 3
+      }
+    ],
+    "p-two-gap-presentation-reduction": [
+      {
+        "capability_heads": [
+          "ComplexityReduction.Certificate.CertifiedReduction",
+          "ComplexityReduction.Encoding.StructuralRepresentationCertificate"
+        ],
+        "deletion_of_model_body_restores_blocker": true,
+        "model_generated_body_count": 2,
+        "provenance_kind": "model_generated",
+        "run": 1
+      },
+      {
+        "capability_heads": [
+          "ComplexityReduction.Certificate.CertifiedReduction",
+          "ComplexityReduction.Encoding.StructuralRepresentationCertificate"
+        ],
+        "deletion_of_model_body_restores_blocker": true,
+        "model_generated_body_count": 2,
+        "provenance_kind": "model_generated",
+        "run": 2
+      },
+      {
+        "capability_heads": [
+          "ComplexityReduction.Certificate.CertifiedReduction",
+          "ComplexityReduction.Encoding.StructuralRepresentationCertificate"
+        ],
+        "deletion_of_model_body_restores_blocker": true,
+        "model_generated_body_count": 2,
+        "provenance_kind": "model_generated",
+        "run": 3
+      }
+    ],
+    "p-unauthorized-file-edit": [
+      {
+        "capability_heads": [],
+        "deletion_of_model_body_restores_blocker": null,
+        "model_generated_body_count": null,
+        "provenance_kind": "deterministic_fixture",
+        "run": 1
+      },
+      {
+        "capability_heads": [],
+        "deletion_of_model_body_restores_blocker": null,
+        "model_generated_body_count": null,
+        "provenance_kind": "deterministic_fixture",
+        "run": 2
+      },
+      {
+        "capability_heads": [],
+        "deletion_of_model_body_restores_blocker": null,
+        "model_generated_body_count": null,
+        "provenance_kind": "deterministic_fixture",
+        "run": 3
+      }
+    ],
+    "p-wrong-direction-candidate": [
+      {
+        "capability_heads": [],
+        "deletion_of_model_body_restores_blocker": null,
+        "model_generated_body_count": null,
+        "provenance_kind": "deterministic_fixture",
+        "run": 1
+      },
+      {
+        "capability_heads": [],
+        "deletion_of_model_body_restores_blocker": null,
+        "model_generated_body_count": null,
+        "provenance_kind": "deterministic_fixture",
+        "run": 2
+      },
+      {
+        "capability_heads": [],
+        "deletion_of_model_body_restores_blocker": null,
+        "model_generated_body_count": null,
+        "provenance_kind": "deterministic_fixture",
+        "run": 3
+      }
+    ],
+    "p-wrong-endpoint-candidate": [
+      {
+        "capability_heads": [],
+        "deletion_of_model_body_restores_blocker": null,
+        "model_generated_body_count": null,
+        "provenance_kind": "deterministic_fixture",
+        "run": 1
+      },
+      {
+        "capability_heads": [],
+        "deletion_of_model_body_restores_blocker": null,
+        "model_generated_body_count": null,
+        "provenance_kind": "deterministic_fixture",
+        "run": 2
+      },
+      {
+        "capability_heads": [],
+        "deletion_of_model_body_restores_blocker": null,
+        "model_generated_body_count": null,
+        "provenance_kind": "deterministic_fixture",
+        "run": 3
+      }
+    ]
+  },
+  "stage": "P-C",
+  "status": "VERIFIED",
+  "summary": {
+    "artifact_hash_diversity": true,
+    "case_count": 24,
+    "gap_sequences_stable": true,
+    "independent_output_roots": 3,
+    "independent_run_ids": 1,
+    "independent_started_at": 3,
+    "outcomes_stable": true,
+    "per_run_lean_replay_security_stable": true,
+    "publication_reuse_stable": true,
+    "repair_trajectories_stable": true,
+    "run_count": 3,
+    "source_provenance_stable": true
+  }
+}

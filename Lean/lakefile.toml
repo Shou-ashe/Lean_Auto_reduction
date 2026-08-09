@@ -1,0 +1,24 @@
+name = "auto-reduction-agent"
+version = "0.1.0"
+keywords = ["lean4", "complexity-theory", "reductions", "agents"]
+defaultTargets = ["ComplexityReduction", "Benchmark"]
+
+[leanOptions]
+pp.unicode.fun = true
+autoImplicit = false
+relaxedAutoImplicit = false
+
+[[require]]
+name = "mathlib"
+git = "https://github.com/leanprover-community/mathlib4"
+rev = "8850ed93863d6ce27210a673f9ed235a4e8a2994"
+
+[[lean_lib]]
+name = "ComplexityReduction"
+srcDir = "Reference"
+globs = ["ComplexityReduction.+"]
+
+[[lean_lib]]
+name = "Benchmark"
+srcDir = "Reference"
+globs = ["Benchmark.+"]

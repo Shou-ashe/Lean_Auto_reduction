@@ -1,0 +1,20 @@
+{
+  "schema_version": "hardness_quals_manual_validation_v1",
+  "case_id": "uiuc2020-two-disjoint-bounded-paths-formalization",
+  "validation_kind": "independent_manual_validation",
+  "review_status": "accepted",
+  "reviewed_on": "2026-08-03",
+  "public_module_sha256": "8a1d5d5a20f2def4f22915205438f3fcf4257d97a78bf8fdd9095deb867ffaba",
+  "checks": {
+    "natural_language_semantics_reviewed": true,
+    "exact_presented_problem_reviewed": true,
+    "lawful_structured_encoding_reviewed": true,
+    "predicate_equivalence_reviewed": true,
+    "benchmark_feasibility_reviewed": true
+  },
+  "oracle_visible_to_model": false,
+  "gold_route_visible_to_model": false,
+  "production_aggregate_imported": false,
+  "catalog_entry_created_by_validation": false,
+  "note": "Independent validation covers directed edge-index paths, aligned positive binary costs, individual bounds, and edge disjointness at the exact lawful endpoint. It grants no hardness, membership, or completeness capability and is never included in a model prompt."
+}

@@ -1,0 +1,38 @@
+schema_version: opencode_decision_problem_sample_file_v1
+id: set_covering_duplicate_checker_interface
+name: set_covering_duplicate_checker_interface_problem
+input_language: set_system_interface_adapter_duplicate_checker
+problem_family: set_system
+problem_statement: 'Given a finite set system and a budget k, decide whether two independent copies of the same set-cover checker both accept: each checker asks for at most k listed sets whose union covers the universe.'
+certificate_contract: lean_proposition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction.Karp21
+
+  noncomputable section
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    { Instance := ComplexityReduction.Combinatorics.setCoveringEncodedType
+      isYes := fun I =>
+        ComplexityReduction.Combinatorics.SetCovering I ∧
+          ComplexityReduction.Combinatorics.SetCovering I }
+
+  abbrev referenceProblem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.Combinatorics.setCoveringDecisionProblem
+lean_target_type: |
+  ∃ e : ComplexityReduction.ProblemEquivM
+      ComplexityReduction.CostedPolyTimeModel problem referenceProblem,
+    ∃ h : ComplexityReduction.PolyReducibleM
+        ComplexityReduction.CostedPolyTimeModel problem referenceProblem,
+      h = ComplexityReduction.ProblemEquivM.toReducible e ∧
+        ComplexityReduction.InNPEnc
+          ComplexityReduction.CostedPolyTimeModel referenceProblem ∧
+          ComplexityReduction.InNPEnc
+            ComplexityReduction.CostedPolyTimeModel problem
+difficulty: interface_adapter
+difficulty_tags:
+- set_system
+- interface_adapter
+- problem_equiv
+- semantic_equivalence
+- costed_adapter

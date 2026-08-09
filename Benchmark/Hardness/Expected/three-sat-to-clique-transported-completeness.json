@@ -1,0 +1,7 @@
+{
+  "schema_version": "hardness_benchmark_expected_v1",
+  "case_id": "three-sat-to-clique-transported-completeness",
+  "authoritative": false,
+  "final_status": "VERIFIED",
+  "coverage": ["prove_np_complete", "forward_transport", "target_membership", "one_atom_route"]
+}

@@ -1,0 +1,22 @@
+schema_version: opencode_decision_problem_sample_file_v1
+id: directed_hamiltonian_circuit
+name: directed_hamiltonian_circuit_problem
+input_language: directed_hamiltonian_circuit
+problem_family: directed_graph
+problem_statement: Given a directed graph, decide whether it has a directed Hamiltonian circuit visiting every vertex exactly once.
+certificate_contract: lean_proposition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction
+
+  noncomputable section
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.Combinatorics.Graph.directedHamiltonianCircuitDecisionProblem
+lean_target_type: |
+  ComplexityReduction.InNPEnc ComplexityReduction.CostedPolyTimeModel problem
+difficulty: hard
+difficulty_tags:
+- directed_graph
+- cycle_witness
+- permutation_check

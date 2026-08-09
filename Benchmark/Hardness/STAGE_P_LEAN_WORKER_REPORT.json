@@ -1,0 +1,203 @@
+{
+  "contract": {
+    "benchmark_id": "stage-p-isolated-readonly-contract-probe-20x",
+    "cache_key_fields": [
+      "toolchain",
+      "lake_manifest",
+      "base_registry_fingerprint",
+      "complete_source_hash",
+      "dependency_hash",
+      "namespace",
+      "session_id",
+      "editable_allowlist",
+      "validation_profile"
+    ],
+    "command_profile": {
+      "final_authority": [
+        "lake",
+        "env",
+        "lean",
+        "<final-combined.lean>"
+      ],
+      "forced_cold": [
+        "lake",
+        "env",
+        "lean",
+        "<fresh-isolated-candidate.lean>"
+      ],
+      "persistent": [
+        "stage-p-lean-worker",
+        "validate",
+        "<complete-content-key>"
+      ],
+      "release_authority": [
+        "lake",
+        "env",
+        "lean",
+        "<independent-release-replay.lean>"
+      ]
+    },
+    "gates": {
+      "cache_invalidation_rate_min": 1.0,
+      "namespace_isolation_rate_min": 1.0,
+      "stale_result_rejection_rate_min": 1.0,
+      "wall_time_reduction_min": 0.5,
+      "warm_p50_over_cold_p50_max": 0.5
+    },
+    "isolation_checks": [
+      "session_ownership",
+      "namespace_isolation",
+      "dependency_invalidation",
+      "candidate_invalidation",
+      "registry_invalidation",
+      "toolchain_invalidation",
+      "stale_olean_rejection",
+      "deletion_after_cache",
+      "worker_restart",
+      "worker_crash_cold_fallback"
+    ],
+    "maximum_workers": 4,
+    "repeat_count": 20,
+    "schema_version": "hardness_stage_p_lean_worker_microbenchmark_v1"
+  },
+  "environment": {
+    "cold_parallelism": 2,
+    "cpu_count": 16,
+    "memory_total_bytes": 12540608512
+  },
+  "finished_at": "2026-08-05T07:19:52.168684+00:00",
+  "gates": {
+    "frozen_20_repeat_4_worker_contract": true,
+    "isolation_and_stale_rejection_100_percent": true,
+    "no_performance_fallback": true,
+    "no_worker_crash_during_performance": true,
+    "wall_time_reduction": true,
+    "warm_p50_over_cold_p50": true,
+    "worker_count_within_limit": true
+  },
+  "isolation": {
+    "complete_key_changes_on_all_content_dimensions": true,
+    "content_dimension_key_checks": {
+      "dependency": true,
+      "registry": true,
+      "source": true,
+      "toolchain": true
+    },
+    "deletion_after_cache_rejected": true,
+    "dependency_mismatch_rejected": true,
+    "exact_cache_hit": true,
+    "namespace_isolation_rejected": true,
+    "pass_rate": 1.0,
+    "restart_invalidated_cache": true,
+    "session_ownership_rejected": true,
+    "stale_source_rejected": true
+  },
+  "output_root": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/stage-p-lean-worker-full-20260805-run-01",
+  "performance": {
+    "cold_p50_seconds": 120.6705,
+    "cold_parallelism": 2,
+    "forced_cold_seconds": [
+      120.659,
+      120.682,
+      114.722,
+      116.748,
+      139.457,
+      134.966,
+      134.054,
+      131.614,
+      98.734,
+      98.734,
+      101.433,
+      101.434,
+      99.624,
+      101.728,
+      123.955,
+      124.443,
+      132.02,
+      124.886,
+      122.768,
+      118.231
+    ],
+    "forced_cold_wall_seconds": 1180.455408,
+    "gates": {
+      "wall_time_reduction": true,
+      "warm_p50_over_cold_p50": true,
+      "worker_count_within_limit": true
+    },
+    "maximum_workers": 4,
+    "persistent_priming_seconds": 210.098501,
+    "persistent_wall_seconds": 4.713457,
+    "persistent_warm_seconds": [
+      0.278477,
+      0.272773,
+      0.233422,
+      0.224945,
+      0.232912,
+      0.237513,
+      0.259045,
+      0.269059,
+      0.232478,
+      0.237168,
+      0.223559,
+      0.223919,
+      0.25228,
+      0.218556,
+      0.218161,
+      0.219968,
+      0.217957,
+      0.220004,
+      0.220567,
+      0.220335
+    ],
+    "pool": {
+      "active_session_count": 1,
+      "cache_entry_count": 0,
+      "cache_hit_count": 0,
+      "cache_miss_count": 21,
+      "cold_fallback_count": 0,
+      "invalidation_count": 0,
+      "maximum_workers": 4,
+      "service_root": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/stage-p-lean-worker-full-20260805-run-01/worker-service",
+      "worker_crash_count": 0,
+      "worker_restart_count": 0,
+      "worker_start_count": 1,
+      "workers_alive": [
+        true,
+        false,
+        false,
+        false
+      ]
+    },
+    "repeat_count": 20,
+    "wall_time_reduction": 0.996007,
+    "warm_p50_over_cold_p50": 0.001895,
+    "warm_p50_seconds": 0.228712
+  },
+  "pool": {
+    "active_session_count": 1,
+    "cache_entry_count": 0,
+    "cache_hit_count": 1,
+    "cache_miss_count": 22,
+    "cold_fallback_count": 0,
+    "invalidation_count": 1,
+    "maximum_workers": 4,
+    "service_root": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/stage-p-lean-worker-full-20260805-run-01/worker-service",
+    "worker_crash_count": 0,
+    "worker_restart_count": 1,
+    "worker_start_count": 1,
+    "workers_alive": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "schema_version": "hardness_stage_p_lean_worker_report_v1",
+  "source": {
+    "dependency_source_sha256": "sha256:005a01a575662cc90a0b5a3375fb9fb19ac00be568f5357ef302c5bf94f2fb0b",
+    "path": "/mnt/d/学习资料/ai/Auto_Reduction_Agent/.reduction-agent/stage-p-lean-worker-full-20260805-run-01/candidate/Validation.lean",
+    "source_sha256": "sha256:c0cb814585f50e912089cfb9c0a9af766d381618fd8c56bd12a52b32ccc75e97"
+  },
+  "started_at": "2026-08-05T06:56:35.591133+00:00",
+  "status": "VERIFIED"
+}

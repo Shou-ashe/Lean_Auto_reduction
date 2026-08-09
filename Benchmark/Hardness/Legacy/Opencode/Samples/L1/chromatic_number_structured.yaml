@@ -1,0 +1,26 @@
+schema_version: opencode_decision_problem_sample_file_v1
+id: chromatic_number_structured
+name: chromatic_number_structured_problem
+input_language: chromatic_number_structured_encoding
+problem_family: graph
+problem_statement: Given a finitely encoded graph G and a color bound k, decide whether every vertex of G can be assigned one of k colors so that no listed edge has equal colors at its endpoints.
+certificate_contract: lean_proposition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction.Karp21.PackagedCatalog
+
+  noncomputable section
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.Combinatorics.Graph.chromaticNumberStructuredDecisionProblem
+lean_target_type: |
+  ComplexityReduction.SAT.TMInNPWithCheckedSuffixDecoder problem ∧
+    ComplexityReduction.TMInNP problem
+difficulty: challenge
+difficulty_tags:
+- graph
+- structured_encoding
+- checked_suffix_decoder
+- tm_np_membership
+- function_witness
+- coloring

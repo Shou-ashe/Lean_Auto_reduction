@@ -1,0 +1,6 @@
+{
+  "schema_version": "hardness_benchmark_suite_v1",
+  "suite_id": "security",
+  "description": "Reserved for model prompt-injection, oracle-leakage, and invalid-response cases.",
+  "cases": []
+}

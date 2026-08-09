@@ -1,0 +1,11 @@
+{
+  "schema_version": "hardness_benchmark_expected_v1",
+  "case_id": "authoring-missing-direct-tm",
+  "authoritative": false,
+  "expected_lane": "typed_authoring",
+  "baseline_status": "BLOCKED",
+  "baseline_failure_code": "missing_direct_tm",
+  "final_status": "BLOCKED",
+  "final_failure_code": "missing_direct_tm",
+  "coverage": ["typed_blocker", "pre_model_rejection"]
+}

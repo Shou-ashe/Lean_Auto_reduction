@@ -1,0 +1,28 @@
+schema_version: opencode_decision_problem_sample_file_v1
+id: nae3_schaefer_hard_certificate
+name: nae3_schaefer_hard_certificate_problem
+input_language: schaefer_nae3_relation_language
+problem_family: boolean_csp_schaefer
+problem_statement: Given an instance over the fixed not-all-equal ternary Boolean relation language, decide whether every constraint can be satisfied by a Boolean assignment.
+certificate_contract: lean_proposition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction
+
+  noncomputable section
+
+  abbrev cspLanguage : ComplexityReduction.CSP.BoolLanguage :=
+    ComplexityReduction.CSP.Examples.notAllEqual3Language
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.Schaefer.satSDecisionProblem cspLanguage
+lean_target_type: |
+  ∃ hardCertificate :
+    ComplexityReduction.Schaefer.Hardness.HardRelationCertificate cspLanguage,
+    ComplexityReduction.NPCompleteEnc ComplexityReduction.CostedPolyTimeModel problem
+difficulty: schaefer_hard_side
+difficulty_tags:
+- csp
+- schaefer
+- finite_boolean_language
+- hard_side_certificate

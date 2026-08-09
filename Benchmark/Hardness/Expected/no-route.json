@@ -1,0 +1,7 @@
+{
+  "schema_version": "hardness_benchmark_expected_v1",
+  "case_id": "no-route",
+  "authoritative": false,
+  "final_status": "BLOCKED",
+  "final_failure_code": "no_registry_path"
+}

@@ -1,0 +1,7 @@
+{
+  "schema_version": "hardness_benchmark_expected_v1",
+  "case_id": "three-sat-to-csp-flat",
+  "authoritative": false,
+  "final_status": "VERIFIED",
+  "coverage": ["ir_feasibility", "clause_csp", "flat_final_facade", "matched_endpoint"]
+}

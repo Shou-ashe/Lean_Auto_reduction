@@ -1,0 +1,26 @@
+schema_version: opencode_decision_problem_sample_file_v1
+id: clique_structured
+name: clique_structured_problem
+input_language: clique_structured_encoding
+problem_family: graph
+problem_statement: Given a finitely encoded undirected graph G and an integer k, decide whether G contains a clique with exactly k distinct vertices, using the graph-and-bound fields as the instance encoding rather than an opaque raw object.
+certificate_contract: lean_proposition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction.Karp21.PackagedCatalog
+
+  noncomputable section
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.Combinatorics.Graph.cliqueStructuredDecisionProblem
+lean_target_type: |
+  ComplexityReduction.SAT.TMInNPWithCheckedSuffixDecoder problem ∧
+    ComplexityReduction.TMInNP problem
+difficulty: challenge
+difficulty_tags:
+- graph
+- structured_encoding
+- checked_suffix_decoder
+- tm_np_membership
+- subset_witness
+- exact_binding

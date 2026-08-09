@@ -1,0 +1,22 @@
+schema_version: opencode_decision_problem_sample_file_v1
+id: steiner_tree
+name: steiner_tree_problem
+input_language: steiner_tree
+problem_family: weighted_graph
+problem_statement: Given a weighted graph, a set of terminal vertices, and a budget B, decide whether there is a connected subgraph spanning all terminals with total weight at most B.
+certificate_contract: lean_proposition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction
+
+  noncomputable section
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.Combinatorics.Graph.steinerTreeDecisionProblem
+lean_target_type: |
+  ComplexityReduction.InNPEnc ComplexityReduction.CostedPolyTimeModel problem
+difficulty: hard
+difficulty_tags:
+- weighted_graph
+- connectivity_certificate
+- budget_bound

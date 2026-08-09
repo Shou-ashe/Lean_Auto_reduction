@@ -1,0 +1,22 @@
+schema_version: opencode_decision_problem_sample_file_v1
+id: partition
+name: partition_problem
+input_language: partition
+problem_family: numeric
+problem_statement: Given a finite multiset of natural numbers, decide whether it can be split into two submultisets with equal sum.
+certificate_contract: lean_proposition
+lean_target_name: targetClaim
+lean_preamble: |
+  import ComplexityReduction
+
+  noncomputable section
+
+  abbrev problem : ComplexityReduction.EncodedDecisionProblem :=
+    ComplexityReduction.Combinatorics.partitionDecisionProblem
+lean_target_type: |
+  ComplexityReduction.InNPEnc ComplexityReduction.CostedPolyTimeModel problem
+difficulty: medium
+difficulty_tags:
+- numeric
+- subset_witness
+- equality_bound

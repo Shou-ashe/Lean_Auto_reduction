@@ -1,0 +1,15 @@
+{
+  "schema_version": "hardness_benchmark_expected_v1",
+  "case_id": "lawful-presentation-template-authoring",
+  "authoritative": false,
+  "baseline_status": "BLOCKED",
+  "baseline_failure_code": "missing_lawful_presentation",
+  "final_status": "VERIFIED",
+  "coverage": [
+    "lawful_presentation",
+    "structural_representation_certificate",
+    "derived_certified_reduction",
+    "canonical_bundle_validation",
+    "deterministic_replay"
+  ]
+}

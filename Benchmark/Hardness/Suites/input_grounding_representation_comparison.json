@@ -1,0 +1,1519 @@
+{
+  "schema_version": "hardness_benchmark_suite_v1",
+  "suite_id": "input-grounding-representation-comparison",
+  "description": "Stage F matched comparison of the 18 fixed-target positive inputs under flat API and reusable library-component catalog views, with no negative cases or gold route metadata.",
+  "cases": [
+    {
+      "id": "input-graph-direct-flat-api",
+      "execution_layer": "core_reuse",
+      "verification_profile": "core",
+      "evaluation_lane": "representation_comparison",
+      "module": "Benchmark.Hardness.Inputs.InputGrounding.Graph",
+      "source": "Benchmark.Hardness.Inputs.InputGrounding.Graph.direct",
+      "input_declaration": "Benchmark.Hardness.Inputs.InputGrounding.Graph.direct",
+      "input_kind": "presented_problem",
+      "target": "Benchmark.Hardness.Inputs.InputGrounding.Graph.target",
+      "objective": "reduce_to",
+      "objective_direction": "source_to_target",
+      "target_policy": "fixed",
+      "planner": "deterministic",
+      "comparison_group_id": "input-graph-direct",
+      "matched_pair_id": "input-graph-direct",
+      "enabled": true,
+      "min_agent_phase": 1,
+      "authoring_policy": {
+        "enabled": false,
+        "mode": "disabled"
+      },
+      "expected": {
+        "final_status": "VERIFIED"
+      },
+      "coverage": {
+        "input_form": "direct",
+        "logical_source": "graph",
+        "study_family": "graph"
+      },
+      "resources": {
+        "lean_timeout_seconds": 300,
+        "max_model_calls": 12
+      },
+      "tags": [
+        "input-grounding",
+        "representation-comparison",
+        "positive",
+        "direct"
+      ],
+      "catalog_mode": "flat_api"
+    },
+    {
+      "id": "input-graph-direct-component-catalog",
+      "execution_layer": "core_reuse",
+      "verification_profile": "core",
+      "evaluation_lane": "representation_comparison",
+      "module": "Benchmark.Hardness.Inputs.InputGrounding.Graph",
+      "source": "Benchmark.Hardness.Inputs.InputGrounding.Graph.direct",
+      "input_declaration": "Benchmark.Hardness.Inputs.InputGrounding.Graph.direct",
+      "input_kind": "presented_problem",
+      "target": "Benchmark.Hardness.Inputs.InputGrounding.Graph.target",
+      "objective": "reduce_to",
+      "objective_direction": "source_to_target",
+      "target_policy": "fixed",
+      "planner": "deterministic",
+      "comparison_group_id": "input-graph-direct",
+      "matched_pair_id": "input-graph-direct",
+      "enabled": true,
+      "min_agent_phase": 1,
+      "authoring_policy": {
+        "enabled": false,
+        "mode": "disabled"
+      },
+      "expected": {
+        "final_status": "VERIFIED"
+      },
+      "coverage": {
+        "input_form": "direct",
+        "logical_source": "graph",
+        "study_family": "graph"
+      },
+      "resources": {
+        "lean_timeout_seconds": 300,
+        "max_model_calls": 12
+      },
+      "tags": [
+        "input-grounding",
+        "representation-comparison",
+        "positive",
+        "direct"
+      ],
+      "catalog_mode": "component_catalog"
+    },
+    {
+      "id": "input-graph-alias-flat-api",
+      "execution_layer": "core_reuse",
+      "verification_profile": "core",
+      "evaluation_lane": "representation_comparison",
+      "module": "Benchmark.Hardness.Inputs.InputGrounding.Graph",
+      "source": "Benchmark.Hardness.Inputs.InputGrounding.Graph.problemAlias",
+      "input_declaration": "Benchmark.Hardness.Inputs.InputGrounding.Graph.problemAlias",
+      "input_kind": "presented_problem",
+      "target": "Benchmark.Hardness.Inputs.InputGrounding.Graph.target",
+      "objective": "reduce_to",
+      "objective_direction": "source_to_target",
+      "target_policy": "fixed",
+      "planner": "deterministic",
+      "comparison_group_id": "input-graph-alias",
+      "matched_pair_id": "input-graph-alias",
+      "enabled": true,
+      "min_agent_phase": 1,
+      "authoring_policy": {
+        "enabled": false,
+        "mode": "disabled"
+      },
+      "expected": {
+        "final_status": "VERIFIED"
+      },
+      "coverage": {
+        "input_form": "abbrev",
+        "logical_source": "graph",
+        "study_family": "graph"
+      },
+      "resources": {
+        "lean_timeout_seconds": 300,
+        "max_model_calls": 12
+      },
+      "tags": [
+        "input-grounding",
+        "representation-comparison",
+        "positive",
+        "abbrev"
+      ],
+      "catalog_mode": "flat_api"
+    },
+    {
+      "id": "input-graph-alias-component-catalog",
+      "execution_layer": "core_reuse",
+      "verification_profile": "core",
+      "evaluation_lane": "representation_comparison",
+      "module": "Benchmark.Hardness.Inputs.InputGrounding.Graph",
+      "source": "Benchmark.Hardness.Inputs.InputGrounding.Graph.problemAlias",
+      "input_declaration": "Benchmark.Hardness.Inputs.InputGrounding.Graph.problemAlias",
+      "input_kind": "presented_problem",
+      "target": "Benchmark.Hardness.Inputs.InputGrounding.Graph.target",
+      "objective": "reduce_to",
+      "objective_direction": "source_to_target",
+      "target_policy": "fixed",
+      "planner": "deterministic",
+      "comparison_group_id": "input-graph-alias",
+      "matched_pair_id": "input-graph-alias",
+      "enabled": true,
+      "min_agent_phase": 1,
+      "authoring_policy": {
+        "enabled": false,
+        "mode": "disabled"
+      },
+      "expected": {
+        "final_status": "VERIFIED"
+      },
+      "coverage": {
+        "input_form": "abbrev",
+        "logical_source": "graph",
+        "study_family": "graph"
+      },
+      "resources": {
+        "lean_timeout_seconds": 300,
+        "max_model_calls": 12
+      },
+      "tags": [
+        "input-grounding",
+        "representation-comparison",
+        "positive",
+        "abbrev"
+      ],
+      "catalog_mode": "component_catalog"
+    },
+    {
+      "id": "input-graph-wrapped-flat-api",
+      "execution_layer": "core_reuse",
+      "verification_profile": "core",
+      "evaluation_lane": "representation_comparison",
+      "module": "Benchmark.Hardness.Inputs.InputGrounding.Graph",
+      "source": "Benchmark.Hardness.Inputs.InputGrounding.Graph.wrapped",
+      "input_declaration": "Benchmark.Hardness.Inputs.InputGrounding.Graph.wrapped",
+      "input_kind": "presented_problem",
+      "target": "Benchmark.Hardness.Inputs.InputGrounding.Graph.target",
+      "objective": "reduce_to",
+      "objective_direction": "source_to_target",
+      "target_policy": "fixed",
+      "planner": "deterministic",
+      "comparison_group_id": "input-graph-wrapped",
+      "matched_pair_id": "input-graph-wrapped",
+      "enabled": true,
+      "min_agent_phase": 1,
+      "authoring_policy": {
+        "enabled": false,
+        "mode": "disabled"
+      },
+      "expected": {
+        "final_status": "VERIFIED"
+      },
+      "coverage": {
+        "input_form": "reducible_def",
+        "logical_source": "graph",
+        "study_family": "graph"
+      },
+      "resources": {
+        "lean_timeout_seconds": 300,
+        "max_model_calls": 12
+      },
+      "tags": [
+        "input-grounding",
+        "representation-comparison",
+        "positive",
+        "reducible_def"
+      ],
+      "catalog_mode": "flat_api"
+    },
+    {
+      "id": "input-graph-wrapped-component-catalog",
+      "execution_layer": "core_reuse",
+      "verification_profile": "core",
+      "evaluation_lane": "representation_comparison",
+      "module": "Benchmark.Hardness.Inputs.InputGrounding.Graph",
+      "source": "Benchmark.Hardness.Inputs.InputGrounding.Graph.wrapped",
+      "input_declaration": "Benchmark.Hardness.Inputs.InputGrounding.Graph.wrapped",
+      "input_kind": "presented_problem",
+      "target": "Benchmark.Hardness.Inputs.InputGrounding.Graph.target",
+      "objective": "reduce_to",
+      "objective_direction": "source_to_target",
+      "target_policy": "fixed",
+      "planner": "deterministic",
+      "comparison_group_id": "input-graph-wrapped",
+      "matched_pair_id": "input-graph-wrapped",
+      "enabled": true,
+      "min_agent_phase": 1,
+      "authoring_policy": {
+        "enabled": false,
+        "mode": "disabled"
+      },
+      "expected": {
+        "final_status": "VERIFIED"
+      },
+      "coverage": {
+        "input_form": "reducible_def",
+        "logical_source": "graph",
+        "study_family": "graph"
+      },
+      "resources": {
+        "lean_timeout_seconds": 300,
+        "max_model_calls": 12
+      },
+      "tags": [
+        "input-grounding",
+        "representation-comparison",
+        "positive",
+        "reducible_def"
+      ],
+      "catalog_mode": "component_catalog"
+    },
+    {
+      "id": "input-structured-cnf-direct-flat-api",
+      "execution_layer": "core_reuse",
+      "verification_profile": "core",
+      "evaluation_lane": "representation_comparison",
+      "module": "Benchmark.Hardness.Inputs.InputGrounding.Clause",
+      "source": "Benchmark.Hardness.Inputs.InputGrounding.Clause.structuredCNFDirect",
+      "input_declaration": "Benchmark.Hardness.Inputs.InputGrounding.Clause.structuredCNFDirect",
+      "input_kind": "presented_problem",
+      "target": "Benchmark.Hardness.Inputs.InputGrounding.Clause.target",
+      "objective": "reduce_to",
+      "objective_direction": "source_to_target",
+      "target_policy": "fixed",
+      "planner": "deterministic",
+      "comparison_group_id": "input-structured-cnf-direct",
+      "matched_pair_id": "input-structured-cnf-direct",
+      "enabled": true,
+      "min_agent_phase": 1,
+      "authoring_policy": {
+        "enabled": false,
+        "mode": "disabled"
+      },
+      "expected": {
+        "final_status": "VERIFIED"
+      },
+      "coverage": {
+        "input_form": "direct",
+        "logical_source": "structured_cnf",
+        "study_family": "clause_csp"
+      },
+      "resources": {
+        "lean_timeout_seconds": 300,
+        "max_model_calls": 12
+      },
+      "tags": [
+        "input-grounding",
+        "representation-comparison",
+        "positive",
+        "direct"
+      ],
+      "catalog_mode": "flat_api"
+    },
+    {
+      "id": "input-structured-cnf-direct-component-catalog",
+      "execution_layer": "core_reuse",
+      "verification_profile": "core",
+      "evaluation_lane": "representation_comparison",
+      "module": "Benchmark.Hardness.Inputs.InputGrounding.Clause",
+      "source": "Benchmark.Hardness.Inputs.InputGrounding.Clause.structuredCNFDirect",
+      "input_declaration": "Benchmark.Hardness.Inputs.InputGrounding.Clause.structuredCNFDirect",
+      "input_kind": "presented_problem",
+      "target": "Benchmark.Hardness.Inputs.InputGrounding.Clause.target",
+      "objective": "reduce_to",
+      "objective_direction": "source_to_target",
+      "target_policy": "fixed",
+      "planner": "deterministic",
+      "comparison_group_id": "input-structured-cnf-direct",
+      "matched_pair_id": "input-structured-cnf-direct",
+      "enabled": true,
+      "min_agent_phase": 1,
+      "authoring_policy": {
+        "enabled": false,
+        "mode": "disabled"
+      },
+      "expected": {
+        "final_status": "VERIFIED"
+      },
+      "coverage": {
+        "input_form": "direct",
+        "logical_source": "structured_cnf",
+        "study_family": "clause_csp"
+      },
+      "resources": {
+        "lean_timeout_seconds": 300,
+        "max_model_calls": 12
+      },
+      "tags": [
+        "input-grounding",
+        "representation-comparison",
+        "positive",
+        "direct"
+      ],
+      "catalog_mode": "component_catalog"
+    },
+    {
+      "id": "input-structured-cnf-alias-flat-api",
+      "execution_layer": "core_reuse",
+      "verification_profile": "core",
+      "evaluation_lane": "representation_comparison",
+      "module": "Benchmark.Hardness.Inputs.InputGrounding.Clause",
+      "source": "Benchmark.Hardness.Inputs.InputGrounding.Clause.structuredCNFAlias",
+      "input_declaration": "Benchmark.Hardness.Inputs.InputGrounding.Clause.structuredCNFAlias",
+      "input_kind": "presented_problem",
+      "target": "Benchmark.Hardness.Inputs.InputGrounding.Clause.target",
+      "objective": "reduce_to",
+      "objective_direction": "source_to_target",
+      "target_policy": "fixed",
+      "planner": "deterministic",
+      "comparison_group_id": "input-structured-cnf-alias",
+      "matched_pair_id": "input-structured-cnf-alias",
+      "enabled": true,
+      "min_agent_phase": 1,
+      "authoring_policy": {
+        "enabled": false,
+        "mode": "disabled"
+      },
+      "expected": {
+        "final_status": "VERIFIED"
+      },
+      "coverage": {
+        "input_form": "abbrev",
+        "logical_source": "structured_cnf",
+        "study_family": "clause_csp"
+      },
+      "resources": {
+        "lean_timeout_seconds": 300,
+        "max_model_calls": 12
+      },
+      "tags": [
+        "input-grounding",
+        "representation-comparison",
+        "positive",
+        "abbrev"
+      ],
+      "catalog_mode": "flat_api"
+    },
+    {
+      "id": "input-structured-cnf-alias-component-catalog",
+      "execution_layer": "core_reuse",
+      "verification_profile": "core",
+      "evaluation_lane": "representation_comparison",
+      "module": "Benchmark.Hardness.Inputs.InputGrounding.Clause",
+      "source": "Benchmark.Hardness.Inputs.InputGrounding.Clause.structuredCNFAlias",
+      "input_declaration": "Benchmark.Hardness.Inputs.InputGrounding.Clause.structuredCNFAlias",
+      "input_kind": "presented_problem",
+      "target": "Benchmark.Hardness.Inputs.InputGrounding.Clause.target",
+      "objective": "reduce_to",
+      "objective_direction": "source_to_target",
+      "target_policy": "fixed",
+      "planner": "deterministic",
+      "comparison_group_id": "input-structured-cnf-alias",
+      "matched_pair_id": "input-structured-cnf-alias",
+      "enabled": true,
+      "min_agent_phase": 1,
+      "authoring_policy": {
+        "enabled": false,
+        "mode": "disabled"
+      },
+      "expected": {
+        "final_status": "VERIFIED"
+      },
+      "coverage": {
+        "input_form": "abbrev",
+        "logical_source": "structured_cnf",
+        "study_family": "clause_csp"
+      },
+      "resources": {
+        "lean_timeout_seconds": 300,
+        "max_model_calls": 12
+      },
+      "tags": [
+        "input-grounding",
+        "representation-comparison",
+        "positive",
+        "abbrev"
+      ],
+      "catalog_mode": "component_catalog"
+    },
+    {
+      "id": "input-structured-cnf-wrapped-flat-api",
+      "execution_layer": "core_reuse",
+      "verification_profile": "core",
+      "evaluation_lane": "representation_comparison",
+      "module": "Benchmark.Hardness.Inputs.InputGrounding.Clause",
+      "source": "Benchmark.Hardness.Inputs.InputGrounding.Clause.structuredCNFWrapped",
+      "input_declaration": "Benchmark.Hardness.Inputs.InputGrounding.Clause.structuredCNFWrapped",
+      "input_kind": "presented_problem",
+      "target": "Benchmark.Hardness.Inputs.InputGrounding.Clause.target",
+      "objective": "reduce_to",
+      "objective_direction": "source_to_target",
+      "target_policy": "fixed",
+      "planner": "deterministic",
+      "comparison_group_id": "input-structured-cnf-wrapped",
+      "matched_pair_id": "input-structured-cnf-wrapped",
+      "enabled": true,
+      "min_agent_phase": 1,
+      "authoring_policy": {
+        "enabled": false,
+        "mode": "disabled"
+      },
+      "expected": {
+        "final_status": "VERIFIED"
+      },
+      "coverage": {
+        "input_form": "reducible_def",
+        "logical_source": "structured_cnf",
+        "study_family": "clause_csp"
+      },
+      "resources": {
+        "lean_timeout_seconds": 300,
+        "max_model_calls": 12
+      },
+      "tags": [
+        "input-grounding",
+        "representation-comparison",
+        "positive",
+        "reducible_def"
+      ],
+      "catalog_mode": "flat_api"
+    },
+    {
+      "id": "input-structured-cnf-wrapped-component-catalog",
+      "execution_layer": "core_reuse",
+      "verification_profile": "core",
+      "evaluation_lane": "representation_comparison",
+      "module": "Benchmark.Hardness.Inputs.InputGrounding.Clause",
+      "source": "Benchmark.Hardness.Inputs.InputGrounding.Clause.structuredCNFWrapped",
+      "input_declaration": "Benchmark.Hardness.Inputs.InputGrounding.Clause.structuredCNFWrapped",
+      "input_kind": "presented_problem",
+      "target": "Benchmark.Hardness.Inputs.InputGrounding.Clause.target",
+      "objective": "reduce_to",
+      "objective_direction": "source_to_target",
+      "target_policy": "fixed",
+      "planner": "deterministic",
+      "comparison_group_id": "input-structured-cnf-wrapped",
+      "matched_pair_id": "input-structured-cnf-wrapped",
+      "enabled": true,
+      "min_agent_phase": 1,
+      "authoring_policy": {
+        "enabled": false,
+        "mode": "disabled"
+      },
+      "expected": {
+        "final_status": "VERIFIED"
+      },
+      "coverage": {
+        "input_form": "reducible_def",
+        "logical_source": "structured_cnf",
+        "study_family": "clause_csp"
+      },
+      "resources": {
+        "lean_timeout_seconds": 300,
+        "max_model_calls": 12
+      },
+      "tags": [
+        "input-grounding",
+        "representation-comparison",
+        "positive",
+        "reducible_def"
+      ],
+      "catalog_mode": "component_catalog"
+    },
+    {
+      "id": "input-two-cnf-direct-flat-api",
+      "execution_layer": "core_reuse",
+      "verification_profile": "core",
+      "evaluation_lane": "representation_comparison",
+      "module": "Benchmark.Hardness.Inputs.InputGrounding.Clause",
+      "source": "Benchmark.Hardness.Inputs.InputGrounding.Clause.twoCNFDirect",
+      "input_declaration": "Benchmark.Hardness.Inputs.InputGrounding.Clause.twoCNFDirect",
+      "input_kind": "presented_problem",
+      "target": "Benchmark.Hardness.Inputs.InputGrounding.Clause.target",
+      "objective": "reduce_to",
+      "objective_direction": "source_to_target",
+      "target_policy": "fixed",
+      "planner": "deterministic",
+      "comparison_group_id": "input-two-cnf-direct",
+      "matched_pair_id": "input-two-cnf-direct",
+      "enabled": true,
+      "min_agent_phase": 1,
+      "authoring_policy": {
+        "enabled": false,
+        "mode": "disabled"
+      },
+      "expected": {
+        "final_status": "VERIFIED"
+      },
+      "coverage": {
+        "input_form": "direct",
+        "logical_source": "two_cnf",
+        "study_family": "clause_csp"
+      },
+      "resources": {
+        "lean_timeout_seconds": 300,
+        "max_model_calls": 12
+      },
+      "tags": [
+        "input-grounding",
+        "representation-comparison",
+        "positive",
+        "direct"
+      ],
+      "catalog_mode": "flat_api"
+    },
+    {
+      "id": "input-two-cnf-direct-component-catalog",
+      "execution_layer": "core_reuse",
+      "verification_profile": "core",
+      "evaluation_lane": "representation_comparison",
+      "module": "Benchmark.Hardness.Inputs.InputGrounding.Clause",
+      "source": "Benchmark.Hardness.Inputs.InputGrounding.Clause.twoCNFDirect",
+      "input_declaration": "Benchmark.Hardness.Inputs.InputGrounding.Clause.twoCNFDirect",
+      "input_kind": "presented_problem",
+      "target": "Benchmark.Hardness.Inputs.InputGrounding.Clause.target",
+      "objective": "reduce_to",
+      "objective_direction": "source_to_target",
+      "target_policy": "fixed",
+      "planner": "deterministic",
+      "comparison_group_id": "input-two-cnf-direct",
+      "matched_pair_id": "input-two-cnf-direct",
+      "enabled": true,
+      "min_agent_phase": 1,
+      "authoring_policy": {
+        "enabled": false,
+        "mode": "disabled"
+      },
+      "expected": {
+        "final_status": "VERIFIED"
+      },
+      "coverage": {
+        "input_form": "direct",
+        "logical_source": "two_cnf",
+        "study_family": "clause_csp"
+      },
+      "resources": {
+        "lean_timeout_seconds": 300,
+        "max_model_calls": 12
+      },
+      "tags": [
+        "input-grounding",
+        "representation-comparison",
+        "positive",
+        "direct"
+      ],
+      "catalog_mode": "component_catalog"
+    },
+    {
+      "id": "input-two-cnf-alias-flat-api",
+      "execution_layer": "core_reuse",
+      "verification_profile": "core",
+      "evaluation_lane": "representation_comparison",
+      "module": "Benchmark.Hardness.Inputs.InputGrounding.Clause",
+      "source": "Benchmark.Hardness.Inputs.InputGrounding.Clause.twoCNFAlias",
+      "input_declaration": "Benchmark.Hardness.Inputs.InputGrounding.Clause.twoCNFAlias",
+      "input_kind": "presented_problem",
+      "target": "Benchmark.Hardness.Inputs.InputGrounding.Clause.target",
+      "objective": "reduce_to",
+      "objective_direction": "source_to_target",
+      "target_policy": "fixed",
+      "planner": "deterministic",
+      "comparison_group_id": "input-two-cnf-alias",
+      "matched_pair_id": "input-two-cnf-alias",
+      "enabled": true,
+      "min_agent_phase": 1,
+      "authoring_policy": {
+        "enabled": false,
+        "mode": "disabled"
+      },
+      "expected": {
+        "final_status": "VERIFIED"
+      },
+      "coverage": {
+        "input_form": "abbrev",
+        "logical_source": "two_cnf",
+        "study_family": "clause_csp"
+      },
+      "resources": {
+        "lean_timeout_seconds": 300,
+        "max_model_calls": 12
+      },
+      "tags": [
+        "input-grounding",
+        "representation-comparison",
+        "positive",
+        "abbrev"
+      ],
+      "catalog_mode": "flat_api"
+    },
+    {
+      "id": "input-two-cnf-alias-component-catalog",
+      "execution_layer": "core_reuse",
+      "verification_profile": "core",
+      "evaluation_lane": "representation_comparison",
+      "module": "Benchmark.Hardness.Inputs.InputGrounding.Clause",
+      "source": "Benchmark.Hardness.Inputs.InputGrounding.Clause.twoCNFAlias",
+      "input_declaration": "Benchmark.Hardness.Inputs.InputGrounding.Clause.twoCNFAlias",
+      "input_kind": "presented_problem",
+      "target": "Benchmark.Hardness.Inputs.InputGrounding.Clause.target",
+      "objective": "reduce_to",
+      "objective_direction": "source_to_target",
+      "target_policy": "fixed",
+      "planner": "deterministic",
+      "comparison_group_id": "input-two-cnf-alias",
+      "matched_pair_id": "input-two-cnf-alias",
+      "enabled": true,
+      "min_agent_phase": 1,
+      "authoring_policy": {
+        "enabled": false,
+        "mode": "disabled"
+      },
+      "expected": {
+        "final_status": "VERIFIED"
+      },
+      "coverage": {
+        "input_form": "abbrev",
+        "logical_source": "two_cnf",
+        "study_family": "clause_csp"
+      },
+      "resources": {
+        "lean_timeout_seconds": 300,
+        "max_model_calls": 12
+      },
+      "tags": [
+        "input-grounding",
+        "representation-comparison",
+        "positive",
+        "abbrev"
+      ],
+      "catalog_mode": "component_catalog"
+    },
+    {
+      "id": "input-two-cnf-wrapped-flat-api",
+      "execution_layer": "core_reuse",
+      "verification_profile": "core",
+      "evaluation_lane": "representation_comparison",
+      "module": "Benchmark.Hardness.Inputs.InputGrounding.Clause",
+      "source": "Benchmark.Hardness.Inputs.InputGrounding.Clause.twoCNFWrapped",
+      "input_declaration": "Benchmark.Hardness.Inputs.InputGrounding.Clause.twoCNFWrapped",
+      "input_kind": "presented_problem",
+      "target": "Benchmark.Hardness.Inputs.InputGrounding.Clause.target",
+      "objective": "reduce_to",
+      "objective_direction": "source_to_target",
+      "target_policy": "fixed",
+      "planner": "deterministic",
+      "comparison_group_id": "input-two-cnf-wrapped",
+      "matched_pair_id": "input-two-cnf-wrapped",
+      "enabled": true,
+      "min_agent_phase": 1,
+      "authoring_policy": {
+        "enabled": false,
+        "mode": "disabled"
+      },
+      "expected": {
+        "final_status": "VERIFIED"
+      },
+      "coverage": {
+        "input_form": "reducible_def",
+        "logical_source": "two_cnf",
+        "study_family": "clause_csp"
+      },
+      "resources": {
+        "lean_timeout_seconds": 300,
+        "max_model_calls": 12
+      },
+      "tags": [
+        "input-grounding",
+        "representation-comparison",
+        "positive",
+        "reducible_def"
+      ],
+      "catalog_mode": "flat_api"
+    },
+    {
+      "id": "input-two-cnf-wrapped-component-catalog",
+      "execution_layer": "core_reuse",
+      "verification_profile": "core",
+      "evaluation_lane": "representation_comparison",
+      "module": "Benchmark.Hardness.Inputs.InputGrounding.Clause",
+      "source": "Benchmark.Hardness.Inputs.InputGrounding.Clause.twoCNFWrapped",
+      "input_declaration": "Benchmark.Hardness.Inputs.InputGrounding.Clause.twoCNFWrapped",
+      "input_kind": "presented_problem",
+      "target": "Benchmark.Hardness.Inputs.InputGrounding.Clause.target",
+      "objective": "reduce_to",
+      "objective_direction": "source_to_target",
+      "target_policy": "fixed",
+      "planner": "deterministic",
+      "comparison_group_id": "input-two-cnf-wrapped",
+      "matched_pair_id": "input-two-cnf-wrapped",
+      "enabled": true,
+      "min_agent_phase": 1,
+      "authoring_policy": {
+        "enabled": false,
+        "mode": "disabled"
+      },
+      "expected": {
+        "final_status": "VERIFIED"
+      },
+      "coverage": {
+        "input_form": "reducible_def",
+        "logical_source": "two_cnf",
+        "study_family": "clause_csp"
+      },
+      "resources": {
+        "lean_timeout_seconds": 300,
+        "max_model_calls": 12
+      },
+      "tags": [
+        "input-grounding",
+        "representation-comparison",
+        "positive",
+        "reducible_def"
+      ],
+      "catalog_mode": "component_catalog"
+    },
+    {
+      "id": "input-three-sat-direct-flat-api",
+      "execution_layer": "core_reuse",
+      "verification_profile": "core",
+      "evaluation_lane": "representation_comparison",
+      "module": "Benchmark.Hardness.Inputs.InputGrounding.Clause",
+      "source": "Benchmark.Hardness.Inputs.InputGrounding.Clause.threeSATDirect",
+      "input_declaration": "Benchmark.Hardness.Inputs.InputGrounding.Clause.threeSATDirect",
+      "input_kind": "presented_problem",
+      "target": "Benchmark.Hardness.Inputs.InputGrounding.Clause.target",
+      "objective": "reduce_to",
+      "objective_direction": "source_to_target",
+      "target_policy": "fixed",
+      "planner": "deterministic",
+      "comparison_group_id": "input-three-sat-direct",
+      "matched_pair_id": "input-three-sat-direct",
+      "enabled": true,
+      "min_agent_phase": 1,
+      "authoring_policy": {
+        "enabled": false,
+        "mode": "disabled"
+      },
+      "expected": {
+        "final_status": "VERIFIED"
+      },
+      "coverage": {
+        "input_form": "direct",
+        "logical_source": "three_sat",
+        "study_family": "clause_csp"
+      },
+      "resources": {
+        "lean_timeout_seconds": 300,
+        "max_model_calls": 12
+      },
+      "tags": [
+        "input-grounding",
+        "representation-comparison",
+        "positive",
+        "direct"
+      ],
+      "catalog_mode": "flat_api"
+    },
+    {
+      "id": "input-three-sat-direct-component-catalog",
+      "execution_layer": "core_reuse",
+      "verification_profile": "core",
+      "evaluation_lane": "representation_comparison",
+      "module": "Benchmark.Hardness.Inputs.InputGrounding.Clause",
+      "source": "Benchmark.Hardness.Inputs.InputGrounding.Clause.threeSATDirect",
+      "input_declaration": "Benchmark.Hardness.Inputs.InputGrounding.Clause.threeSATDirect",
+      "input_kind": "presented_problem",
+      "target": "Benchmark.Hardness.Inputs.InputGrounding.Clause.target",
+      "objective": "reduce_to",
+      "objective_direction": "source_to_target",
+      "target_policy": "fixed",
+      "planner": "deterministic",
+      "comparison_group_id": "input-three-sat-direct",
+      "matched_pair_id": "input-three-sat-direct",
+      "enabled": true,
+      "min_agent_phase": 1,
+      "authoring_policy": {
+        "enabled": false,
+        "mode": "disabled"
+      },
+      "expected": {
+        "final_status": "VERIFIED"
+      },
+      "coverage": {
+        "input_form": "direct",
+        "logical_source": "three_sat",
+        "study_family": "clause_csp"
+      },
+      "resources": {
+        "lean_timeout_seconds": 300,
+        "max_model_calls": 12
+      },
+      "tags": [
+        "input-grounding",
+        "representation-comparison",
+        "positive",
+        "direct"
+      ],
+      "catalog_mode": "component_catalog"
+    },
+    {
+      "id": "input-three-sat-alias-flat-api",
+      "execution_layer": "core_reuse",
+      "verification_profile": "core",
+      "evaluation_lane": "representation_comparison",
+      "module": "Benchmark.Hardness.Inputs.InputGrounding.Clause",
+      "source": "Benchmark.Hardness.Inputs.InputGrounding.Clause.threeSATAlias",
+      "input_declaration": "Benchmark.Hardness.Inputs.InputGrounding.Clause.threeSATAlias",
+      "input_kind": "presented_problem",
+      "target": "Benchmark.Hardness.Inputs.InputGrounding.Clause.target",
+      "objective": "reduce_to",
+      "objective_direction": "source_to_target",
+      "target_policy": "fixed",
+      "planner": "deterministic",
+      "comparison_group_id": "input-three-sat-alias",
+      "matched_pair_id": "input-three-sat-alias",
+      "enabled": true,
+      "min_agent_phase": 1,
+      "authoring_policy": {
+        "enabled": false,
+        "mode": "disabled"
+      },
+      "expected": {
+        "final_status": "VERIFIED"
+      },
+      "coverage": {
+        "input_form": "abbrev",
+        "logical_source": "three_sat",
+        "study_family": "clause_csp"
+      },
+      "resources": {
+        "lean_timeout_seconds": 300,
+        "max_model_calls": 12
+      },
+      "tags": [
+        "input-grounding",
+        "representation-comparison",
+        "positive",
+        "abbrev"
+      ],
+      "catalog_mode": "flat_api"
+    },
+    {
+      "id": "input-three-sat-alias-component-catalog",
+      "execution_layer": "core_reuse",
+      "verification_profile": "core",
+      "evaluation_lane": "representation_comparison",
+      "module": "Benchmark.Hardness.Inputs.InputGrounding.Clause",
+      "source": "Benchmark.Hardness.Inputs.InputGrounding.Clause.threeSATAlias",
+      "input_declaration": "Benchmark.Hardness.Inputs.InputGrounding.Clause.threeSATAlias",
+      "input_kind": "presented_problem",
+      "target": "Benchmark.Hardness.Inputs.InputGrounding.Clause.target",
+      "objective": "reduce_to",
+      "objective_direction": "source_to_target",
+      "target_policy": "fixed",
+      "planner": "deterministic",
+      "comparison_group_id": "input-three-sat-alias",
+      "matched_pair_id": "input-three-sat-alias",
+      "enabled": true,
+      "min_agent_phase": 1,
+      "authoring_policy": {
+        "enabled": false,
+        "mode": "disabled"
+      },
+      "expected": {
+        "final_status": "VERIFIED"
+      },
+      "coverage": {
+        "input_form": "abbrev",
+        "logical_source": "three_sat",
+        "study_family": "clause_csp"
+      },
+      "resources": {
+        "lean_timeout_seconds": 300,
+        "max_model_calls": 12
+      },
+      "tags": [
+        "input-grounding",
+        "representation-comparison",
+        "positive",
+        "abbrev"
+      ],
+      "catalog_mode": "component_catalog"
+    },
+    {
+      "id": "input-three-sat-wrapped-flat-api",
+      "execution_layer": "core_reuse",
+      "verification_profile": "core",
+      "evaluation_lane": "representation_comparison",
+      "module": "Benchmark.Hardness.Inputs.InputGrounding.Clause",
+      "source": "Benchmark.Hardness.Inputs.InputGrounding.Clause.threeSATWrapped",
+      "input_declaration": "Benchmark.Hardness.Inputs.InputGrounding.Clause.threeSATWrapped",
+      "input_kind": "presented_problem",
+      "target": "Benchmark.Hardness.Inputs.InputGrounding.Clause.target",
+      "objective": "reduce_to",
+      "objective_direction": "source_to_target",
+      "target_policy": "fixed",
+      "planner": "deterministic",
+      "comparison_group_id": "input-three-sat-wrapped",
+      "matched_pair_id": "input-three-sat-wrapped",
+      "enabled": true,
+      "min_agent_phase": 1,
+      "authoring_policy": {
+        "enabled": false,
+        "mode": "disabled"
+      },
+      "expected": {
+        "final_status": "VERIFIED"
+      },
+      "coverage": {
+        "input_form": "reducible_def",
+        "logical_source": "three_sat",
+        "study_family": "clause_csp"
+      },
+      "resources": {
+        "lean_timeout_seconds": 300,
+        "max_model_calls": 12
+      },
+      "tags": [
+        "input-grounding",
+        "representation-comparison",
+        "positive",
+        "reducible_def"
+      ],
+      "catalog_mode": "flat_api"
+    },
+    {
+      "id": "input-three-sat-wrapped-component-catalog",
+      "execution_layer": "core_reuse",
+      "verification_profile": "core",
+      "evaluation_lane": "representation_comparison",
+      "module": "Benchmark.Hardness.Inputs.InputGrounding.Clause",
+      "source": "Benchmark.Hardness.Inputs.InputGrounding.Clause.threeSATWrapped",
+      "input_declaration": "Benchmark.Hardness.Inputs.InputGrounding.Clause.threeSATWrapped",
+      "input_kind": "presented_problem",
+      "target": "Benchmark.Hardness.Inputs.InputGrounding.Clause.target",
+      "objective": "reduce_to",
+      "objective_direction": "source_to_target",
+      "target_policy": "fixed",
+      "planner": "deterministic",
+      "comparison_group_id": "input-three-sat-wrapped",
+      "matched_pair_id": "input-three-sat-wrapped",
+      "enabled": true,
+      "min_agent_phase": 1,
+      "authoring_policy": {
+        "enabled": false,
+        "mode": "disabled"
+      },
+      "expected": {
+        "final_status": "VERIFIED"
+      },
+      "coverage": {
+        "input_form": "reducible_def",
+        "logical_source": "three_sat",
+        "study_family": "clause_csp"
+      },
+      "resources": {
+        "lean_timeout_seconds": 300,
+        "max_model_calls": 12
+      },
+      "tags": [
+        "input-grounding",
+        "representation-comparison",
+        "positive",
+        "reducible_def"
+      ],
+      "catalog_mode": "component_catalog"
+    },
+    {
+      "id": "input-exact-cover-direct-flat-api",
+      "execution_layer": "core_reuse",
+      "verification_profile": "core",
+      "evaluation_lane": "representation_comparison",
+      "module": "Benchmark.Hardness.Inputs.InputGrounding.Incidence",
+      "source": "Benchmark.Hardness.Inputs.InputGrounding.Incidence.exactCoverDirect",
+      "input_declaration": "Benchmark.Hardness.Inputs.InputGrounding.Incidence.exactCoverDirect",
+      "input_kind": "presented_problem",
+      "target": "Benchmark.Hardness.Inputs.InputGrounding.Incidence.target",
+      "objective": "reduce_to",
+      "objective_direction": "source_to_target",
+      "target_policy": "fixed",
+      "planner": "deterministic",
+      "comparison_group_id": "input-exact-cover-direct",
+      "matched_pair_id": "input-exact-cover-direct",
+      "enabled": true,
+      "min_agent_phase": 1,
+      "authoring_policy": {
+        "enabled": false,
+        "mode": "disabled"
+      },
+      "expected": {
+        "final_status": "VERIFIED"
+      },
+      "coverage": {
+        "input_form": "direct",
+        "logical_source": "exact_cover",
+        "study_family": "incidence"
+      },
+      "resources": {
+        "lean_timeout_seconds": 300,
+        "max_model_calls": 12
+      },
+      "tags": [
+        "input-grounding",
+        "representation-comparison",
+        "positive",
+        "direct"
+      ],
+      "catalog_mode": "flat_api"
+    },
+    {
+      "id": "input-exact-cover-direct-component-catalog",
+      "execution_layer": "core_reuse",
+      "verification_profile": "core",
+      "evaluation_lane": "representation_comparison",
+      "module": "Benchmark.Hardness.Inputs.InputGrounding.Incidence",
+      "source": "Benchmark.Hardness.Inputs.InputGrounding.Incidence.exactCoverDirect",
+      "input_declaration": "Benchmark.Hardness.Inputs.InputGrounding.Incidence.exactCoverDirect",
+      "input_kind": "presented_problem",
+      "target": "Benchmark.Hardness.Inputs.InputGrounding.Incidence.target",
+      "objective": "reduce_to",
+      "objective_direction": "source_to_target",
+      "target_policy": "fixed",
+      "planner": "deterministic",
+      "comparison_group_id": "input-exact-cover-direct",
+      "matched_pair_id": "input-exact-cover-direct",
+      "enabled": true,
+      "min_agent_phase": 1,
+      "authoring_policy": {
+        "enabled": false,
+        "mode": "disabled"
+      },
+      "expected": {
+        "final_status": "VERIFIED"
+      },
+      "coverage": {
+        "input_form": "direct",
+        "logical_source": "exact_cover",
+        "study_family": "incidence"
+      },
+      "resources": {
+        "lean_timeout_seconds": 300,
+        "max_model_calls": 12
+      },
+      "tags": [
+        "input-grounding",
+        "representation-comparison",
+        "positive",
+        "direct"
+      ],
+      "catalog_mode": "component_catalog"
+    },
+    {
+      "id": "input-exact-cover-alias-flat-api",
+      "execution_layer": "core_reuse",
+      "verification_profile": "core",
+      "evaluation_lane": "representation_comparison",
+      "module": "Benchmark.Hardness.Inputs.InputGrounding.Incidence",
+      "source": "Benchmark.Hardness.Inputs.InputGrounding.Incidence.exactCoverAlias",
+      "input_declaration": "Benchmark.Hardness.Inputs.InputGrounding.Incidence.exactCoverAlias",
+      "input_kind": "presented_problem",
+      "target": "Benchmark.Hardness.Inputs.InputGrounding.Incidence.target",
+      "objective": "reduce_to",
+      "objective_direction": "source_to_target",
+      "target_policy": "fixed",
+      "planner": "deterministic",
+      "comparison_group_id": "input-exact-cover-alias",
+      "matched_pair_id": "input-exact-cover-alias",
+      "enabled": true,
+      "min_agent_phase": 1,
+      "authoring_policy": {
+        "enabled": false,
+        "mode": "disabled"
+      },
+      "expected": {
+        "final_status": "VERIFIED"
+      },
+      "coverage": {
+        "input_form": "abbrev",
+        "logical_source": "exact_cover",
+        "study_family": "incidence"
+      },
+      "resources": {
+        "lean_timeout_seconds": 300,
+        "max_model_calls": 12
+      },
+      "tags": [
+        "input-grounding",
+        "representation-comparison",
+        "positive",
+        "abbrev"
+      ],
+      "catalog_mode": "flat_api"
+    },
+    {
+      "id": "input-exact-cover-alias-component-catalog",
+      "execution_layer": "core_reuse",
+      "verification_profile": "core",
+      "evaluation_lane": "representation_comparison",
+      "module": "Benchmark.Hardness.Inputs.InputGrounding.Incidence",
+      "source": "Benchmark.Hardness.Inputs.InputGrounding.Incidence.exactCoverAlias",
+      "input_declaration": "Benchmark.Hardness.Inputs.InputGrounding.Incidence.exactCoverAlias",
+      "input_kind": "presented_problem",
+      "target": "Benchmark.Hardness.Inputs.InputGrounding.Incidence.target",
+      "objective": "reduce_to",
+      "objective_direction": "source_to_target",
+      "target_policy": "fixed",
+      "planner": "deterministic",
+      "comparison_group_id": "input-exact-cover-alias",
+      "matched_pair_id": "input-exact-cover-alias",
+      "enabled": true,
+      "min_agent_phase": 1,
+      "authoring_policy": {
+        "enabled": false,
+        "mode": "disabled"
+      },
+      "expected": {
+        "final_status": "VERIFIED"
+      },
+      "coverage": {
+        "input_form": "abbrev",
+        "logical_source": "exact_cover",
+        "study_family": "incidence"
+      },
+      "resources": {
+        "lean_timeout_seconds": 300,
+        "max_model_calls": 12
+      },
+      "tags": [
+        "input-grounding",
+        "representation-comparison",
+        "positive",
+        "abbrev"
+      ],
+      "catalog_mode": "component_catalog"
+    },
+    {
+      "id": "input-exact-cover-wrapped-flat-api",
+      "execution_layer": "core_reuse",
+      "verification_profile": "core",
+      "evaluation_lane": "representation_comparison",
+      "module": "Benchmark.Hardness.Inputs.InputGrounding.Incidence",
+      "source": "Benchmark.Hardness.Inputs.InputGrounding.Incidence.exactCoverWrapped",
+      "input_declaration": "Benchmark.Hardness.Inputs.InputGrounding.Incidence.exactCoverWrapped",
+      "input_kind": "presented_problem",
+      "target": "Benchmark.Hardness.Inputs.InputGrounding.Incidence.target",
+      "objective": "reduce_to",
+      "objective_direction": "source_to_target",
+      "target_policy": "fixed",
+      "planner": "deterministic",
+      "comparison_group_id": "input-exact-cover-wrapped",
+      "matched_pair_id": "input-exact-cover-wrapped",
+      "enabled": true,
+      "min_agent_phase": 1,
+      "authoring_policy": {
+        "enabled": false,
+        "mode": "disabled"
+      },
+      "expected": {
+        "final_status": "VERIFIED"
+      },
+      "coverage": {
+        "input_form": "reducible_def",
+        "logical_source": "exact_cover",
+        "study_family": "incidence"
+      },
+      "resources": {
+        "lean_timeout_seconds": 300,
+        "max_model_calls": 12
+      },
+      "tags": [
+        "input-grounding",
+        "representation-comparison",
+        "positive",
+        "reducible_def"
+      ],
+      "catalog_mode": "flat_api"
+    },
+    {
+      "id": "input-exact-cover-wrapped-component-catalog",
+      "execution_layer": "core_reuse",
+      "verification_profile": "core",
+      "evaluation_lane": "representation_comparison",
+      "module": "Benchmark.Hardness.Inputs.InputGrounding.Incidence",
+      "source": "Benchmark.Hardness.Inputs.InputGrounding.Incidence.exactCoverWrapped",
+      "input_declaration": "Benchmark.Hardness.Inputs.InputGrounding.Incidence.exactCoverWrapped",
+      "input_kind": "presented_problem",
+      "target": "Benchmark.Hardness.Inputs.InputGrounding.Incidence.target",
+      "objective": "reduce_to",
+      "objective_direction": "source_to_target",
+      "target_policy": "fixed",
+      "planner": "deterministic",
+      "comparison_group_id": "input-exact-cover-wrapped",
+      "matched_pair_id": "input-exact-cover-wrapped",
+      "enabled": true,
+      "min_agent_phase": 1,
+      "authoring_policy": {
+        "enabled": false,
+        "mode": "disabled"
+      },
+      "expected": {
+        "final_status": "VERIFIED"
+      },
+      "coverage": {
+        "input_form": "reducible_def",
+        "logical_source": "exact_cover",
+        "study_family": "incidence"
+      },
+      "resources": {
+        "lean_timeout_seconds": 300,
+        "max_model_calls": 12
+      },
+      "tags": [
+        "input-grounding",
+        "representation-comparison",
+        "positive",
+        "reducible_def"
+      ],
+      "catalog_mode": "component_catalog"
+    },
+    {
+      "id": "input-modified-exact-cover-direct-flat-api",
+      "execution_layer": "core_reuse",
+      "verification_profile": "core",
+      "evaluation_lane": "representation_comparison",
+      "module": "Benchmark.Hardness.Inputs.InputGrounding.Incidence",
+      "source": "Benchmark.Hardness.Inputs.InputGrounding.Incidence.modifiedExactCoverDirect",
+      "input_declaration": "Benchmark.Hardness.Inputs.InputGrounding.Incidence.modifiedExactCoverDirect",
+      "input_kind": "presented_problem",
+      "target": "Benchmark.Hardness.Inputs.InputGrounding.Incidence.target",
+      "objective": "reduce_to",
+      "objective_direction": "source_to_target",
+      "target_policy": "fixed",
+      "planner": "deterministic",
+      "comparison_group_id": "input-modified-exact-cover-direct",
+      "matched_pair_id": "input-modified-exact-cover-direct",
+      "enabled": true,
+      "min_agent_phase": 1,
+      "authoring_policy": {
+        "enabled": false,
+        "mode": "disabled"
+      },
+      "expected": {
+        "final_status": "VERIFIED"
+      },
+      "coverage": {
+        "input_form": "direct",
+        "logical_source": "modified_exact_cover",
+        "study_family": "incidence"
+      },
+      "resources": {
+        "lean_timeout_seconds": 300,
+        "max_model_calls": 12
+      },
+      "tags": [
+        "input-grounding",
+        "representation-comparison",
+        "positive",
+        "direct"
+      ],
+      "catalog_mode": "flat_api"
+    },
+    {
+      "id": "input-modified-exact-cover-direct-component-catalog",
+      "execution_layer": "core_reuse",
+      "verification_profile": "core",
+      "evaluation_lane": "representation_comparison",
+      "module": "Benchmark.Hardness.Inputs.InputGrounding.Incidence",
+      "source": "Benchmark.Hardness.Inputs.InputGrounding.Incidence.modifiedExactCoverDirect",
+      "input_declaration": "Benchmark.Hardness.Inputs.InputGrounding.Incidence.modifiedExactCoverDirect",
+      "input_kind": "presented_problem",
+      "target": "Benchmark.Hardness.Inputs.InputGrounding.Incidence.target",
+      "objective": "reduce_to",
+      "objective_direction": "source_to_target",
+      "target_policy": "fixed",
+      "planner": "deterministic",
+      "comparison_group_id": "input-modified-exact-cover-direct",
+      "matched_pair_id": "input-modified-exact-cover-direct",
+      "enabled": true,
+      "min_agent_phase": 1,
+      "authoring_policy": {
+        "enabled": false,
+        "mode": "disabled"
+      },
+      "expected": {
+        "final_status": "VERIFIED"
+      },
+      "coverage": {
+        "input_form": "direct",
+        "logical_source": "modified_exact_cover",
+        "study_family": "incidence"
+      },
+      "resources": {
+        "lean_timeout_seconds": 300,
+        "max_model_calls": 12
+      },
+      "tags": [
+        "input-grounding",
+        "representation-comparison",
+        "positive",
+        "direct"
+      ],
+      "catalog_mode": "component_catalog"
+    },
+    {
+      "id": "input-modified-exact-cover-alias-flat-api",
+      "execution_layer": "core_reuse",
+      "verification_profile": "core",
+      "evaluation_lane": "representation_comparison",
+      "module": "Benchmark.Hardness.Inputs.InputGrounding.Incidence",
+      "source": "Benchmark.Hardness.Inputs.InputGrounding.Incidence.modifiedExactCoverAlias",
+      "input_declaration": "Benchmark.Hardness.Inputs.InputGrounding.Incidence.modifiedExactCoverAlias",
+      "input_kind": "presented_problem",
+      "target": "Benchmark.Hardness.Inputs.InputGrounding.Incidence.target",
+      "objective": "reduce_to",
+      "objective_direction": "source_to_target",
+      "target_policy": "fixed",
+      "planner": "deterministic",
+      "comparison_group_id": "input-modified-exact-cover-alias",
+      "matched_pair_id": "input-modified-exact-cover-alias",
+      "enabled": true,
+      "min_agent_phase": 1,
+      "authoring_policy": {
+        "enabled": false,
+        "mode": "disabled"
+      },
+      "expected": {
+        "final_status": "VERIFIED"
+      },
+      "coverage": {
+        "input_form": "abbrev",
+        "logical_source": "modified_exact_cover",
+        "study_family": "incidence"
+      },
+      "resources": {
+        "lean_timeout_seconds": 300,
+        "max_model_calls": 12
+      },
+      "tags": [
+        "input-grounding",
+        "representation-comparison",
+        "positive",
+        "abbrev"
+      ],
+      "catalog_mode": "flat_api"
+    },
+    {
+      "id": "input-modified-exact-cover-alias-component-catalog",
+      "execution_layer": "core_reuse",
+      "verification_profile": "core",
+      "evaluation_lane": "representation_comparison",
+      "module": "Benchmark.Hardness.Inputs.InputGrounding.Incidence",
+      "source": "Benchmark.Hardness.Inputs.InputGrounding.Incidence.modifiedExactCoverAlias",
+      "input_declaration": "Benchmark.Hardness.Inputs.InputGrounding.Incidence.modifiedExactCoverAlias",
+      "input_kind": "presented_problem",
+      "target": "Benchmark.Hardness.Inputs.InputGrounding.Incidence.target",
+      "objective": "reduce_to",
+      "objective_direction": "source_to_target",
+      "target_policy": "fixed",
+      "planner": "deterministic",
+      "comparison_group_id": "input-modified-exact-cover-alias",
+      "matched_pair_id": "input-modified-exact-cover-alias",
+      "enabled": true,
+      "min_agent_phase": 1,
+      "authoring_policy": {
+        "enabled": false,
+        "mode": "disabled"
+      },
+      "expected": {
+        "final_status": "VERIFIED"
+      },
+      "coverage": {
+        "input_form": "abbrev",
+        "logical_source": "modified_exact_cover",
+        "study_family": "incidence"
+      },
+      "resources": {
+        "lean_timeout_seconds": 300,
+        "max_model_calls": 12
+      },
+      "tags": [
+        "input-grounding",
+        "representation-comparison",
+        "positive",
+        "abbrev"
+      ],
+      "catalog_mode": "component_catalog"
+    },
+    {
+      "id": "input-modified-exact-cover-wrapped-flat-api",
+      "execution_layer": "core_reuse",
+      "verification_profile": "core",
+      "evaluation_lane": "representation_comparison",
+      "module": "Benchmark.Hardness.Inputs.InputGrounding.Incidence",
+      "source": "Benchmark.Hardness.Inputs.InputGrounding.Incidence.modifiedExactCoverWrapped",
+      "input_declaration": "Benchmark.Hardness.Inputs.InputGrounding.Incidence.modifiedExactCoverWrapped",
+      "input_kind": "presented_problem",
+      "target": "Benchmark.Hardness.Inputs.InputGrounding.Incidence.target",
+      "objective": "reduce_to",
+      "objective_direction": "source_to_target",
+      "target_policy": "fixed",
+      "planner": "deterministic",
+      "comparison_group_id": "input-modified-exact-cover-wrapped",
+      "matched_pair_id": "input-modified-exact-cover-wrapped",
+      "enabled": true,
+      "min_agent_phase": 1,
+      "authoring_policy": {
+        "enabled": false,
+        "mode": "disabled"
+      },
+      "expected": {
+        "final_status": "VERIFIED"
+      },
+      "coverage": {
+        "input_form": "reducible_def",
+        "logical_source": "modified_exact_cover",
+        "study_family": "incidence"
+      },
+      "resources": {
+        "lean_timeout_seconds": 300,
+        "max_model_calls": 12
+      },
+      "tags": [
+        "input-grounding",
+        "representation-comparison",
+        "positive",
+        "reducible_def"
+      ],
+      "catalog_mode": "flat_api"
+    },
+    {
+      "id": "input-modified-exact-cover-wrapped-component-catalog",
+      "execution_layer": "core_reuse",
+      "verification_profile": "core",
+      "evaluation_lane": "representation_comparison",
+      "module": "Benchmark.Hardness.Inputs.InputGrounding.Incidence",
+      "source": "Benchmark.Hardness.Inputs.InputGrounding.Incidence.modifiedExactCoverWrapped",
+      "input_declaration": "Benchmark.Hardness.Inputs.InputGrounding.Incidence.modifiedExactCoverWrapped",
+      "input_kind": "presented_problem",
+      "target": "Benchmark.Hardness.Inputs.InputGrounding.Incidence.target",
+      "objective": "reduce_to",
+      "objective_direction": "source_to_target",
+      "target_policy": "fixed",
+      "planner": "deterministic",
+      "comparison_group_id": "input-modified-exact-cover-wrapped",
+      "matched_pair_id": "input-modified-exact-cover-wrapped",
+      "enabled": true,
+      "min_agent_phase": 1,
+      "authoring_policy": {
+        "enabled": false,
+        "mode": "disabled"
+      },
+      "expected": {
+        "final_status": "VERIFIED"
+      },
+      "coverage": {
+        "input_form": "reducible_def",
+        "logical_source": "modified_exact_cover",
+        "study_family": "incidence"
+      },
+      "resources": {
+        "lean_timeout_seconds": 300,
+        "max_model_calls": 12
+      },
+      "tags": [
+        "input-grounding",
+        "representation-comparison",
+        "positive",
+        "reducible_def"
+      ],
+      "catalog_mode": "component_catalog"
+    }
+  ]
+}
