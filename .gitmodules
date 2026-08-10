@@ -1,0 +1,3 @@
+[submodule "compare/Archon"]
+	path = compare/Archon
+	url = https://github.com/Shou-ashe/Archon.git
