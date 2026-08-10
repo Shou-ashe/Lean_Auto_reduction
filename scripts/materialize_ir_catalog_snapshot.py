@@ -49,7 +49,7 @@ def parser() -> argparse.ArgumentParser:
     command.add_argument(
         "--manifest",
         type=Path,
-        default=ROOT / "Benchmark" / "Hardness" / "MANIFEST.json",
+        default=ROOT / "Gate" / "MANIFEST.json",
     )
     command.add_argument("--probe-source", type=Path, required=True)
     command.add_argument(
@@ -75,7 +75,7 @@ def parser() -> argparse.ArgumentParser:
     command.add_argument(
         "--output",
         type=Path,
-        default=ROOT / "Benchmark" / "Hardness" / "IR_CATALOG_SNAPSHOT.json",
+        default=ROOT / "Reports" / "IR_CATALOG_SNAPSHOT.json",
     )
     return command
 

@@ -27,7 +27,7 @@ from scripts.run_stage_i_expansion_offline_benchmark import (
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SUITE = ROOT / "Benchmark" / "Hardness" / "Suites" / "stage_i_expansion.json"
+SUITE = ROOT / "Gate" / "Suites" / "stage_i_expansion.json"
 
 
 def cases():

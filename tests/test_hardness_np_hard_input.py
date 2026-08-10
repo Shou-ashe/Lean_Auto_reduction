@@ -84,7 +84,7 @@ def test_bare_encoding_registry_entry_uses_lean_discovered_unique_presentation()
 
 def test_formal_g_e_report_satisfies_exit_conditions() -> None:
     report = json.loads(
-        (ROOT / "Benchmark/Hardness/NP_HARD_ENTRYPOINT_REPORT.json").read_text(
+        (ROOT / "Reports/NP_HARD_ENTRYPOINT_REPORT.json").read_text(
             encoding="utf-8"
         )
     )

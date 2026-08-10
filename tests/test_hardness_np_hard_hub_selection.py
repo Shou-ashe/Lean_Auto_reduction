@@ -19,7 +19,7 @@ from agent.hardness.np_hard_hub_selection import (
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SUITE = ROOT / "Benchmark" / "Hardness" / "Suites" / "np_hard_hub_selection.json"
+SUITE = ROOT / "Gate" / "Suites" / "np_hard_hub_selection.json"
 
 
 def seed(index: int) -> NPHardSeedV1:
@@ -228,7 +228,7 @@ def test_all_candidate_failures_end_with_typed_failure_and_instance_budget() -> 
 
 
 def test_formal_g_d_report_satisfies_exit_conditions() -> None:
-    path = ROOT / "Benchmark" / "Hardness" / "NP_HARD_HUB_SELECTION_REPORT.json"
+    path = ROOT / "Reports" / "NP_HARD_HUB_SELECTION_REPORT.json"
     if not path.is_file():
         pytest.skip("formal G-D hub-selection report has not been generated")
     report = json.loads(path.read_text(encoding="utf-8"))
@@ -252,7 +252,7 @@ def test_formal_g_d_report_satisfies_exit_conditions() -> None:
 
 
 def test_full_45_case_g_d_report_is_content_addressed_and_complete() -> None:
-    summary_path = ROOT / "Benchmark" / "Hardness" / "MAIN_G_D_45_FULL_REPORT.json"
+    summary_path = ROOT / "Reports" / "MAIN_G_D_45_FULL_REPORT.json"
     summary = json.loads(summary_path.read_text(encoding="utf-8"))
     raw_path = ROOT / summary["raw_report"]["file"]
     raw = json.loads(raw_path.read_text(encoding="utf-8"))

@@ -21,8 +21,8 @@ from agent.hardness.np_hard_inventory import (
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SUITE = ROOT / "Benchmark/Hardness/Suites/np_hard_h_e_heldout_inputs.json"
-ORACLE = ROOT / "Benchmark/Hardness/Evaluation/np_hard_h_e_heldout_oracle.json"
+SUITE = ROOT / "Gate/Suites/np_hard_h_e_heldout_inputs.json"
+ORACLE = ROOT / "Evaluation/np_hard_h_e_heldout_oracle.json"
 
 
 class RecommendedBodyModel:

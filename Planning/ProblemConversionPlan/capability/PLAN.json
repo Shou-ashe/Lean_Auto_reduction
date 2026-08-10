@@ -1,0 +1,31 @@
+{
+ "schema_version": "problems7z_capability_conversion_plan_v1",
+ "category": "capability",
+ "source_plan_section": "ACTIVE_AGENT_IMPROVEMENT_PLAN.md 12.1.4, 12.3.2, 12.5",
+ "plan_rule": "No problems.7z entry enters the scored capability denominator. Reduction-type archive problems belong to the exact_edge lane; only executable spot-checks and weight-0 items touch the capability lane.",
+ "entries": [
+  {
+   "archive_id": "07-003a",
+   "item": "fixed-formula Independent Set instance drawing",
+   "capability_weight": 0,
+   "plan": "Executable spot-check of the Independent Set case: verify generated program output structure and witness translation on one fixed formula, not a universal reduction."
+  },
+  {
+   "archive_id": "07-003b",
+   "item": "fixed-formula Directed Hamiltonian Cycle instance drawing",
+   "capability_weight": 0,
+   "plan": "Executable spot-check of the DHC case: verify generated program output structure and witness translation on one fixed formula, not a universal reduction."
+  },
+  {
+   "group": "pdf_only_candidates",
+   "item": "All 16 PDF-only candidates carry capability_weight 0",
+   "capability_weight": 0,
+   "plan": "No scored capability weight until independent answer-free problemization, endpoint/identity audits, and formal construction prerequisites complete."
+  },
+  {
+   "group": "exact_edge_vs_capability",
+   "item": "Scoring separation",
+   "plan": "exact-edge and target-hardness are scored separately; a target may have several different source edges, and multiple statements of one direction count as one edge with paraphrase robustness recorded."
+  }
+ ]
+}

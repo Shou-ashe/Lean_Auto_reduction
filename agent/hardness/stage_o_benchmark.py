@@ -848,7 +848,7 @@ def run_stage_o_full_suite(
 
     toolchain = (lean_root / "lean-toolchain").read_text(encoding="utf-8").strip()
     lake_manifest_hash = _hash_file(lean_root / "lake-manifest.json")
-    regression_file = lean_root / "Reference/Benchmark/Hardness/Inputs/StageO/Regression.lean"
+    regression_file = lean_root / "Reference/Reports/Inputs/StageO/Regression.lean"
     regression_hash = _hash_file(regression_file)
     setup_started = time.monotonic()
     setup_build = run_command(

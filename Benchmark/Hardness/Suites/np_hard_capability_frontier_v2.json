@@ -1,0 +1,21 @@
+{
+  "cases": [
+    {
+      "budget_profile": "frontier-default",
+      "case_id": "frontier-01-knapsack-unary-boundary",
+      "family": "numeric",
+      "module": "ComplexityReduction.Presentation.Knapsack",
+      "problem": "ComplexityReduction.Presentation.Knapsack.structuredProblem"
+    },
+    {
+      "budget_profile": "frontier-default",
+      "case_id": "frontier-02-partition-unary-boundary",
+      "family": "numeric",
+      "module": "ComplexityReduction.Presentation.Partition",
+      "problem": "ComplexityReduction.Presentation.Partition.structuredProblem"
+    }
+  ],
+  "schema_version": "hardness_np_hard_capability_suite_v2",
+  "split": "frontier",
+  "suite_id": "np-hard-capability-frontier-v2"
+}

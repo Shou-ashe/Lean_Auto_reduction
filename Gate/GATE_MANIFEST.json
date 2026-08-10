@@ -1,0 +1,32 @@
+{
+  "schema_version": "hardness_benchmark_v2",
+  "benchmark_id": "hardness-gate",
+  "suites": [
+    "Suites/authoring.json",
+    "Suites/completeness.json",
+    "Suites/cook_levin.json",
+    "Suites/core_generalization.json",
+    "Suites/frontier_efficiency.json",
+    "Suites/gaps.json",
+    "Suites/input_grounding_fixed_target.json",
+    "Suites/input_grounding_representation_comparison.json",
+    "Suites/ir_feasibility.json",
+    "Suites/membership.json",
+    "Suites/model_authoring.json",
+    "Suites/negative.json",
+    "Suites/open_target.json",
+    "Suites/phase5.json",
+    "Suites/predicate_input.json",
+    "Suites/quals_adversarial.json",
+    "Suites/quals_completeness.json",
+    "Suites/routes.json",
+    "Suites/security.json",
+    "Suites/smoke.json",
+    "Suites/stage_i_expansion.json",
+    "Suites/stage_o_adversarial.json",
+    "Suites/stage_o_multi_gap.json",
+    "Suites/stage_p_adversarial.json",
+    "Suites/stage_p_open_world.json",
+    "Suites/typed_authoring.json"
+  ]
+}

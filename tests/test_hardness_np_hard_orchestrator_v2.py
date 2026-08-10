@@ -15,13 +15,15 @@ from agent.hardness.np_hard_orchestrator import (
     NPHardOrchestratorV2,
     NPHardProofRequestV2,
     NPHardProofResultV2,
+    _deterministic_outcome_allows_authoring,
     build_np_hard_proof_request_v2,
     read_np_hard_result,
 )
+from agent.hardness.np_hard_production import load_np_hard_production_model_config
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SUITE = ROOT / "Benchmark/Hardness/Suites/np_hard_generalization.json"
+SUITE = ROOT / "Gate/Suites/np_hard_generalization.json"
 
 
 class RecommendedBodyModel:
@@ -35,6 +37,32 @@ class RecommendedBodyModel:
         response = dict(payload["response_template"])
         assert payload["recommended_first_body"]
         response["replacement_body"] = payload["recommended_first_body"]
+        return ModelResponse(
+            called=True,
+            ok=True,
+            content=json.dumps(response),
+            error=None,
+            status_code=200,
+            duration_seconds=0.0,
+            usage={"fixture_tokens": 0},
+            attempts=1,
+            finish_reason="stop",
+        )
+
+
+class PublicQualificationBodyModel(RecommendedBodyModel):
+    def complete_json(self, *, system: str, prompt: str) -> ModelResponse:
+        assert "untrusted Lean 4 author" in system
+        self.calls += 1
+        payload = json.loads(prompt)
+        response = dict(payload["response_template"])
+        response["replacement_body"] = (
+            "by\n"
+            "  intro input\n"
+            "  simpa only [cliqueStructuredProblem_accepts, "
+            "vertexCoverStructuredProblem_accepts, cliqueToVertexCover_run] using\n"
+            "    ComplexityReduction.Karp21.VertexCover.map_correct input\n"
+        )
         return ModelResponse(
             called=True,
             ok=True,
@@ -76,7 +104,14 @@ def _config(task, output: Path, **changes) -> NPHardOrchestratorConfigV2:
 def test_v2_request_is_strict_content_addressed_and_round_trips() -> None:
     task = _tasks()[0]
     request = build_np_hard_proof_request_v2(_config(task, ROOT / "tmp/unused-v2"))
+    assert request.call_budget == len(task.gap_nodes) * request.attempt_budget
     assert NPHardProofRequestV2.from_dict(request.to_dict()) == request
+
+    undersized = replace(request, call_budget=len(task.gap_nodes))
+    undersized = replace(undersized, request_id=undersized.computed_request_id)
+    with pytest.raises(NPHardOrchestratorError) as raised:
+        undersized.validate()
+    assert raised.value.code == "authoring_gap_budget_exhausted"
 
     unknown = request.to_dict()
     unknown["benchmark_case_id"] = "hidden-answer"
@@ -104,6 +139,53 @@ def test_v2_rejects_wrong_endpoint_and_preserves_v1_result_reading() -> None:
     assert read_np_hard_result(legacy) == legacy
     with pytest.raises(NPHardOrchestratorError):
         read_np_hard_result({"schema_version": "unknown"})
+
+
+def test_v2_model_authoring_trigger_accepts_only_repairable_blockers() -> None:
+    for policy in ("model-auto", "model-required"):
+        assert _deterministic_outcome_allows_authoring(
+            status="BLOCKED",
+            failure_code="no_forward_path_from_hardness_seed",
+            authoring_policy=policy,
+            qualification_force_authoring=False,
+        )
+        assert _deterministic_outcome_allows_authoring(
+            status="BLOCKED",
+            failure_code="wrong_direction_only",
+            authoring_policy=policy,
+            qualification_force_authoring=False,
+        )
+
+    assert not _deterministic_outcome_allows_authoring(
+        status="BLOCKED",
+        failure_code="wrong_direction_only",
+        authoring_policy="disabled",
+        qualification_force_authoring=False,
+    )
+    assert not _deterministic_outcome_allows_authoring(
+        status="FAILED",
+        failure_code="wrong_direction_only",
+        authoring_policy="model-auto",
+        qualification_force_authoring=False,
+    )
+    assert not _deterministic_outcome_allows_authoring(
+        status="BLOCKED",
+        failure_code="candidate_wrong_endpoint",
+        authoring_policy="model-auto",
+        qualification_force_authoring=False,
+    )
+    assert _deterministic_outcome_allows_authoring(
+        status="VERIFIED",
+        failure_code="deterministic_probe_failed",
+        authoring_policy="model-required",
+        qualification_force_authoring=True,
+    )
+    assert not _deterministic_outcome_allows_authoring(
+        status="VERIFIED",
+        failure_code="deterministic_probe_failed",
+        authoring_policy="disabled",
+        qualification_force_authoring=True,
+    )
 
 
 def test_v2_production_orchestrator_covers_all_authoring_classes(tmp_path) -> None:
@@ -172,3 +254,44 @@ def test_v2_resume_is_same_job_only_and_revalidates_prefix(tmp_path) -> None:
             model_client=RecommendedBodyModel(),
         ).run()
     assert raised.value.code == "cross_job_candidate"
+
+
+def test_formal_qualification_can_force_public_authoring_without_changing_fast_path(
+    tmp_path,
+) -> None:
+    model = RecommendedBodyModel()
+    output = tmp_path / "public-qualification-authoring"
+    result = NPHardOrchestratorV2(
+        NPHardOrchestratorConfigV2(
+            root=ROOT,
+            input_module="ComplexityReduction.Problems.Karp21.GraphAtoms",
+            problem_declaration=(
+                "ComplexityReduction.Problems.Karp21.GraphAtoms."
+                "vertexCoverStructuredProblem"
+            ),
+            output_dir=output,
+            authoring_policy="model-required",
+            deepseek=load_np_hard_production_model_config(
+                env_file=None, environ={}
+            ),
+            runtime_prebuilt=True,
+            formal_qualification=True,
+            qualification_force_authoring=True,
+        ),
+        model_client=model,
+    ).run()
+    payload = result.to_dict()
+    assert result.status == "VERIFIED"
+    assert result.model_calls == model.calls == 1
+    assert payload["deterministic_result"]["status"] == "VERIFIED"
+    assert payload["authoring_runtime"]["status"] == "VERIFIED"
+    assert any(
+        name.endswith("Legacy/ComplexityReduction/Karp21/VertexCover.lean")
+        for name in payload["capability_dag"]["public_source_files"]
+    )
+    assert "/authoring/runtime/Final.lean" in payload["artifact"]["file"]
+    assert payload["independent_replay"]["passed"] is True
+    assert payload["axiom_audit"]["passed"] is True
+    assert payload["deletion_audit"]["passed"] is True
+    preflight = json.loads((output / "preflight.json").read_text(encoding="utf-8"))
+    assert preflight["qualification_force_authoring"] is True

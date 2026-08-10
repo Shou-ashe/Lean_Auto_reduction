@@ -1,0 +1,341 @@
+{
+  "active_plan": {
+    "after_sha256": "116c336be23f333998e399cfdb858975e8e5471fdeabfbb50eec668cde0f5f4d",
+    "before_sha256": "a4b4d83cb4c7ddfc0a8c0f46019041e8c22734249ceb9ab79b2be8bf1f7c3085"
+  },
+  "cli_public_authoring": {
+    "artifact": {
+      "authority": "independent-lean-process",
+      "endpoint": "ComplexityReduction.Problems.Karp21.GraphAtoms.vertexCoverStructuredProblem",
+      "file": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/h-g-public-authoring-cli-v3/authoring/runtime/Final.lean",
+      "sha256": "sha256:b4dc8b38462fd1c7508143c2a2c7f9d709e3a13c7dc00a497a86b611f966bf91"
+    },
+    "axiom_audit": {
+      "authority": "Lean assert_standard_axioms",
+      "passed": true
+    },
+    "deletion_audit": {
+      "node_count": 1,
+      "nodes": [
+        {
+          "audit_file": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/h-g-public-authoring-cli-v3/authoring/runtime/deletion-audits/without-semantic-proof.lean",
+          "audit_file_sha256": "sha256:cd55b0440a54dc4c8c15472ee25c2380b79a610a5b9a9814f4d7265a09be44d8",
+          "body_sha256": "sha256:9fbbad286b21e64d3c34edb1275d7d7c897ab996f2f3e8b8bb3c9ac48142ba0c",
+          "command": {
+            "command": [
+              "lake",
+              "env",
+              "lean",
+              "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/h-g-public-authoring-cli-v3/authoring/runtime/deletion-audits/without-semantic-proof.lean"
+            ],
+            "duration_seconds": 2.711,
+            "exit_code": 1,
+            "stderr": "",
+            "stdout": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/h-g-public-authoring-cli-v3/authoring/runtime/deletion-audits/without-semantic-proof.lean:16:13: error(lean.unknownIdentifier): Unknown identifier `Generated.NPHardV2.C925d4ccd1460a62f.Authoring.semanticCorrect`\n/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/h-g-public-authoring-cli-v3/authoring/runtime/deletion-audits/without-semantic-proof.lean:40:0: error: axiom gate rejected Generated.NPHardV2.C925d4ccd1460a62f.Authoring.authoredForwardReduction: forbidden axiom sorryAx\n",
+            "timed_out": false
+          },
+          "declaration": "Generated.NPHardV2.C925d4ccd1460a62f.Authoring.semanticCorrect",
+          "node_id": "semantic-proof",
+          "passed": true
+        }
+      ],
+      "passed": true
+    },
+    "http_ok_count": 1,
+    "independent_replay": {
+      "authority": "independent-lean-process",
+      "command": {
+        "command": [
+          "lake",
+          "env",
+          "lean",
+          "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/h-g-public-authoring-cli-v3/authoring/runtime/Replay.lean"
+        ],
+        "duration_seconds": 3.243,
+        "exit_code": 0,
+        "stderr": "",
+        "stdout": "",
+        "timed_out": false
+      },
+      "file": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/h-g-public-authoring-cli-v3/authoring/runtime/Replay.lean",
+      "passed": true,
+      "sha256": "sha256:b4dc8b38462fd1c7508143c2a2c7f9d709e3a13c7dc00a497a86b611f966bf91"
+    },
+    "model_calls": 1,
+    "output_dir": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/h-g-public-authoring-cli-v3",
+    "passed": true,
+    "preflight": {
+      "attempt_budget": 4,
+      "authoring_policy": "model-required",
+      "call_budget": 4,
+      "formal_qualification": true,
+      "input_module": "ComplexityReduction.Problems.Karp21.GraphAtoms",
+      "model_configuration": {
+        "api_key_configured": true,
+        "base_url": "https://api.deepseek.com",
+        "max_retries": 0,
+        "max_tokens": 16000,
+        "model": "deepseek-v4-flash",
+        "reasoning_effort": "low",
+        "temperature": 0.0,
+        "timeout_seconds": 300
+      },
+      "output_dir": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/h-g-public-authoring-cli-v3",
+      "provider": "DeepSeek",
+      "qualification_force_authoring": true,
+      "qualification_profile_matched": true,
+      "requested_problem": "ComplexityReduction.Problems.Karp21.GraphAtoms.vertexCoverStructuredProblem",
+      "schema_version": "hardness_np_hard_production_preflight_v1"
+    },
+    "result_status": "VERIFIED",
+    "token_usage": {
+      "completion_tokens": 1231,
+      "prompt_cache_hit_tokens": 5248,
+      "prompt_cache_miss_tokens": 19548,
+      "prompt_tokens": 24796,
+      "total_tokens": 26027
+    }
+  },
+  "cli_smoke": {
+    "model_calls": 0,
+    "output_dir": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/h-g-cli-smoke-v2",
+    "preflight": {
+      "attempt_budget": 4,
+      "authoring_policy": "disabled",
+      "call_budget": 0,
+      "formal_qualification": true,
+      "input_module": "ComplexityReduction.Problems.Karp21.GraphAtoms",
+      "model_configuration": {
+        "api_key_configured": true,
+        "base_url": "https://api.deepseek.com",
+        "max_retries": 0,
+        "max_tokens": 16000,
+        "model": "deepseek-v4-flash",
+        "reasoning_effort": "low",
+        "temperature": 0.0,
+        "timeout_seconds": 300
+      },
+      "output_dir": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/h-g-cli-smoke-v2",
+      "provider": "DeepSeek",
+      "qualification_force_authoring": false,
+      "qualification_profile_matched": true,
+      "requested_problem": "ComplexityReduction.Problems.Karp21.GraphAtoms.vertexCoverStructuredProblem",
+      "schema_version": "hardness_np_hard_production_preflight_v1"
+    },
+    "result_status": "VERIFIED"
+  },
+  "gates": {
+    "existing_route_zero_model_calls": true,
+    "formal_preflight_profile": true,
+    "fresh_three_round_release_stability": true,
+    "full_pytest": true,
+    "main_45_real_v4": true,
+    "production_defaults_no_deepseek_chat": true,
+    "real_public_authoring_v4_http_200": true,
+    "related_tests": true,
+    "shortest_cli_module_discovery": true
+  },
+  "generated_at": "2026-08-09T07:18:00.790925+00:00",
+  "main_45": {
+    "failed_cases": [],
+    "file": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/h-g-h-h-main45-v3/report.json",
+    "http_ok_count": 2,
+    "matched": 45,
+    "model_configuration": {
+      "api_key_configured": true,
+      "base_url": "https://api.deepseek.com",
+      "max_retries": 0,
+      "max_tokens": 16384,
+      "model": "deepseek-v4-flash",
+      "reasoning_effort": "low",
+      "temperature": 0.0,
+      "timeout_seconds": 300
+    },
+    "passed": true,
+    "real_api_calls": 2,
+    "sha256": "72ac4792ec072e6f03b1d00e8a85512896da33046cbd17ac637e22ee14c68539",
+    "token_usage": {
+      "completion_tokens": 5287,
+      "prompt_cache_hit_tokens": 2560,
+      "prompt_cache_miss_tokens": 1745,
+      "prompt_tokens": 4305,
+      "total_tokens": 9592
+    },
+    "total": 45
+  },
+  "passed": true,
+  "release_stability": {
+    "file": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/np-hard-release-h-g-h-h-v2-report.json",
+    "metrics": {
+      "deletion_audit_count": 15,
+      "existing_route_model_calls": 0,
+      "instance_execution_count": 36,
+      "matched_instance_count": 36,
+      "model_authoring_verified_count": 15,
+      "positive_execution_count": 30,
+      "real_api_calls": 36,
+      "round_count": 3,
+      "safety_negative_matched_count": 6,
+      "token_usage": {
+        "completion_tokens": 30997,
+        "prompt_cache_hit_tokens": 246528,
+        "prompt_cache_miss_tokens": 105279,
+        "prompt_tokens": 351807,
+        "total_tokens": 382804
+      },
+      "worker_fallback_count": 0
+    },
+    "model_configuration": {
+      "api_key_configured": true,
+      "base_url": "https://api.deepseek.com",
+      "max_retries": 0,
+      "max_tokens": 16000,
+      "model": "deepseek-v4-flash",
+      "reasoning_effort": "low",
+      "temperature": 0.0,
+      "timeout_seconds": 300
+    },
+    "passed": true,
+    "rounds": [
+      {
+        "file": "tmp/np-hard-release-h-g-h-h-v2/round-1-report.json",
+        "metrics": {
+          "case_count": 12,
+          "deletion_audit_count": 5,
+          "exact_native_np_hard_count": 10,
+          "existing_route_count": 5,
+          "existing_route_model_calls": 0,
+          "finalization_count": 10,
+          "independent_replay_count": 10,
+          "matched_case_count": 12,
+          "model_authoring_count": 5,
+          "model_authoring_verified_count": 5,
+          "multi_gap_verified_count": 3,
+          "nontrivial_semantic_verified_count": 2,
+          "positive_count": 10,
+          "program_synthesis_verified_count": 1,
+          "real_api_calls": 12,
+          "safety_negative_count": 2,
+          "safety_negative_matched_count": 2,
+          "token_usage": {
+            "completion_tokens": 7327,
+            "prompt_cache_hit_tokens": 13568,
+            "prompt_cache_miss_tokens": 103701,
+            "prompt_tokens": 117269,
+            "total_tokens": 124596
+          },
+          "worker_fallback_count": 0
+        },
+        "passed": true,
+        "round": 1,
+        "sha256": "5b4db211501f3904cd6424abfb7f9b46bb6da270eddad41fa29c1b7e426e87fc"
+      },
+      {
+        "file": "tmp/np-hard-release-h-g-h-h-v2/round-2-report.json",
+        "metrics": {
+          "case_count": 12,
+          "deletion_audit_count": 5,
+          "exact_native_np_hard_count": 10,
+          "existing_route_count": 5,
+          "existing_route_model_calls": 0,
+          "finalization_count": 10,
+          "independent_replay_count": 10,
+          "matched_case_count": 12,
+          "model_authoring_count": 5,
+          "model_authoring_verified_count": 5,
+          "multi_gap_verified_count": 3,
+          "nontrivial_semantic_verified_count": 2,
+          "positive_count": 10,
+          "program_synthesis_verified_count": 1,
+          "real_api_calls": 12,
+          "safety_negative_count": 2,
+          "safety_negative_matched_count": 2,
+          "token_usage": {
+            "completion_tokens": 12978,
+            "prompt_cache_hit_tokens": 116480,
+            "prompt_cache_miss_tokens": 789,
+            "prompt_tokens": 117269,
+            "total_tokens": 130247
+          },
+          "worker_fallback_count": 0
+        },
+        "passed": true,
+        "round": 2,
+        "sha256": "458f238c681bcd1932cffe55718973ad7b2bf6a1c6fa1920c639d85dfbd1b9bd"
+      },
+      {
+        "file": "tmp/np-hard-release-h-g-h-h-v2/round-3-report.json",
+        "metrics": {
+          "case_count": 12,
+          "deletion_audit_count": 5,
+          "exact_native_np_hard_count": 10,
+          "existing_route_count": 5,
+          "existing_route_model_calls": 0,
+          "finalization_count": 10,
+          "independent_replay_count": 10,
+          "matched_case_count": 12,
+          "model_authoring_count": 5,
+          "model_authoring_verified_count": 5,
+          "multi_gap_verified_count": 3,
+          "nontrivial_semantic_verified_count": 2,
+          "positive_count": 10,
+          "program_synthesis_verified_count": 1,
+          "real_api_calls": 12,
+          "safety_negative_count": 2,
+          "safety_negative_matched_count": 2,
+          "token_usage": {
+            "completion_tokens": 10692,
+            "prompt_cache_hit_tokens": 116480,
+            "prompt_cache_miss_tokens": 789,
+            "prompt_tokens": 117269,
+            "total_tokens": 127961
+          },
+          "worker_fallback_count": 0
+        },
+        "passed": true,
+        "round": 3,
+        "sha256": "232abff8e8cf02f3fb3d21ba8d500df018dd67450318dae13fab89d8b2fd6367"
+      }
+    ],
+    "sha256": "cee6d80ef2680f78070b8e061256547e9ed6fdc42e051cb25d6c35b9b1324cda"
+  },
+  "schema_version": "hardness_main_h_g_full_report_v1",
+  "source_control": {
+    "combined_sha256": "b9c4119f674dd0af5186743d821137606755061c53f8f696a2a57a7d49e5327e",
+    "files": {
+      ".env.example": "6c179c9c87beec275d726e9c756982279c857052335ec298240d5b333207054d",
+      "ACTIVE_AGENT_IMPROVEMENT_PLAN.md": "116c336be23f333998e399cfdb858975e8e5471fdeabfbb50eec668cde0f5f4d",
+      "README.md": "e6da3277e4e9347e7ffe03a919db8fcc832796edf38645f57d1c6df8d7e60e95",
+      "agent/hardness/np_hard_authoring_planner.py": "a6da34a7094178eb4f99d1b28e6fa51eb6910d11e4d9e7745c828b34d4824584",
+      "agent/hardness/np_hard_gap_runtime.py": "d616020fa3e7c3411a744c3011a5e04b063f16da11048dc648b5275d4d406e87",
+      "agent/hardness/np_hard_input.py": "f7a8bbdb584dd0394e401d3c148d4157fd43303fa25e9a5e5174fa47c9e764e4",
+      "agent/hardness/np_hard_orchestrator.py": "8c844924d0bf1a94ac06bb58505dc38fe50c7befcfb6d47b1ccf7e270ae4783b",
+      "agent/hardness/np_hard_production.py": "ac9e18b86380a9b01f4c39e63dfa75e1ce6dfa757a5d8fad7055e5f0f44179db",
+      "scripts/build_np_hard_h_g_h_h_reports.py": "e50920f6486131886225ff50ce7430a7f71802d5f66dc68dc0675ba7273fbf75",
+      "scripts/prove_np_hard.py": "7c4b44ea531f8e3d959352f339c4e340d8798a58392a92b836ae237b082101dc",
+      "scripts/run_np_hard_release_stability.py": "2080c400492d4332d80d6f6e3af86dc4350d065d16a6db2af8dd67bbf4088593",
+      "tests/test_hardness_np_hard_h_g.py": "a1dd4d7d0bf92a6886356da5e514402f80ed86fe0db38185f04b441e7badfe3f"
+    },
+    "git_head": "c755ddc7e5bf19ffdd5d19c9ef3973d12e7f167d",
+    "git_repository_available": true,
+    "lake_manifest_sha256": "7b9ebbed765572606d98ef3e13b2a3036325a9d5bd860a111bdd73db1104aec7",
+    "lean_toolchain": "leanprover/lean4:v4.29.0",
+    "lean_toolchain_sha256": "651c8accb402b0c071cd336e9d3dc0a55516b1bfb434ddc4801f14936785b1d2"
+  },
+  "stage": "H-G-formal-cli-contract-and-qualification-profile",
+  "tests": {
+    "full": {
+      "command": "python -m pytest -q",
+      "duration_seconds": 1681.89,
+      "failed_count": 0,
+      "passed": true,
+      "passed_count": 723,
+      "skipped_count": 0
+    },
+    "related": {
+      "command": "pytest -q H-G/H-H + orchestrator/runtime/input/H-F related tests",
+      "passed": true,
+      "passed_count": 49
+    }
+  }
+}

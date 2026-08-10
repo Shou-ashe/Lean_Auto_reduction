@@ -1,0 +1,96 @@
+{
+ "cases": [
+  {
+   "case_id": "edge-val-01-vertex-cover-to-set-cover",
+   "module": "Benchmark.Hardness.Inputs.ExactReductionEdgeV1.ValidationEndpoints",
+   "source": "ComplexityReduction.Problems.Karp21.GraphAtoms.vertexCoverStructuredProblem",
+   "target": "ComplexityReduction.Presentation.SetSystem.setCoveringStructuredProblem",
+   "statement": "Construct a certified reduction from structured Vertex Cover to structured Set Covering.",
+   "statement_hash": "sha256:8fb3b56b15e01c62dd6b0c77861729cc9162d888436a1a5b41498b1cf492aecb",
+   "budget_profile": "formal-default",
+   "construction_policy": {
+    "mode": "direct_new_edge",
+    "allow_composition": false,
+    "require_new_primitive": true
+   },
+   "endpoint_contract_version": "exact-edge-endpoint-v1"
+  },
+  {
+   "case_id": "edge-val-02-clique-to-half-clique",
+   "module": "Benchmark.Hardness.Inputs.ExactReductionEdgeV1.ValidationEndpoints",
+   "source": "ComplexityReduction.Problems.Karp21.GraphAtoms.cliqueStructuredProblem",
+   "target": "ComplexityReduction.Presentation.HalfClique.structuredProblem",
+   "statement": "Construct a certified reduction from structured Clique to structured Half Clique.",
+   "statement_hash": "sha256:1f8b0251313330a36337a1fe0e5c39cbfedec7dc8796c81fd729f6bb04668665",
+   "budget_profile": "formal-default",
+   "construction_policy": {
+    "mode": "direct_new_edge",
+    "allow_composition": false,
+    "require_new_primitive": true
+   },
+   "endpoint_contract_version": "exact-edge-endpoint-v1"
+  },
+  {
+   "case_id": "edge-val-03-three-sat-to-double-sat",
+   "module": "Benchmark.Hardness.Inputs.ExactReductionEdgeV1.ValidationEndpoints",
+   "source": "ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem",
+   "target": "ComplexityReduction.Presentation.DoubleThreeSAT.structuredProblem",
+   "statement": "Construct a certified reduction from structured 3SAT to structured Double 3SAT.",
+   "statement_hash": "sha256:be8241e49f8c620d7609abe011adf43f01f21b47380a0e6b68267b1afa77732a",
+   "budget_profile": "formal-default",
+   "construction_policy": {
+    "mode": "direct_new_edge",
+    "allow_composition": false,
+    "require_new_primitive": true
+   },
+   "endpoint_contract_version": "exact-edge-endpoint-v1"
+  },
+  {
+   "case_id": "edge-val-04-three-sat-to-nae-three-sat",
+   "module": "Benchmark.Hardness.Inputs.ExactReductionEdgeV1.ValidationEndpoints",
+   "source": "ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem",
+   "target": "ComplexityReduction.Presentation.NAEThreeSAT.structuredProblem",
+   "statement": "Construct a certified reduction from structured 3SAT to structured Not-All-Equal 3SAT.",
+   "statement_hash": "sha256:332a97ccb23dbdf72b2392f97feda5b5887367e9fd4522dee6bce4e0bfe9dc0e",
+   "budget_profile": "formal-default",
+   "construction_policy": {
+    "mode": "direct_new_edge",
+    "allow_composition": false,
+    "require_new_primitive": true
+   },
+   "endpoint_contract_version": "exact-edge-endpoint-v1"
+  },
+  {
+   "case_id": "edge-val-05-subset-sum-to-knapsack",
+   "module": "Benchmark.Hardness.Inputs.ExactReductionEdgeV1.ValidationEndpoints",
+   "source": "ComplexityReduction.Presentation.SubsetSum.structuredProblem",
+   "target": "ComplexityReduction.Presentation.Knapsack.structuredProblem",
+   "statement": "Construct a certified reduction from structured Subset Sum to structured Knapsack.",
+   "statement_hash": "sha256:e76d14d33eb051b30e53c8092250c37f1c4f4db580c4f0cf9073b5a204a6a645",
+   "budget_profile": "formal-default",
+   "construction_policy": {
+    "mode": "direct_new_edge",
+    "allow_composition": false,
+    "require_new_primitive": true
+   },
+   "endpoint_contract_version": "exact-edge-endpoint-v1"
+  },
+  {
+   "case_id": "edge-val-06-clique-to-independent-set",
+   "module": "Benchmark.Hardness.Inputs.ExactReductionEdgeV1.ValidationEndpoints",
+   "source": "ComplexityReduction.Problems.Karp21.GraphAtoms.cliqueStructuredProblem",
+   "target": "ComplexityReduction.Presentation.IndependentSet.structuredProblem",
+   "statement": "Construct a certified reduction from structured Clique to structured Independent Set.",
+   "statement_hash": "sha256:c83f633e309a9b568d63de02b5c756a2d192b2ecdce2955857b78c45df1bb1a3",
+   "budget_profile": "formal-default",
+   "construction_policy": {
+    "mode": "direct_new_edge",
+    "allow_composition": false,
+    "require_new_primitive": true
+   },
+   "endpoint_contract_version": "exact-edge-endpoint-v1"
+  }
+ ],
+ "schema_version": "hardness_exact_reduction_edge_input_suite_v1",
+ "split": "validation"
+}

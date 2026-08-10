@@ -21,10 +21,19 @@ from .models import sha256_id
 
 NP_HARD_SCOPE_POLICY_SCHEMA_V1 = "hardness_np_hard_scope_policy_v1"
 NP_HARD_SCOPE_POLICY_ENTRY_SCHEMA_V1 = "hardness_np_hard_scope_policy_entry_v1"
+NP_HARD_SCOPE_POLICY_SCHEMA_V2 = "hardness_np_hard_scope_policy_v2"
+NP_HARD_SCOPE_POLICY_ENTRY_SCHEMA_V2 = "hardness_np_hard_scope_policy_entry_v2"
 DEFAULT_SCOPE_POLICY = Path("agent/hardness/data/np_hard_scope_policy.json")
 POLICY_DISPOSITION_AUXILIARY = "auxiliary_or_non_target"
+POLICY_DISPOSITION_ENCODING_COMPLEXITY_FRONTIER = "encoding_complexity_frontier"
+POLICY_DISPOSITIONS = {
+    POLICY_DISPOSITION_AUXILIARY,
+    POLICY_DISPOSITION_ENCODING_COMPLEXITY_FRONTIER,
+}
 POLICY_CATEGORIES = {
+    "encoding_complexity_boundary",
     "encoding_well_formedness_predicate",
+    "internal_catalog_helper",
     "tractable_syntactic_class",
 }
 
@@ -45,10 +54,14 @@ class NPHardScopePolicyEntryV1:
     rationale: str
     public_source_file: str
     semantic_evidence_declaration: str
+    failure_code: str | None = None
     schema_version: str = NP_HARD_SCOPE_POLICY_ENTRY_SCHEMA_V1
 
     def validate(self, *, root: Path) -> None:
-        if self.schema_version != NP_HARD_SCOPE_POLICY_ENTRY_SCHEMA_V1:
+        if self.schema_version not in {
+            NP_HARD_SCOPE_POLICY_ENTRY_SCHEMA_V1,
+            NP_HARD_SCOPE_POLICY_ENTRY_SCHEMA_V2,
+        }:
             raise NPHardScopePolicyError("unsupported NP-hard scope policy entry schema")
         if not (
             self.identity_id.startswith("sha256:")
@@ -70,10 +83,28 @@ class NPHardScopePolicyEntryV1:
             raise NPHardScopePolicyError(
                 "scope policy representation node is not Lean-observed"
             )
-        if self.disposition != POLICY_DISPOSITION_AUXILIARY:
-            raise NPHardScopePolicyError("scope policy may only declare audited non-targets")
+        if self.disposition not in POLICY_DISPOSITIONS:
+            raise NPHardScopePolicyError("scope policy disposition is not in the closed vocabulary")
         if self.category not in POLICY_CATEGORIES:
             raise NPHardScopePolicyError("scope policy category is not in the closed vocabulary")
+        if self.disposition == POLICY_DISPOSITION_AUXILIARY:
+            if self.category == "encoding_complexity_boundary" or self.failure_code is not None:
+                raise NPHardScopePolicyError(
+                    "audited non-target policy rows cannot carry a complexity-boundary blocker"
+                )
+        else:
+            if self.schema_version != NP_HARD_SCOPE_POLICY_ENTRY_SCHEMA_V2:
+                raise NPHardScopePolicyError(
+                    "encoding-complexity boundary rows require the v2 entry schema"
+                )
+            if self.category != "encoding_complexity_boundary":
+                raise NPHardScopePolicyError(
+                    "encoding-complexity frontier has the wrong policy category"
+                )
+            if self.failure_code != "encoding_polynomial_reverse_bridge_unavailable":
+                raise NPHardScopePolicyError(
+                    "encoding-complexity frontier lacks the frozen production blocker"
+                )
         if not self.rationale.strip():
             raise NPHardScopePolicyError("scope policy rationale is empty")
         relative = Path(self.public_source_file)
@@ -89,7 +120,7 @@ class NPHardScopePolicyEntryV1:
 
     def to_dict(self, *, root: Path) -> dict[str, Any]:
         self.validate(root=root)
-        return {
+        result = {
             "schema_version": self.schema_version,
             "identity_id": self.identity_id,
             "canonical_declaration": self.canonical_declaration,
@@ -104,6 +135,9 @@ class NPHardScopePolicyEntryV1:
             + sha256_file(root.resolve() / self.public_source_file),
             "semantic_evidence_declaration": self.semantic_evidence_declaration,
         }
+        if self.schema_version == NP_HARD_SCOPE_POLICY_ENTRY_SCHEMA_V2:
+            result["failure_code"] = self.failure_code
+        return result
 
 
 @dataclass(frozen=True)
@@ -130,6 +164,12 @@ class NPHardScopePolicyV1:
                         "public_source_file": entry.public_source_file,
                         "semantic_evidence_declaration": (
                             entry.semantic_evidence_declaration
+                        ),
+                        **(
+                            {"failure_code": entry.failure_code}
+                            if entry.schema_version
+                            == NP_HARD_SCOPE_POLICY_ENTRY_SCHEMA_V2
+                            else {}
                         ),
                     }
                     for entry in self.entries
@@ -171,7 +211,11 @@ def load_np_hard_scope_policy(
     if not isinstance(value, Mapping):
         raise NPHardScopePolicyError("scope policy must be an object")
     _exact_keys(value, {"schema_version", "description", "entries"}, label="scope policy")
-    if value["schema_version"] != NP_HARD_SCOPE_POLICY_SCHEMA_V1:
+    policy_schema = value["schema_version"]
+    if policy_schema not in {
+        NP_HARD_SCOPE_POLICY_SCHEMA_V1,
+        NP_HARD_SCOPE_POLICY_SCHEMA_V2,
+    }:
         raise NPHardScopePolicyError("unsupported NP-hard scope policy schema")
     raw_entries = value["entries"]
     if not isinstance(raw_entries, list):
@@ -189,6 +233,8 @@ def load_np_hard_scope_policy(
         "public_source_file",
         "semantic_evidence_declaration",
     }
+    if policy_schema == NP_HARD_SCOPE_POLICY_SCHEMA_V2:
+        expected_entry_keys.add("failure_code")
     entries: list[NPHardScopePolicyEntryV1] = []
     seen_identities: set[str] = set()
     seen_declarations: set[str] = set()
@@ -197,6 +243,15 @@ def load_np_hard_scope_policy(
             raise NPHardScopePolicyError("scope policy entry must be an object")
         _exact_keys(raw, expected_entry_keys, label="scope policy entry")
         entry = NPHardScopePolicyEntryV1(**dict(raw))
+        expected_entry_schema = (
+            NP_HARD_SCOPE_POLICY_ENTRY_SCHEMA_V2
+            if policy_schema == NP_HARD_SCOPE_POLICY_SCHEMA_V2
+            else NP_HARD_SCOPE_POLICY_ENTRY_SCHEMA_V1
+        )
+        if entry.schema_version != expected_entry_schema:
+            raise NPHardScopePolicyError(
+                "scope policy and entry schema versions do not match"
+            )
         entry.validate(root=root)
         if entry.identity_id in seen_identities:
             raise NPHardScopePolicyError("scope policy repeats an identity")
@@ -206,7 +261,11 @@ def load_np_hard_scope_policy(
         seen_declarations.add(entry.canonical_declaration)
         entries.append(entry)
     entries.sort(key=lambda entry: (entry.canonical_declaration, entry.identity_id))
-    return NPHardScopePolicyV1(entries=tuple(entries), source_file=relative_policy)
+    return NPHardScopePolicyV1(
+        entries=tuple(entries),
+        source_file=relative_policy,
+        schema_version=policy_schema,
+    )
 
 
 def validate_scope_policy_against_inventory(

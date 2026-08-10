@@ -8,8 +8,10 @@ import pytest
 
 from agent.hardness.model_client import ModelResponse
 from agent.hardness.np_hard_authoring_planner import (
+    NP_HARD_AUTHORING_OBSERVATION_SCHEMA_V1,
     NPHardAuthoringPlannerError,
     NPHardAuthoringPlannerV2,
+    parse_np_hard_authoring_observation,
     plan_np_hard_authoring_from_observation,
 )
 from agent.hardness.np_hard_orchestrator import (
@@ -21,6 +23,116 @@ from agent.hardness.np_hard_orchestrator import (
 ROOT = Path(__file__).resolve().parents[1]
 ENTRY = "Benchmark.Hardness.Inputs.HCCrossModule.Entry"
 TARGET = "Benchmark.Hardness.Inputs.HCCrossModule.Problem.heldOutTarget"
+MARKER = "HARDNESS_NP_HARD_PLAN"
+
+
+def _typed_observation_stdout(
+    *,
+    capability_kind: str = "forward_representation_adapter",
+    authority: str = "lean_exact_type_defeq",
+    module: str = "Target.Module",
+    source_node: str = "lean-whnf:source",
+    target_node: str = "lean-whnf:target",
+    witness: str | None = None,
+    exact_type: str | None = None,
+    capability_id: str = "forward_representation_adapter:source:target",
+    duplicate_id: bool = False,
+) -> str:
+    nonce = "a" * 32
+    fingerprint = "lean:registry"
+    witness = witness or (
+        "ComplexityReduction.Program.PolyProg.pair "
+        "(ComplexityReduction.Program.PolyProg.const "
+        "Source.problem.representation StandardInstances.bool false) "
+        "(ComplexityReduction.Program.PolyProg.id Source.problem.representation)"
+    )
+    typed = [
+        MARKER,
+        NP_HARD_AUTHORING_OBSERVATION_SCHEMA_V1,
+        nonce,
+        "typed_capability",
+        capability_kind,
+        capability_id,
+        "Source.problem",
+        "Target.problem",
+        source_node,
+        target_node,
+        witness,
+        exact_type or (
+            "ComplexityReduction.Program.PolyProg "
+            "Source.problem.representation Target.problem.representation"
+        ),
+        module,
+        authority,
+        fingerprint,
+    ]
+    rows = [
+        [
+            MARKER,
+            NP_HARD_AUTHORING_OBSERVATION_SCHEMA_V1,
+            nonce,
+            "input",
+            "Target.problem",
+            "lean-whnf:target",
+            "Target",
+            "Target.Module",
+            fingerprint,
+        ],
+        [
+            MARKER,
+            NP_HARD_AUTHORING_OBSERVATION_SCHEMA_V1,
+            nonce,
+            "problem",
+            "Source.problem",
+            "lean-whnf:source",
+            "lean-whnf:source-representation",
+            "Source.problem",
+            "Source.problem.representation",
+            "Source.Module",
+            fingerprint,
+        ],
+        [
+            MARKER,
+            NP_HARD_AUTHORING_OBSERVATION_SCHEMA_V1,
+            nonce,
+            "problem",
+            "Target.problem",
+            "lean-whnf:target",
+            "lean-whnf:target-representation",
+            "Target.problem",
+            "Target.problem.representation",
+            "Target.Module",
+            fingerprint,
+        ],
+        typed,
+    ]
+    if duplicate_id:
+        rows.append(list(typed))
+    rows.append(
+        [
+            MARKER,
+            NP_HARD_AUTHORING_OBSERVATION_SCHEMA_V1,
+            nonce,
+            "complete",
+            "2",
+            fingerprint,
+        ]
+    )
+    return "\n".join("\t".join(row) for row in rows)
+
+
+def _parse_typed_observation(stdout: str):
+    return parse_np_hard_authoring_observation(
+        stdout=stdout,
+        stderr="",
+        nonce="a" * 32,
+        input_module="Target.Module",
+        input_declaration="Target.problem",
+        import_modules=("Source.Module", "Target.Module"),
+        import_closure_sha256="sha256:" + "1" * 64,
+        toolchain="leanprover/lean4:v4.29.0",
+        lake_manifest_sha256="sha256:" + "2" * 64,
+    )
 
 
 class RecommendedBodyModel:
@@ -54,6 +166,114 @@ def cross_module_plan(tmp_path_factory):
         input_problem_declaration=TARGET,
         output_dir=tmp_path_factory.mktemp("h-c-open-world") / "plan",
     ).plan()
+
+
+def test_v3_typed_capability_parser_is_strict_and_directional() -> None:
+    observation = _parse_typed_observation(_typed_observation_stdout())
+    assert observation.schema_version == NP_HARD_AUTHORING_OBSERVATION_SCHEMA_V1
+    assert len(observation.typed_capabilities) == 1
+    capability = observation.typed_capabilities[0]
+    assert capability.capability_kind == "forward_representation_adapter"
+    assert capability.source_node == "lean-whnf:source"
+    assert capability.target_node == "lean-whnf:target"
+    assert "PolyProg.snd" not in capability.witness
+    serialized = observation.to_dict()["typed_capabilities"][0]
+    assert serialized["id"] == capability.capability_id
+    assert "capability_id" not in serialized
+
+
+def test_v3_tmkarp_admission_parser_binds_exact_public_witness() -> None:
+    module = "ComplexityReduction.Agent.Hardness.AuthoringSources"
+    witness = module + ".sourceToTargetTMKarpReduction"
+    observation = _parse_typed_observation(
+        _typed_observation_stdout(
+            capability_kind="forward_tmkarp_admission",
+            authority="lean_exact_tmkarp_public_source",
+            module=module,
+            witness=witness,
+            exact_type=(
+                "ComplexityReduction.TMKarpReduction "
+                "Source.problem.toEncodedDecisionProblem "
+                "Target.problem.toEncodedDecisionProblem"
+            ),
+            capability_id="forward_tmkarp_admission:source:target",
+        )
+    )
+    capability = observation.typed_capabilities[0]
+    assert capability.capability_kind == "forward_tmkarp_admission"
+    assert capability.witness == witness
+    assert capability.module == module
+
+
+@pytest.mark.parametrize(
+    ("changes", "expected_code"),
+    (
+        ({"authority": "lean_exact_type_defeq"}, "invalid_authoring_planner_observation"),
+        ({"module": "Escaped.Module"}, "authoring_catalog_dependency_stale"),
+        ({"witness": "unqualified"}, "authoring_catalog_dependency_stale"),
+        (
+            {
+                "exact_type": (
+                    "ComplexityReduction.TMKarpReduction "
+                    "Target.problem.toEncodedDecisionProblem "
+                    "Source.problem.toEncodedDecisionProblem"
+                )
+            },
+            "candidate_wrong_direction",
+        ),
+    ),
+)
+def test_v3_tmkarp_admission_mutations_fail_closed(changes, expected_code) -> None:
+    module = "ComplexityReduction.Agent.Hardness.AuthoringSources"
+    values = {
+        "capability_kind": "forward_tmkarp_admission",
+        "authority": "lean_exact_tmkarp_public_source",
+        "module": module,
+        "witness": module + ".sourceToTargetTMKarpReduction",
+        "exact_type": (
+            "ComplexityReduction.TMKarpReduction "
+            "Source.problem.toEncodedDecisionProblem "
+            "Target.problem.toEncodedDecisionProblem"
+        ),
+        "capability_id": "forward_tmkarp_admission:source:target",
+    }
+    values.update(changes)
+    with pytest.raises(NPHardAuthoringPlannerError) as raised:
+        _parse_typed_observation(_typed_observation_stdout(**values))
+    assert raised.value.code == expected_code
+
+
+@pytest.mark.parametrize(
+    ("changes", "expected_code"),
+    (
+        (
+            {"capability_kind": "reverse_representation_adapter"},
+            "invalid_authoring_planner_observation",
+        ),
+        (
+            {"authority": "python_inferred"},
+            "invalid_authoring_planner_observation",
+        ),
+        ({"module": "Escaped.Module"}, "authoring_catalog_dependency_stale"),
+        ({"target_node": "lean-whnf:other"}, "candidate_wrong_endpoint"),
+        (
+            {
+                "witness": (
+                    "ComplexityReduction.Program.PolyProg.snd "
+                    "StandardInstances.bool Source.problem.representation"
+                )
+            },
+            "candidate_wrong_direction",
+        ),
+        ({"duplicate_id": True}, "invalid_authoring_planner_observation"),
+    ),
+)
+def test_v3_typed_capability_parser_mutations_fail_closed(
+    changes, expected_code
+) -> None:
+    with pytest.raises(NPHardAuthoringPlannerError) as raised:
+        _parse_typed_observation(_typed_observation_stdout(**changes))
+    assert raised.value.code == expected_code
 
 
 def test_cross_module_catalog_discovers_hub_route_programs_and_gap_dag(

@@ -11,6 +11,7 @@ bodies are recovered from their content-addressed publications on resume.
 from __future__ import annotations
 
 import json
+import re
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Mapping, Protocol
@@ -27,11 +28,23 @@ from .model_client import ModelResponse, extract_json_object
 from .models import CommandResult, sha256_id
 from .np_hard_authoring import (
     NP_HARD_AUTHORING_MAX_BODY_CHARS,
+    NP_HARD_SUCCESSOR_CHAIN_PROBE_SCHEMA_V1,
     NPHardAuthoringObligationV2,
     NPHardAuthoringResultV2,
     NPHardAuthoringTaskV2,
+    _certified_successor_witness_owned_by_module_v2,
+    _exact_certified_reduction_endpoints_v2,
+    _exact_gadget_packet_endpoints_v2,
+    _exact_tmkarp_reduction_endpoints_v2,
+    _normalized_certified_successor_exact_endpoints_v2,
+    _observer_capability_record_payload_v2,
+    _staged_authoring_surface_is_exact_v2,
+    _successor_only_chain_probe_source_v2,
+    _successor_only_observer_chain_payload_v2,
     accepted_np_hard_authoring_result_v2,
+    deletion_command_matches_declaration_v2,
 )
+from .np_hard_production import required_model_call_budget
 from .stage_p_contract import BANNED_BODY_RE, StagePContractError
 
 
@@ -40,6 +53,110 @@ NP_HARD_NODE_PATCH_SCHEMA_V1 = "hardness_np_hard_node_patch_v1"
 NP_HARD_GAP_CHECKPOINT_SCHEMA_V1 = "hardness_np_hard_gap_checkpoint_v1"
 NP_HARD_GAP_PUBLICATION_SCHEMA_V1 = "hardness_np_hard_gap_publication_v1"
 NP_HARD_GAP_RUNTIME_REPORT_SCHEMA_V1 = "hardness_np_hard_gap_runtime_result_v1"
+NP_HARD_MAX_INSTANCE_CALL_BUDGET = 64
+
+_TMKARP_PRIMITIVE_CAPABILITIES = frozenset({"tmkarp_primitive"})
+_TMKARP_PROGRAM_CAPABILITIES = frozenset({"tmkarp_program"})
+_TMKARP_SEMANTIC_IFF_CAPABILITIES = frozenset({"tmkarp_semantic_iff"})
+_DEPENDENT_COMPOSED_PROGRAM_CAPABILITIES = frozenset(
+    {"dependent_composed_program"}
+)
+_DEPENDENT_COMPOSED_SEMANTIC_IFF_CAPABILITIES = frozenset(
+    {"dependent_composed_semantic_iff"}
+)
+_TMKARP_ADMISSION_TASK_CLASSES = frozenset(
+    {
+        "typed_tmkarp_admission_dag",
+        "typed_tmkarp_dependent_composition_dag",
+        "typed_tmkarp_program_indexed_composition_dag",
+    }
+)
+_TMKARP_ADMISSION_MODULE = (
+    "ComplexityReduction.Agent.Hardness.AuthoringSources"
+)
+_SUCCESSOR_ONLY_TMKARP_ADMISSION_MODULE = (
+    "ComplexityReduction.Agent.Hardness.SuccessorAuthoringSources"
+)
+_PROGRAM_INDEXED_EXECUTABLE_CAPABILITIES = frozenset(
+    {"program_indexed_executable"}
+)
+_PROGRAM_INDEXED_PRIMITIVE_CAPABILITIES = frozenset(
+    {"program_indexed_primitive"}
+)
+_PROGRAM_INDEXED_PROGRAM_CAPABILITIES = frozenset(
+    {"program_indexed_program"}
+)
+_PROGRAM_INDEXED_ADMISSION_CAPABILITIES = frozenset(
+    {"program_indexed_coherence_direct_tm"}
+)
+_PROGRAM_INDEXED_SEMANTIC_CAPABILITIES = frozenset(
+    {"program_indexed_semantic_iff"}
+)
+_PROGRAM_INDEXED_COMPOSED_PROGRAM_CAPABILITIES = frozenset(
+    {"program_indexed_composed_program"}
+)
+_PROGRAM_INDEXED_COMPOSED_SEMANTIC_CAPABILITIES = frozenset(
+    {"program_indexed_composed_semantic_iff"}
+)
+_PROGRAM_INDEXED_TASK_CLASS = "typed_program_indexed_admission_dag"
+_PROGRAM_INDEXED_TASK_CLASSES = frozenset(
+    {
+        _PROGRAM_INDEXED_TASK_CLASS,
+        "typed_tmkarp_program_indexed_composition_dag",
+    }
+)
+_PROGRAM_INDEXED_ADMISSION_MODULE = (
+    "ComplexityReduction.Agent.Hardness.ProgramAuthoringSources"
+)
+_PROGRAM_INDEXED_PACKET_NAMESPACE = (
+    _PROGRAM_INDEXED_ADMISSION_MODULE + ".ProgramIndexedAdmissionPacket"
+)
+_GADGET_INDEXED_TASK_CLASS = "typed_gadget_indexed_admission_dag"
+_GADGET_INDEXED_ADMISSION_MODULE = (
+    "ComplexityReduction.Agent.Hardness.GadgetAuthoringSources"
+)
+_GADGET_INDEXED_PACKET_NAMESPACE = (
+    _GADGET_INDEXED_ADMISSION_MODULE + ".GadgetIndexedAdmissionPacket"
+)
+_GADGET_INDEXED_CAPABILITIES = frozenset(
+    {
+        "gadget_reference_audit",
+        "gadget_normalization_audit",
+        "gadget_executable",
+        "gadget_parameter_audit",
+        "gadget_semantic_forward",
+        "gadget_semantic_reverse",
+        "gadget_direct_tm",
+        "gadget_program",
+        "gadget_composed_program",
+        "gadget_composed_semantic_iff",
+    }
+)
+_SEMANTIC_IFF_CAPABILITIES = frozenset(
+    {
+        "semantic_proof",
+        "semantic_iff",
+        *_TMKARP_SEMANTIC_IFF_CAPABILITIES,
+        *_DEPENDENT_COMPOSED_SEMANTIC_IFF_CAPABILITIES,
+        *_PROGRAM_INDEXED_SEMANTIC_CAPABILITIES,
+        *_PROGRAM_INDEXED_COMPOSED_SEMANTIC_CAPABILITIES,
+        "gadget_composed_semantic_iff",
+    }
+)
+_SEMANTIC_FORWARD_CAPABILITIES = frozenset(
+    {"semantic_forward", "semantic_forward_implication"}
+)
+_SEMANTIC_REVERSE_CAPABILITIES = frozenset(
+    {"semantic_reverse", "semantic_reverse_implication"}
+)
+_SEMANTIC_CAPABILITIES = frozenset(
+    {
+        *_SEMANTIC_IFF_CAPABILITIES,
+        *_SEMANTIC_FORWARD_CAPABILITIES,
+        *_SEMANTIC_REVERSE_CAPABILITIES,
+        "mapping_invariant",
+    }
+)
 
 NP_HARD_NODE_SYSTEM_PROMPT = """\
 You are an untrusted Lean 4 author. Return exactly one JSON object and no
@@ -57,7 +174,29 @@ Then use `constructor`, preserve the forward hypothesis, and project the
 backward conjunction when that is what the exposed definition requires.
 For a `reduction_executable` node, return an ordinary function matching the
 exact arrow type (usually `fun input => ...`), never a `PolyProg`. For a
-`poly_program` node, return a `PolyProg` term. For program composition, use
+`poly_program` or `representation_adapter` node, return a `PolyProg` term.
+For a Boolean-tag representation adapter from a base problem to a product
+target, use the public source representation with `PolyProg.pair`, a constant
+false tag, and identity payload. For `semantic_forward` and
+`semantic_reverse`, prove only the requested implication and preserve its
+source-to-target direction. A `semantic_iff` node should combine the already
+accepted forward and reverse declarations; it must not silently replace them.
+For a typed TM-Karp admission DAG, the observed `TMKarpReduction` is a
+read-only source witness, not an already-authored V2 route. Build only the
+active layer: `tmkarp_primitive` must use `Primitive.ofTMPolyTime witness.f
+witness.polytime`; `tmkarp_program` must wrap the accepted primitive with
+`PolyProg.atom`; and `tmkarp_semantic_iff` must reindex `witness.correct` to
+the accepted program. Do not reuse an existing `CertifiedReduction`, final
+route, registry path, or hardness theorem in place of these authored layers.
+For a dependent composition DAG, the second observer-bound witness is only
+the public successor `CertifiedReduction` from the frozen intermediate to the
+requested target. `dependent_composed_program` must compose
+`successor.program` after the accepted TM-Karp admission program.
+`dependent_composed_semantic_iff` must chain the accepted admission semantic
+iff with `successor.correct` at the admitted intermediate output. It must not
+use the successor alone as a source-to-final route or substitute another final
+route/hardness theorem.
+For program composition, use
 only the public primitives in the request and remember that Lean's composition
 constructor is `PolyProg.comp after before`, so the output type of `before`
 must be the input type of `after`. For program synthesis, inspect the exact
@@ -110,6 +249,12 @@ _CAPABILITY_GUIDANCE = {
         "(PolyProg.id sourceEncoding)`. Never place `.run` applications inside "
         "the value argument of PolyProg.const."
     ),
+    "representation_adapter": (
+        "Return only the typed PolyProg adapter required by the exact node type. "
+        "For the public base-to-Boolean-tag representation shape, preserve the "
+        "payload with PolyProg.id and add the false tag with PolyProg.const, "
+        "combined by PolyProg.pair. Do not reverse the adapter with PolyProg.snd."
+    ),
     "program_run_coherence": (
         "Prove the accepted program and executable agree pointwise. First try "
         "`by intro input; rfl`; otherwise rewrite only with accepted dependencies "
@@ -124,7 +269,114 @@ _CAPABILITY_GUIDANCE = {
         "the source input merely because the target output is a product. Normalize "
         "the program run first, then use `change` on the full iff."
     ),
+    "semantic_iff": (
+        "Build the exact source-to-target iff from the accepted forward and reverse "
+        "implication declarations. Apply each dependency at the same input; do not "
+        "re-prove, swap, or weaken either direction."
+    ),
+    "semantic_forward": (
+        "Prove only source acceptance implies target acceptance for the exact "
+        "accepted program run. Keep the input fixed and preserve the hypothesis; "
+        "for a definitionally transparent adapter, `exact accepted` may close it."
+    ),
+    "semantic_reverse": (
+        "Prove only target acceptance of the exact accepted program run implies "
+        "source acceptance. Keep the input fixed and preserve the hypothesis; "
+        "for a definitionally transparent adapter, `exact accepted` may close it."
+    ),
+    "tmkarp_primitive": (
+        "Admit exactly the public observer-bound TMKarpReduction executable as a "
+        "new V2 Primitive. Use `Primitive.ofTMPolyTime witness.f witness.polytime`; "
+        "do not reuse a pre-existing Primitive, CertifiedReduction, or final route."
+    ),
+    "tmkarp_program": (
+        "Wrap exactly the accepted tmkarp_primitive dependency with `PolyProg.atom`. "
+        "Do not inline an unrelated primitive or reuse an existing route program."
+    ),
+    "tmkarp_semantic_iff": (
+        "Reindex exactly the observer-bound `witness.correct` theorem to the "
+        "accepted tmkarp_program run. Do not replace it with correctness from an "
+        "existing CertifiedReduction or registry route."
+    ),
+    "dependent_composed_program": (
+        "Compose exactly the observer-bound successor certificate program after "
+        "the accepted tmkarp_program dependency with `PolyProg.comp after before`. "
+        "The successor alone is not a source-to-final program."
+    ),
+    "dependent_composed_semantic_iff": (
+        "Chain exactly the accepted tmkarp_semantic_iff with the observer-bound "
+        "successor certificate's `correct` theorem at the admitted program output. "
+        "Do not re-prove the first segment or reuse another final route."
+    ),
+    "program_indexed_executable": (
+        "Re-export only the executable projection of the observer-bound public "
+        "packet; do not read a template marker or reuse a route."
+    ),
+    "program_indexed_primitive": (
+        "Build the primitive from the accepted executable and the packet's "
+        "dependent direct-TM projection through the allowlisted packet helper."
+    ),
+    "program_indexed_program": (
+        "Embed exactly the accepted primitive as the one-atom final PolyProg."
+    ),
+    "program_indexed_coherence_direct_tm": (
+        "Close the typed packet admission gate for the accepted program; it must "
+        "carry both compiled direct-TM evidence and run coherence."
+    ),
+    "program_indexed_semantic_iff": (
+        "Reindex only the packet semantic theorem through the accepted program "
+        "admission gate; do not borrow a CertifiedReduction or hardness route."
+    ),
+    "gadget_reference_audit": (
+        "Re-export exactly the packet-owned source/reference invariant. This is "
+        "the first mathematical checkpoint and must not be replaced by True."
+    ),
+    "gadget_normalization_audit": (
+        "Admit exactly the packet-owned normalization invariant after the accepted "
+        "reference audit; keep the dependency explicit."
+    ),
+    "gadget_executable": (
+        "Re-export the packet gadget executable only through both accepted audit "
+        "checkpoints; do not reuse a raw source-to-target reduction."
+    ),
+    "gadget_parameter_audit": (
+        "Reindex the packet parameter/size invariant to the accepted executable."
+    ),
+    "gadget_semantic_forward": (
+        "Reindex only the packet's forward gadget implication to the accepted "
+        "executable and parameter audit."
+    ),
+    "gadget_semantic_reverse": (
+        "Reindex only the packet's reverse gadget implication to the accepted "
+        "executable and parameter audit."
+    ),
+    "gadget_direct_tm": (
+        "Reindex the packet direct-TM evidence after the accepted parameter and "
+        "two semantic checkpoints."
+    ),
+    "gadget_program": (
+        "Assemble the exact one-atom gadget program from the accepted executable "
+        "and direct-TM evidence."
+    ),
+    "gadget_composed_program": (
+        "Compose the packet-owned source normalization with exactly the accepted "
+        "gadget program."
+    ),
+    "gadget_composed_semantic_iff": (
+        "Close the source-to-target iff only from the accepted directional gadget "
+        "proofs and the exact authored gadget/composed programs."
+    ),
 }
+
+# Planner reports use the longer names for derived, non-editable projections;
+# accepting both names keeps prompt construction explicit when such a node is
+# promoted to an editable obligation by a future task schema.
+_CAPABILITY_GUIDANCE["semantic_forward_implication"] = _CAPABILITY_GUIDANCE[
+    "semantic_forward"
+]
+_CAPABILITY_GUIDANCE["semantic_reverse_implication"] = _CAPABILITY_GUIDANCE[
+    "semantic_reverse"
+]
 
 _PROOF_RECIPES = {
     "definitionally_equal": "`by\n  intro input\n  rfl`",
@@ -144,6 +396,44 @@ _PROOF_RECIPES = {
         "change false = false ∧ input = input\n  exact ⟨rfl, rfl⟩`."
     ),
     "run_coherence_rfl": "`by\n  intro input\n  rfl`",
+    "representation_adapter_false_tag": (
+        "For a base-to-Boolean-tag target, use `PolyProg.pair "
+        "(PolyProg.const source.representation StandardInstances.bool false) "
+        "(PolyProg.id source.representation)`. This preserves the payload and "
+        "does not reverse the required reduction."
+    ),
+    "semantic_forward_identity": (
+        "For a definitionally transparent adapter, prefer "
+        "`by\n  intro input accepted\n  exact accepted`."
+    ),
+    "semantic_reverse_identity": (
+        "For a definitionally transparent adapter, prefer "
+        "`by\n  intro input accepted\n  exact accepted`."
+    ),
+    "semantic_iff_from_implications": (
+        "Apply the accepted forward and reverse declarations to the same input, "
+        "then return them with `Iff.intro`/`\u27e8_, _\u27e9`."
+    ),
+    "tmkarp_primitive_admission": (
+        "Use exactly `Primitive.ofTMPolyTime witness.f witness.polytime`, where "
+        "the witness is the public exact-endpoint TMKarpReduction in the request."
+    ),
+    "tmkarp_program_atom": (
+        "Use exactly `PolyProg.atom acceptedPrimitive`; the accepted primitive "
+        "declaration is the sole executable authority for this node."
+    ),
+    "tmkarp_semantic_correct": (
+        "After unfolding or changing only the accepted generated layers, close "
+        "the exact iff with `witness.correct input`."
+    ),
+    "dependent_program_comp": (
+        "Use exactly `PolyProg.comp successor.program admittedProgram`; composition "
+        "order is after-then-before in the constructor arguments."
+    ),
+    "dependent_semantic_trans": (
+        "Use the accepted admission iff at `input`, then `.trans` the successor "
+        "certificate correctness at `admittedProgram.run input`."
+    ),
     "composition_order": (
         "Never swap execution: `(PolyProg.comp after before).run input` is "
         "`after.run (before.run input)`."
@@ -166,14 +456,54 @@ def _selected_proof_recipes(
         "composition_order": _PROOF_RECIPES["composition_order"],
         "namespace_rule": _PROOF_RECIPES["namespace_rule"],
     }
-    if capability == "semantic_proof":
+    if capability in _DEPENDENT_COMPOSED_SEMANTIC_IFF_CAPABILITIES:
+        return {
+            "dependent_semantic_trans": _PROOF_RECIPES[
+                "dependent_semantic_trans"
+            ],
+            **common,
+        }
+    if capability in _TMKARP_SEMANTIC_IFF_CAPABILITIES:
+        return {
+            "tmkarp_semantic_correct": _PROOF_RECIPES[
+                "tmkarp_semantic_correct"
+            ],
+            **common,
+        }
+    if capability in _SEMANTIC_IFF_CAPABILITIES:
         if "then False else hub.accepts" in public_text:
             selected = "false_tag"
         elif "input.1 = false ∧" in public_text:
             selected = "conjunction_identity"
         else:
             selected = "definitionally_equal"
-        return {selected: _PROOF_RECIPES[selected], **common}
+        recipes = {selected: _PROOF_RECIPES[selected]}
+        if capability == "semantic_iff":
+            recipes["semantic_iff_from_implications"] = _PROOF_RECIPES[
+                "semantic_iff_from_implications"
+            ]
+        return {**recipes, **common}
+    if capability in _SEMANTIC_FORWARD_CAPABILITIES:
+        return {
+            "semantic_forward_identity": _PROOF_RECIPES[
+                "semantic_forward_identity"
+            ],
+            **common,
+        }
+    if capability in _SEMANTIC_REVERSE_CAPABILITIES:
+        return {
+            "semantic_reverse_identity": _PROOF_RECIPES[
+                "semantic_reverse_identity"
+            ],
+            **common,
+        }
+    if capability == "representation_adapter":
+        return {
+            "representation_adapter_false_tag": _PROOF_RECIPES[
+                "representation_adapter_false_tag"
+            ],
+            **common,
+        }
     if capability == "mapping_invariant":
         return {
             "mapping_product_identity": _PROOF_RECIPES["mapping_product_identity"],
@@ -184,7 +514,747 @@ def _selected_proof_recipes(
             "run_coherence_rfl": _PROOF_RECIPES["run_coherence_rfl"],
             **common,
         }
+    if capability in _TMKARP_PRIMITIVE_CAPABILITIES:
+        return {
+            "tmkarp_primitive_admission": _PROOF_RECIPES[
+                "tmkarp_primitive_admission"
+            ],
+            **common,
+        }
+    if capability in _TMKARP_PROGRAM_CAPABILITIES:
+        return {
+            "tmkarp_program_atom": _PROOF_RECIPES["tmkarp_program_atom"],
+            **common,
+        }
+    if capability in _DEPENDENT_COMPOSED_PROGRAM_CAPABILITIES:
+        return {
+            "dependent_program_comp": _PROOF_RECIPES["dependent_program_comp"],
+            **common,
+        }
     return common
+
+
+def _observed_capability_terms(task: NPHardAuthoringTaskV2) -> dict[str, Any]:
+    observed = getattr(task, "observed_capability_terms", ())
+    if isinstance(observed, Mapping):
+        return dict(observed)
+    try:
+        return dict(observed)
+    except (TypeError, ValueError):
+        return {}
+
+
+def _observed_capability_exact_types(
+    task: NPHardAuthoringTaskV2,
+) -> dict[str, Any]:
+    observed = getattr(task, "observed_capability_exact_types", ())
+    if isinstance(observed, Mapping):
+        return dict(observed)
+    try:
+        return dict(observed)
+    except (TypeError, ValueError):
+        return {}
+
+
+def _observed_capability_term(
+    *, task: NPHardAuthoringTaskV2, node: NPHardAuthoringObligationV2
+) -> str | None:
+    """Read a public observer witness from old or new task serializations."""
+
+    observed = _observed_capability_terms(task)
+    candidate: Any = observed.get(node.node_id)
+    if not isinstance(candidate, str) or not candidate.strip():
+        return None
+    _assert_public(candidate, label="observed capability term")
+    return candidate.strip()
+
+
+def _tmkarp_admission_source(task: NPHardAuthoringTaskV2) -> dict[str, str]:
+    """Resolve one immutable public TMKarp witness without target-name routing."""
+
+    task_class = getattr(task, "task_class", None)
+    if task_class not in _TMKARP_ADMISSION_TASK_CLASSES:
+        _fail(
+            "candidate_dependency_stale",
+            "TMKarp admission source requested for a different task class",
+        )
+    primitive_nodes = tuple(
+        node
+        for node in task.gap_nodes
+        if node.capability in _TMKARP_PRIMITIVE_CAPABILITIES
+    )
+    if len(primitive_nodes) != 1:
+        _fail(
+            "candidate_dependency_stale",
+            "typed TMKarp admission DAG must expose one primitive node",
+        )
+    primitive = primitive_nodes[0]
+    witness = _observed_capability_term(task=task, node=primitive)
+    observed_terms = _observed_capability_terms(task)
+    exact_types = _observed_capability_exact_types(task)
+    exact_type = exact_types.get(primitive.node_id)
+    if witness is None or not isinstance(exact_type, str) or not exact_type.strip():
+        _fail(
+            "candidate_dependency_stale",
+            "typed TMKarp admission lacks its Lean-observed witness or exact type",
+        )
+    expected_observed_nodes = {primitive.node_id}
+    if task_class == "typed_tmkarp_dependent_composition_dag":
+        successor_nodes = tuple(
+            node
+            for node in task.gap_nodes
+            if node.capability in _DEPENDENT_COMPOSED_PROGRAM_CAPABILITIES
+        )
+        if len(successor_nodes) != 1:
+            _fail(
+                "candidate_dependency_stale",
+                "dependent composition DAG must expose one composed program node",
+            )
+        expected_observed_nodes.add(successor_nodes[0].node_id)
+    elif task_class == "typed_tmkarp_program_indexed_composition_dag":
+        packet_nodes = tuple(
+            node
+            for node in task.gap_nodes
+            if node.capability in _PROGRAM_INDEXED_EXECUTABLE_CAPABILITIES
+        )
+        if len(packet_nodes) != 1:
+            _fail(
+                "candidate_dependency_stale",
+                "TMKarp/program-indexed DAG must expose one packet executable node",
+            )
+        expected_observed_nodes.add(packet_nodes[0].node_id)
+    if set(observed_terms) != expected_observed_nodes or set(
+        exact_types
+    ) != expected_observed_nodes:
+        _fail(
+            "candidate_dependency_stale",
+            "typed TMKarp observer bindings do not match the exact editable source nodes",
+        )
+    _assert_public(exact_type, label="observed capability exact type")
+    admission_target = (
+        task.target_problem.term
+        if task_class == "typed_tmkarp_admission_dag"
+        else _composition_intermediate_payload(task)["term"]
+    )
+    expected_tmkarp_endpoints = (
+        task.source_problem.term + ".toEncodedDecisionProblem",
+        admission_target + ".toEncodedDecisionProblem",
+    )
+    if _exact_tmkarp_reduction_endpoints_v2(exact_type) != (
+        expected_tmkarp_endpoints
+    ):
+        _fail(
+            "candidate_exact_type_mismatch",
+            "typed TMKarp observer exact type is not the exact ordered admission reduction",
+        )
+    if witness.startswith(_TMKARP_ADMISSION_MODULE + "."):
+        admission_module = _TMKARP_ADMISSION_MODULE
+    elif (
+        task_class == "typed_tmkarp_dependent_composition_dag"
+        and witness.startswith(_SUCCESSOR_ONLY_TMKARP_ADMISSION_MODULE + ".")
+    ):
+        admission_module = _SUCCESSOR_ONLY_TMKARP_ADMISSION_MODULE
+    else:
+        _fail(
+            "candidate_dependency_stale",
+            "typed TMKarp witness escaped its closed admission authority",
+        )
+    dependencies = dict(task.dependency_hashes)
+    if (
+        admission_module not in task.allowed_imports
+        or f"module:{admission_module}" not in dependencies
+    ):
+        _fail(
+            "candidate_dependency_stale",
+            "typed TMKarp admission module is not fully content addressed",
+        )
+    if task_class == "typed_tmkarp_dependent_composition_dag":
+        intermediate = _composition_intermediate_payload(task)
+        successor_module = getattr(task, "composition_successor_module", None)
+        if not isinstance(successor_module, str) or not (
+            _staged_authoring_surface_is_exact_v2(
+                allowed_imports=task.allowed_imports,
+                public_source_files=task.public_source_files,
+                dependency_hashes=task.dependency_hashes,
+                source_module=task.source_problem.module,
+                target_module=task.target_problem.module,
+                intermediate_module=intermediate["module"],
+                authority_modules=(successor_module, admission_module),
+            )
+        ):
+            _fail(
+                "candidate_outside_edit_boundary",
+                "dependent TMKarp runtime surface differs from its exact authority closure",
+            )
+    if (
+        admission_module == _SUCCESSOR_ONLY_TMKARP_ADMISSION_MODULE
+        and "content:lean-successor-only-tmkarp-admission" not in dependencies
+    ):
+        _fail(
+            "candidate_dependency_stale",
+            "successor-only TMKarp admission lacks its dedicated content binding",
+        )
+    return {
+        "node_id": primitive.node_id,
+        "witness": witness,
+        "exact_type": exact_type.strip(),
+        "module": admission_module,
+    }
+
+
+def _composition_intermediate_payload(
+    task: NPHardAuthoringTaskV2,
+) -> dict[str, str]:
+    intermediate = getattr(task, "composition_intermediate", None)
+    if intermediate is None:
+        _fail(
+            "candidate_dependency_stale",
+            "dependent composition task lacks its exact intermediate endpoint",
+        )
+    if isinstance(intermediate, Mapping):
+        payload = dict(intermediate)
+    elif hasattr(intermediate, "to_dict"):
+        payload = dict(intermediate.to_dict())
+    else:
+        payload = {
+            "module": getattr(intermediate, "module", None),
+            "term": getattr(intermediate, "term", None),
+        }
+    if set(payload) != {"module", "term"} or not all(
+        isinstance(payload[key], str) and payload[key].strip()
+        for key in ("module", "term")
+    ):
+        _fail(
+            "candidate_dependency_stale",
+            "dependent composition intermediate endpoint is invalid",
+        )
+    for value in payload.values():
+        _assert_public(value, label="composition intermediate endpoint")
+    return {key: payload[key].strip() for key in ("module", "term")}
+
+
+def _dependent_composition_successor(
+    task: NPHardAuthoringTaskV2,
+) -> dict[str, str]:
+    """Resolve the one public middle-to-target CertifiedReduction witness."""
+
+    if getattr(task, "task_class", None) != "typed_tmkarp_dependent_composition_dag":
+        _fail(
+            "candidate_dependency_stale",
+            "dependent successor requested for a different task class",
+        )
+    composed_nodes = tuple(
+        node
+        for node in task.gap_nodes
+        if node.capability in _DEPENDENT_COMPOSED_PROGRAM_CAPABILITIES
+    )
+    if len(composed_nodes) != 1:
+        _fail(
+            "candidate_dependency_stale",
+            "dependent composition DAG must expose one composed program node",
+        )
+    node = composed_nodes[0]
+    witness = _observed_capability_term(task=task, node=node)
+    exact_type = _observed_capability_exact_types(task).get(node.node_id)
+    if witness is None or not isinstance(exact_type, str) or not exact_type.strip():
+        _fail(
+            "candidate_dependency_stale",
+            "dependent composition lacks its observer-bound successor witness",
+        )
+    _assert_public(exact_type, label="dependent successor exact type")
+    successor_module = getattr(task, "composition_successor_module", None)
+    if not isinstance(successor_module, str) or not successor_module.strip():
+        _fail(
+            "candidate_dependency_stale",
+            "dependent composition lacks its observer-bound successor module",
+        )
+    successor_module = successor_module.strip()
+    _assert_public(successor_module, label="dependent successor module")
+    if not _certified_successor_witness_owned_by_module_v2(
+        witness=witness, successor_module=successor_module
+    ):
+        _fail(
+            "fabricated_declaration_handle",
+            "dependent successor witness is not owned by its observer-bound Lean module",
+        )
+    intermediate = _composition_intermediate_payload(task)
+    admission = _tmkarp_admission_source(task)
+    dependencies = dict(task.dependency_hashes)
+    if (
+        successor_module not in task.allowed_imports
+        or dependencies.get("content:observed-capability-module:composed-program")
+        != sha256_id(successor_module)
+        or f"module:{successor_module}" not in dependencies
+    ):
+        _fail(
+            "candidate_dependency_stale",
+            "dependent successor module is not fully content addressed",
+        )
+    if admission["module"] == _SUCCESSOR_ONLY_TMKARP_ADMISSION_MODULE:
+        successor_source = getattr(task, "composition_successor_source", None)
+        successor_target = getattr(task, "composition_successor_target", None)
+        admission_observation = _observer_capability_record_payload_v2(
+            getattr(task, "composition_admission_observation", None)
+        )
+        successor_observation = _observer_capability_record_payload_v2(
+            getattr(task, "composition_successor_observation", None)
+        )
+        if admission_observation is None or successor_observation is None:
+            _fail(
+                "candidate_dependency_stale",
+                "successor-only runtime lacks complete Lean observer records",
+            )
+        if (successor_source, successor_target) != (
+            intermediate["term"],
+            task.target_problem.term,
+        ):
+            _fail(
+                "candidate_wrong_endpoint",
+                "successor-only canonical successor endpoints differ from the task chain",
+            )
+        if _exact_certified_reduction_endpoints_v2(exact_type) != (
+            successor_source,
+            successor_target,
+        ):
+            _fail(
+                "candidate_exact_type_mismatch",
+                "successor-only chain lacks one canonical ordered successor type",
+            )
+        expected_admission_record = {
+            "capability_kind": "forward_successor_only_tmkarp_admission",
+            "source": task.source_problem.term,
+            "target": intermediate["term"],
+            "witness": admission["witness"],
+            "exact_type": admission["exact_type"],
+            "module": admission["module"],
+            "authority": "lean_exact_successor_only_tmkarp_shared_source",
+        }
+        expected_successor_record = {
+            "capability_kind": "forward_certified_successor",
+            "source": successor_source,
+            "target": successor_target,
+            "witness": witness,
+            "exact_type": exact_type,
+            "module": successor_module,
+            "authority": "lean_registry_exact_certified_successor",
+        }
+        if any(
+            admission_observation[key] != value
+            for key, value in expected_admission_record.items()
+        ) or any(
+            successor_observation[key] != value
+            for key, value in expected_successor_record.items()
+        ):
+            _fail(
+                "candidate_dependency_stale",
+                "successor-only runtime facts differ from their Lean observer rows",
+            )
+        if (
+            admission_observation["target_node"]
+            != successor_observation["source_node"]
+            or admission_observation["registry_fingerprint"]
+            != successor_observation["registry_fingerprint"]
+        ):
+            _fail(
+                "candidate_wrong_endpoint",
+                "successor-only observer rows do not form one exact runtime chain",
+            )
+        if dependencies.get(
+            "content:lean-registry-fingerprint"
+        ) != sha256_id(admission_observation["registry_fingerprint"]):
+            _fail(
+                "candidate_dependency_stale",
+                "successor-only runtime observer fingerprint binding is stale",
+            )
+        expected_chain = _successor_only_observer_chain_payload_v2(
+            admission=admission_observation,
+            successor=successor_observation,
+            canonical_successor_source=successor_source,
+            canonical_successor_target=successor_target,
+        )
+        for binding, payload in (
+            (
+                "content:lean-successor-only-tmkarp-admission",
+                admission_observation,
+            ),
+            ("content:lean-certified-successor", successor_observation),
+            ("content:lean-typed-capability-chain", expected_chain),
+        ):
+            if dependencies.get(binding) != sha256_id(payload):
+                _fail(
+                    "candidate_dependency_stale",
+                    "successor-only runtime observer content binding is stale",
+                )
+        for binding, endpoint in (
+            (
+                "content:observed-composition-successor-source",
+                successor_source,
+            ),
+            (
+                "content:observed-composition-successor-target",
+                successor_target,
+            ),
+        ):
+            if dependencies.get(binding) != sha256_id(endpoint):
+                _fail(
+                    "candidate_dependency_stale",
+                    "successor-only canonical endpoint binding is stale",
+                )
+    else:
+        if (
+            getattr(task, "composition_successor_source", None) is not None
+            or getattr(task, "composition_successor_target", None) is not None
+            or getattr(task, "composition_admission_observation", None) is not None
+            or getattr(task, "composition_successor_observation", None) is not None
+        ):
+            _fail(
+                "candidate_dependency_stale",
+                "legacy dependent task carries unrelated successor-only bindings",
+            )
+        normalized_successor_endpoints = (
+            _normalized_certified_successor_exact_endpoints_v2(
+                exact_type=exact_type,
+                witness=witness,
+                successor_module=successor_module,
+                expected_source=intermediate["term"],
+                expected_target=task.target_problem.term,
+            )
+        )
+        if normalized_successor_endpoints != (
+            intermediate["term"],
+            task.target_problem.term,
+        ):
+            _fail(
+                "candidate_exact_type_mismatch",
+                "dependent successor exact type is not the ordered intermediate-to-target CertifiedReduction",
+            )
+    if witness == admission["witness"]:
+        _fail(
+            "candidate_wrong_endpoint",
+            "dependent successor collapsed into the raw admission witness",
+        )
+    return {
+        "node_id": node.node_id,
+        "witness": witness,
+        "exact_type": exact_type.strip(),
+        "module": successor_module,
+        "intermediate_module": intermediate["module"],
+        "intermediate_term": intermediate["term"],
+    }
+
+
+def _program_indexed_admission_source(
+    task: NPHardAuthoringTaskV2,
+) -> dict[str, str]:
+    """Resolve one immutable public packet without target-name routing."""
+
+    task_class = getattr(task, "task_class", None)
+    if task_class not in {
+        _PROGRAM_INDEXED_TASK_CLASS,
+        "typed_tmkarp_program_indexed_composition_dag",
+    }:
+        _fail(
+            "candidate_dependency_stale",
+            "program-indexed packet requested for a different task class",
+        )
+    executable_nodes = tuple(
+        node
+        for node in task.gap_nodes
+        if node.capability in _PROGRAM_INDEXED_EXECUTABLE_CAPABILITIES
+    )
+    if len(executable_nodes) != 1:
+        _fail(
+            "candidate_dependency_stale",
+            "program-indexed DAG must expose one executable node",
+        )
+    node = executable_nodes[0]
+    witness = _observed_capability_term(task=task, node=node)
+    exact_type = _observed_capability_exact_types(task).get(node.node_id)
+    if witness is None or not isinstance(exact_type, str) or not exact_type.strip():
+        _fail(
+            "candidate_dependency_stale",
+            "program-indexed DAG lacks its observer-bound packet or exact type",
+        )
+    observed_terms = _observed_capability_terms(task)
+    exact_types = _observed_capability_exact_types(task)
+    expected_nodes = (
+        {node.node_id}
+        if task_class == _PROGRAM_INDEXED_TASK_CLASS
+        else {"tmkarp-primitive", node.node_id}
+    )
+    if set(observed_terms) != expected_nodes or set(exact_types) != expected_nodes:
+        _fail(
+            "candidate_dependency_stale",
+            "program-indexed observer bindings differ from the executable source node",
+        )
+    if not witness.startswith(_PROGRAM_INDEXED_ADMISSION_MODULE + "."):
+        _fail(
+            "candidate_dependency_stale",
+            "program-indexed packet escaped its closed public source module",
+        )
+    _assert_public(exact_type, label="program-indexed packet exact type")
+    if "ProgramIndexedAdmissionPacket" not in exact_type:
+        _fail(
+            "candidate_exact_type_mismatch",
+            "program-indexed witness exact type is not an admission packet",
+        )
+    dependencies = dict(task.dependency_hashes)
+    if (
+        _PROGRAM_INDEXED_ADMISSION_MODULE not in task.allowed_imports
+        or f"module:{_PROGRAM_INDEXED_ADMISSION_MODULE}" not in dependencies
+    ):
+        _fail(
+            "candidate_dependency_stale",
+            "program-indexed packet module is not fully content addressed",
+        )
+    return {
+        "node_id": node.node_id,
+        "witness": witness,
+        "exact_type": exact_type.strip(),
+        "module": _PROGRAM_INDEXED_ADMISSION_MODULE,
+    }
+
+
+def _gadget_indexed_admission_source(
+    task: NPHardAuthoringTaskV2,
+) -> dict[str, str]:
+    """Resolve one immutable three-endpoint gadget packet by kind and type."""
+
+    if getattr(task, "task_class", None) != _GADGET_INDEXED_TASK_CLASS:
+        _fail(
+            "candidate_dependency_stale",
+            "gadget-indexed packet requested for a different task class",
+        )
+    reference_nodes = tuple(
+        node
+        for node in task.gap_nodes
+        if node.capability == "gadget_reference_audit"
+    )
+    if len(reference_nodes) != 1:
+        _fail(
+            "candidate_dependency_stale",
+            "gadget-indexed DAG must expose one reference-audit binding node",
+        )
+    node = reference_nodes[0]
+    witness = _observed_capability_term(task=task, node=node)
+    exact_type = _observed_capability_exact_types(task).get(node.node_id)
+    if witness is None or not isinstance(exact_type, str) or not exact_type.strip():
+        _fail(
+            "candidate_dependency_stale",
+            "gadget-indexed DAG lacks its observer-bound packet or exact type",
+        )
+    if set(_observed_capability_terms(task)) != {node.node_id} or set(
+        _observed_capability_exact_types(task)
+    ) != {node.node_id}:
+        _fail(
+            "candidate_dependency_stale",
+            "gadget-indexed observer bindings differ from the reference-audit node",
+        )
+    if not witness.startswith(_GADGET_INDEXED_ADMISSION_MODULE + "."):
+        _fail(
+            "candidate_dependency_stale",
+            "gadget-indexed packet escaped its closed public source module",
+        )
+    _assert_public(exact_type, label="gadget-indexed packet exact type")
+    intermediate = _composition_intermediate_payload(task)
+    if not _staged_authoring_surface_is_exact_v2(
+        allowed_imports=task.allowed_imports,
+        public_source_files=task.public_source_files,
+        dependency_hashes=task.dependency_hashes,
+        source_module=task.source_problem.module,
+        target_module=task.target_problem.module,
+        intermediate_module=intermediate["module"],
+        authority_modules=(_GADGET_INDEXED_ADMISSION_MODULE,),
+    ):
+        _fail(
+            "candidate_outside_edit_boundary",
+            "gadget-indexed runtime surface differs from its exact packet closure",
+        )
+    if _exact_gadget_packet_endpoints_v2(exact_type) != (
+        task.source_problem.term,
+        intermediate["term"],
+        task.target_problem.term,
+    ):
+        _fail(
+            "candidate_exact_type_mismatch",
+            "gadget-indexed packet does not bind the task's ordered endpoints",
+        )
+    dependencies = dict(task.dependency_hashes)
+    if (
+        _GADGET_INDEXED_ADMISSION_MODULE not in task.allowed_imports
+        or f"module:{_GADGET_INDEXED_ADMISSION_MODULE}" not in dependencies
+        or "content:lean-gadget-indexed-packet" not in dependencies
+    ):
+        _fail(
+            "candidate_dependency_stale",
+            "gadget-indexed packet module is not fully content addressed",
+        )
+    return {
+        "node_id": node.node_id,
+        "witness": witness,
+        "exact_type": exact_type.strip(),
+        "module": _GADGET_INDEXED_ADMISSION_MODULE,
+        "reference_module": intermediate["module"],
+        "reference_term": intermediate["term"],
+    }
+
+
+def _canonical_lean_body(body: str) -> str:
+    return " ".join(body.strip().split())
+
+
+def _validate_tmkarp_patch_binding(
+    *, task: NPHardAuthoringTaskV2, request: NPHardNodeRequestV1, body: str
+) -> None:
+    """Keep each admission edit on its observer/dependency-derived constructor."""
+
+    task_class = getattr(task, "task_class", None)
+    if task_class not in _TMKARP_ADMISSION_TASK_CLASSES:
+        return
+    allowed_capabilities = (
+        _TMKARP_PRIMITIVE_CAPABILITIES
+        | _TMKARP_PROGRAM_CAPABILITIES
+        | _TMKARP_SEMANTIC_IFF_CAPABILITIES
+    )
+    if (
+        task_class == "typed_tmkarp_program_indexed_composition_dag"
+        and request.node.capability not in allowed_capabilities
+    ):
+        return
+    if task_class == "typed_tmkarp_dependent_composition_dag":
+        allowed_capabilities |= (
+            _DEPENDENT_COMPOSED_PROGRAM_CAPABILITIES
+            | _DEPENDENT_COMPOSED_SEMANTIC_IFF_CAPABILITIES
+        )
+    if request.node.capability not in allowed_capabilities:
+        _fail(
+            "candidate_outside_edit_boundary",
+            "typed TMKarp admission exposed an unsupported editable capability",
+        )
+    forbidden_route_reuse = (
+        "CertifiedReduction",
+        "NativeTMNPHard",
+        "TypedNPHardResult",
+        "by_np_hard_resolver",
+        "authoredExactNPHardness",
+        "finalRoute",
+        "authoredTargetResult",
+        "ComplexityReduction.Legacy",
+        "ComplexityReduction.Karp21.",
+    )
+    if any(marker in body for marker in forbidden_route_reuse):
+        _fail(
+            "candidate_outside_edit_boundary",
+            "typed TMKarp admission body attempted to reuse a final route or hardness proof",
+        )
+    expected = _recommended_first_body(
+        task=task, request=request, public_sources={}
+    )
+    if expected is None or _canonical_lean_body(body) != _canonical_lean_body(
+        expected
+    ):
+        _fail(
+            "candidate_dependency_stale",
+            "typed TMKarp admission body drifted from its exact observer/dependency binding",
+        )
+
+
+def _validate_program_indexed_patch_binding(
+    *, task: NPHardAuthoringTaskV2, request: NPHardNodeRequestV1, body: str
+) -> None:
+    """Bind every packet edit to one observer/dependency-derived constructor."""
+
+    if getattr(task, "task_class", None) not in {
+        _PROGRAM_INDEXED_TASK_CLASS,
+        "typed_tmkarp_program_indexed_composition_dag",
+    }:
+        return
+    allowed_capabilities = (
+        _PROGRAM_INDEXED_EXECUTABLE_CAPABILITIES
+        | _PROGRAM_INDEXED_PRIMITIVE_CAPABILITIES
+        | _PROGRAM_INDEXED_PROGRAM_CAPABILITIES
+        | _PROGRAM_INDEXED_ADMISSION_CAPABILITIES
+        | _PROGRAM_INDEXED_SEMANTIC_CAPABILITIES
+        | _PROGRAM_INDEXED_COMPOSED_PROGRAM_CAPABILITIES
+        | _PROGRAM_INDEXED_COMPOSED_SEMANTIC_CAPABILITIES
+    )
+    if (
+        getattr(task, "task_class", None)
+        == "typed_tmkarp_program_indexed_composition_dag"
+        and request.node.capability not in allowed_capabilities
+    ):
+        return
+    if request.node.capability not in allowed_capabilities:
+        _fail(
+            "candidate_outside_edit_boundary",
+            "program-indexed DAG exposed an unsupported editable capability",
+        )
+    forbidden_reuse = (
+        "CertifiedReduction",
+        "NativeTMNPHard",
+        "TypedNPHardResult",
+        "by_np_hard_resolver",
+        "authoredExactNPHardness",
+        "finalRoute",
+        "authoredTargetResult",
+        "ProgramIndexedReductionTemplate",
+        ".template",
+        "ComplexityReduction.Legacy",
+        "ComplexityReduction.Karp21.",
+    )
+    if any(marker in body for marker in forbidden_reuse):
+        _fail(
+            "candidate_outside_edit_boundary",
+            "program-indexed body attempted to reuse a template, route, or hardness proof",
+        )
+    expected = _recommended_first_body(task=task, request=request, public_sources={})
+    if expected is None or _canonical_lean_body(body) != _canonical_lean_body(
+        expected
+    ):
+        _fail(
+            "candidate_dependency_stale",
+            "program-indexed body drifted from its exact packet/dependency binding",
+        )
+
+
+def _validate_gadget_indexed_patch_binding(
+    *, task: NPHardAuthoringTaskV2, request: NPHardNodeRequestV1, body: str
+) -> None:
+    """Keep every gadget edit on its exact packet/dependency constructor."""
+
+    if getattr(task, "task_class", None) != _GADGET_INDEXED_TASK_CLASS:
+        return
+    if request.node.capability not in _GADGET_INDEXED_CAPABILITIES:
+        _fail(
+            "candidate_outside_edit_boundary",
+            "gadget-indexed DAG exposed an unsupported editable capability",
+        )
+    forbidden_reuse = (
+        "CertifiedReduction",
+        "TMKarpReduction",
+        "NativeTMNPHard",
+        "TypedNPHardResult",
+        "by_np_hard_resolver",
+        "authoredExactNPHardness",
+        "finalRoute",
+        "authoredTargetResult",
+        "SuccessorAuthoringSources",
+        "ComplexityReduction.Legacy",
+        "ComplexityReduction.Karp21.",
+    )
+    if any(marker in body for marker in forbidden_reuse):
+        _fail(
+            "candidate_outside_edit_boundary",
+            "gadget-indexed body attempted to reuse a shortcut, route, or hardness proof",
+        )
+    expected = _recommended_first_body(task=task, request=request, public_sources={})
+    if expected is None or _canonical_lean_body(body) != _canonical_lean_body(
+        expected
+    ):
+        _fail(
+            "candidate_dependency_stale",
+            "gadget-indexed body drifted from its exact packet/dependency binding",
+        )
 
 
 def _recommended_first_body(
@@ -196,7 +1266,433 @@ def _recommended_first_body(
     """Build a public-shape candidate; the model must still submit the bound patch."""
 
     capability = request.node.capability
-    if capability == "semantic_proof":
+    dependency_nodes = tuple(
+        node for node in task.gap_nodes if node.node_id in request.node.depends_on
+    )
+    if capability in _GADGET_INDEXED_CAPABILITIES:
+        packet = _gadget_indexed_admission_source(task)["witness"]
+        nodes = {node.capability: node for node in task.gap_nodes}
+        if set(_GADGET_INDEXED_CAPABILITIES) - set(nodes):
+            _fail(
+                "candidate_dependency_stale",
+                "gadget-indexed DAG is missing a required exact capability node",
+            )
+        reference = nodes["gadget_reference_audit"]
+        normalization = nodes["gadget_normalization_audit"]
+        executable = nodes["gadget_executable"]
+        parameter = nodes["gadget_parameter_audit"]
+        forward = nodes["gadget_semantic_forward"]
+        reverse = nodes["gadget_semantic_reverse"]
+        direct_tm = nodes["gadget_direct_tm"]
+        gadget_program = nodes["gadget_program"]
+        composed_program = nodes["gadget_composed_program"]
+        namespace = _GADGET_INDEXED_PACKET_NAMESPACE
+        if capability == "gadget_reference_audit":
+            if dependency_nodes:
+                _fail(
+                    "candidate_dependency_stale",
+                    "gadget reference audit unexpectedly has an authored dependency",
+                )
+            return f"by\n  exact {namespace}.toReferenceAudit {packet}"
+        if capability == "gadget_normalization_audit":
+            if dependency_nodes != (reference,):
+                _fail(
+                    "candidate_dependency_stale",
+                    "gadget normalization audit is not bound to the reference audit",
+                )
+            return (
+                f"by\n  exact {namespace}.toNormalizationAudit {packet} "
+                f"{reference.declaration}"
+            )
+        if capability == "gadget_executable":
+            if dependency_nodes != (reference, normalization):
+                _fail(
+                    "candidate_dependency_stale",
+                    "gadget executable is not bound to both normalization audits",
+                )
+            return (
+                f"by\n  exact {namespace}.toGadgetExecutable {packet} "
+                f"{reference.declaration} {normalization.declaration}"
+            )
+        if capability == "gadget_parameter_audit":
+            if dependency_nodes != (executable,):
+                _fail(
+                    "candidate_dependency_stale",
+                    "gadget parameter audit is not bound to the executable",
+                )
+            return (
+                f"by\n  exact {namespace}.toParameterAudit {packet} "
+                f"{executable.declaration} rfl"
+            )
+        if capability == "gadget_semantic_forward":
+            if dependency_nodes != (executable, parameter):
+                _fail(
+                    "candidate_dependency_stale",
+                    "gadget forward semantic is not bound to executable/parameter audits",
+                )
+            return (
+                f"by\n  exact {namespace}.toSemanticForward {packet} "
+                f"{executable.declaration} rfl {parameter.declaration}"
+            )
+        if capability == "gadget_semantic_reverse":
+            if dependency_nodes != (executable, parameter):
+                _fail(
+                    "candidate_dependency_stale",
+                    "gadget reverse semantic is not bound to executable/parameter audits",
+                )
+            return (
+                f"by\n  exact {namespace}.toSemanticReverse {packet} "
+                f"{executable.declaration} rfl {parameter.declaration}"
+            )
+        if capability == "gadget_direct_tm":
+            if dependency_nodes != (executable, parameter, forward, reverse):
+                _fail(
+                    "candidate_dependency_stale",
+                    "gadget direct-TM node is not bound to all exact gadget audits",
+                )
+            return (
+                f"by\n  exact {namespace}.toGadgetDirectTM {packet} "
+                f"{executable.declaration} rfl {parameter.declaration} "
+                f"{forward.declaration} {reverse.declaration}"
+            )
+        if capability == "gadget_program":
+            if dependency_nodes != (executable, direct_tm):
+                _fail(
+                    "candidate_dependency_stale",
+                    "gadget program is not bound to executable/direct-TM nodes",
+                )
+            return (
+                f"by\n  exact {namespace}.toGadgetProgram {packet} "
+                f"{executable.declaration} {direct_tm.declaration}"
+            )
+        if capability == "gadget_composed_program":
+            if dependency_nodes != (gadget_program,):
+                _fail(
+                    "candidate_dependency_stale",
+                    "gadget composed program is not bound to the gadget program",
+                )
+            return (
+                f"by\n  exact {namespace}.toComposedProgram {packet} "
+                f"{gadget_program.declaration}"
+            )
+        if capability == "gadget_composed_semantic_iff":
+            if dependency_nodes != (
+                forward,
+                reverse,
+                gadget_program,
+                composed_program,
+            ):
+                _fail(
+                    "candidate_dependency_stale",
+                    "gadget final semantic does not bind the complete authored chain",
+                )
+            return (
+                f"by\n  exact {namespace}.toComposedSemanticProof {packet} "
+                f"{executable.declaration} {forward.declaration} "
+                f"{reverse.declaration} {gadget_program.declaration} rfl "
+                f"{composed_program.declaration} rfl"
+            )
+    if capability in (
+        _PROGRAM_INDEXED_EXECUTABLE_CAPABILITIES
+        | _PROGRAM_INDEXED_PRIMITIVE_CAPABILITIES
+        | _PROGRAM_INDEXED_PROGRAM_CAPABILITIES
+        | _PROGRAM_INDEXED_ADMISSION_CAPABILITIES
+        | _PROGRAM_INDEXED_SEMANTIC_CAPABILITIES
+    ):
+        packet = _program_indexed_admission_source(task)["witness"]
+        executable_nodes = tuple(
+            node
+            for node in task.gap_nodes
+            if node.capability in _PROGRAM_INDEXED_EXECUTABLE_CAPABILITIES
+        )
+        primitive_nodes = tuple(
+            node
+            for node in task.gap_nodes
+            if node.capability in _PROGRAM_INDEXED_PRIMITIVE_CAPABILITIES
+        )
+        program_nodes = tuple(
+            node
+            for node in task.gap_nodes
+            if node.capability in _PROGRAM_INDEXED_PROGRAM_CAPABILITIES
+        )
+        admission_nodes = tuple(
+            node
+            for node in task.gap_nodes
+            if node.capability in _PROGRAM_INDEXED_ADMISSION_CAPABILITIES
+        )
+        if not (
+            len(executable_nodes)
+            == len(primitive_nodes)
+            == len(program_nodes)
+            == len(admission_nodes)
+            == 1
+        ):
+            _fail(
+                "candidate_dependency_stale",
+                "program-indexed DAG does not identify one executable/primitive/program/admission chain",
+            )
+        executable = executable_nodes[0]
+        primitive = primitive_nodes[0]
+        program = program_nodes[0]
+        admission = admission_nodes[0]
+        if capability in _PROGRAM_INDEXED_EXECUTABLE_CAPABILITIES:
+            if dependency_nodes:
+                _fail(
+                    "candidate_dependency_stale",
+                    "program-indexed executable unexpectedly depends on an authored node",
+                )
+            return (
+                "by\n  exact "
+                f"{_PROGRAM_INDEXED_PACKET_NAMESPACE}.toExecutable {packet}"
+            )
+        if capability in _PROGRAM_INDEXED_PRIMITIVE_CAPABILITIES:
+            if dependency_nodes != (executable,):
+                _fail(
+                    "candidate_dependency_stale",
+                    "program-indexed primitive is not bound to its executable dependency",
+                )
+            return (
+                "by\n  exact "
+                f"{_PROGRAM_INDEXED_PACKET_NAMESPACE}.toPrimitive {packet} "
+                f"{executable.declaration} rfl"
+            )
+        if capability in _PROGRAM_INDEXED_PROGRAM_CAPABILITIES:
+            if dependency_nodes != (primitive,):
+                _fail(
+                    "candidate_dependency_stale",
+                    "program-indexed program is not bound to its primitive dependency",
+                )
+            return (
+                "by\n  exact "
+                f"{_PROGRAM_INDEXED_PACKET_NAMESPACE}.toProgram "
+                f"{primitive.declaration}"
+            )
+        if capability in _PROGRAM_INDEXED_ADMISSION_CAPABILITIES:
+            if dependency_nodes != (program,):
+                _fail(
+                    "candidate_dependency_stale",
+                    "program-indexed admission is not bound to its program dependency",
+                )
+            return (
+                "by\n  exact "
+                f"{_PROGRAM_INDEXED_PACKET_NAMESPACE}."
+                "ProgramRunCoherenceDirectTM.ofProgram "
+                f"{packet} {program.declaration} rfl"
+            )
+        if capability in _PROGRAM_INDEXED_SEMANTIC_CAPABILITIES:
+            if dependency_nodes != (admission,):
+                _fail(
+                    "candidate_dependency_stale",
+                    "program-indexed semantic is not bound to its admission dependency",
+                )
+            return (
+                "by\n  exact "
+                f"{_PROGRAM_INDEXED_PACKET_NAMESPACE}.toSemanticProof {packet} "
+                f"{program.declaration} {admission.declaration}"
+            )
+
+    if capability in (
+        _PROGRAM_INDEXED_COMPOSED_PROGRAM_CAPABILITIES
+        | _PROGRAM_INDEXED_COMPOSED_SEMANTIC_CAPABILITIES
+    ):
+        program_nodes = tuple(
+            node
+            for node in task.gap_nodes
+            if node.capability in _PROGRAM_INDEXED_PROGRAM_CAPABILITIES
+        )
+        tmkarp_programs = tuple(
+            node
+            for node in task.gap_nodes
+            if node.capability in _TMKARP_PROGRAM_CAPABILITIES
+        )
+        tmkarp_semantics = tuple(
+            node
+            for node in task.gap_nodes
+            if node.capability in _TMKARP_SEMANTIC_IFF_CAPABILITIES
+        )
+        packet_semantics = tuple(
+            node
+            for node in task.gap_nodes
+            if node.capability in _PROGRAM_INDEXED_SEMANTIC_CAPABILITIES
+        )
+        composed_programs = tuple(
+            node
+            for node in task.gap_nodes
+            if node.capability in _PROGRAM_INDEXED_COMPOSED_PROGRAM_CAPABILITIES
+        )
+        if not (
+            len(program_nodes)
+            == len(tmkarp_programs)
+            == len(tmkarp_semantics)
+            == len(packet_semantics)
+            == len(composed_programs)
+            == 1
+        ):
+            _fail(
+                "candidate_dependency_stale",
+                "TMKarp/program-indexed composition lacks one exact authored chain",
+            )
+        program = program_nodes[0]
+        tmkarp_program = tmkarp_programs[0]
+        tmkarp_semantic = tmkarp_semantics[0]
+        packet_semantic = packet_semantics[0]
+        composed_program = composed_programs[0]
+        if capability in _PROGRAM_INDEXED_COMPOSED_PROGRAM_CAPABILITIES:
+            if dependency_nodes != (tmkarp_program, program):
+                _fail(
+                    "candidate_dependency_stale",
+                    "composed program is not bound to both exact authored programs",
+                )
+            return (
+                "by\n  exact PolyProg.comp "
+                f"{program.declaration} {tmkarp_program.declaration}"
+            )
+        if dependency_nodes != (
+            tmkarp_semantic,
+            packet_semantic,
+            composed_program,
+        ):
+            _fail(
+                "candidate_dependency_stale",
+                "composed semantic does not bind both segment semantics and final program",
+            )
+        source = task.source_problem.term
+        target = task.target_problem.term
+        return (
+            "by\n  intro input\n"
+            f"  change {source}.accepts input ↔\n"
+            f"    {target}.accepts ({program.declaration}.run "
+            f"({tmkarp_program.declaration}.run input))\n"
+            f"  exact ({tmkarp_semantic.declaration} input).trans\n"
+            f"    ({packet_semantic.declaration} "
+            f"({tmkarp_program.declaration}.run input))"
+        )
+    if capability in (
+        _TMKARP_PRIMITIVE_CAPABILITIES
+        | _TMKARP_PROGRAM_CAPABILITIES
+        | _TMKARP_SEMANTIC_IFF_CAPABILITIES
+    ):
+        admission = _tmkarp_admission_source(task)
+        witness = admission["witness"]
+        primitive_nodes = tuple(
+            node
+            for node in task.gap_nodes
+            if node.capability in _TMKARP_PRIMITIVE_CAPABILITIES
+        )
+        program_nodes = tuple(
+            node
+            for node in task.gap_nodes
+            if node.capability in _TMKARP_PROGRAM_CAPABILITIES
+        )
+        if len(primitive_nodes) != 1 or len(program_nodes) != 1:
+            _fail(
+                "candidate_dependency_stale",
+                "typed TMKarp admission DAG does not identify one primitive and program",
+            )
+        primitive = primitive_nodes[0]
+        program = program_nodes[0]
+        if capability in _TMKARP_PRIMITIVE_CAPABILITIES:
+            return (
+                "by\n  exact Primitive.ofTMPolyTime "
+                f"{witness}.f {witness}.polytime"
+            )
+        if capability in _TMKARP_PROGRAM_CAPABILITIES:
+            if dependency_nodes != (primitive,):
+                _fail(
+                    "candidate_dependency_stale",
+                    "typed TMKarp program is not bound to its one primitive dependency",
+                )
+            return f"by\n  exact PolyProg.atom {primitive.declaration}"
+        if dependency_nodes != (program,):
+            _fail(
+                "candidate_dependency_stale",
+                "typed TMKarp semantic is not bound to its one program dependency",
+            )
+        return (
+            "by\n  intro input\n  simpa only ["
+            f"{program.declaration}, {primitive.declaration}, "
+            "PolyProg.run_atom, Primitive.run_ofTMPolyTime] using\n"
+            f"    {witness}.correct input"
+        )
+    if capability in (
+        _DEPENDENT_COMPOSED_PROGRAM_CAPABILITIES
+        | _DEPENDENT_COMPOSED_SEMANTIC_IFF_CAPABILITIES
+    ):
+        successor = _dependent_composition_successor(task)
+        admission_programs = tuple(
+            node
+            for node in task.gap_nodes
+            if node.capability in _TMKARP_PROGRAM_CAPABILITIES
+        )
+        admission_semantics = tuple(
+            node
+            for node in task.gap_nodes
+            if node.capability in _TMKARP_SEMANTIC_IFF_CAPABILITIES
+        )
+        composed_programs = tuple(
+            node
+            for node in task.gap_nodes
+            if node.capability in _DEPENDENT_COMPOSED_PROGRAM_CAPABILITIES
+        )
+        if not (
+            len(admission_programs)
+            == len(admission_semantics)
+            == len(composed_programs)
+            == 1
+        ):
+            _fail(
+                "candidate_dependency_stale",
+                "dependent composition DAG does not identify its unique authored layers",
+            )
+        admission_program = admission_programs[0]
+        admission_semantic = admission_semantics[0]
+        composed_program = composed_programs[0]
+        if capability in _DEPENDENT_COMPOSED_PROGRAM_CAPABILITIES:
+            if request.node != composed_program or dependency_nodes != (
+                admission_program,
+            ):
+                _fail(
+                    "candidate_dependency_stale",
+                    "dependent composed program is not bound to the admission program",
+                )
+            return (
+                "by\n  exact PolyProg.comp "
+                f"{successor['witness']}.program {admission_program.declaration}"
+            )
+        if dependency_nodes != (admission_semantic, composed_program):
+            _fail(
+                "candidate_dependency_stale",
+                "dependent composed semantic does not bind both authored dependencies",
+            )
+        source = task.source_problem.term
+        target = task.target_problem.term
+        return (
+            "by\n  intro input\n"
+            f"  change {source}.accepts input ↔\n"
+            f"    {target}.accepts ({successor['witness']}.program.run "
+            f"({admission_program.declaration}.run input))\n"
+            f"  exact ({admission_semantic.declaration} input).trans\n"
+            f"    ({successor['witness']}.correct "
+            f"({admission_program.declaration}.run input))"
+        )
+    if capability == "semantic_iff":
+        forward = [
+            node
+            for node in dependency_nodes
+            if node.capability in _SEMANTIC_FORWARD_CAPABILITIES
+        ]
+        reverse = [
+            node
+            for node in dependency_nodes
+            if node.capability in _SEMANTIC_REVERSE_CAPABILITIES
+        ]
+        if len(forward) == len(reverse) == 1:
+            return (
+                "by\n  intro input\n  exact \u27e8"
+                f"{forward[0].declaration} input, "
+                f"{reverse[0].declaration} input\u27e9"
+            )
+    if capability in _SEMANTIC_IFF_CAPABILITIES:
         recipes = _selected_proof_recipes(
             capability=capability, public_sources=public_sources
         )
@@ -211,7 +1707,36 @@ def _recommended_first_body(
                 "hub.accepts input\n  exact ⟨fun accepted => ⟨rfl, accepted⟩, "
                 "fun accepted => accepted.2⟩"
             )
+        public_reuse = _public_semantic_reuse_body(
+            task=task, public_sources=public_sources
+        )
+        if public_reuse is not None:
+            return public_reuse
         return "by\n  intro input\n  rfl"
+    if capability in _SEMANTIC_FORWARD_CAPABILITIES:
+        semantic_dependencies = [
+            node
+            for node in dependency_nodes
+            if node.capability in _SEMANTIC_IFF_CAPABILITIES
+        ]
+        if len(semantic_dependencies) == 1:
+            return (
+                "by\n  intro input accepted\n  exact "
+                f"({semantic_dependencies[0].declaration} input).mp accepted"
+            )
+        return "by\n  intro input accepted\n  exact accepted"
+    if capability in _SEMANTIC_REVERSE_CAPABILITIES:
+        semantic_dependencies = [
+            node
+            for node in dependency_nodes
+            if node.capability in _SEMANTIC_IFF_CAPABILITIES
+        ]
+        if len(semantic_dependencies) == 1:
+            return (
+                "by\n  intro input accepted\n  exact "
+                f"({semantic_dependencies[0].declaration} input).mpr accepted"
+            )
+        return "by\n  intro input accepted\n  exact accepted"
     if capability == "mapping_invariant":
         return (
             "by\n  intro input\n  change false = false ∧ input = input\n"
@@ -221,6 +1746,21 @@ def _recommended_first_body(
         return "by\n  intro input\n  rfl"
     if capability == "reduction_executable":
         return "fun input => (false, input)"
+    if capability == "representation_adapter":
+        observed_term = _observed_capability_term(task=task, node=request.node)
+        if observed_term is not None:
+            return f"by\n  exact {observed_term}"
+        if getattr(task, "task_class", None) == "typed_capability_dag":
+            _fail(
+                "candidate_dependency_stale",
+                "typed representation adapter lacks its Lean-observed witness",
+            )
+        source = task.source_problem.term
+        return (
+            f"PolyProg.pair (PolyProg.const {source}.representation "
+            "StandardInstances.bool false) "
+            f"(PolyProg.id {source}.representation)"
+        )
     if capability == "poly_program":
         if task.task_class == "program_composition":
             first, second = task.allowed_primitives
@@ -233,6 +1773,77 @@ def _recommended_first_body(
                 f"(PolyProg.id {source}.representation)"
             )
     return None
+
+
+def _public_theorem_names(public_sources: Mapping[str, str]) -> tuple[str, ...]:
+    declarations: list[str] = []
+    for source in public_sources.values():
+        scopes: list[str | None] = []
+        for raw_line in source.splitlines():
+            line = raw_line.strip()
+            namespace_match = re.fullmatch(r"namespace\s+([A-Za-z0-9_.']+)", line)
+            if namespace_match:
+                scopes.append(namespace_match.group(1))
+                continue
+            if re.fullmatch(r"section(?:\s+[A-Za-z0-9_.']+)?", line):
+                scopes.append(None)
+                continue
+            if re.fullmatch(r"end(?:\s+[A-Za-z0-9_.']+)?", line):
+                if scopes:
+                    scopes.pop()
+                continue
+            declaration_match = re.match(
+                r"(?:theorem|lemma)\s+([A-Za-z0-9_.']+)", line
+            )
+            if declaration_match:
+                name = declaration_match.group(1)
+                declarations.append(
+                    ".".join((*tuple(scope for scope in scopes if scope), name))
+                )
+    return tuple(dict.fromkeys(declarations))
+
+
+def _public_semantic_reuse_body(
+    *, task: NPHardAuthoringTaskV2, public_sources: Mapping[str, str]
+) -> str | None:
+    """Build a generic public-theorem reuse recipe when every role is unique."""
+
+    theorem_names = _public_theorem_names(public_sources)
+    source_base = task.source_problem.term.rsplit(".", 1)[-1]
+    target_base = task.target_problem.term.rsplit(".", 1)[-1]
+    program_bases = tuple(
+        primitive.rsplit(".", 1)[-1] for primitive in task.allowed_primitives
+    )
+
+    def unique_short(short_name: str) -> str | None:
+        matched = [name for name in theorem_names if name.rsplit(".", 1)[-1] == short_name]
+        return matched[0] if len(matched) == 1 else None
+
+    source_accepts = unique_short(f"{source_base}_accepts")
+    target_accepts = unique_short(f"{target_base}_accepts")
+    program_runs = [
+        name
+        for base in program_bases
+        if (name := unique_short(f"{base}_run")) is not None
+    ]
+    correctness = [
+        name
+        for name in theorem_names
+        if name.rsplit(".", 1)[-1].endswith("_correct")
+    ]
+    if (
+        source_accepts is None
+        or target_accepts is None
+        or len(program_runs) != 1
+        or len(correctness) != 1
+    ):
+        return None
+    return (
+        "by\n"
+        "  intro input\n"
+        f"  simpa only [{source_accepts}, {target_accepts}, {program_runs[0]}] using\n"
+        f"    {correctness[0]} input"
+    )
 
 _QUARANTINED_MARKERS = (
     ".Oracles.",
@@ -261,6 +1872,16 @@ def _tagged_file_hash(path: Path) -> str:
     return f"sha256:{sha256_file(path)}"
 
 
+def _deletion_failure_mentions_declaration(
+    command: CommandResult, declaration: str
+) -> bool:
+    """Accept only a real Lean unknown-declaration failure for N-1 audits."""
+
+    return deletion_command_matches_declaration_v2(
+        command.to_dict(), declaration
+    )
+
+
 def _exact_keys(value: Mapping[str, Any], expected: set[str], *, label: str) -> None:
     if set(value) != expected:
         _fail(
@@ -276,6 +1897,52 @@ def _assert_public(value: str, *, label: str) -> None:
         _fail("oracle_or_gold_import", f"{label} references quarantined material")
 
 
+def _assert_program_indexed_prompt_surface(
+    public_sources: Mapping[str, str],
+) -> None:
+    """Reject implementation/template leakage from typed packet prompts."""
+
+    forbidden = (
+        "ProgramIndexedReductionTemplate",
+        "def template",
+        ".template",
+        "CertifiedReduction",
+        "NativeTMNPHard",
+        "finalRoute",
+    )
+    for name, source in public_sources.items():
+        marker = next((item for item in forbidden if item in source), None)
+        if marker is not None:
+            _fail(
+                "candidate_outside_edit_boundary",
+                f"program-indexed public source {name} exposes forbidden marker {marker}",
+            )
+
+
+def _assert_gadget_indexed_prompt_surface(
+    public_sources: Mapping[str, str],
+    *,
+    allowed_imports: tuple[str, ...] = (),
+    dependency_names: tuple[str, ...] = (),
+) -> None:
+    """Keep the structured gadget prompt isolated from successor-only reuse."""
+
+    if any(
+        "SuccessorAuthoringSources" in value or "SuccessorOnly" in value
+        for value in (*allowed_imports, *dependency_names)
+    ):
+        _fail(
+            "candidate_outside_edit_boundary",
+            "gadget-indexed task imports a successor-only shortcut authority",
+        )
+    for name, source in public_sources.items():
+        if "SuccessorAuthoringSources" in name or "SuccessorOnly" in source:
+            _fail(
+                "candidate_outside_edit_boundary",
+                "gadget-indexed public surface exposes a successor-only shortcut",
+            )
+
+
 def _write_json(path: Path, value: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_suffix(path.suffix + ".tmp")
@@ -284,6 +1951,84 @@ def _write_json(path: Path, value: Any) -> None:
         encoding="utf-8",
     )
     temporary.replace(path)
+
+
+def _run_successor_only_chain_probe(
+    *,
+    root: Path,
+    task: NPHardAuthoringTaskV2,
+    output_root: Path,
+    timeout_seconds: int,
+) -> tuple[Mapping[str, Any], CommandResult, tuple[tuple[str, str], ...]] | None:
+    """Kernel-check the two observer witnesses before any model invocation."""
+
+    if getattr(task, "task_class", None) != "typed_tmkarp_dependent_composition_dag":
+        return None
+    admission = _tmkarp_admission_source(task)
+    if admission["module"] != _SUCCESSOR_ONLY_TMKARP_ADMISSION_MODULE:
+        return None
+    successor = _dependent_composition_successor(task)
+    source = _successor_only_chain_probe_source_v2(task)
+    probe_root = output_root / "authoritative-evidence" / "successor-only-chain"
+    source_path = probe_root / "Probe.lean"
+    source_path.parent.mkdir(parents=True, exist_ok=True)
+    source_path.write_text(source, encoding="utf-8")
+    command = run_command(
+        ["lake", "env", "lean", str(source_path)],
+        cwd=root / "Lean",
+        timeout_seconds=timeout_seconds,
+    )
+    source_sha256 = sha256_id(source)
+    source_file_sha256 = _tagged_file_hash(source_path)
+    command_certificate = {
+        "command": list(command.command),
+        "exit_code": command.exit_code,
+        "stdout": command.stdout,
+        "stderr": command.stderr,
+        "timed_out": command.timed_out,
+    }
+    stable_evidence_core = {
+        "schema_version": NP_HARD_SUCCESSOR_CHAIN_PROBE_SCHEMA_V1,
+        "task_request_id": task.request_id,
+        "source_file": str(source_path),
+        "source_sha256": source_sha256,
+        "source_file_sha256": source_file_sha256,
+        "admission": admission,
+        "successor": successor,
+        "command_certificate_sha256": sha256_id(command_certificate),
+        "passed": command.ok,
+    }
+    evidence = {
+        **stable_evidence_core,
+        "command": command.to_dict(),
+        "evidence_sha256": sha256_id(stable_evidence_core),
+    }
+    evidence_path = probe_root / "evidence.json"
+    _write_json(evidence_path, evidence)
+    result_evidence = {
+        **evidence,
+        "evidence_file": str(evidence_path),
+        "evidence_file_sha256": _tagged_file_hash(evidence_path),
+    }
+    bindings = tuple(
+        sorted(
+            {
+                "authoritative:successor-only-chain-probe-source": source_sha256,
+                "authoritative:successor-only-chain-probe-command": sha256_id(
+                    command_certificate
+                ),
+                "authoritative:successor-only-chain-probe-evidence": evidence[
+                    "evidence_sha256"
+                ],
+            }.items()
+        )
+    )
+    if not command.ok:
+        _fail(
+            "candidate_exact_type_mismatch",
+            "isolated Lean rejected the observer-bound successor-only chain",
+        )
+    return result_evidence, command, bindings
 
 
 class NPHardNodeModelClient(Protocol):
@@ -355,7 +2100,7 @@ class NPHardNodeRequestV1:
             _fail("candidate_dependency_stale", "node request skipped a dependency")
         if not 1 <= self.node_attempt_budget <= 4:
             _fail("authoring_gap_budget_exhausted", "node attempt budget is outside 1..4")
-        if not 1 <= self.instance_call_budget_remaining <= 8:
+        if not 0 <= self.instance_call_budget_remaining <= NP_HARD_MAX_INSTANCE_CALL_BUDGET:
             _fail("authoring_gap_budget_exhausted", "instance call budget is exhausted")
 
     def to_dict(self, task: NPHardAuthoringTaskV2) -> dict[str, Any]:
@@ -424,6 +2169,13 @@ def parse_np_hard_node_patch_v1(
         assert_generated_source_is_safe(body)
     except ValueError as error:
         _fail("candidate_nonstandard_axiom", str(error))
+    _validate_tmkarp_patch_binding(task=task, request=request, body=body)
+    _validate_program_indexed_patch_binding(
+        task=task, request=request, body=body
+    )
+    _validate_gadget_indexed_patch_binding(
+        task=task, request=request, body=body
+    )
     return NPHardNodePatchV1(
         request_id=request.request_id,
         node_id=request.node.node_id,
@@ -489,7 +2241,10 @@ class NPHardGapCheckpointV1:
         )
         if tuple(dict(node) for node in self.remaining_gap_graph) != expected_remaining:
             _fail("checkpoint_tampered", "checkpoint remaining graph drifted")
-        if not 0 <= self.total_model_calls <= 8:
+        maximum = required_model_call_budget(
+            gap_node_count=len(task.gap_nodes), attempt_budget=task.attempt_budget
+        )
+        if not 0 <= self.total_model_calls <= maximum:
             _fail("checkpoint_tampered", "checkpoint model-call total is invalid")
         if sum(dict(self.per_node_model_calls).values()) != self.total_model_calls:
             _fail("checkpoint_tampered", "checkpoint call counters disagree")
@@ -565,6 +2320,8 @@ class NPHardGapRuntimeResultV1:
     resumed: bool
     model_call_ledger: tuple[Mapping[str, Any], ...] = ()
     deletion_audits: tuple[Mapping[str, Any], ...] = ()
+    authoritative_evidence: tuple[Mapping[str, Any], ...] = ()
+    authoritative_dependency_bindings: tuple[tuple[str, str], ...] = ()
     schema_version: str = NP_HARD_GAP_RUNTIME_REPORT_SCHEMA_V1
 
     def to_dict(self, task: NPHardAuthoringTaskV2) -> dict[str, Any]:
@@ -585,11 +2342,21 @@ class NPHardGapRuntimeResultV1:
             "resumed": self.resumed,
             "model_call_ledger": [dict(item) for item in self.model_call_ledger],
             "deletion_audits": [dict(item) for item in self.deletion_audits],
+            "authoritative_evidence": [
+                dict(item) for item in self.authoritative_evidence
+            ],
+            "authoritative_dependency_bindings": dict(
+                self.authoritative_dependency_bindings
+            ),
         }
 
 
 def _current_dependency_snapshot(
-    *, root: Path, task: NPHardAuthoringTaskV2, accepted: tuple[AcceptedCapabilityNodeV1, ...]
+    *,
+    root: Path,
+    task: NPHardAuthoringTaskV2,
+    accepted: tuple[AcceptedCapabilityNodeV1, ...],
+    authoritative_evidence: tuple[tuple[str, str], ...] = (),
 ) -> tuple[tuple[str, str], ...]:
     current: dict[str, str] = {}
     for name, expected in task.dependency_hashes:
@@ -605,9 +2372,59 @@ def _current_dependency_snapshot(
         if not path.is_file() or _tagged_file_hash(path) != expected:
             _fail("candidate_dependency_stale", f"dependency changed: {name}")
         current[name] = expected
+    for node_id, term in sorted(_observed_capability_terms(task).items()):
+        if not isinstance(node_id, str) or not isinstance(term, str):
+            _fail(
+                "candidate_dependency_stale",
+                "observed capability term map is invalid",
+            )
+        _assert_public(term, label="observed capability dependency")
+        current[f"observed:{node_id}:term"] = sha256_id(term)
+    for node_id, exact_type in sorted(
+        _observed_capability_exact_types(task).items()
+    ):
+        if not isinstance(node_id, str) or not isinstance(exact_type, str):
+            _fail(
+                "candidate_dependency_stale",
+                "observed capability exact-type map is invalid",
+            )
+        _assert_public(exact_type, label="observed capability exact-type dependency")
+        current[f"observed:{node_id}:exact-type"] = sha256_id(exact_type)
+    if getattr(task, "task_class", None) == "typed_tmkarp_dependent_composition_dag":
+        current["observed:composition-intermediate"] = sha256_id(
+            _composition_intermediate_payload(task)
+        )
+        current["observed:composition-successor-module"] = sha256_id(
+            _dependent_composition_successor(task)["module"]
+        )
+    if getattr(task, "task_class", None) in {
+        _PROGRAM_INDEXED_TASK_CLASS,
+        "typed_tmkarp_program_indexed_composition_dag",
+    }:
+        current["observed:program-indexed-packet-module"] = sha256_id(
+            _program_indexed_admission_source(task)["module"]
+        )
+    if getattr(task, "task_class", None) == _GADGET_INDEXED_TASK_CLASS:
+        gadget_source = _gadget_indexed_admission_source(task)
+        current["observed:gadget-indexed-packet-module"] = sha256_id(
+            gadget_source["module"]
+        )
+        current["observed:gadget-reference-endpoint"] = sha256_id(
+            {
+                "module": gadget_source["reference_module"],
+                "term": gadget_source["reference_term"],
+            }
+        )
     for node in accepted:
         current[f"accepted:{node.node_id}:body"] = node.body_sha256
         current[f"accepted:{node.node_id}:source"] = node.cumulative_source_sha256
+    for name, digest in authoritative_evidence:
+        if not name.startswith("authoritative:"):
+            _fail(
+                "candidate_dependency_stale",
+                "runtime authoritative evidence key is invalid",
+            )
+        current[name] = digest
     return tuple(sorted(current.items()))
 
 
@@ -618,7 +2435,15 @@ def _node_request(
     dependency_snapshot: tuple[tuple[str, str], ...],
     accepted: tuple[AcceptedCapabilityNodeV1, ...],
     total_model_calls: int,
+    instance_call_budget: int | None = None,
 ) -> NPHardNodeRequestV1:
+    effective_call_budget = (
+        required_model_call_budget(
+            gap_node_count=len(task.gap_nodes), attempt_budget=task.attempt_budget
+        )
+        if instance_call_budget is None
+        else instance_call_budget
+    )
     arguments = {
         "task_request_id": task.request_id,
         "node_ordinal": node_ordinal,
@@ -631,7 +2456,7 @@ def _node_request(
         "allowed_imports": task.allowed_imports,
         "allowed_primitives": task.allowed_primitives,
         "node_attempt_budget": min(task.attempt_budget, 4),
-        "instance_call_budget_remaining": 8 - total_model_calls,
+        "instance_call_budget_remaining": effective_call_budget - total_model_calls,
     }
     provisional = NPHardNodeRequestV1(request_id="sha256:" + "0" * 64, **arguments)
     request = NPHardNodeRequestV1(request_id=provisional.computed_request_id, **arguments)
@@ -649,9 +2474,18 @@ def build_np_hard_node_prompt_v1(
 ) -> str:
     request.validate(task)
     public_sources = {
-        name: (root / name).read_text(encoding="utf-8")[:20_000]
+        name: (root / name).read_text(encoding="utf-8")[:40_000]
         for name in task.public_source_files
     }
+    if task.task_class in _PROGRAM_INDEXED_TASK_CLASSES:
+        _assert_program_indexed_prompt_surface(public_sources)
+    if task.task_class == _GADGET_INDEXED_TASK_CLASS:
+        _assert_gadget_indexed_prompt_surface(
+            public_sources,
+            allowed_imports=task.allowed_imports,
+            dependency_names=tuple(name for name, _ in task.dependency_hashes),
+        )
+    observed_term = _observed_capability_term(task=task, node=request.node)
     recommended_body = _recommended_first_body(
         task=task, request=request, public_sources=public_sources
     )
@@ -662,6 +2496,7 @@ def build_np_hard_node_prompt_v1(
         "node_request": request.to_dict(task),
         "accepted_dependency_bodies": dict(accepted_bodies),
         "public_sources": public_sources,
+        "observed_capability_term": observed_term,
         "lean_api_reference": _POLY_PROG_API_REFERENCE,
         "active_capability_guidance": _CAPABILITY_GUIDANCE.get(
             request.node.capability,
@@ -687,9 +2522,114 @@ def build_np_hard_node_prompt_v1(
             "replacement_body": recommended_body or "Lean term body only",
         },
     }
+    if getattr(task, "task_class", None) in _TMKARP_ADMISSION_TASK_CLASSES:
+        payload["tmkarp_admission_source"] = _tmkarp_admission_source(task)
+    if getattr(task, "task_class", None) == "typed_tmkarp_dependent_composition_dag":
+        payload["dependent_composition_successor"] = (
+            _dependent_composition_successor(task)
+        )
+    if getattr(task, "task_class", None) in {
+        _PROGRAM_INDEXED_TASK_CLASS,
+        "typed_tmkarp_program_indexed_composition_dag",
+    }:
+        payload["program_indexed_admission_source"] = (
+            _program_indexed_admission_source(task)
+        )
+    if getattr(task, "task_class", None) == _GADGET_INDEXED_TASK_CLASS:
+        payload["gadget_indexed_admission_source"] = (
+            _gadget_indexed_admission_source(task)
+        )
     serialized = json.dumps(payload, ensure_ascii=True, indent=2, sort_keys=True)
     _assert_public(serialized, label="node prompt")
     return serialized
+
+
+def _task_node_by_id(
+    task: NPHardAuthoringTaskV2, *, node_id: str, role: str
+) -> NPHardAuthoringObligationV2:
+    matched = [node for node in task.gap_nodes if node.node_id == node_id]
+    if len(matched) != 1:
+        _fail(
+            "candidate_dependency_stale",
+            f"{role} node ID does not resolve exactly once: {node_id}",
+        )
+    return matched[0]
+
+
+def _terminal_semantic_node(
+    task: NPHardAuthoringTaskV2,
+) -> NPHardAuthoringObligationV2:
+    """Resolve the runner-owned certificate semantic without list-position assumptions."""
+
+    explicit_node_id = getattr(task, "terminal_node_id", None)
+    if isinstance(explicit_node_id, str) and explicit_node_id:
+        node = _task_node_by_id(
+            task, node_id=explicit_node_id, role="terminal semantic"
+        )
+        if node.capability not in _SEMANTIC_IFF_CAPABILITIES:
+            _fail(
+                "candidate_exact_type_mismatch",
+                "terminal semantic node does not provide an iff capability",
+            )
+        return node
+
+    # Backward compatibility for frozen V2 tasks predating terminal_node_id:
+    # choose by the explicit semantic capability, never by list-tail position.
+    semantic_nodes = [
+        node
+        for node in task.gap_nodes
+        if node.capability in _SEMANTIC_IFF_CAPABILITIES
+    ]
+    if len(semantic_nodes) != 1:
+        _fail(
+            "candidate_exact_type_mismatch",
+            "capability DAG must expose exactly one terminal semantic iff node",
+        )
+    return semantic_nodes[0]
+
+
+def _resolved_final_program_declaration(
+    *, task: NPHardAuthoringTaskV2, public_fallback: str
+) -> str:
+    """Resolve an authored final program by node ID, or retain a public program."""
+
+    explicit_node_id = getattr(task, "final_program_node_id", None)
+    if isinstance(explicit_node_id, str) and explicit_node_id:
+        node = _task_node_by_id(task, node_id=explicit_node_id, role="final program")
+        if "PolyProg" not in node.exact_type:
+            _fail(
+                "candidate_exact_type_mismatch",
+                "final program node exact type is not a PolyProg",
+            )
+        return node.declaration
+    if public_fallback.strip():
+        return public_fallback
+
+    # This fallback is only for transitional callers that have already moved
+    # authored-program identity into the capability DAG but not yet populated
+    # final_program_node_id.  Ambiguity remains fail closed.
+    candidates = [
+        node
+        for node in task.gap_nodes
+        if node.capability
+        in {
+            "poly_program",
+            "representation_adapter",
+            *_TMKARP_PROGRAM_CAPABILITIES,
+            *_DEPENDENT_COMPOSED_PROGRAM_CAPABILITIES,
+            *_PROGRAM_INDEXED_PROGRAM_CAPABILITIES,
+            *_PROGRAM_INDEXED_COMPOSED_PROGRAM_CAPABILITIES,
+            "gadget_program",
+            "gadget_composed_program",
+        }
+        and "PolyProg" in node.exact_type
+    ]
+    if len(candidates) != 1:
+        _fail(
+            "candidate_exact_type_mismatch",
+            "capability DAG does not identify one final PolyProg node",
+        )
+    return candidates[0].declaration
 
 
 def _candidate_source(
@@ -698,11 +2638,22 @@ def _candidate_source(
     bodies: Mapping[str, str],
     include_final: bool,
     final_program_declaration: str,
+    deletion_audit_deleted_declaration: str | None = None,
 ) -> str:
+    if deletion_audit_deleted_declaration is not None and all(
+        node.declaration != deletion_audit_deleted_declaration
+        for node in task.gap_nodes
+    ):
+        _fail(
+            "candidate_dependency_stale",
+            "deletion audit selected a declaration outside the exact gap DAG",
+        )
     imports = "\n".join(f"import {name}" for name in task.allowed_imports)
     declarations: list[str] = []
     asserted: list[str] = []
     for node in task.gap_nodes:
+        if node.declaration == deletion_audit_deleted_declaration:
+            continue
         if node.declaration not in bodies:
             break
         short_name = node.declaration.removeprefix(task.candidate_module + ".")
@@ -713,13 +2664,16 @@ def _candidate_source(
         )
         asserted.append(node.declaration)
     if include_final:
-        semantic = task.gap_nodes[-1].declaration
+        semantic = _terminal_semantic_node(task).declaration
+        resolved_program = _resolved_final_program_declaration(
+            task=task, public_fallback=final_program_declaration
+        )
         final_short = task.final_candidate_declaration.removeprefix(
             task.candidate_module + "."
         )
         declarations.append(
             f"noncomputable def {final_short} :\n    {task.final_exact_type} where\n"
-            f"  program := {final_program_declaration}\n"
+            f"  program := {resolved_program}\n"
             f"  correct := {semantic}\n"
         )
         declarations.append(
@@ -775,6 +2729,7 @@ class NPHardGapRuntimeV1:
         model: NPHardNodeModelClient,
         final_program_declaration: str,
         timeout_seconds: int | None = None,
+        instance_call_budget: int | None = None,
     ):
         self.root = root.resolve()
         self.task = task
@@ -782,7 +2737,31 @@ class NPHardGapRuntimeV1:
         self.model = model
         self.final_program_declaration = final_program_declaration
         self.timeout_seconds = timeout_seconds or task.timeout_seconds
+        self.authoritative_dependency_evidence: tuple[tuple[str, str], ...] = ()
         task.validate()
+        explicit_program_node = getattr(task, "final_program_node_id", None)
+        if isinstance(explicit_program_node, str) and explicit_program_node:
+            expected_program = _task_node_by_id(
+                task, node_id=explicit_program_node, role="final program"
+            ).declaration
+            if final_program_declaration and final_program_declaration != expected_program:
+                _fail(
+                    "candidate_dependency_stale",
+                    "orchestrator final program disagrees with the explicit DAG node",
+                )
+        minimum_call_budget = required_model_call_budget(
+            gap_node_count=len(task.gap_nodes), attempt_budget=task.attempt_budget
+        )
+        self.instance_call_budget = (
+            minimum_call_budget
+            if instance_call_budget is None
+            else instance_call_budget
+        )
+        if not minimum_call_budget <= self.instance_call_budget <= NP_HARD_MAX_INSTANCE_CALL_BUDGET:
+            _fail(
+                "authoring_gap_budget_exhausted",
+                "runtime call budget is outside the full-DAG production policy",
+            )
 
     def _publication_root(self, source_hash: str) -> Path:
         return self.output_root / "published" / source_hash.removeprefix("sha256:")
@@ -815,7 +2794,10 @@ class NPHardGapRuntimeV1:
         arguments = {
             "task_request_id": self.task.request_id,
             "dependency_snapshot": _current_dependency_snapshot(
-                root=self.root, task=self.task, accepted=accepted
+                root=self.root,
+                task=self.task,
+                accepted=accepted,
+                authoritative_evidence=self.authoritative_dependency_evidence,
             ),
             "accepted_nodes": accepted,
             "remaining_gap_graph": tuple(
@@ -851,7 +2833,10 @@ class NPHardGapRuntimeV1:
             _fail("checkpoint_tampered", str(error))
         checkpoint = NPHardGapCheckpointV1.from_dict(value, task=self.task)
         current = _current_dependency_snapshot(
-            root=self.root, task=self.task, accepted=checkpoint.accepted_nodes
+            root=self.root,
+            task=self.task,
+            accepted=checkpoint.accepted_nodes,
+            authoritative_evidence=self.authoritative_dependency_evidence,
         )
         if current != checkpoint.dependency_snapshot:
             _fail("candidate_dependency_stale", "checkpoint dependency snapshot changed")
@@ -900,6 +2885,19 @@ class NPHardGapRuntimeV1:
         ):
             _fail("checkpoint_tampered", "new G-C output directory must be fresh")
         self.output_root.mkdir(parents=True, exist_ok=True)
+        commands: list[CommandResult] = []
+        authoritative_evidence: list[Mapping[str, Any]] = []
+        probe = _run_successor_only_chain_probe(
+            root=self.root,
+            task=self.task,
+            output_root=self.output_root,
+            timeout_seconds=self.timeout_seconds,
+        )
+        if probe is not None:
+            evidence, command, bindings = probe
+            authoritative_evidence.append(evidence)
+            commands.append(command)
+            self.authoritative_dependency_evidence = bindings
         resumed = resume_checkpoint_path is not None
         if resumed:
             if expected_checkpoint_file_sha256 is None:
@@ -919,7 +2917,6 @@ class NPHardGapRuntimeV1:
             per_node_calls = {}
             ledger = []
 
-        commands: list[CommandResult] = []
         worker_results: list[Mapping[str, Any]] = []
         fresh_rediscoveries = 0
 
@@ -969,7 +2966,10 @@ class NPHardGapRuntimeV1:
                     break
                 node = self.task.gap_nodes[ordinal - 1]
                 dependency_snapshot = _current_dependency_snapshot(
-                    root=self.root, task=self.task, accepted=tuple(accepted)
+                    root=self.root,
+                    task=self.task,
+                    accepted=tuple(accepted),
+                    authoritative_evidence=self.authoritative_dependency_evidence,
                 )
                 request = _node_request(
                     task=self.task,
@@ -977,12 +2977,13 @@ class NPHardGapRuntimeV1:
                     dependency_snapshot=dependency_snapshot,
                     accepted=tuple(accepted),
                     total_model_calls=total_model_calls,
+                    instance_call_budget=self.instance_call_budget,
                 )
                 diagnostic: str | None = None
                 seen_bodies: set[str] = set()
                 accepted_this_node = False
                 for attempt in range(1, request.node_attempt_budget + 1):
-                    if total_model_calls >= 8:
+                    if total_model_calls >= self.instance_call_budget:
                         failure_code = "authoring_gap_budget_exhausted"
                         failure_message = "instance model-call budget exhausted"
                         break
@@ -1114,7 +3115,7 @@ class NPHardGapRuntimeV1:
                         )[:8_000]
                         failure_code = (
                             "semantic_proof_failed"
-                            if node.capability in {"semantic_proof", "mapping_invariant"}
+                            if node.capability in _SEMANTIC_CAPABILITIES
                             else "program_synthesis_failed"
                         )
                         failure_message = diagnostic
@@ -1227,6 +3228,7 @@ class NPHardGapRuntimeV1:
                             bodies=audit_bodies,
                             include_final=True,
                             final_program_declaration=self.final_program_declaration,
+                            deletion_audit_deleted_declaration=deleted.declaration,
                         )
                         audit_path = audit_root / f"without-{deleted.node_id}.lean"
                         audit_path.write_text(audit_source, encoding="utf-8")
@@ -1245,7 +3247,14 @@ class NPHardGapRuntimeV1:
                                 "audit_file": str(audit_path),
                                 "audit_file_sha256": _tagged_file_hash(audit_path),
                                 "command": audit_command.to_dict(),
-                                "passed": not audit_command.ok,
+                                "diagnostic_matched": (
+                                    _deletion_failure_mentions_declaration(
+                                        audit_command, deleted.declaration
+                                    )
+                                ),
+                                "passed": _deletion_failure_mentions_declaration(
+                                    audit_command, deleted.declaration
+                                ),
                             }
                         )
                     if not all(item["passed"] for item in deletion_audits):
@@ -1294,6 +3303,10 @@ class NPHardGapRuntimeV1:
                 resumed=resumed,
                 model_call_ledger=tuple(ledger),
                 deletion_audits=tuple(deletion_audits),
+                authoritative_evidence=tuple(authoritative_evidence),
+                authoritative_dependency_bindings=(
+                    self.authoritative_dependency_evidence
+                ),
             )
         finally:
             try:

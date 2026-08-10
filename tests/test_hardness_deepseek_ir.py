@@ -13,7 +13,7 @@ from agent.hardness.models import RouteCandidate
 
 
 ROOT = Path(__file__).resolve().parents[1]
-MANIFEST = ROOT / "Benchmark" / "Hardness" / "MANIFEST.json"
+MANIFEST = ROOT / "Gate" / "MANIFEST.json"
 
 
 def ir_cases():

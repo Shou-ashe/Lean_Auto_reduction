@@ -49,7 +49,7 @@ def parser() -> argparse.ArgumentParser:
     command.add_argument(
         "--suite",
         type=Path,
-        default=ROOT / "Benchmark" / "Hardness" / "Suites" / "core_generalization.json",
+        default=ROOT / "Gate" / "Suites" / "core_generalization.json",
     )
     command.add_argument(
         "--output-root",

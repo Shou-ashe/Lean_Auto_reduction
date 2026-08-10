@@ -7,7 +7,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def test_current_negative_cases_have_exact_expected_failure_codes() -> None:
-    manifest = load_benchmark_manifest(ROOT / "Benchmark" / "Hardness" / "MANIFEST.json")
+    manifest = load_benchmark_manifest(ROOT / "Gate" / "MANIFEST.json")
     cases = {case.id: case for case in manifest.cases}
     assert cases["no-route"].expected.final_failure_code == "no_registry_path"
     assert (

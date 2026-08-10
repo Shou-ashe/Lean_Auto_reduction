@@ -10,7 +10,7 @@ HARDNESS = ROOT / "Benchmark" / "Hardness"
 
 
 def test_migration_ledger_covers_all_legacy_cases_and_files() -> None:
-    ledger = json.loads((HARDNESS / "MIGRATION_LEDGER.json").read_text())
+    ledger = json.loads((ROOT / "Archive/MIGRATION_LEDGER.json").read_text())
     opencode = ledger["opencode_cases"]
     v2 = ledger["v2_hardness_cases"]
     assert len(opencode) == 107
@@ -35,7 +35,7 @@ def test_migration_ledger_covers_all_legacy_cases_and_files() -> None:
 
 
 def test_legacy_quals_entries_map_to_their_exact_active_cases() -> None:
-    ledger = json.loads((HARDNESS / "MIGRATION_LEDGER.json").read_text())
+    ledger = json.loads((ROOT / "Archive/MIGRATION_LEDGER.json").read_text())
     rows = {case["legacy_case_id"]: case for case in ledger["opencode_cases"]}
     expected = {
         "fall2014_most_neighbors": "fall2014-most-neighbors",
@@ -58,7 +58,7 @@ def test_legacy_archive_counts_match_ledger() -> None:
     assert len(list((legacy / "HiddenTargets").rglob("*.lean"))) == 68
     assert len(list((legacy / "GoldProofs").rglob("*.lean"))) == 39
     tracked_oracles = []
-    for case in json.loads((HARDNESS / "MIGRATION_LEDGER.json").read_text())["opencode_cases"]:
+    for case in json.loads((ROOT / "Archive/MIGRATION_LEDGER.json").read_text())["opencode_cases"]:
         sample = HARDNESS / "Legacy" / case["legacy_sample_file"]
         assert sample.is_file()
         assert hashlib.sha256(sample.read_bytes()).hexdigest() == case["legacy_sample_sha256"]
@@ -71,7 +71,7 @@ def test_legacy_archive_counts_match_ledger() -> None:
 
 
 def test_expected_inventory_matches_active_cases() -> None:
-    manifest = load_benchmark_manifest(HARDNESS / "MANIFEST.json")
+    manifest = load_benchmark_manifest(ROOT / "Gate" / "MANIFEST.json")
     expected_files = list((HARDNESS / "Expected").glob("*.json"))
     expected_ids = {
         json.loads(path.read_text())["case_id"]
@@ -82,8 +82,8 @@ def test_expected_inventory_matches_active_cases() -> None:
 
 
 def test_ir_baseline_is_observational_and_references_active_pairs() -> None:
-    manifest = load_benchmark_manifest(HARDNESS / "MANIFEST.json")
-    baseline = json.loads((HARDNESS / "IR_FEASIBILITY_BASELINE.json").read_text())
+    manifest = load_benchmark_manifest(ROOT / "Gate" / "MANIFEST.json")
+    baseline = json.loads((ROOT / "Reports/IR_FEASIBILITY_BASELINE.json").read_text())
     assert baseline["authoritative"] is False
     assert baseline["inventory_scope"] == "registered_type_validated_certificate_edges"
     assert sum(baseline["typed_inventory"]["role_counts"].values()) == (
@@ -98,8 +98,8 @@ def test_ir_baseline_is_observational_and_references_active_pairs() -> None:
 
 
 def test_ir_coverage_matrix_uses_only_active_matched_pairs() -> None:
-    manifest = load_benchmark_manifest(HARDNESS / "MANIFEST.json")
-    coverage = json.loads((HARDNESS / "IR_FEASIBILITY_COVERAGE.json").read_text())
+    manifest = load_benchmark_manifest(ROOT / "Gate" / "MANIFEST.json")
+    coverage = json.loads((ROOT / "Reports/IR_FEASIBILITY_COVERAGE.json").read_text())
     active_pair_ids = {
         case.matched_pair_id for case in manifest.cases if case.matched_pair_id is not None
     }
@@ -116,9 +116,9 @@ def test_ir_coverage_matrix_uses_only_active_matched_pairs() -> None:
 
 
 def test_every_migrated_ledger_target_resolves_to_an_active_case() -> None:
-    manifest = load_benchmark_manifest(HARDNESS / "MANIFEST.json")
+    manifest = load_benchmark_manifest(ROOT / "Gate" / "MANIFEST.json")
     active_ids = {case.id for case in manifest.cases}
-    ledger = json.loads((HARDNESS / "MIGRATION_LEDGER.json").read_text())
+    ledger = json.loads((ROOT / "Archive/MIGRATION_LEDGER.json").read_text())
     for case in ledger["opencode_cases"] + ledger["v2_hardness_cases"]:
         assert set(case["current_case_ids"]) <= active_ids
         if case["disposition"] in {"migrated", "split"}:

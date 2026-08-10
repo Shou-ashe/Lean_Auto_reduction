@@ -1,0 +1,1087 @@
+{
+  "benchmark_id": "np-hard-capability-v2",
+  "cases": [
+    {
+      "blocker_bucket": null,
+      "canonical_identity": "sha256:672a9b0a4524e22e08b12d03286f6c4340e940b5454e3989d2cda3e0478bfca7",
+      "canonical_problem": "ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem",
+      "case_id": "cdev-er-01-three-sat-seed",
+      "difficulty_axes": [
+        "reflexive"
+      ],
+      "expected_failure_codes": [],
+      "expected_public_status": "VERIFIED",
+      "family": "sat-csp",
+      "level": "L1",
+      "level_bucket": "L1",
+      "matrix_disposition": "in_scope_np_hard",
+      "outcome_class": "existing-route",
+      "requires_model": false,
+      "route_length": 0,
+      "scored": true,
+      "split": "dev",
+      "tier": "C0-existing"
+    },
+    {
+      "blocker_bucket": null,
+      "canonical_identity": "sha256:8fc85afcfae9713e279f51a65366b9d9c0f5e388a1eb0fe428c3a19df4b39fcf",
+      "canonical_problem": "ComplexityReduction.Problems.Karp21.GraphAtoms.cliqueStructuredProblem",
+      "case_id": "cdev-er-02-clique-direct",
+      "difficulty_axes": [
+        "direct-route"
+      ],
+      "expected_failure_codes": [],
+      "expected_public_status": "VERIFIED",
+      "family": "graph",
+      "level": "L1",
+      "level_bucket": "L1",
+      "matrix_disposition": "in_scope_np_hard",
+      "outcome_class": "existing-route",
+      "requires_model": false,
+      "route_length": 1,
+      "scored": true,
+      "split": "dev",
+      "tier": "C0-existing"
+    },
+    {
+      "blocker_bucket": null,
+      "canonical_identity": "sha256:ae4f61c97f0f1e0d698bbbb208d0b8045a8f9964e8f7a07abb5a14b81e6c1ac5",
+      "canonical_problem": "ComplexityReduction.Problems.Karp21.GraphAtoms.vertexCoverStructuredProblem",
+      "case_id": "cdev-er-03-vertex-cover-two-hop",
+      "difficulty_axes": [
+        "route-composition"
+      ],
+      "expected_failure_codes": [],
+      "expected_public_status": "VERIFIED",
+      "family": "graph",
+      "level": "L2",
+      "level_bucket": "L2",
+      "matrix_disposition": "in_scope_np_hard",
+      "outcome_class": "existing-route",
+      "requires_model": false,
+      "route_length": 2,
+      "scored": true,
+      "split": "dev",
+      "tier": "C0-existing"
+    },
+    {
+      "blocker_bucket": null,
+      "canonical_identity": "sha256:dd7116466956f535c00bff896ec087023925cb899d26f0aed13d60e491856b40",
+      "canonical_problem": "ComplexityReduction.Presentation.DirectedHamiltonianCircuit.structuredProblem",
+      "case_id": "cdev-er-04-directed-hamiltonian-three-hop",
+      "difficulty_axes": [
+        "route-composition"
+      ],
+      "expected_failure_codes": [],
+      "expected_public_status": "VERIFIED",
+      "family": "graph",
+      "level": "L2",
+      "level_bucket": "L2",
+      "matrix_disposition": "in_scope_np_hard",
+      "outcome_class": "existing-route",
+      "requires_model": false,
+      "route_length": 3,
+      "scored": true,
+      "split": "dev",
+      "tier": "C0-existing"
+    },
+    {
+      "blocker_bucket": null,
+      "canonical_identity": "sha256:97994ca373693d9c1ca40602e8c4240801b5263185205c9a79aa83620003a102",
+      "canonical_problem": "ComplexityReduction.Routes.ThreeSATToClique.IngressAdapters.taggedThreeSATProblem",
+      "case_id": "cdev-au-01-tagged-three-sat-adapter",
+      "difficulty_axes": [
+        "representation-adapter",
+        "semantic-iff"
+      ],
+      "expected_failure_codes": [],
+      "expected_public_status": "VERIFIED",
+      "family": "sat-csp",
+      "level": "L3",
+      "level_bucket": "L3",
+      "matrix_disposition": "blocked_missing_formal_prerequisite",
+      "outcome_class": "first-authoring",
+      "required_authoring_motif": {
+        "final_program_node_id": "representation-adapter",
+        "nodes": [
+          {
+            "capability": "representation_adapter",
+            "depends_on": [],
+            "node_id": "representation-adapter"
+          },
+          {
+            "capability": "semantic_forward",
+            "depends_on": [
+              "representation-adapter"
+            ],
+            "node_id": "semantic-forward"
+          },
+          {
+            "capability": "semantic_reverse",
+            "depends_on": [
+              "representation-adapter"
+            ],
+            "node_id": "semantic-reverse"
+          },
+          {
+            "capability": "semantic_iff",
+            "depends_on": [
+              "semantic-forward",
+              "semantic-reverse"
+            ],
+            "node_id": "semantic-iff"
+          }
+        ],
+        "task_class": "typed_capability_dag",
+        "terminal_node_id": "semantic-iff"
+      },
+      "requires_model": true,
+      "route_length": null,
+      "scored": true,
+      "split": "dev",
+      "tier": "C0-authoring"
+    },
+    {
+      "blocker_bucket": null,
+      "canonical_identity": "sha256:773befedad6b6ab89b6612301660edefad5ae82f1b374fc2858e7ee0a1499e28",
+      "canonical_problem": "ComplexityReduction.Presentation.RoleGraph.exactlyOneNeighborPresentedProblem",
+      "case_id": "cdev-au-02-role-graph-eon-adapter",
+      "difficulty_axes": [
+        "representation-adapter",
+        "predicate-identity",
+        "semantic-iff"
+      ],
+      "expected_failure_codes": [],
+      "expected_public_status": "VERIFIED",
+      "family": "graph",
+      "level": "L3-L4",
+      "level_bucket": "L3",
+      "matrix_disposition": "blocked_missing_formal_prerequisite",
+      "outcome_class": "first-authoring",
+      "requires_model": true,
+      "route_length": null,
+      "scored": true,
+      "split": "dev",
+      "tier": "C0-authoring"
+    },
+    {
+      "blocker_bucket": null,
+      "canonical_identity": "sha256:7c34ef5cf1db278e79d7f93cf3f96c8eecf582ac3fd2b668edb89e5b62c8902b",
+      "canonical_problem": "ComplexityReduction.Domain.GraphIR.wellFormedProblem",
+      "case_id": "cdev-sf-01-graph-ir-wellformed-internal",
+      "difficulty_axes": [
+        "internal-helper",
+        "scope-policy"
+      ],
+      "expected_failure_codes": [
+        "auxiliary_or_non_target"
+      ],
+      "expected_public_status": "BLOCKED_NOT_TARGET",
+      "family": "graph",
+      "level": "L0-L6",
+      "level_bucket": "L0",
+      "matrix_disposition": "auxiliary_or_non_target",
+      "outcome_class": "safety",
+      "requires_model": false,
+      "route_length": null,
+      "scored": true,
+      "split": "dev",
+      "tier": "C0-safety"
+    },
+    {
+      "blocker_bucket": null,
+      "canonical_identity": "sha256:4934d7967d832b026b2c952a93b7be6d02980859b7e356a0d39c9d8130563c58",
+      "canonical_problem": "ComplexityReduction.Domain.ModifiedExactCoverInput.modifiedProblem",
+      "case_id": "cdev-sf-02-modified-exact-cover-internal",
+      "difficulty_axes": [
+        "internal-helper",
+        "scope-policy"
+      ],
+      "expected_failure_codes": [
+        "auxiliary_or_non_target"
+      ],
+      "expected_public_status": "BLOCKED_NOT_TARGET",
+      "family": "set-system",
+      "level": "L0-L6",
+      "level_bucket": "L0",
+      "matrix_disposition": "auxiliary_or_non_target",
+      "outcome_class": "safety",
+      "requires_model": false,
+      "route_length": null,
+      "scored": true,
+      "split": "dev",
+      "tier": "C0-safety"
+    },
+    {
+      "blocker_bucket": null,
+      "canonical_identity": "sha256:84737cf2a62530af340c1859efb31f775f061332fde37b4156fc0bb92cab5a2a",
+      "canonical_problem": "ComplexityReduction.Presentation.ZeroOneIP.structuredProblem",
+      "case_id": "cval-er-01-zero-one-ip-direct",
+      "difficulty_axes": [
+        "direct-route",
+        "numeric"
+      ],
+      "expected_failure_codes": [],
+      "expected_public_status": "VERIFIED",
+      "family": "numeric",
+      "level": "L1",
+      "level_bucket": "L1",
+      "matrix_disposition": "in_scope_np_hard",
+      "outcome_class": "existing-route",
+      "requires_model": false,
+      "route_length": 1,
+      "scored": true,
+      "split": "validation",
+      "tier": "C0-existing"
+    },
+    {
+      "blocker_bucket": null,
+      "canonical_identity": "sha256:474cefbb79fd3838a9ef12823d0a9ae13b62065ad364da00d468720a49ce0fa0",
+      "canonical_problem": "ComplexityReduction.Presentation.SetSystem.exactCoverStructuredProblem",
+      "case_id": "cval-er-02-exact-cover-two-hop",
+      "difficulty_axes": [
+        "route-composition",
+        "representation-adapter"
+      ],
+      "expected_failure_codes": [],
+      "expected_public_status": "VERIFIED",
+      "family": "set-system",
+      "level": "L2",
+      "level_bucket": "L2",
+      "matrix_disposition": "in_scope_np_hard",
+      "outcome_class": "existing-route",
+      "requires_model": false,
+      "route_length": 2,
+      "scored": true,
+      "split": "validation",
+      "tier": "C0-existing"
+    },
+    {
+      "blocker_bucket": null,
+      "canonical_identity": "sha256:0e0c6fd5543c4e341dc46e4f39ceb210b37b8a38df40f70631466c37dc6da4e4",
+      "canonical_problem": "ComplexityReduction.Presentation.KnapsackBinary.structuredProblem",
+      "case_id": "cval-er-03-knapsack-binary-three-hop",
+      "difficulty_axes": [
+        "route-composition",
+        "binary-encoding"
+      ],
+      "expected_failure_codes": [],
+      "expected_public_status": "VERIFIED",
+      "family": "numeric",
+      "level": "L2",
+      "level_bucket": "L2",
+      "matrix_disposition": "in_scope_np_hard",
+      "outcome_class": "existing-route",
+      "requires_model": false,
+      "route_length": 3,
+      "scored": true,
+      "split": "validation",
+      "tier": "C0-existing"
+    },
+    {
+      "blocker_bucket": null,
+      "canonical_identity": "sha256:5914d2a3afbadfb3ba399e75d81ff25b8c33cd9ee14493be304765a58d673e8d",
+      "canonical_problem": "ComplexityReduction.Presentation.JobSequencingBinary.binaryStructuredProblem",
+      "case_id": "cval-er-04-job-sequencing-binary-four-hop",
+      "difficulty_axes": [
+        "long-route",
+        "binary-encoding"
+      ],
+      "expected_failure_codes": [],
+      "expected_public_status": "VERIFIED",
+      "family": "numeric",
+      "level": "L2",
+      "level_bucket": "L2",
+      "matrix_disposition": "in_scope_np_hard",
+      "outcome_class": "existing-route",
+      "requires_model": false,
+      "route_length": 4,
+      "scored": true,
+      "split": "validation",
+      "tier": "C0-existing"
+    },
+    {
+      "blocker_bucket": null,
+      "canonical_identity": "sha256:d78879ee3db8205ef419bef1109834fb4c766fa317c80f4f841ce76b2fddd84e",
+      "canonical_problem": "ComplexityReduction.Presentation.ZeroOneIPBinary.binaryStructuredProblem",
+      "case_id": "cval-er-05-zero-one-ip-binary",
+      "difficulty_axes": [
+        "route-composition",
+        "binary-encoding"
+      ],
+      "expected_failure_codes": [],
+      "expected_public_status": "VERIFIED",
+      "family": "numeric",
+      "level": "L2",
+      "level_bucket": "L2",
+      "matrix_disposition": "in_scope_np_hard",
+      "outcome_class": "existing-route",
+      "requires_model": false,
+      "route_length": 2,
+      "scored": true,
+      "split": "validation",
+      "tier": "C0-existing"
+    },
+    {
+      "blocker_bucket": null,
+      "canonical_identity": "sha256:fc7608de5e5463e8c272d16674cec792dde033d3e0e24a7edc66f5ea2a43c85e",
+      "canonical_problem": "ComplexityReduction.Presentation.SeeingSet.presentedProblem",
+      "case_id": "cval-au-03-seeing-set",
+      "difficulty_axes": [
+        "program-composition",
+        "mapping-invariant"
+      ],
+      "expected_failure_codes": [],
+      "expected_public_status": "VERIFIED",
+      "family": "set-system",
+      "level": "L4",
+      "level_bucket": "L4",
+      "matrix_disposition": "blocked_missing_formal_prerequisite",
+      "outcome_class": "first-authoring",
+      "required_authoring_motif": {
+        "final_program_node_id": "composed-program",
+        "nodes": [
+          {
+            "capability": "tmkarp_primitive",
+            "depends_on": [],
+            "node_id": "tmkarp-primitive"
+          },
+          {
+            "capability": "tmkarp_program",
+            "depends_on": [
+              "tmkarp-primitive"
+            ],
+            "node_id": "tmkarp-program"
+          },
+          {
+            "capability": "tmkarp_semantic_iff",
+            "depends_on": [
+              "tmkarp-program"
+            ],
+            "node_id": "tmkarp-semantic-iff"
+          },
+          {
+            "capability": "program_indexed_executable",
+            "depends_on": [],
+            "node_id": "program-executable"
+          },
+          {
+            "capability": "program_indexed_primitive",
+            "depends_on": [
+              "program-executable"
+            ],
+            "node_id": "program-primitive"
+          },
+          {
+            "capability": "program_indexed_program",
+            "depends_on": [
+              "program-primitive"
+            ],
+            "node_id": "program"
+          },
+          {
+            "capability": "program_indexed_coherence_direct_tm",
+            "depends_on": [
+              "program"
+            ],
+            "node_id": "program-run-coherence-direct-tm"
+          },
+          {
+            "capability": "program_indexed_semantic_iff",
+            "depends_on": [
+              "program-run-coherence-direct-tm"
+            ],
+            "node_id": "program-semantic-iff"
+          },
+          {
+            "capability": "program_indexed_composed_program",
+            "depends_on": [
+              "tmkarp-program",
+              "program"
+            ],
+            "node_id": "composed-program"
+          },
+          {
+            "capability": "program_indexed_composed_semantic_iff",
+            "depends_on": [
+              "tmkarp-semantic-iff",
+              "program-semantic-iff",
+              "composed-program"
+            ],
+            "node_id": "composed-semantic-iff"
+          }
+        ],
+        "task_class": "typed_tmkarp_program_indexed_composition_dag",
+        "terminal_node_id": "composed-semantic-iff"
+      },
+      "requires_model": true,
+      "route_length": null,
+      "scored": true,
+      "split": "validation",
+      "tier": "C0-authoring"
+    },
+    {
+      "blocker_bucket": null,
+      "canonical_identity": "sha256:841957a0c8ec4c12d2b35410ab44d326381bf990aecd77a0abb3bbc3d371cde5",
+      "canonical_problem": "ComplexityReduction.Domain.RoleGraphIR.roleAssignedGraphProblem",
+      "case_id": "cval-sf-01-role-graph-ir-internal",
+      "difficulty_axes": [
+        "internal-helper",
+        "scope-policy"
+      ],
+      "expected_failure_codes": [
+        "auxiliary_or_non_target"
+      ],
+      "expected_public_status": "BLOCKED_NOT_TARGET",
+      "family": "graph",
+      "level": "L0-L6",
+      "level_bucket": "L0",
+      "matrix_disposition": "auxiliary_or_non_target",
+      "outcome_class": "safety",
+      "requires_model": false,
+      "route_length": null,
+      "scored": true,
+      "split": "validation",
+      "tier": "C0-safety"
+    },
+    {
+      "blocker_bucket": null,
+      "canonical_identity": "sha256:3722c85a36fcad1a2aa26ae21f18b9de6ab84bf4a0f5219faddd76006ca9e038",
+      "canonical_problem": "ComplexityReduction.Presentation.Graph.wellFormedProblem",
+      "case_id": "cval-sf-02-graph-wellformed-policy",
+      "difficulty_axes": [
+        "well-formedness",
+        "scope-policy"
+      ],
+      "expected_failure_codes": [
+        "auxiliary_or_non_target"
+      ],
+      "expected_public_status": "BLOCKED_NOT_TARGET",
+      "family": "graph",
+      "level": "L0-L6",
+      "level_bucket": "L0",
+      "matrix_disposition": "auxiliary_or_non_target",
+      "outcome_class": "safety",
+      "requires_model": false,
+      "route_length": null,
+      "scored": true,
+      "split": "validation",
+      "tier": "C0-safety"
+    },
+    {
+      "blocker_bucket": null,
+      "canonical_identity": "sha256:b13bce9a8adab9496d02fb09a1b32f21f627c67dfdd3652e4ebb9f8a2c4269fd",
+      "canonical_problem": "ComplexityReduction.Presentation.ChromaticNumber.structuredProblem",
+      "case_id": "chld-er-01-chromatic-number",
+      "difficulty_axes": [
+        "family-heldout",
+        "direct-route"
+      ],
+      "expected_failure_codes": [],
+      "expected_public_status": "VERIFIED",
+      "family": "other",
+      "level": "L1",
+      "level_bucket": "L1",
+      "matrix_disposition": "in_scope_np_hard",
+      "outcome_class": "existing-route",
+      "requires_model": false,
+      "route_length": 1,
+      "scored": true,
+      "split": "heldout",
+      "tier": "C0-existing"
+    },
+    {
+      "blocker_bucket": null,
+      "canonical_identity": "sha256:7416ec2029706d104873e766e50a15c0d1f0782e7533bd0fbcdecdb77d96c1d9",
+      "canonical_problem": "ComplexityReduction.Presentation.NodeDeletionBipartite.presentedProblem",
+      "case_id": "chld-er-02-node-deletion-bipartite",
+      "difficulty_axes": [
+        "family-heldout",
+        "route-composition"
+      ],
+      "expected_failure_codes": [],
+      "expected_public_status": "VERIFIED",
+      "family": "other",
+      "level": "L2",
+      "level_bucket": "L2",
+      "matrix_disposition": "in_scope_np_hard",
+      "outcome_class": "existing-route",
+      "requires_model": false,
+      "route_length": 2,
+      "scored": true,
+      "split": "heldout",
+      "tier": "C0-existing"
+    },
+    {
+      "blocker_bucket": null,
+      "canonical_identity": "sha256:8e0154a91b9659cad7aabcd86528b93b8386c9d1a7469ddfcd70a89cedff9a3d",
+      "canonical_problem": "ComplexityReduction.Presentation.PartitionBinary.structuredProblem",
+      "case_id": "chld-er-03-partition-binary-long",
+      "difficulty_axes": [
+        "long-route",
+        "binary-encoding"
+      ],
+      "expected_failure_codes": [],
+      "expected_public_status": "VERIFIED",
+      "family": "numeric",
+      "level": "L2",
+      "level_bucket": "L2",
+      "matrix_disposition": "in_scope_np_hard",
+      "outcome_class": "existing-route",
+      "requires_model": false,
+      "route_length": 4,
+      "scored": true,
+      "split": "heldout",
+      "tier": "C0-existing"
+    },
+    {
+      "blocker_bucket": null,
+      "canonical_identity": "sha256:18d5db7029a9a58697a2e1ef8caa23c5d947748a276a0f500178d897f1d5e392",
+      "canonical_problem": "ComplexityReduction.Presentation.TwoDisjointBoundedPaths.presentedProblem",
+      "case_id": "chld-er-04-two-disjoint-paths-max-route",
+      "difficulty_axes": [
+        "maximum-route",
+        "route-composition"
+      ],
+      "expected_failure_codes": [],
+      "expected_public_status": "VERIFIED",
+      "family": "graph",
+      "level": "L2",
+      "level_bucket": "L2",
+      "matrix_disposition": "in_scope_np_hard",
+      "outcome_class": "existing-route",
+      "requires_model": false,
+      "route_length": 5,
+      "scored": true,
+      "split": "heldout",
+      "tier": "C0-existing"
+    },
+    {
+      "blocker_bucket": null,
+      "canonical_identity": "sha256:9fad39ce76631a7135a75504a4faca07ccde7349ce5fb10f50d368103bad824b",
+      "canonical_problem": "ComplexityReduction.Presentation.FeedbackNodeSet.structuredProblem",
+      "case_id": "chld-au-01-feedback-node-set",
+      "difficulty_axes": [
+        "new-gadget",
+        "mapping-invariant",
+        "semantic-iff",
+        "polynomial-bound"
+      ],
+      "expected_failure_codes": [],
+      "expected_public_status": "VERIFIED",
+      "family": "graph",
+      "level": "L5",
+      "level_bucket": "L5",
+      "matrix_disposition": "blocked_missing_formal_prerequisite",
+      "outcome_class": "first-authoring",
+      "required_authoring_motif": {
+        "final_program_node_id": "tmkarp-program",
+        "nodes": [
+          {
+            "capability": "tmkarp_primitive",
+            "depends_on": [],
+            "node_id": "tmkarp-primitive"
+          },
+          {
+            "capability": "tmkarp_program",
+            "depends_on": [
+              "tmkarp-primitive"
+            ],
+            "node_id": "tmkarp-program"
+          },
+          {
+            "capability": "tmkarp_semantic_iff",
+            "depends_on": [
+              "tmkarp-program"
+            ],
+            "node_id": "tmkarp-semantic-iff"
+          }
+        ],
+        "task_class": "typed_tmkarp_admission_dag",
+        "terminal_node_id": "tmkarp-semantic-iff"
+      },
+      "requires_model": true,
+      "route_length": null,
+      "scored": true,
+      "split": "heldout",
+      "tier": "C0-authoring"
+    },
+    {
+      "blocker_bucket": null,
+      "canonical_identity": "sha256:fda0b7b2c83055c403bd8838839c1bfb695098323add90b2e80ad3efaa90f155",
+      "canonical_problem": "ComplexityReduction.Presentation.MaxCut.structuredProblem",
+      "case_id": "chld-au-03-max-cut-structured",
+      "difficulty_axes": [
+        "new-gadget",
+        "threshold-transform",
+        "semantic-iff",
+        "polynomial-bound"
+      ],
+      "expected_failure_codes": [],
+      "expected_public_status": "VERIFIED",
+      "family": "graph",
+      "level": "L5",
+      "level_bucket": "L5",
+      "matrix_disposition": "blocked_missing_formal_prerequisite",
+      "outcome_class": "first-authoring",
+      "requires_model": true,
+      "route_length": null,
+      "scored": true,
+      "split": "heldout",
+      "tier": "C0-authoring"
+    },
+    {
+      "blocker_bucket": null,
+      "canonical_identity": "sha256:42b575a2e5cd70def72d5525ccf1d65cbc7cf69151b2ee73382bfef74360b84c",
+      "canonical_problem": "ComplexityReduction.Presentation.MaxCutBinary.binaryStructuredProblem",
+      "case_id": "chld-au-04-max-cut-binary",
+      "difficulty_axes": [
+        "binary-encoding",
+        "executable-coherence",
+        "polynomial-bound"
+      ],
+      "expected_failure_codes": [],
+      "expected_public_status": "VERIFIED",
+      "family": "graph",
+      "level": "L4-L5",
+      "level_bucket": "L4",
+      "matrix_disposition": "blocked_missing_formal_prerequisite",
+      "outcome_class": "first-authoring",
+      "requires_model": true,
+      "route_length": null,
+      "scored": true,
+      "split": "heldout",
+      "tier": "C0-authoring"
+    },
+    {
+      "blocker_bucket": null,
+      "canonical_identity": "sha256:27b6e9d316664126af1af5137dafd75ef5955e2edc844d1e0aefef7f2466e062",
+      "canonical_problem": "ComplexityReduction.Presentation.SetSystem.hittingSetStructuredProblem",
+      "case_id": "chld-au-06-hitting-set",
+      "difficulty_axes": [
+        "hub-selection",
+        "set-duality",
+        "semantic-iff"
+      ],
+      "expected_failure_codes": [],
+      "expected_public_status": "VERIFIED",
+      "family": "set-system",
+      "level": "L4",
+      "level_bucket": "L4",
+      "matrix_disposition": "blocked_missing_formal_prerequisite",
+      "outcome_class": "first-authoring",
+      "required_authoring_motif": {
+        "final_program_node_id": "composed-program",
+        "nodes": [
+          {
+            "capability": "tmkarp_primitive",
+            "depends_on": [],
+            "node_id": "tmkarp-primitive"
+          },
+          {
+            "capability": "tmkarp_program",
+            "depends_on": [
+              "tmkarp-primitive"
+            ],
+            "node_id": "tmkarp-program"
+          },
+          {
+            "capability": "tmkarp_semantic_iff",
+            "depends_on": [
+              "tmkarp-program"
+            ],
+            "node_id": "tmkarp-semantic-iff"
+          },
+          {
+            "capability": "dependent_composed_program",
+            "depends_on": [
+              "tmkarp-program"
+            ],
+            "node_id": "composed-program"
+          },
+          {
+            "capability": "dependent_composed_semantic_iff",
+            "depends_on": [
+              "tmkarp-semantic-iff",
+              "composed-program"
+            ],
+            "node_id": "composed-semantic-iff"
+          }
+        ],
+        "task_class": "typed_tmkarp_dependent_composition_dag",
+        "terminal_node_id": "composed-semantic-iff"
+      },
+      "requires_model": true,
+      "route_length": null,
+      "scored": true,
+      "split": "heldout",
+      "tier": "C0-authoring"
+    },
+    {
+      "blocker_bucket": null,
+      "canonical_identity": "sha256:fa2dbd61a9bf19b4800d3813cfc16ddbf08e75d8e4e2e8e5946b1dd4366deac7",
+      "canonical_problem": "ComplexityReduction.Presentation.SetSystem.setCoveringStructuredProblem",
+      "case_id": "chld-au-07-set-covering",
+      "difficulty_axes": [
+        "directionality",
+        "new-ingress",
+        "semantic-iff"
+      ],
+      "expected_failure_codes": [],
+      "expected_public_status": "VERIFIED",
+      "family": "set-system",
+      "level": "L4",
+      "level_bucket": "L4",
+      "matrix_disposition": "blocked_missing_formal_prerequisite",
+      "outcome_class": "first-authoring",
+      "required_authoring_motif": {
+        "final_program_node_id": "tmkarp-program",
+        "nodes": [
+          {
+            "capability": "tmkarp_primitive",
+            "depends_on": [],
+            "node_id": "tmkarp-primitive"
+          },
+          {
+            "capability": "tmkarp_program",
+            "depends_on": [
+              "tmkarp-primitive"
+            ],
+            "node_id": "tmkarp-program"
+          },
+          {
+            "capability": "tmkarp_semantic_iff",
+            "depends_on": [
+              "tmkarp-program"
+            ],
+            "node_id": "tmkarp-semantic-iff"
+          }
+        ],
+        "task_class": "typed_tmkarp_admission_dag",
+        "terminal_node_id": "tmkarp-semantic-iff"
+      },
+      "requires_model": true,
+      "route_length": null,
+      "scored": true,
+      "split": "heldout",
+      "tier": "C0-authoring"
+    },
+    {
+      "blocker_bucket": null,
+      "canonical_identity": "sha256:b3b6e4590284374b3d999dc09ab012c464dc3b50d266754f02a28f35cfdbe384",
+      "canonical_problem": "ComplexityReduction.Presentation.SetSystem.setPackingStructuredProblem",
+      "case_id": "chld-au-08-set-packing",
+      "difficulty_axes": [
+        "new-gadget",
+        "parameter-transform",
+        "semantic-iff",
+        "polynomial-bound"
+      ],
+      "expected_failure_codes": [],
+      "expected_public_status": "VERIFIED",
+      "family": "set-system",
+      "level": "L5",
+      "level_bucket": "L5",
+      "matrix_disposition": "blocked_missing_formal_prerequisite",
+      "outcome_class": "first-authoring",
+      "required_authoring_motif": {
+        "final_program_node_id": "tmkarp-program",
+        "nodes": [
+          {
+            "capability": "tmkarp_primitive",
+            "depends_on": [],
+            "node_id": "tmkarp-primitive"
+          },
+          {
+            "capability": "tmkarp_program",
+            "depends_on": [
+              "tmkarp-primitive"
+            ],
+            "node_id": "tmkarp-program"
+          },
+          {
+            "capability": "tmkarp_semantic_iff",
+            "depends_on": [
+              "tmkarp-program"
+            ],
+            "node_id": "tmkarp-semantic-iff"
+          }
+        ],
+        "task_class": "typed_tmkarp_admission_dag",
+        "terminal_node_id": "tmkarp-semantic-iff"
+      },
+      "requires_model": true,
+      "route_length": null,
+      "scored": true,
+      "split": "heldout",
+      "tier": "C0-authoring"
+    },
+    {
+      "blocker_bucket": null,
+      "canonical_identity": "sha256:7d29f5088357095226b22fd8781baf1bc9bd0c10750085e5b1bc98f2ee234564",
+      "canonical_problem": "ComplexityReduction.Presentation.FeedbackArcSet.structuredProblem",
+      "case_id": "chld-au-09-feedback-arc-set",
+      "difficulty_axes": [
+        "new-gadget",
+        "mapping-invariant",
+        "semantic-iff",
+        "polynomial-bound"
+      ],
+      "expected_failure_codes": [],
+      "expected_public_status": "VERIFIED",
+      "family": "graph",
+      "level": "L5",
+      "level_bucket": "L5",
+      "matrix_disposition": "blocked_missing_formal_prerequisite",
+      "outcome_class": "first-authoring",
+      "required_authoring_motif": {
+        "final_program_node_id": "composed-program",
+        "nodes": [
+          {
+            "capability": "tmkarp_primitive",
+            "depends_on": [],
+            "node_id": "tmkarp-primitive"
+          },
+          {
+            "capability": "tmkarp_program",
+            "depends_on": [
+              "tmkarp-primitive"
+            ],
+            "node_id": "tmkarp-program"
+          },
+          {
+            "capability": "tmkarp_semantic_iff",
+            "depends_on": [
+              "tmkarp-program"
+            ],
+            "node_id": "tmkarp-semantic-iff"
+          },
+          {
+            "capability": "dependent_composed_program",
+            "depends_on": [
+              "tmkarp-program"
+            ],
+            "node_id": "composed-program"
+          },
+          {
+            "capability": "dependent_composed_semantic_iff",
+            "depends_on": [
+              "tmkarp-semantic-iff",
+              "composed-program"
+            ],
+            "node_id": "composed-semantic-iff"
+          }
+        ],
+        "task_class": "typed_tmkarp_dependent_composition_dag",
+        "terminal_node_id": "composed-semantic-iff"
+      },
+      "requires_model": true,
+      "route_length": null,
+      "scored": true,
+      "split": "heldout",
+      "tier": "C0-authoring"
+    },
+    {
+      "blocker_bucket": null,
+      "canonical_identity": "sha256:872cc330dbe4b94612d28b3f382815711bd02a583c107620174d89a9dc70808f",
+      "canonical_problem": "ComplexityReduction.Presentation.ThreeDimensionalMatching.structuredProblem",
+      "case_id": "chld-au-10-three-dimensional-matching",
+      "difficulty_axes": [
+        "family-heldout",
+        "new-gadget",
+        "semantic-iff",
+        "polynomial-bound"
+      ],
+      "expected_failure_codes": [],
+      "expected_public_status": "VERIFIED",
+      "family": "other",
+      "level": "L5",
+      "level_bucket": "L5",
+      "matrix_disposition": "blocked_missing_formal_prerequisite",
+      "outcome_class": "first-authoring",
+      "required_authoring_motif": {
+        "final_program_node_id": "tmkarp-program",
+        "nodes": [
+          {
+            "capability": "tmkarp_primitive",
+            "depends_on": [],
+            "node_id": "tmkarp-primitive"
+          },
+          {
+            "capability": "tmkarp_program",
+            "depends_on": [
+              "tmkarp-primitive"
+            ],
+            "node_id": "tmkarp-program"
+          },
+          {
+            "capability": "tmkarp_semantic_iff",
+            "depends_on": [
+              "tmkarp-program"
+            ],
+            "node_id": "tmkarp-semantic-iff"
+          }
+        ],
+        "task_class": "typed_tmkarp_admission_dag",
+        "terminal_node_id": "tmkarp-semantic-iff"
+      },
+      "requires_model": true,
+      "route_length": null,
+      "scored": true,
+      "split": "heldout",
+      "tier": "C0-authoring"
+    },
+    {
+      "blocker_bucket": null,
+      "canonical_identity": "sha256:7c6ba25a3dad3da75efa4febaaed156e022d6a594a2be9cc21531eff8fda5863",
+      "canonical_problem": "ComplexityReduction.Presentation.RoleGraph.wellFormedPresentedProblem",
+      "case_id": "chld-sf-01-role-graph-wellformed",
+      "difficulty_axes": [
+        "shared-representation",
+        "predicate-identity",
+        "scope-policy"
+      ],
+      "expected_failure_codes": [
+        "auxiliary_or_non_target"
+      ],
+      "expected_public_status": "BLOCKED_NOT_TARGET",
+      "family": "graph",
+      "level": "L0-L6",
+      "level_bucket": "L0",
+      "matrix_disposition": "auxiliary_or_non_target",
+      "outcome_class": "safety",
+      "requires_model": false,
+      "route_length": null,
+      "scored": true,
+      "split": "heldout",
+      "tier": "C0-safety"
+    },
+    {
+      "blocker_bucket": null,
+      "canonical_identity": "sha256:3bd76b6727ab8c02e8a7c6dc835727970489e97a38bcb325960be82fc97993c1",
+      "canonical_problem": "ComplexityReduction.Presentation.SetSystem.wellFormedProblem",
+      "case_id": "chld-sf-02-set-system-wellformed",
+      "difficulty_axes": [
+        "shared-representation",
+        "predicate-identity",
+        "scope-policy"
+      ],
+      "expected_failure_codes": [
+        "auxiliary_or_non_target"
+      ],
+      "expected_public_status": "BLOCKED_NOT_TARGET",
+      "family": "set-system",
+      "level": "L0-L6",
+      "level_bucket": "L0",
+      "matrix_disposition": "auxiliary_or_non_target",
+      "outcome_class": "safety",
+      "requires_model": false,
+      "route_length": null,
+      "scored": true,
+      "split": "heldout",
+      "tier": "C0-safety"
+    },
+    {
+      "blocker_bucket": null,
+      "canonical_identity": "sha256:29c575fd0843686af1e44892558778282eba94d7563711f69b5be2f4e8ac3dc9",
+      "canonical_problem": "ComplexityReduction.Problems.Karp21.GraphAtoms.graphWellFormedProblem",
+      "case_id": "chld-sf-03-graph-atoms-wellformed",
+      "difficulty_axes": [
+        "shared-module",
+        "predicate-identity",
+        "scope-policy"
+      ],
+      "expected_failure_codes": [
+        "auxiliary_or_non_target"
+      ],
+      "expected_public_status": "BLOCKED_NOT_TARGET",
+      "family": "graph",
+      "level": "L0-L6",
+      "level_bucket": "L0",
+      "matrix_disposition": "auxiliary_or_non_target",
+      "outcome_class": "safety",
+      "requires_model": false,
+      "route_length": null,
+      "scored": true,
+      "split": "heldout",
+      "tier": "C0-safety"
+    },
+    {
+      "blocker_bucket": null,
+      "canonical_identity": "sha256:ad9c858d0d1bf7bf49eddff79069e75a7ae9ab33f2e385a7459f0f8dd73582d0",
+      "canonical_problem": "ComplexityReduction.Problems.Karp21.SATTractable.twoCNFStructuredProblem",
+      "case_id": "chld-sf-04-two-cnf-tractable",
+      "difficulty_axes": [
+        "tractable-class",
+        "scope-policy"
+      ],
+      "expected_failure_codes": [
+        "auxiliary_or_non_target"
+      ],
+      "expected_public_status": "BLOCKED_NOT_TARGET",
+      "family": "sat-csp",
+      "level": "L0-L6",
+      "level_bucket": "L0",
+      "matrix_disposition": "auxiliary_or_non_target",
+      "outcome_class": "safety",
+      "requires_model": false,
+      "route_length": null,
+      "scored": true,
+      "split": "heldout",
+      "tier": "C0-safety"
+    },
+    {
+      "blocker_bucket": "encoding_complexity_boundary",
+      "canonical_identity": "sha256:1e1d552d56d5dfa046f124c8e9948413642b5c7ae6376967401277a444f70967",
+      "canonical_problem": "ComplexityReduction.Presentation.Knapsack.structuredProblem",
+      "case_id": "frontier-01-knapsack-unary-boundary",
+      "difficulty_axes": [
+        "encoding-direction",
+        "binary-to-unary-expansion",
+        "polynomial-bound",
+        "formal-prerequisite"
+      ],
+      "expected_failure_codes": [
+        "encoding_polynomial_reverse_bridge_unavailable"
+      ],
+      "expected_public_status": "BLOCKED_MISSING_PREREQUISITE",
+      "family": "numeric",
+      "level": "L6",
+      "level_bucket": "L6",
+      "matrix_disposition": "encoding_complexity_frontier",
+      "outcome_class": "frontier",
+      "requires_model": false,
+      "route_length": null,
+      "scored": false,
+      "split": "frontier",
+      "tier": "F0-frontier"
+    },
+    {
+      "blocker_bucket": "encoding_complexity_boundary",
+      "canonical_identity": "sha256:c705c992575f861b76e8324386d9daa8470d89cd912c2d0282198924adda69d9",
+      "canonical_problem": "ComplexityReduction.Presentation.Partition.structuredProblem",
+      "case_id": "frontier-02-partition-unary-boundary",
+      "difficulty_axes": [
+        "encoding-direction",
+        "binary-to-unary-expansion",
+        "polynomial-bound",
+        "formal-prerequisite"
+      ],
+      "expected_failure_codes": [
+        "encoding_polynomial_reverse_bridge_unavailable"
+      ],
+      "expected_public_status": "BLOCKED_MISSING_PREREQUISITE",
+      "family": "numeric",
+      "level": "L6",
+      "level_bucket": "L6",
+      "matrix_disposition": "encoding_complexity_frontier",
+      "outcome_class": "frontier",
+      "requires_model": false,
+      "route_length": null,
+      "scored": false,
+      "split": "frontier",
+      "tier": "F0-frontier"
+    }
+  ],
+  "schema_version": "hardness_np_hard_capability_oracle_v2"
+}

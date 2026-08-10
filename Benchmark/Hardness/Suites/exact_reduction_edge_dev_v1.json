@@ -1,0 +1,96 @@
+{
+ "cases": [
+  {
+   "case_id": "edge-dev-01-three-sat-to-clique",
+   "module": "Benchmark.Hardness.Inputs.ExactReductionEdgeV1.DevEndpoints",
+   "source": "ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem",
+   "target": "ComplexityReduction.Problems.Karp21.GraphAtoms.cliqueStructuredProblem",
+   "statement": "Construct a certified reduction from structured 3SAT to structured Clique.",
+   "statement_hash": "sha256:9ee25243c851d1acd3d167c67729dc0ae0c69ffb37053c80d45b469f0ce81064",
+   "budget_profile": "formal-default",
+   "construction_policy": {
+    "mode": "existing_edge_reconstruction",
+    "allow_composition": true,
+    "require_new_primitive": false
+   },
+   "endpoint_contract_version": "exact-edge-endpoint-v1"
+  },
+  {
+   "case_id": "edge-dev-02-three-sat-to-zero-one-ip",
+   "module": "Benchmark.Hardness.Inputs.ExactReductionEdgeV1.DevEndpoints",
+   "source": "ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem",
+   "target": "ComplexityReduction.Presentation.ZeroOneIP.structuredProblem",
+   "statement": "Construct a certified reduction from structured 3SAT to structured zero-one integer programming.",
+   "statement_hash": "sha256:5b4d7aeeb7bab1e57535c922305666cc8c1fec7777961f903fb22cbb0efb907e",
+   "budget_profile": "formal-default",
+   "construction_policy": {
+    "mode": "existing_edge_reconstruction",
+    "allow_composition": true,
+    "require_new_primitive": false
+   },
+   "endpoint_contract_version": "exact-edge-endpoint-v1"
+  },
+  {
+   "case_id": "edge-dev-03-three-sat-to-chromatic",
+   "module": "Benchmark.Hardness.Inputs.ExactReductionEdgeV1.DevEndpoints",
+   "source": "ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem",
+   "target": "ComplexityReduction.Presentation.ChromaticNumber.structuredProblem",
+   "statement": "Construct a certified reduction from structured 3SAT to structured Chromatic Number.",
+   "statement_hash": "sha256:364756ef74648499495da58ef6b051ed03c718e856f1bd22c2b9d5b8e82a0a5f",
+   "budget_profile": "formal-default",
+   "construction_policy": {
+    "mode": "existing_edge_reconstruction",
+    "allow_composition": true,
+    "require_new_primitive": false
+   },
+   "endpoint_contract_version": "exact-edge-endpoint-v1"
+  },
+  {
+   "case_id": "edge-dev-04-chromatic-to-clique-cover",
+   "module": "Benchmark.Hardness.Inputs.ExactReductionEdgeV1.DevEndpoints",
+   "source": "ComplexityReduction.Presentation.ChromaticNumber.structuredProblem",
+   "target": "ComplexityReduction.Presentation.CliqueCover.structuredProblem",
+   "statement": "Construct a certified reduction from structured Chromatic Number to structured Clique Cover.",
+   "statement_hash": "sha256:4e5b822730322922ae1eb7cc5e8fe60ff602e29ab2e93749f9528c2476c4ecf8",
+   "budget_profile": "formal-default",
+   "construction_policy": {
+    "mode": "existing_edge_reconstruction",
+    "allow_composition": true,
+    "require_new_primitive": false
+   },
+   "endpoint_contract_version": "exact-edge-endpoint-v1"
+  },
+  {
+   "case_id": "edge-dev-05-set-cover-to-hitting-set",
+   "module": "Benchmark.Hardness.Inputs.ExactReductionEdgeV1.DevEndpoints",
+   "source": "ComplexityReduction.Presentation.SetSystem.setCoveringStructuredProblem",
+   "target": "ComplexityReduction.Presentation.SetSystem.hittingSetStructuredProblem",
+   "statement": "Construct a certified reduction from structured Set Covering to structured Hitting Set.",
+   "statement_hash": "sha256:23294975e7d5e901b28103c6eaaf051362550061ea68c103b071d4c5cf527b2d",
+   "budget_profile": "formal-default",
+   "construction_policy": {
+    "mode": "existing_edge_reconstruction",
+    "allow_composition": true,
+    "require_new_primitive": false
+   },
+   "endpoint_contract_version": "exact-edge-endpoint-v1"
+  },
+  {
+   "case_id": "edge-dev-06-undirected-to-directed-hc",
+   "module": "Benchmark.Hardness.Inputs.ExactReductionEdgeV1.DevEndpoints",
+   "source": "ComplexityReduction.Presentation.UndirectedHamiltonianCircuit.structuredProblem",
+   "target": "ComplexityReduction.Presentation.DirectedHamiltonianCircuit.structuredProblem",
+   "statement": "Construct a certified reduction from structured Undirected Hamiltonian Circuit to structured Directed Hamiltonian Circuit.",
+   "statement_hash": "sha256:a16cc34c53200c74d0fef9331556f740d26413afb2e72310c21ba35723b3749f",
+   "budget_profile": "formal-default",
+   "construction_policy": {
+    "mode": "direct_new_edge",
+    "allow_composition": false,
+    "require_new_primitive": true
+   },
+   "endpoint_contract_version": "exact-edge-endpoint-v1"
+  }
+ ],
+ "schema_version": "hardness_exact_reduction_edge_input_suite_v1",
+ "split": "dev"
+}

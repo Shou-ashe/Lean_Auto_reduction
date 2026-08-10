@@ -21,7 +21,7 @@ def _has_option(arguments: list[str], name: str) -> bool:
 if __name__ == "__main__":
     arguments = sys.argv[1:]
     defaults = {
-        "--suite": ROOT / "Benchmark" / "Hardness" / "Suites" / "frontier_efficiency.json",
+        "--suite": ROOT / "Gate" / "Suites" / "frontier_efficiency.json",
         "--output-root": ROOT / ".reduction-agent" / "frontier-efficiency-snapshots",
     }
     injected: list[str] = []

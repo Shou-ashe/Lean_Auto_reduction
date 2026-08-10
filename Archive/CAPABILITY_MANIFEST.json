@@ -1,0 +1,95 @@
+{
+  "benchmark_id": "np-hard-capability-v1",
+  "budget_profiles": {
+    "formal-default": {
+      "attempt_budget": 4,
+      "call_budget": "typed-dag-auto",
+      "lean_timeout_seconds": 600
+    },
+    "frontier-default": {
+      "attempt_budget": 4,
+      "call_budget": "typed-dag-auto",
+      "lean_timeout_seconds": 600
+    }
+  },
+  "final_lean_type": "ComplexityReduction.Certificate.NativeTMNPHard input",
+  "forbidden_runner_paths": [
+    "ACTIVE_AGENT_IMPROVEMENT_PLAN.md",
+    "Evaluation",
+    "problems.7z",
+    "problems",
+    "problems.json",
+    "problems_clean.json"
+  ],
+  "objective": "target-hardness",
+  "oracle": {
+    "file": "Evaluation/np_hard_capability_oracle_v1.json",
+    "runner_access": "forbidden",
+    "sha256": "9ac812c13e1085afe543859c1873724fac11ad0dfa3832c17ec94555fdd53cd4"
+  },
+  "public_suite_case_fields": [
+    "case_id",
+    "module",
+    "problem",
+    "family",
+    "budget_profile"
+  ],
+  "required_model_profile": {
+    "base_url": "https://api.deepseek.com",
+    "max_retries": 0,
+    "max_tokens": 16000,
+    "model": "deepseek-v4-flash",
+    "provider": "DeepSeek",
+    "reasoning_effort": "low",
+    "temperature": 0.0,
+    "timeout_seconds": 300
+  },
+  "reserve_policy": {
+    "intermediate_case_threshold": 0.1,
+    "promote_consecutive_versions": 2,
+    "promote_threshold": 0.9
+  },
+  "schema_version": "hardness_np_hard_capability_manifest_v1",
+  "scope_policy": {
+    "file": "agent/hardness/data/np_hard_scope_policy.json",
+    "sha256": "46ca270498106dd945dda57ff7b1939b79f1a570e9a4148479a907464b8ee525"
+  },
+  "split_policy": {
+    "canonical_identity_disjoint": true,
+    "capability_node_heldout": [
+      "new-gadget",
+      "polynomial-bound"
+    ],
+    "counts": {
+      "dev": 8,
+      "frontier": 2,
+      "heldout": 16,
+      "validation": 8
+    },
+    "family_heldout": [
+      "other"
+    ]
+  },
+  "suites": {
+    "dev": {
+      "file": "Gate/Suites/np_hard_capability_dev_v1.json",
+      "sha256": "b8dd46484f41fc594300f0cfbe2a6d84be74b599583b90b5737fbc085ddf465a"
+    },
+    "frontier": {
+      "file": "Gate/Suites/np_hard_capability_frontier_v1.json",
+      "sha256": "522a1448760fc9194a3a3e3819601896eaaa6cb7509bc1350323d03c80938701"
+    },
+    "heldout": {
+      "file": "Gate/Suites/np_hard_capability_heldout_v1.json",
+      "sha256": "20a85c17a0d609346c7756e9c29ee8e6ea721c13a7e9a49e6f169706ac1e4768"
+    },
+    "validation": {
+      "file": "Gate/Suites/np_hard_capability_validation_v1.json",
+      "sha256": "de0fc074ff1f4ac764f5974a2d5052b8b567b95c5cc7863c3667a7941357ac1d"
+    }
+  },
+  "target_matrix": {
+    "file": "Gate/NP_HARD_TARGET_MATRIX.json",
+    "sha256": "036b71e550513b1949cfef539d5c3390476b3fb44b7c53b84080941bd5d83cf6"
+  }
+}

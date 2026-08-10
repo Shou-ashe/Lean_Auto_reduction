@@ -17,10 +17,10 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def canonical_cases():
     positive = load_benchmark_suite(
-        ROOT / "Benchmark/Hardness/Suites/stage_p_open_world.json"
+        ROOT / "Gate/Suites/stage_p_open_world.json"
     )
     negative = load_benchmark_suite(
-        ROOT / "Benchmark/Hardness/Suites/stage_p_adversarial.json"
+        ROOT / "Gate/Suites/stage_p_adversarial.json"
     )
     return validate_stage_p_suites(positive, negative)
 

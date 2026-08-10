@@ -37,8 +37,16 @@ from .np_hard_authoring_planner import (
 )
 from .np_hard_gap_runtime import NPHardGapRuntimeV1, NPHardNodeModelClient
 from .np_hard_input import NPHardInputReferenceV1, resolve_np_hard_input_reference
+from .np_hard_production import (
+    NPHardProductionPreflightV1,
+    is_formal_np_hard_qualification_config,
+    required_model_call_budget,
+)
 from .np_hard_scope_policy import (
+    NPHardScopePolicyError,
     NPHardScopePolicyEntryV1,
+    POLICY_DISPOSITION_AUXILIARY,
+    POLICY_DISPOSITION_ENCODING_COMPLEXITY_FRONTIER,
     scope_policy_entry_for_input_reference,
 )
 from .state import JobStore, compute_job_id
@@ -48,6 +56,10 @@ NP_HARD_PROOF_REQUEST_SCHEMA_V2 = "hardness_np_hard_proof_request_v2"
 NP_HARD_PROOF_RESULT_SCHEMA_V2 = "hardness_np_hard_proof_result_v2"
 NP_HARD_PROOF_RESULT_STATUSES_V2 = {"VERIFIED", "BLOCKED", "FAILED"}
 NP_HARD_MODEL_POLICIES_V2 = {"disabled", "model-auto", "model-required"}
+NP_HARD_MAX_MODEL_CALL_BUDGET_V2 = 64
+NP_HARD_AUTHORABLE_DETERMINISTIC_BLOCKERS_V2 = frozenset(
+    {"no_forward_path_from_hardness_seed", "wrong_direction_only"}
+)
 
 
 class NPHardOrchestratorError(ValueError):
@@ -59,6 +71,25 @@ class NPHardOrchestratorError(ValueError):
 
 def _fail(code: str, message: str) -> None:
     raise NPHardOrchestratorError(code, message)
+
+
+def _deterministic_outcome_allows_authoring(
+    *,
+    status: str,
+    failure_code: str,
+    authoring_policy: str,
+    qualification_force_authoring: bool,
+) -> bool:
+    """Admit only deterministic route blockers that a forward author can repair."""
+
+    if authoring_policy not in {"model-auto", "model-required"}:
+        return False
+    if qualification_force_authoring:
+        return True
+    return (
+        status == "BLOCKED"
+        and failure_code in NP_HARD_AUTHORABLE_DETERMINISTIC_BLOCKERS_V2
+    )
 
 
 def _exact_keys(value: Mapping[str, Any], expected: set[str], *, label: str) -> None:
@@ -95,6 +126,7 @@ class NPHardProofRequestV2:
     toolchain: str
     lake_manifest_sha256: str
     authoring_policy: str
+    qualification_force_authoring: bool
     attempt_budget: int
     call_budget: int
     model_configuration: Mapping[str, Any] | None
@@ -119,6 +151,7 @@ class NPHardProofRequestV2:
             "direction": self.direction,
             "planner": self.planner,
             "authoring_policy": self.authoring_policy,
+            "qualification_force_authoring": self.qualification_force_authoring,
             "attempt_budget": self.attempt_budget,
             "call_budget": self.call_budget,
             "model_configuration": (
@@ -154,7 +187,20 @@ class NPHardProofRequestV2:
             _fail("invalid_np_hard_proof_v2_schema", "V2 requires deterministic planning")
         if self.authoring_policy not in NP_HARD_MODEL_POLICIES_V2:
             _fail("invalid_np_hard_proof_v2_schema", "unknown V2 authoring policy")
-        if not 1 <= self.attempt_budget <= 4 or not 0 <= self.call_budget <= 8:
+        if not isinstance(self.qualification_force_authoring, bool):
+            _fail(
+                "invalid_np_hard_proof_v2_schema",
+                "qualification_force_authoring must be boolean",
+            )
+        if self.qualification_force_authoring and self.authoring_policy != "model-required":
+            _fail(
+                "invalid_np_hard_proof_v2_schema",
+                "forced qualification authoring requires model-required policy",
+            )
+        if (
+            not 1 <= self.attempt_budget <= 4
+            or not 0 <= self.call_budget <= NP_HARD_MAX_MODEL_CALL_BUDGET_V2
+        ):
             _fail("authoring_gap_budget_exhausted", "V2 model budget is outside policy")
         if self.candidate_validation_mode != "persistent-worker":
             _fail(
@@ -182,8 +228,15 @@ class NPHardProofRequestV2:
                 _fail("candidate_wrong_endpoint", "capability DAG targets another input")
             if self.authoring_task.attempt_budget > self.attempt_budget:
                 _fail("authoring_gap_budget_exhausted", "DAG exceeds request attempt budget")
-            if len(self.authoring_task.gap_nodes) > self.call_budget:
-                _fail("authoring_gap_budget_exhausted", "DAG exceeds request call budget")
+            minimum_call_budget = required_model_call_budget(
+                gap_node_count=len(self.authoring_task.gap_nodes),
+                attempt_budget=self.attempt_budget,
+            )
+            if minimum_call_budget > self.call_budget:
+                _fail(
+                    "authoring_gap_budget_exhausted",
+                    "request call budget does not reserve every allowed attempt for the full DAG",
+                )
             if self.final_program_declaration is None:
                 _fail("invalid_np_hard_proof_v2_schema", "capability DAG lacks final program")
             try:
@@ -216,6 +269,7 @@ class NPHardProofRequestV2:
             "direction",
             "planner",
             "authoring_policy",
+            "qualification_force_authoring",
             "attempt_budget",
             "call_budget",
             "model_configuration",
@@ -230,6 +284,7 @@ class NPHardProofRequestV2:
             "model_configuration",
             "authoring_task",
             "final_program_declaration",
+            "qualification_force_authoring",
         }
         if not all(isinstance(value[name], str) for name in string_fields):
             _fail("invalid_np_hard_proof_v2_schema", "V2 string field is invalid")
@@ -237,6 +292,11 @@ class NPHardProofRequestV2:
             value["call_budget"], int
         ):
             _fail("invalid_np_hard_proof_v2_schema", "V2 budget field is invalid")
+        if not isinstance(value["qualification_force_authoring"], bool):
+            _fail(
+                "invalid_np_hard_proof_v2_schema",
+                "qualification_force_authoring must be boolean",
+            )
         model_configuration = value["model_configuration"]
         if model_configuration is not None and not isinstance(model_configuration, Mapping):
             _fail("invalid_np_hard_proof_v2_schema", "V2 model configuration is invalid")
@@ -263,6 +323,7 @@ class NPHardProofRequestV2:
             direction=value["direction"],
             planner=value["planner"],
             authoring_policy=value["authoring_policy"],
+            qualification_force_authoring=value["qualification_force_authoring"],
             attempt_budget=value["attempt_budget"],
             call_budget=value["call_budget"],
             model_configuration=(
@@ -460,13 +521,13 @@ def read_np_hard_result(value: Mapping[str, Any]) -> Mapping[str, Any] | NPHardP
 @dataclass(frozen=True)
 class NPHardOrchestratorConfigV2:
     root: Path
-    input_module: str
+    input_module: str | None
     problem_declaration: str
     output_dir: Path | None = None
     lean_timeout_seconds: int = 600
     authoring_policy: str = "model-auto"
     attempt_budget: int = 4
-    call_budget: int = 8
+    call_budget: int | None = None
     deepseek: DeepSeekConfig | None = None
     runtime_prebuilt: bool = False
     authoring_task: NPHardAuthoringTaskV2 | None = None
@@ -474,6 +535,9 @@ class NPHardOrchestratorConfigV2:
     resume_checkpoint_path: Path | None = None
     expected_checkpoint_file_sha256: str | None = None
     max_new_nodes: int | None = None
+    preflight_path: Path | None = None
+    formal_qualification: bool = False
+    qualification_force_authoring: bool = False
 
 
 def build_np_hard_proof_request_v2(config: NPHardOrchestratorConfigV2) -> NPHardProofRequestV2:
@@ -483,6 +547,13 @@ def build_np_hard_proof_request_v2(config: NPHardOrchestratorConfigV2) -> NPHard
         input_module=config.input_module,
         requested_term=config.problem_declaration,
     )
+    minimum_call_budget = required_model_call_budget(
+        gap_node_count=(len(config.authoring_task.gap_nodes) if config.authoring_task else 0),
+        attempt_budget=config.attempt_budget,
+    )
+    call_budget = (
+        minimum_call_budget if config.call_budget is None else config.call_budget
+    )
     arguments = {
         "requested_term": reference.requested_term,
         "input_module": reference.input_module,
@@ -491,8 +562,9 @@ def build_np_hard_proof_request_v2(config: NPHardOrchestratorConfigV2) -> NPHard
         "toolchain": (root / "Lean" / "lean-toolchain").read_text(encoding="utf-8").strip(),
         "lake_manifest_sha256": "sha256:" + sha256_file(root / "Lean" / "lake-manifest.json"),
         "authoring_policy": config.authoring_policy,
+        "qualification_force_authoring": config.qualification_force_authoring,
         "attempt_budget": config.attempt_budget,
-        "call_budget": config.call_budget,
+        "call_budget": call_budget,
         "model_configuration": _public_model_configuration(config.deepseek),
         "candidate_validation_mode": "persistent-worker",
         "authoring_task": config.authoring_task,
@@ -568,7 +640,7 @@ class NPHardOrchestratorV2:
         axiom = None
         deletion = None
         fresh_core = None
-        if deterministic_verified:
+        if deterministic_verified and runtime_payload is None:
             artifact_file = deterministic.get("artifact_file")
             artifact = {
                 "file": artifact_file,
@@ -722,6 +794,58 @@ class NPHardOrchestratorV2:
                 "request_id": request.request_id,
             }
         )
+        model_configuration = (
+            self.config.deepseek.to_public_dict()
+            if self.config.deepseek is not None
+            else {
+                "base_url": None,
+                "model": None,
+                "timeout_seconds": None,
+                "temperature": None,
+                "max_tokens": None,
+                "max_retries": None,
+                "reasoning_effort": None,
+                "api_key_configured": False,
+            }
+        )
+        qualification_profile_matched = bool(
+            self.config.deepseek is not None
+            and is_formal_np_hard_qualification_config(self.config.deepseek)
+        )
+        preflight = NPHardProductionPreflightV1(
+            authoring_policy=request.authoring_policy,
+            qualification_force_authoring=request.qualification_force_authoring,
+            attempt_budget=request.attempt_budget,
+            call_budget=request.call_budget,
+            model_configuration=model_configuration,
+            formal_qualification=self.config.formal_qualification,
+            qualification_profile_matched=qualification_profile_matched,
+            input_module=request.input_module,
+            requested_problem=request.requested_term,
+            output_dir=str(output_dir),
+        )
+        preflight.write(
+            self.config.preflight_path.resolve()
+            if self.config.preflight_path is not None
+            else output_dir / "preflight.json"
+        )
+        if self.config.formal_qualification and not qualification_profile_matched:
+            _fail(
+                "qualification_model_profile_mismatch",
+                "formal qualification requires the accepted DeepSeek V4 Flash profile",
+            )
+        if request.qualification_force_authoring and not self.config.formal_qualification:
+            _fail(
+                "invalid_np_hard_proof_v2_schema",
+                "forced authoring is restricted to formal qualification jobs",
+            )
+        if request.qualification_force_authoring and not request.input_module.startswith(
+            "ComplexityReduction."
+        ):
+            _fail(
+                "invalid_np_hard_proof_v2_schema",
+                "forced qualification authoring requires a public ComplexityReduction input",
+            )
         store = JobStore(output_dir)
         with store.exclusive_run():
             store.write_json("request.json", request.to_dict())
@@ -746,7 +870,10 @@ class NPHardOrchestratorV2:
                     "target_scope_policy": self.scope_policy_entry.to_dict(root=self.root),
                 }
             store.write_json("deterministic-result.json", deterministic)
-            if deterministic_result.status == "VERIFIED":
+            if (
+                deterministic_result.status == "VERIFIED"
+                and not request.qualification_force_authoring
+            ):
                 if self.scope_policy_entry is not None:
                     result = self._result(
                         request=request,
@@ -776,23 +903,42 @@ class NPHardOrchestratorV2:
             initial_failure = deterministic_result.failure
             initial_code = initial_failure.code if initial_failure is not None else "deterministic_probe_failed"
             if self.scope_policy_entry is not None:
+                if (
+                    self.scope_policy_entry.disposition
+                    == POLICY_DISPOSITION_AUXILIARY
+                ):
+                    policy_failure_code = "auxiliary_or_non_target"
+                elif (
+                    self.scope_policy_entry.disposition
+                    == POLICY_DISPOSITION_ENCODING_COMPLEXITY_FRONTIER
+                ):
+                    policy_failure_code = self.scope_policy_entry.failure_code
+                    if policy_failure_code is None:
+                        raise NPHardScopePolicyError(
+                            "encoding-complexity policy row lacks a production blocker"
+                        )
+                else:
+                    raise NPHardScopePolicyError(
+                        "unsupported production scope-policy disposition"
+                    )
                 result = self._result(
                     request=request,
                     job_id=job_id,
                     output_dir=output_dir,
                     deterministic=deterministic,
                     status="BLOCKED",
-                    failure_code="auxiliary_or_non_target",
+                    failure_code=policy_failure_code,
                 )
                 store.transition(
-                    "BLOCKED", details={"code": "auxiliary_or_non_target"}
+                    "BLOCKED", details={"code": policy_failure_code}
                 )
                 store.write_json("report.json", result.to_dict())
                 return result
-            authorable = (
-                deterministic_result.status == "BLOCKED"
-                and initial_code == "no_forward_path_from_hardness_seed"
-                and request.authoring_policy in {"model-auto", "model-required"}
+            authorable = _deterministic_outcome_allows_authoring(
+                status=deterministic_result.status,
+                failure_code=initial_code,
+                authoring_policy=request.authoring_policy,
+                qualification_force_authoring=request.qualification_force_authoring,
             )
             if not authorable:
                 result = self._result(
@@ -860,6 +1006,7 @@ class NPHardOrchestratorV2:
                 model=self.model_client,
                 final_program_declaration=request.final_program_declaration or "",
                 timeout_seconds=self.config.lean_timeout_seconds,
+                instance_call_budget=request.call_budget,
             ).run(
                 resume_checkpoint_path=resume_path,
                 expected_checkpoint_file_sha256=self.config.expected_checkpoint_file_sha256,

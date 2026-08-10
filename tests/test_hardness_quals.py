@@ -21,9 +21,9 @@ from scripts.quals_benchmark import run_adversarial_case, run_full_suite
 
 
 ROOT = Path(__file__).resolve().parents[1]
-FORMALIZATION = ROOT / "Benchmark" / "Hardness" / "Suites" / "quals_formalization.json"
-COMPLETENESS = ROOT / "Benchmark" / "Hardness" / "Suites" / "quals_completeness.json"
-ADVERSARIAL = ROOT / "Benchmark" / "Hardness" / "Suites" / "quals_adversarial.json"
+FORMALIZATION = ROOT / "Gate" / "Suites" / "quals_formalization.json"
+COMPLETENESS = ROOT / "Gate" / "Suites" / "quals_completeness.json"
+ADVERSARIAL = ROOT / "Gate" / "Suites" / "quals_adversarial.json"
 
 
 def test_n_c_contract_freezes_five_formalizations_primaries_and_seven_adversarials() -> None:
@@ -215,7 +215,7 @@ def test_wrong_endpoint_fixture_shares_codec_but_not_semantics() -> None:
 
 
 def test_n_c_capability_negative_modules_omit_the_positive_templates() -> None:
-    quals = ROOT / "Lean" / "Reference" / "Benchmark" / "Hardness" / "Inputs" / "Quals"
+    quals = ROOT / "Lean" / "Reference" / "Reports" / "Inputs" / "Quals"
     seeing_negative = (quals / "UIUC2022SeeingSetMissingReduction.lean").read_text()
     deletion_negative = (
         quals / "Fall2016NodeDeletionBipartiteMissingMembership.lean"

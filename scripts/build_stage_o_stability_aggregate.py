@@ -24,7 +24,7 @@ def parser() -> argparse.ArgumentParser:
     command.add_argument(
         "--output",
         type=Path,
-        default=ROOT / "Benchmark/Hardness/STAGE_O_MULTI_GAP_STABILITY_AGGREGATE.json",
+        default=ROOT / "Reports/STAGE_O_MULTI_GAP_STABILITY_AGGREGATE.json",
     )
     return command
 

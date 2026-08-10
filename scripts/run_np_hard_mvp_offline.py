@@ -21,13 +21,13 @@ def parser() -> argparse.ArgumentParser:
     command.add_argument(
         "--suite",
         type=Path,
-        default=ROOT / "Benchmark" / "Hardness" / "Suites" / "np_hard_mvp.json",
+        default=ROOT / "Gate" / "Suites" / "np_hard_mvp.json",
     )
     command.add_argument("--output-root", type=Path, required=True)
     command.add_argument(
         "--report",
         type=Path,
-        default=ROOT / "Benchmark" / "Hardness" / "NP_HARD_MVP_OFFLINE_REPORT.json",
+        default=ROOT / "Reports" / "NP_HARD_MVP_OFFLINE_REPORT.json",
     )
     return command
 

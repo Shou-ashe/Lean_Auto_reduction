@@ -2,10 +2,17 @@ from __future__ import annotations
 
 import hashlib
 import json
+import threading
 from pathlib import Path
 
+import pytest
+
 from agent.hardness.models import sha256_id
-from agent.hardness.np_hard_release_benchmark import _token_usage
+from agent.hardness.np_hard_release_benchmark import (
+    _run_release_case_tasks,
+    _token_usage,
+    _validate_release_case_jobs,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -30,8 +37,34 @@ def test_release_token_usage_aggregates_only_integer_provider_fields() -> None:
     ) == {"prompt_tokens": 14, "total_tokens": 20}
 
 
+def test_release_case_executor_observes_four_way_parallelism() -> None:
+    barrier = threading.Barrier(4)
+
+    def task(index: int) -> dict:
+        barrier.wait(timeout=5)
+        return {"index": index}
+
+    results, parallel = _run_release_case_tasks(
+        [(f"case-{index}", lambda index=index: task(index)) for index in range(4)],
+        jobs=4,
+    )
+
+    assert [results[f"case-{index}"]["index"] for index in range(4)] == list(range(4))
+    assert parallel["configured_jobs"] == 4
+    assert parallel["submitted_case_tasks"] == 4
+    assert parallel["maximum_concurrent_case_tasks"] == 4
+    assert parallel["final_active_case_tasks"] == 0
+    assert parallel["observed_parallelism"] is True
+
+
+@pytest.mark.parametrize("jobs", [False, 0, 5])
+def test_release_case_executor_rejects_invalid_parallelism(jobs) -> None:
+    with pytest.raises(ValueError, match="release case jobs must be in 1..4"):
+        _validate_release_case_jobs(jobs)
+
+
 def test_g_e_full_report_is_content_addressed_and_complete() -> None:
-    summary = _load(HARDNESS / "MAIN_G_E_45_FULL_REPORT.json")
+    summary = _load(ROOT / "Reports/MAIN_G_E_45_FULL_REPORT.json")
     raw_path = ROOT / summary["raw_report"]["file"]
     entrypoint_path = ROOT / summary["g_e_entrypoint_report"]["file"]
     raw = _load(raw_path)
@@ -49,7 +82,7 @@ def test_g_e_full_report_is_content_addressed_and_complete() -> None:
 
 
 def test_g_f_offline_release_gate_is_complete() -> None:
-    report = _load(HARDNESS / "NP_HARD_RELEASE_OFFLINE_REPORT.json")
+    report = _load(ROOT / "Reports/NP_HARD_RELEASE_OFFLINE_REPORT.json")
     metrics = report["metrics"]
 
     assert report["passed"] is True
@@ -67,7 +100,7 @@ def test_g_f_offline_release_gate_is_complete() -> None:
 
 
 def test_g_f_three_round_real_release_gate_and_call_ledgers() -> None:
-    aggregate = _load(HARDNESS / "NP_HARD_RELEASE_STABILITY_AGGREGATE.json")
+    aggregate = _load(ROOT / "Reports/NP_HARD_RELEASE_STABILITY_AGGREGATE.json")
     metrics = aggregate["metrics"]
 
     assert aggregate["passed"] is True
@@ -125,7 +158,7 @@ def test_g_f_three_round_real_release_gate_and_call_ledgers() -> None:
 
 
 def test_g_f_full_report_is_content_addressed_and_complete() -> None:
-    summary = _load(HARDNESS / "MAIN_G_F_45_FULL_REPORT.json")
+    summary = _load(ROOT / "Reports/MAIN_G_F_45_FULL_REPORT.json")
     raw_path = ROOT / summary["raw_report"]["file"]
     offline_path = ROOT / summary["g_f_offline_report"]["file"]
     stability_path = ROOT / summary["g_f_stability_report"]["file"]

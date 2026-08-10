@@ -23,7 +23,7 @@ def main() -> int:
     parser.add_argument(
         "--output",
         type=Path,
-        default=ROOT / "Benchmark/Hardness/NP_HARD_MVP_REPORT.json",
+        default=ROOT / "Reports/NP_HARD_MVP_REPORT.json",
     )
     arguments = parser.parse_args()
     report = build_np_hard_real_report(

@@ -18,7 +18,7 @@ from agent.hardness.input_grounding import (
 
 ROOT = Path(__file__).resolve().parents[1]
 SUITE = (
-    ROOT / "Benchmark" / "Hardness" / "Suites" / "input_grounding_fixed_target.json"
+    ROOT / "Gate" / "Suites" / "input_grounding_fixed_target.json"
 )
 COMPARISON_SUITE = (
     ROOT

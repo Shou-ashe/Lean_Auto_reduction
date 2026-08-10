@@ -4,6 +4,45 @@
   "entries": [
     {
       "schema_version": "hardness_np_hard_scope_policy_entry_v1",
+      "identity_id": "sha256:7c34ef5cf1db278e79d7f93cf3f96c8eecf582ac3fd2b668edb89e5b62c8902b",
+      "canonical_declaration": "ComplexityReduction.Domain.GraphIR.wellFormedProblem",
+      "canonical_module": "ComplexityReduction.Domain.Core.GraphIR",
+      "problem_node_id": "lean-whnf:4279020117",
+      "representation_node_id": "lean-whnf:3929091992",
+      "disposition": "auxiliary_or_non_target",
+      "category": "internal_catalog_helper",
+      "rationale": "This unregistered GraphIR well-formedness identity is an internal interchange/catalog helper, not a public NP-hard target, even though it is reused as a source or hub presentation by graph adapters.",
+      "public_source_file": "Lean/Reference/ComplexityReduction/Domain/Core/GraphIR.lean",
+      "semantic_evidence_declaration": "ComplexityReduction.Domain.GraphIR.wellFormedProblem_accepts"
+    },
+    {
+      "schema_version": "hardness_np_hard_scope_policy_entry_v1",
+      "identity_id": "sha256:4934d7967d832b026b2c952a93b7be6d02980859b7e356a0d39c9d8130563c58",
+      "canonical_declaration": "ComplexityReduction.Domain.ModifiedExactCoverInput.modifiedProblem",
+      "canonical_module": "ComplexityReduction.Domain.ModifiedExactCoverInput",
+      "problem_node_id": "lean-whnf:2809658476",
+      "representation_node_id": "lean-whnf:1424479447",
+      "disposition": "auxiliary_or_non_target",
+      "category": "internal_catalog_helper",
+      "rationale": "The modified Exact Cover input is an internal reduction helper shared by incidence and exact-cover routes; participating in those routes does not make this helper identity a public NP-hard target.",
+      "public_source_file": "Lean/Reference/ComplexityReduction/Domain/ModifiedExactCoverInput.lean",
+      "semantic_evidence_declaration": "ComplexityReduction.Domain.ModifiedExactCoverInput.modifiedProblem_accepts"
+    },
+    {
+      "schema_version": "hardness_np_hard_scope_policy_entry_v1",
+      "identity_id": "sha256:841957a0c8ec4c12d2b35410ab44d326381bf990aecd77a0abb3bbc3d371cde5",
+      "canonical_declaration": "ComplexityReduction.Domain.RoleGraphIR.roleAssignedGraphProblem",
+      "canonical_module": "ComplexityReduction.Domain.Core.RoleGraphIR",
+      "problem_node_id": "lean-whnf:3035114805",
+      "representation_node_id": "lean-whnf:3103241590",
+      "disposition": "auxiliary_or_non_target",
+      "category": "internal_catalog_helper",
+      "rationale": "This RoleGraphIR role-assignment identity is an internal typed gadget/catalog endpoint used by graph-to-role-graph constructions, not a public NP-hard decision target.",
+      "public_source_file": "Lean/Reference/ComplexityReduction/Domain/Core/RoleGraphIR.lean",
+      "semantic_evidence_declaration": "ComplexityReduction.Domain.RoleGraphIR.roleAssignedGraphProblem_accepts"
+    },
+    {
+      "schema_version": "hardness_np_hard_scope_policy_entry_v1",
       "identity_id": "sha256:3722c85a36fcad1a2aa26ae21f18b9de6ab84bf4a0f5219faddd76006ca9e038",
       "canonical_declaration": "ComplexityReduction.Presentation.Graph.wellFormedProblem",
       "canonical_module": "ComplexityReduction.Presentation.Graph",

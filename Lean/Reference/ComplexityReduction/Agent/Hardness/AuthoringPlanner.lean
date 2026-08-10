@@ -6,6 +6,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 import ComplexityReduction.Agent.Hardness.Gap
 import ComplexityReduction.Agent.Hardness.InputGate
 import ComplexityReduction.Agent.Hardness.ModelAuthoring
+import ComplexityReduction.Agent.Hardness.AuthoringSources
+import ComplexityReduction.Agent.Hardness.ProgramAuthoringSources
+import ComplexityReduction.Agent.Hardness.GadgetAuthoringSources
+import ComplexityReduction.Agent.Hardness.SuccessorAuthoringSources
 import ComplexityReduction.Registry.HardnessAggregate
 import Lean.Elab.Command
 import Lean.Util.FoldConsts
@@ -24,9 +28,17 @@ namespace ComplexityReduction.Agent.Hardness.AuthoringPlanner
 open Lean Elab Command Meta
 open Encoding Program Certificate Registry
 
-private def schemaVersion := "hardness_np_hard_authoring_observation_v2"
+private def schemaVersion := "hardness_np_hard_authoring_observation_v3"
 private def marker := "HARDNESS_NP_HARD_PLAN"
 private def maximumRenderedChars := 12000
+private def publicAuthoringSourcesModule : Name :=
+  `ComplexityReduction.Agent.Hardness.AuthoringSources
+private def publicProgramAuthoringSourcesModule : Name :=
+  `ComplexityReduction.Agent.Hardness.ProgramAuthoringSources
+private def publicGadgetAuthoringSourcesModule : Name :=
+  `ComplexityReduction.Agent.Hardness.GadgetAuthoringSources
+private def publicSuccessorAuthoringSourcesModule : Name :=
+  `ComplexityReduction.Agent.Hardness.SuccessorAuthoringSources
 
 private structure LocalProblem where
   handle : InputGate.PresentedHandle
@@ -162,6 +174,13 @@ private def problemForRepresentation? (problems : List LocalProblem) (representa
     return some exact
   problems.findM? fun problem => controlledDefEq problem.representation representation
 
+private def problemForBackendEndpoint? (problems : List LocalProblem) (endpoint : Expr) :
+    MetaM (Option LocalProblem) := do
+  problems.findM? fun problem => do
+    let backend ←
+      mkAppM ``PresentedProblem.toEncodedDecisionProblem #[problem.handle.term]
+    controlledDefEq backend endpoint
+
 private def exactPolyProgType? (type : Expr) : MetaM (Option (Expr × Expr)) := do
   if type.hasFVar || type.hasMVar || type.hasLooseBVars || type.hasLevelParam then
     return none
@@ -170,6 +189,50 @@ private def exactPolyProgType? (type : Expr) : MetaM (Option (Expr × Expr)) := 
     return none
   match normalized.getAppArgs with
   | #[source, target] => return some (source, target)
+  | _ => return none
+
+private def exactTMKarpReductionType? (type : Expr) : MetaM (Option (Expr × Expr)) := do
+  if type.hasFVar || type.hasMVar || type.hasLooseBVars || type.hasLevelParam then
+    return none
+  let normalized ← whnf type
+  unless normalized.getAppFn.consumeMData.isConstOf ``TMKarpReduction do
+    return none
+  match normalized.getAppArgs with
+  | #[source, target] => return some (source, target)
+  | _ => return none
+
+private def exactCertifiedReductionType? (type : Expr) : MetaM (Option (Expr × Expr)) := do
+  if type.hasFVar || type.hasMVar || type.hasLooseBVars || type.hasLevelParam then
+    return none
+  let normalized ← whnf type
+  unless normalized.getAppFn.consumeMData.isConstOf ``CertifiedReduction do
+    return none
+  match normalized.getAppArgs with
+  | #[source, target] => return some (source, target)
+  | _ => return none
+
+private def exactProgramIndexedAdmissionPacketType?
+    (type : Expr) : MetaM (Option (Expr × Expr)) := do
+  if type.hasFVar || type.hasMVar || type.hasLooseBVars || type.hasLevelParam then
+    return none
+  let normalized ← whnf type
+  unless normalized.getAppFn.consumeMData.isConstOf
+      ``ProgramAuthoringSources.ProgramIndexedAdmissionPacket do
+    return none
+  match normalized.getAppArgs with
+  | #[source, target] => return some (source, target)
+  | _ => return none
+
+private def exactGadgetIndexedAdmissionPacketType?
+    (type : Expr) : MetaM (Option (Expr × Expr × Expr)) := do
+  if type.hasFVar || type.hasMVar || type.hasLooseBVars || type.hasLevelParam then
+    return none
+  let normalized ← whnf type
+  unless normalized.getAppFn.consumeMData.isConstOf
+      ``GadgetAuthoringSources.GadgetIndexedAdmissionPacket do
+    return none
+  match normalized.getAppArgs with
+  | #[source, reference, target] => return some (source, reference, target)
   | _ => return none
 
 private def relationEndpoints? (type : Expr) (problems : List LocalProblem) :
@@ -188,6 +251,483 @@ private def relationEndpoints? (type : Expr) (problems : List LocalProblem) :
         if ← controlledDefEq secondType secondInstance then
           return some (first, second)
     return none
+
+private def forwardBoolRepresentationAdapter?
+    (source target : LocalProblem) : MetaM (Option (Expr × Expr)) := do
+  let boolRepresentation := mkConst ``StandardInstances.bool
+  let expectedTargetRepresentation ←
+    mkAppM ``StandardInstances.prod #[boolRepresentation, source.representation]
+  unless ← controlledDefEq target.representation expectedTargetRepresentation do
+    return none
+
+  -- The forward adapter injects the fixed public tag `false`.  At every output
+  -- of that adapter, target acceptance must definitionally depend only on the
+  -- second projection.  This direction check prevents a discoverable reverse
+  -- `snd` from being mistaken for a source-to-target hardness transfer.
+  let sourceCarrier ← mkAppM ``PresentedProblem.Instance #[source.handle.term]
+  let sourceAccepts ← mkAppM ``PresentedProblem.accepts #[source.handle.term]
+  let falseValue := mkConst ``Bool.false
+  let injectedTargetAccepts ← withLocalDeclD `input sourceCarrier fun input => do
+    let taggedInput ← mkAppM ``Prod.mk #[falseValue, input]
+    let body ← mkAppM ``PresentedProblem.accepts #[target.handle.term, taggedInput]
+    mkLambdaFVars #[input] body
+  unless ← controlledDefEq sourceAccepts injectedTargetAccepts do
+    return none
+
+  let tagProgram ← mkAppM ``PolyProg.const
+    #[source.representation, boolRepresentation, falseValue]
+  let payloadProgram ← mkAppM ``PolyProg.id #[source.representation]
+  let program ← mkAppM ``PolyProg.pair #[tagProgram, payloadProgram]
+  let exactType ← mkAppM ``PolyProg #[source.representation, target.representation]
+  unless ← controlledDefEq (← inferType program) exactType do
+    return none
+  return some (program, exactType)
+
+private def emitTypedCapabilities (environment : Environment) (allowedModules : List String)
+    (nonce fingerprint : String) (problems : List LocalProblem) : MetaM Unit := do
+  let mut emittedEndpointPairs : List String := []
+  for target in problems do
+    unless allowedPublicName target.handle.declaration &&
+        moduleAllowed environment allowedModules target.handle.declaration do
+      continue
+    let some targetModule := declarationModule? environment target.handle.declaration
+      | continue
+    for source in problems do
+      unless allowedPublicName source.handle.declaration &&
+          moduleAllowed environment allowedModules source.handle.declaration do
+        continue
+      let some (witness, exactType) ← forwardBoolRepresentationAdapter? source target
+        | continue
+      let sourceNode ← endpointNodeId source.handle.term
+      let targetNode ← endpointNodeId target.handle.term
+      let endpointPair := sourceNode ++ "\u2192" ++ targetNode
+      if emittedEndpointPairs.contains endpointPair then
+        continue
+      emittedEndpointPairs := endpointPair :: emittedEndpointPairs
+      emit nonce "typed_capability" [
+        "forward_representation_adapter",
+        "forward_representation_adapter:" ++ sourceNode ++ ":" ++ targetNode,
+        source.handle.declaration.toString,
+        target.handle.declaration.toString,
+        sourceNode,
+        targetNode,
+        ← renderExpr witness,
+        ← renderExpr exactType,
+        targetModule.toString,
+        "lean_exact_type_defeq",
+        fingerprint]
+
+private structure TMKarpAuthoringCandidate where
+  declaration : Name
+  declarationModule : Name
+  source : LocalProblem
+  target : LocalProblem
+  witness : Expr
+  exactType : Expr
+
+private structure CertifiedSuccessorCandidate where
+  declaration : Name
+  declarationModule : Name
+  source : LocalProblem
+  target : LocalProblem
+  witness : Expr
+  exactType : Expr
+
+private structure ProgramIndexedAuthoringCandidate where
+  declaration : Name
+  declarationModule : Name
+  source : LocalProblem
+  target : LocalProblem
+  witness : Expr
+  exactType : Expr
+
+private structure GadgetIndexedAuthoringCandidate where
+  declaration : Name
+  declarationModule : Name
+  source : LocalProblem
+  reference : LocalProblem
+  target : LocalProblem
+  witness : Expr
+  exactType : Expr
+
+private def collectTMKarpAuthoringCandidates (environment : Environment)
+    (problems : List LocalProblem) : MetaM (List TMKarpAuthoringCandidate) := do
+  let sourceModuleText := publicAuthoringSourcesModule.toString
+  let declarations :=
+    ((declarationsInAllowedModules environment [sourceModuleText]).filter fun entry =>
+      allowedPublicName entry.1).toArray.qsort fun first second =>
+        first.1.toString < second.1.toString
+  let mut candidates := []
+  for (declaration, information) in declarations do
+    let some declarationModule := declarationModule? environment declaration
+      | continue
+    unless declarationModule == publicAuthoringSourcesModule do
+      continue
+    let some (sourceEndpoint, targetEndpoint) ←
+        exactTMKarpReductionType? information.type
+      | continue
+    let some source ← problemForBackendEndpoint? problems sourceEndpoint
+      | continue
+    let some target ← problemForBackendEndpoint? problems targetEndpoint
+      | continue
+    let witness := mkConst declaration
+    unless ← controlledDefEq (← inferType witness) information.type do
+      continue
+    candidates := candidates ++ [{
+      declaration,
+      declarationModule,
+      source,
+      target,
+      witness,
+      exactType := information.type
+    }]
+  return candidates
+
+/--
+Collect raw reductions that are admissible only as predecessors of a separately
+certified successor.  The exact module and shared-gadget role form a typed
+authority boundary; these declarations are never emitted as direct admissions.
+-/
+private def collectSuccessorOnlyTMKarpAuthoringCandidates (environment : Environment)
+    (problems : List LocalProblem) : MetaM (List TMKarpAuthoringCandidate) := do
+  let sourceModuleText := publicSuccessorAuthoringSourcesModule.toString
+  let declarations :=
+    ((declarationsInAllowedModules environment [sourceModuleText]).filter fun entry =>
+      allowedPublicName entry.1).toArray.qsort fun first second =>
+        first.1.toString < second.1.toString
+  let mut candidates := []
+  for (declaration, information) in declarations do
+    let some declarationModule := declarationModule? environment declaration
+      | continue
+    unless declarationModule == publicSuccessorAuthoringSourcesModule do
+      continue
+    unless Annotations.componentRole? environment declaration == some .sharedGadget do
+      continue
+    let some (sourceEndpoint, targetEndpoint) ←
+        exactTMKarpReductionType? information.type
+      | continue
+    let some source ← problemForBackendEndpoint? problems sourceEndpoint
+      | continue
+    let some target ← problemForBackendEndpoint? problems targetEndpoint
+      | continue
+    let witness := mkConst declaration
+    unless ← controlledDefEq (← inferType witness) information.type do
+      continue
+    let sourceBackend ← mkAppM ``PresentedProblem.toEncodedDecisionProblem
+      #[source.handle.term]
+    let targetBackend ← mkAppM ``PresentedProblem.toEncodedDecisionProblem
+      #[target.handle.term]
+    let exactType ← mkAppM ``TMKarpReduction #[sourceBackend, targetBackend]
+    unless ← controlledDefEq information.type exactType do
+      continue
+    candidates := candidates ++ [{
+      declaration,
+      declarationModule,
+      source,
+      target,
+      witness,
+      exactType
+    }]
+  return candidates
+
+private def eligibleDependentSuccessorRole (environment : Environment)
+    (declaration : Name) : Bool :=
+  match Annotations.componentRole? environment declaration with
+  | some .ingress => false
+  | some .finalComposition => false
+  | _ => true
+
+private def collectCertifiedSuccessorCandidates {environment : Environment}
+    (problems : List LocalProblem) (entries : List (ValidatedEntry environment)) :
+    MetaM (List CertifiedSuccessorCandidate) := do
+  let sortedEntries := entries.toArray.qsort fun first second =>
+    first.candidate.toString < second.candidate.toString
+  let mut candidates := []
+  for entry in sortedEntries do
+    unless allowedPublicName entry.candidate &&
+        eligibleDependentSuccessorRole environment entry.candidate do
+      continue
+    let .certifiedReduction sourceEndpoint targetEndpoint := entry.capability
+      | continue
+    let some declarationModule := declarationModule? environment entry.candidate
+      | continue
+    let some source ← problemForEndpoint? problems sourceEndpoint
+      | continue
+    let some target ← problemForEndpoint? problems targetEndpoint
+      | continue
+    let some (exactSource, exactTarget) ← exactCertifiedReductionType? entry.elaboratedType
+      | continue
+    unless ← controlledDefEq exactSource sourceEndpoint do
+      continue
+    unless ← controlledDefEq exactTarget targetEndpoint do
+      continue
+    let witness := mkConst entry.candidate
+    unless ← controlledDefEq (← inferType witness) entry.elaboratedType do
+      continue
+    candidates := candidates ++ [{
+      declaration := entry.candidate,
+      declarationModule,
+      source,
+      target,
+      witness,
+      exactType := entry.elaboratedType
+    }]
+  return candidates
+
+private def collectProgramIndexedAuthoringCandidates (environment : Environment)
+    (problems : List LocalProblem) : MetaM (List ProgramIndexedAuthoringCandidate) := do
+  let sourceModuleText := publicProgramAuthoringSourcesModule.toString
+  let declarations :=
+    ((declarationsInAllowedModules environment [sourceModuleText]).filter fun entry =>
+      allowedPublicName entry.1).toArray.qsort fun first second =>
+        first.1.toString < second.1.toString
+  let mut candidates := []
+  for (declaration, information) in declarations do
+    let some declarationModule := declarationModule? environment declaration
+      | continue
+    unless declarationModule == publicProgramAuthoringSourcesModule do
+      continue
+    let some (sourceEndpoint, targetEndpoint) ←
+        exactProgramIndexedAdmissionPacketType? information.type
+      | continue
+    let some source ← problemForEndpoint? problems sourceEndpoint
+      | continue
+    let some target ← problemForEndpoint? problems targetEndpoint
+      | continue
+    let witness := mkConst declaration
+    unless ← controlledDefEq (← inferType witness) information.type do
+      continue
+    let exactType ← mkAppM
+      ``ProgramAuthoringSources.ProgramIndexedAdmissionPacket
+      #[source.handle.term, target.handle.term]
+    unless ← controlledDefEq information.type exactType do
+      continue
+    candidates := candidates ++ [{
+      declaration,
+      declarationModule,
+      source,
+      target,
+      witness,
+      exactType
+    }]
+  return candidates
+
+private def collectGadgetIndexedAuthoringCandidates (environment : Environment)
+    (problems : List LocalProblem) : MetaM (List GadgetIndexedAuthoringCandidate) := do
+  let sourceModuleText := publicGadgetAuthoringSourcesModule.toString
+  let declarations :=
+    ((declarationsInAllowedModules environment [sourceModuleText]).filter fun entry =>
+      allowedPublicName entry.1).toArray.qsort fun first second =>
+        first.1.toString < second.1.toString
+  let mut candidates := []
+  for (declaration, information) in declarations do
+    let some declarationModule := declarationModule? environment declaration
+      | continue
+    unless declarationModule == publicGadgetAuthoringSourcesModule do
+      continue
+    unless Annotations.componentRole? environment declaration == some .sharedGadget do
+      continue
+    let some (sourceEndpoint, referenceEndpoint, targetEndpoint) ←
+        exactGadgetIndexedAdmissionPacketType? information.type
+      | continue
+    let some source ← problemForEndpoint? problems sourceEndpoint
+      | continue
+    let some reference ← problemForEndpoint? problems referenceEndpoint
+      | continue
+    let some target ← problemForEndpoint? problems targetEndpoint
+      | continue
+    let witness := mkConst declaration
+    unless ← controlledDefEq (← inferType witness) information.type do
+      continue
+    let exactType ← mkAppM
+      ``GadgetAuthoringSources.GadgetIndexedAdmissionPacket
+      #[source.handle.term, reference.handle.term, target.handle.term]
+    unless ← controlledDefEq information.type exactType do
+      continue
+    candidates := candidates ++ [{
+      declaration,
+      declarationModule,
+      source,
+      reference,
+      target,
+      witness,
+      exactType
+    }]
+  return candidates
+
+private def emitTMKarpCandidate (nonce fingerprint : String)
+    (candidate : TMKarpAuthoringCandidate) : MetaM Unit := do
+  let sourceNode ← endpointNodeId candidate.source.handle.term
+  let targetNode ← endpointNodeId candidate.target.handle.term
+  emit nonce "typed_capability" [
+    "forward_tmkarp_admission",
+    "forward_tmkarp_admission:" ++ sourceNode ++ ":" ++ targetNode,
+    candidate.source.handle.declaration.toString,
+    candidate.target.handle.declaration.toString,
+    sourceNode,
+    targetNode,
+    ← renderExpr candidate.witness,
+    ← renderExpr candidate.exactType,
+    candidate.declarationModule.toString,
+    "lean_exact_tmkarp_public_source",
+    fingerprint]
+
+private def emitSuccessorOnlyTMKarpCandidate (nonce fingerprint : String)
+    (candidate : TMKarpAuthoringCandidate) : MetaM Unit := do
+  let sourceNode ← endpointNodeId candidate.source.handle.term
+  let targetNode ← endpointNodeId candidate.target.handle.term
+  emit nonce "typed_capability" [
+    "forward_successor_only_tmkarp_admission",
+    "forward_successor_only_tmkarp_admission:" ++ sourceNode ++ ":" ++ targetNode,
+    candidate.source.handle.declaration.toString,
+    candidate.target.handle.declaration.toString,
+    sourceNode,
+    targetNode,
+    ← renderExpr candidate.witness,
+    ← renderExpr candidate.exactType,
+    candidate.declarationModule.toString,
+    "lean_exact_successor_only_tmkarp_shared_source",
+    fingerprint]
+
+private def emitCertifiedSuccessorCandidate (nonce fingerprint : String)
+    (candidate : CertifiedSuccessorCandidate) : MetaM Unit := do
+  let sourceNode ← endpointNodeId candidate.source.handle.term
+  let targetNode ← endpointNodeId candidate.target.handle.term
+  emit nonce "typed_capability" [
+    "forward_certified_successor",
+    "forward_certified_successor:" ++ sourceNode ++ ":" ++ targetNode,
+    candidate.source.handle.declaration.toString,
+    candidate.target.handle.declaration.toString,
+    sourceNode,
+    targetNode,
+    ← renderExpr candidate.witness,
+    ← renderExpr candidate.exactType,
+    candidate.declarationModule.toString,
+    "lean_registry_exact_certified_successor",
+    fingerprint]
+
+private def emitProgramIndexedCandidate (nonce fingerprint : String)
+    (candidate : ProgramIndexedAuthoringCandidate) : MetaM Unit := do
+  let sourceNode ← endpointNodeId candidate.source.handle.term
+  let targetNode ← endpointNodeId candidate.target.handle.term
+  emit nonce "typed_capability" [
+    "forward_program_indexed_admission",
+    "forward_program_indexed_admission:" ++ sourceNode ++ ":" ++ targetNode,
+    candidate.source.handle.declaration.toString,
+    candidate.target.handle.declaration.toString,
+    sourceNode,
+    targetNode,
+    ← renderExpr candidate.witness,
+    ← renderExpr candidate.exactType,
+    candidate.declarationModule.toString,
+    "lean_exact_program_indexed_public_packet",
+    fingerprint]
+
+private def emitGadgetIndexedCandidate (nonce fingerprint : String)
+    (candidate : GadgetIndexedAuthoringCandidate) : MetaM Unit := do
+  let sourceNode ← endpointNodeId candidate.source.handle.term
+  let targetNode ← endpointNodeId candidate.target.handle.term
+  emit nonce "typed_capability" [
+    "forward_gadget_indexed_admission",
+    "forward_gadget_indexed_admission:" ++ sourceNode ++ ":" ++ targetNode,
+    candidate.source.handle.declaration.toString,
+    candidate.target.handle.declaration.toString,
+    sourceNode,
+    targetNode,
+    ← renderExpr candidate.witness,
+    ← renderExpr candidate.exactType,
+    candidate.declarationModule.toString,
+    "lean_exact_gadget_indexed_shared_packet",
+    fingerprint]
+
+private def emitProgramIndexedAuthoringCapabilities (environment : Environment)
+    (nonce fingerprint : String) (sourceName : Name) (problems : List LocalProblem) :
+    MetaM Unit := do
+  let candidates ← collectProgramIndexedAuthoringCandidates environment problems
+  let directCandidates := candidates.filter fun candidate =>
+    candidate.target.handle.declaration == sourceName
+  match directCandidates with
+  | [candidate] =>
+      let admissions ← collectTMKarpAuthoringCandidates environment problems
+      let predecessors := admissions.filter fun admission =>
+        admission.target.handle.declaration == candidate.source.handle.declaration
+      match predecessors with
+      | [admission] =>
+          emitTMKarpCandidate nonce fingerprint admission
+          emitProgramIndexedCandidate nonce fingerprint candidate
+      | [] => emitProgramIndexedCandidate nonce fingerprint candidate
+      | _ => pure ()
+  | _ => pure ()
+
+private def emitGadgetIndexedAuthoringCapabilities (environment : Environment)
+    (nonce fingerprint : String) (sourceName : Name) (problems : List LocalProblem) :
+    MetaM Unit := do
+  let candidates ← collectGadgetIndexedAuthoringCandidates environment problems
+  let directCandidates := candidates.filter fun candidate =>
+    candidate.target.handle.declaration == sourceName
+  match directCandidates with
+  | [candidate] => emitGadgetIndexedCandidate nonce fingerprint candidate
+  | _ => pure ()
+
+private def emitTMKarpAuthoringCapabilities {environment : Environment}
+    (nonce fingerprint : String) (sourceName : Name) (problems : List LocalProblem)
+    (entries : List (ValidatedEntry environment)) : MetaM Unit := do
+  let admissions ← collectTMKarpAuthoringCandidates environment problems
+  let mut emittedEndpointPairs : List String := []
+  let directAdmissions := admissions.filter fun candidate =>
+    candidate.target.handle.declaration == sourceName
+  for candidate in directAdmissions do
+    let sourceNode ← endpointNodeId candidate.source.handle.term
+    let targetNode ← endpointNodeId candidate.target.handle.term
+    let endpointPair := sourceNode ++ "\u2192" ++ targetNode
+    if emittedEndpointPairs.contains endpointPair then
+      continue
+    emittedEndpointPairs := endpointPair :: emittedEndpointPairs
+    emitTMKarpCandidate nonce fingerprint candidate
+
+  -- Dependent authoring is admitted only when the public source catalog and
+  -- the validated registry determine one complete, endpoint-exact chain.  A
+  -- final-composition registry declaration is intentionally ineligible: the
+  -- model must compose the admitted raw TM/Karp program with the successor,
+  -- rather than borrowing an already assembled whole route.
+  unless directAdmissions.isEmpty do
+    return
+  let successors ← collectCertifiedSuccessorCandidates problems entries
+  let chains := admissions.flatMap fun admission =>
+    successors.filterMap fun successor =>
+      if admission.target.handle.declaration == successor.source.handle.declaration &&
+          successor.target.handle.declaration == sourceName then
+        some (admission, successor)
+      else
+        none
+  match chains with
+  | [(admission, successor)] =>
+      emitTMKarpCandidate nonce fingerprint admission
+      emitCertifiedSuccessorCandidate nonce fingerprint successor
+  | _ => pure ()
+
+/--
+Emit a successor-only admission iff the registry determines one exact
+admission/successor chain ending at the requested endpoint.  In particular, a
+request whose endpoint is the admission target itself receives no capability.
+-/
+private def emitSuccessorOnlyTMKarpAuthoringCapabilities {environment : Environment}
+    (nonce fingerprint : String) (sourceName : Name) (problems : List LocalProblem)
+    (entries : List (ValidatedEntry environment)) : MetaM Unit := do
+  let admissions ← collectSuccessorOnlyTMKarpAuthoringCandidates environment problems
+  let successors ← collectCertifiedSuccessorCandidates problems entries
+  let chains := admissions.flatMap fun admission =>
+    successors.filterMap fun successor =>
+      if admission.target.handle.declaration == successor.source.handle.declaration &&
+          successor.target.handle.declaration == sourceName then
+        some (admission, successor)
+      else
+        none
+  match chains with
+  | [(admission, successor)] =>
+      emitSuccessorOnlyTMKarpCandidate nonce fingerprint admission
+      emitCertifiedSuccessorCandidate nonce fingerprint successor
+  | _ => pure ()
 
 private def emitProblems (nonce fingerprint : String) (problems : List LocalProblem) :
     MetaM Unit := do
@@ -297,6 +837,8 @@ private def emitRegisteredCapabilities {environment : Environment}
     (nonce fingerprint : String) (problems : List LocalProblem)
     (entries : List (ValidatedEntry environment)) : MetaM Unit := do
   for entry in entries do
+    unless allowedPublicName entry.candidate do
+      continue
     let some declarationModule := declarationModule? environment entry.candidate
       | continue
     let role := "unannotated"
@@ -371,7 +913,7 @@ private def run (environment : Environment) (nonce : String) (sourceName : Name)
   let source ←
     match ← InputGate.presented environment sourceName with
     | .ok handle => pure handle
-    | .error failure => throwError "NP-hard authoring planner rejected input: {repr failure}"
+      | .error failure => throwError "NP-hard authoring planner rejected input: {repr failure}"
   let ownerPrefix := parentNamespace sourceName
   let entries := exportValidated environment
   let fingerprint := Registry.registryFingerprint entries
@@ -388,6 +930,11 @@ private def run (environment : Environment) (nonce : String) (sourceName : Name)
     sourceModule.toString,
     fingerprint]
   emitProblems nonce fingerprint problems
+  emitTypedCapabilities environment allowedModules nonce fingerprint problems
+  emitTMKarpAuthoringCapabilities nonce fingerprint sourceName problems entries
+  emitSuccessorOnlyTMKarpAuthoringCapabilities nonce fingerprint sourceName problems entries
+  emitProgramIndexedAuthoringCapabilities environment nonce fingerprint sourceName problems
+  emitGadgetIndexedAuthoringCapabilities environment nonce fingerprint sourceName problems
   emitClosureCapabilities environment allowedModules nonce fingerprint problems
   emitGaps environment allowedModules nonce fingerprint problems
   emitRegisteredCapabilities nonce fingerprint problems entries

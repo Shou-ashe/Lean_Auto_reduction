@@ -22,22 +22,22 @@ def main() -> int:
     parser.add_argument(
         "--suite",
         type=Path,
-        default=ROOT / "Benchmark/Hardness/Suites/np_hard_h_e_heldout_inputs.json",
+        default=ROOT / "Gate/Suites/np_hard_h_e_heldout_inputs.json",
     )
     parser.add_argument(
         "--oracle",
         type=Path,
-        default=ROOT / "Benchmark/Hardness/Evaluation/np_hard_h_e_heldout_oracle.json",
+        default=ROOT / "Evaluation/np_hard_h_e_heldout_oracle.json",
     )
     parser.add_argument(
         "--inventory",
         type=Path,
-        default=ROOT / "Benchmark/Hardness/NP_HARD_H_E_INVENTORY.json",
+        default=ROOT / "Gate/NP_HARD_H_E_INVENTORY.json",
     )
     parser.add_argument(
         "--report",
         type=Path,
-        default=ROOT / "Benchmark/Hardness/NP_HARD_H_E_HELDOUT_REPORT.json",
+        default=ROOT / "Reports/NP_HARD_H_E_HELDOUT_REPORT.json",
     )
     parser.add_argument("--env-file", type=Path, default=ROOT / ".env")
     parser.add_argument("--model", default="deepseek-v4-flash")

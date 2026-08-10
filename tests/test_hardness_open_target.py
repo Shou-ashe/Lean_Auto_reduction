@@ -23,7 +23,7 @@ from agent.hardness.open_target import (
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SUITE = ROOT / "Benchmark" / "Hardness" / "Suites" / "open_target.json"
+SUITE = ROOT / "Gate" / "Suites" / "open_target.json"
 
 
 def _all_keys(value: object) -> set[str]:

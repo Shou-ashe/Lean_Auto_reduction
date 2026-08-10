@@ -30,6 +30,8 @@ from .np_hard_scope_policy import (
 
 NP_HARD_TARGET_MATRIX_SCHEMA_V1 = "hardness_np_hard_target_matrix_v1"
 NP_HARD_TARGET_MATRIX_ROW_SCHEMA_V1 = "hardness_np_hard_target_matrix_row_v1"
+NP_HARD_TARGET_MATRIX_SCHEMA_V2 = "hardness_np_hard_target_matrix_v2"
+NP_HARD_TARGET_MATRIX_ROW_SCHEMA_V2 = "hardness_np_hard_target_matrix_row_v2"
 
 DISPOSITION_IN_SCOPE = "in_scope_np_hard"
 DISPOSITION_AUXILIARY = "auxiliary_or_non_target"
@@ -481,7 +483,10 @@ def build_np_hard_target_matrix(
 
 def load_np_hard_target_matrix(path: Path) -> dict[str, Any]:
     value = json.loads(path.read_text(encoding="utf-8"))
-    if not isinstance(value, dict) or value.get("schema_version") != NP_HARD_TARGET_MATRIX_SCHEMA_V1:
+    if not isinstance(value, dict) or value.get("schema_version") not in {
+        NP_HARD_TARGET_MATRIX_SCHEMA_V1,
+        NP_HARD_TARGET_MATRIX_SCHEMA_V2,
+    }:
         raise ValueError("unsupported NP-hard target matrix schema")
     return value
 

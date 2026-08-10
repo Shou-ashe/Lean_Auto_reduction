@@ -1,0 +1,3284 @@
+{
+  "answer_isolation": {
+    "archive_must_not_enter_runner_workspace": true,
+    "hints_embedded": false,
+    "pdf_content_embedded": false,
+    "selection_annotations_scorer_only": true,
+    "solution_hashes_scorer_only": true,
+    "solutions_embedded": false,
+    "statements_embedded": false
+  },
+  "archive": {
+    "file": "problems.7z",
+    "member_count": 27,
+    "members": [
+      {
+        "kind": "directory",
+        "path": "problems/",
+        "sha256": null,
+        "size": 0
+      },
+      {
+        "kind": "file",
+        "path": "problems/01.md",
+        "sha256": "sha256:94bfa1d8f0948d52d6bab06607fcd60c2218eef3b7d50df455792079310925b3",
+        "size": 11489
+      },
+      {
+        "kind": "file",
+        "path": "problems/01.pdf",
+        "sha256": "sha256:f5b995aff52df3b4694235f7539da860d03d269647b250b7786beebb7439d01a",
+        "size": 303407
+      },
+      {
+        "kind": "file",
+        "path": "problems/02.md",
+        "sha256": "sha256:c3966ad1c138a835b0c7a2d8f7ebc0fb8712348f1dcb256acb92b7e5c3313e26",
+        "size": 26821
+      },
+      {
+        "kind": "file",
+        "path": "problems/02.pdf",
+        "sha256": "sha256:0e746a64b3141f0f93d9a0a85bbc155490d8b40fb31ed9f643baa39d2e6f5abe",
+        "size": 540828
+      },
+      {
+        "kind": "file",
+        "path": "problems/03.md",
+        "sha256": "sha256:0f535c8535c04dadecb9c48fe10ad6ab1c9268f4ec6f3590c53197370032ecae",
+        "size": 28624
+      },
+      {
+        "kind": "file",
+        "path": "problems/03.pdf",
+        "sha256": "sha256:79f568f3979842370081a03d575bbfa94e80308eca486448108cece29e646e76",
+        "size": 160352
+      },
+      {
+        "kind": "file",
+        "path": "problems/04.md",
+        "sha256": "sha256:6214314ed3fc87eded1779978db01465474a56be607a0f0c9bd3f3434c9d0216",
+        "size": 1043
+      },
+      {
+        "kind": "file",
+        "path": "problems/04.pdf",
+        "sha256": "sha256:d77d1cf2a3f80e77a5d10fa6613fc7f31d5d982beba0913c1d850e095cad3908",
+        "size": 18263
+      },
+      {
+        "kind": "file",
+        "path": "problems/05.md",
+        "sha256": "sha256:0dac0ee910ccdf38493a6b6c44775460bf86778a04521cab49ec768323475a1f",
+        "size": 5072
+      },
+      {
+        "kind": "file",
+        "path": "problems/05.pdf",
+        "sha256": "sha256:ca0dd1a175490b538ed13fcd43e30d7355aca7445ec2b9928ae859c7d791cb04",
+        "size": 248957
+      },
+      {
+        "kind": "file",
+        "path": "problems/06.md",
+        "sha256": "sha256:d828047842264a4f57deab3ecaddffcf0d91a6d381e4f3eb9f6798b2aaf96b62",
+        "size": 36040
+      },
+      {
+        "kind": "file",
+        "path": "problems/06.pdf",
+        "sha256": "sha256:9b34d173cda2c088206206ec136177466996dd0b44252541dfa63e419bbf1b50",
+        "size": 289512
+      },
+      {
+        "kind": "file",
+        "path": "problems/07.md",
+        "sha256": "sha256:a45a2808bf6f57347036fd5042338393de476b63ab2f96193ddf05024ff6f759",
+        "size": 11178
+      },
+      {
+        "kind": "file",
+        "path": "problems/07.pdf",
+        "sha256": "sha256:b1a96f8bbaa6ef5d454219543de36801142212c0ebaf1a6f1d628d91e230efbe",
+        "size": 100295
+      },
+      {
+        "kind": "file",
+        "path": "problems/08.pdf",
+        "sha256": "sha256:ce356d287c9303a4a034f1987ed07022d44a163987468ee815054fd64e89ddd0",
+        "size": 518217
+      },
+      {
+        "kind": "file",
+        "path": "problems/09.pdf",
+        "sha256": "sha256:db3b4e444d5ff96164a55ee6d207f83496b5250200af2302f76180dc6a1a15ec",
+        "size": 148692
+      },
+      {
+        "kind": "file",
+        "path": "problems/10.pdf",
+        "sha256": "sha256:3f3ec6a26d2f7a7aa8509550650e4e164e9db7aa8e68570efc1655de93ed39fb",
+        "size": 384015
+      },
+      {
+        "kind": "file",
+        "path": "problems/11.pdf",
+        "sha256": "sha256:f59c6e72f81ff42b2082fda574a4643c452a497b88a91bb58dd7d7df6d19b05c",
+        "size": 360941
+      },
+      {
+        "kind": "file",
+        "path": "problems/12.pdf",
+        "sha256": "sha256:165fb70cfc644dbe149ca87224bc0be6f0c1f557f871db5e76540e465a82c374",
+        "size": 316771
+      },
+      {
+        "kind": "file",
+        "path": "problems/13.pdf",
+        "sha256": "sha256:f4847db7de566e25768c5360372522e5c5f596c94749c301dfa308555819c594",
+        "size": 148324
+      },
+      {
+        "kind": "file",
+        "path": "problems/14.pdf",
+        "sha256": "sha256:102c9ce8cc3ca52a1c145ae9ab13b6167e0b17f2b0327656737a79d18dd0802e",
+        "size": 75341
+      },
+      {
+        "kind": "file",
+        "path": "problems/cleaning.md",
+        "sha256": "sha256:d2681812625bfbf8c7c363a54bb21bdb7b00061d58d875189fb876434e4f812a",
+        "size": 8217
+      },
+      {
+        "kind": "file",
+        "path": "problems/problems.json",
+        "sha256": "sha256:3217fd45cd325764ed19f40e326589bb7a66b094f507ea3e7ae275c3bb9f58af",
+        "size": 205408
+      },
+      {
+        "kind": "file",
+        "path": "problems/problems_clean.json",
+        "sha256": "sha256:443ec72563085dfe735e6f49f4997c62e4ef85fdb2604e41afabd1f146e71231",
+        "size": 98270
+      },
+      {
+        "kind": "file",
+        "path": "problems/README.md",
+        "sha256": "sha256:8b514b0e2687c6fa835e272ecd28a991d29861a16236cf416088a5fcf5f6827e",
+        "size": 4370
+      },
+      {
+        "kind": "file",
+        "path": "problems/sources.md",
+        "sha256": "sha256:264b7e7864cb96d308aeb7a3ac2dada498e5f376b6441e2f23ac781cd3a1c51f",
+        "size": 8621
+      }
+    ],
+    "sha256": "sha256:6ae4004cef16bf332fec74eb952e21262bc590604acddc7172a4838007986f79"
+  },
+  "audit_id": "sha256:fdd51f7e827660a14a7ab41a615a5c10d6bb89d74f53bc4d73d01c60521b1c2a",
+  "documentation_drift": {
+    "affects_authoritative_metrics": false,
+    "authoritative_member": "problems/problems_clean.json",
+    "authoritative_total": 63,
+    "member": "problems/README.md",
+    "observed_numeric_claims": {
+      "63": 4,
+      "64": 3
+    },
+    "sha256": "sha256:8b514b0e2687c6fa835e272ecd28a991d29861a16236cf416088a5fcf5f6827e",
+    "status": "stale_64_claim_recorded"
+  },
+  "generated_at": "2026-08-09T10:34:07.231384+00:00",
+  "metrics": {
+    "data_quality_counts": {
+      "extracted": 49,
+      "incomplete_source_statement": 1,
+      "manual_review_required": 8,
+      "provenance_unverified": 1,
+      "quarantined_source_error": 3,
+      "source_metadata_correction_required": 1
+    },
+    "duplicate_direction_count": 3,
+    "duplicate_statement_variant_count": 3,
+    "endpoint_ready_selected_count": 7,
+    "hint_count": 16,
+    "manual_fix_count": 11,
+    "pdf_only_candidate_count": 16,
+    "pdf_only_capability_weight": 0,
+    "pdf_only_source_count": 7,
+    "problem_count": 63,
+    "raw_problem_count": 102,
+    "selected_case_count": 24,
+    "selected_duplicate_direction_count": 3,
+    "selected_unique_direction_count": 24,
+    "selection_split_counts": {
+      "dev": 6,
+      "heldout": 12,
+      "validation": 6
+    },
+    "selection_status_counts": {
+      "blocked_endpoint_formalization": 17,
+      "ready": 7
+    },
+    "solution_count": 37,
+    "structured_capability_weight": 60,
+    "unique_direction_count": 60,
+    "unique_problem_count": 57
+  },
+  "pdf_only_candidates": [
+    {
+      "candidate_id": "pdf08-ex07-three-color-to-twelve-color",
+      "canonical_source_label": "3-COLOR",
+      "canonical_target_label": "12-COLOR",
+      "capability_weight": 0,
+      "endpoint_readiness": "target_endpoint_missing",
+      "formalization_cost": "high",
+      "selection_reason": "Scorer-only PDF candidate; capability weight remains zero until independent answer-free problemization, endpoint/identity audits, and formal construction prerequisites are complete.",
+      "source_hashes": [
+        {
+          "sha256": "sha256:ce356d287c9303a4a034f1987ed07022d44a163987468ee815054fd64e89ddd0",
+          "source_member": "problems/08.pdf"
+        }
+      ],
+      "source_members": [
+        "problems/08.pdf"
+      ],
+      "split": "reserve",
+      "status": "blocked_endpoint_formalization"
+    },
+    {
+      "candidate_id": "pdf08-ex09-five-color-to-careful-five-color",
+      "canonical_source_label": "5-COLOR",
+      "canonical_target_label": "CAREFUL-5-COLOR",
+      "capability_weight": 0,
+      "endpoint_readiness": "source_and_target_endpoints_missing",
+      "formalization_cost": "very_high",
+      "selection_reason": "Scorer-only PDF candidate; capability weight remains zero until independent answer-free problemization, endpoint/identity audits, and formal construction prerequisites are complete.",
+      "source_hashes": [
+        {
+          "sha256": "sha256:ce356d287c9303a4a034f1987ed07022d44a163987468ee815054fd64e89ddd0",
+          "source_member": "problems/08.pdf"
+        }
+      ],
+      "source_members": [
+        "problems/08.pdf"
+      ],
+      "split": "frontier",
+      "status": "blocked_endpoint_formalization"
+    },
+    {
+      "candidate_id": "pdf08-ex10c-hamiltonian-path-to-leaf-bounded-spanning-tree",
+      "canonical_source_label": "HAMILTONIAN PATH",
+      "canonical_target_label": "SPANNING TREE WITH AT MOST 42 LEAVES",
+      "capability_weight": 0,
+      "endpoint_readiness": "source_and_target_endpoints_missing",
+      "formalization_cost": "very_high",
+      "selection_reason": "Scorer-only PDF candidate; capability weight remains zero until independent answer-free problemization, endpoint/identity audits, and formal construction prerequisites are complete.",
+      "source_hashes": [
+        {
+          "sha256": "sha256:ce356d287c9303a4a034f1987ed07022d44a163987468ee815054fd64e89ddd0",
+          "source_member": "problems/08.pdf"
+        }
+      ],
+      "source_members": [
+        "problems/08.pdf"
+      ],
+      "split": "frontier",
+      "status": "blocked_endpoint_formalization"
+    },
+    {
+      "candidate_id": "pdf08-ex15a-hamiltonian-path-to-tonian-path",
+      "canonical_source_label": "HAMILTONIAN PATH",
+      "canonical_target_label": "TONIAN PATH",
+      "capability_weight": 0,
+      "endpoint_readiness": "source_and_target_endpoints_missing",
+      "formalization_cost": "high",
+      "selection_reason": "Scorer-only PDF candidate; capability weight remains zero until independent answer-free problemization, endpoint/identity audits, and formal construction prerequisites are complete.",
+      "source_hashes": [
+        {
+          "sha256": "sha256:ce356d287c9303a4a034f1987ed07022d44a163987468ee815054fd64e89ddd0",
+          "source_member": "problems/08.pdf"
+        }
+      ],
+      "source_members": [
+        "problems/08.pdf"
+      ],
+      "split": "reserve",
+      "status": "blocked_endpoint_formalization"
+    },
+    {
+      "candidate_id": "pdf08-ex15b-tonian-path-to-tonian-cycle",
+      "canonical_source_label": "TONIAN PATH",
+      "canonical_target_label": "TONIAN CYCLE",
+      "capability_weight": 0,
+      "endpoint_readiness": "source_and_target_endpoints_missing",
+      "formalization_cost": "high",
+      "selection_reason": "Scorer-only PDF candidate; capability weight remains zero until independent answer-free problemization, endpoint/identity audits, and formal construction prerequisites are complete.",
+      "source_hashes": [
+        {
+          "sha256": "sha256:ce356d287c9303a4a034f1987ed07022d44a163987468ee815054fd64e89ddd0",
+          "source_member": "problems/08.pdf"
+        }
+      ],
+      "source_members": [
+        "problems/08.pdf"
+      ],
+      "split": "reserve",
+      "status": "blocked_endpoint_formalization"
+    },
+    {
+      "candidate_id": "pdf08-ex16b-hamiltonian-cycle-to-double-hamiltonian-circuit",
+      "canonical_source_label": "HAMILTONIAN CYCLE",
+      "canonical_target_label": "DOUBLE-HAMILTONIAN CIRCUIT",
+      "capability_weight": 0,
+      "endpoint_readiness": "target_endpoint_missing",
+      "formalization_cost": "very_high",
+      "selection_reason": "Scorer-only PDF candidate; capability weight remains zero until independent answer-free problemization, endpoint/identity audits, and formal construction prerequisites are complete.",
+      "source_hashes": [
+        {
+          "sha256": "sha256:ce356d287c9303a4a034f1987ed07022d44a163987468ee815054fd64e89ddd0",
+          "source_member": "problems/08.pdf"
+        }
+      ],
+      "source_members": [
+        "problems/08.pdf"
+      ],
+      "split": "frontier",
+      "status": "blocked_endpoint_formalization"
+    },
+    {
+      "candidate_id": "pdf08-ex17-hamiltonian-cycle-to-heavy-hamiltonian-cycle",
+      "canonical_source_label": "HAMILTONIAN CYCLE",
+      "canonical_target_label": "HEAVY HAMILTONIAN CYCLE",
+      "capability_weight": 0,
+      "endpoint_readiness": "target_endpoint_missing",
+      "formalization_cost": "high",
+      "selection_reason": "Scorer-only PDF candidate; capability weight remains zero until independent answer-free problemization, endpoint/identity audits, and formal construction prerequisites are complete.",
+      "source_hashes": [
+        {
+          "sha256": "sha256:ce356d287c9303a4a034f1987ed07022d44a163987468ee815054fd64e89ddd0",
+          "source_member": "problems/08.pdf"
+        }
+      ],
+      "source_members": [
+        "problems/08.pdf"
+      ],
+      "split": "reserve",
+      "status": "blocked_endpoint_formalization"
+    },
+    {
+      "candidate_id": "pdf08-ex20-three-color-to-three-way-mumbletypeg",
+      "canonical_source_label": "3-COLOR",
+      "canonical_target_label": "THREE-WAY MUMBLETYPEG",
+      "capability_weight": 0,
+      "endpoint_readiness": "endpoints_ready_pending_identity_audit",
+      "formalization_cost": "high",
+      "selection_reason": "Scorer-only PDF candidate; capability weight remains zero until independent answer-free problemization, endpoint/identity audits, and formal construction prerequisites are complete.",
+      "source_hashes": [
+        {
+          "sha256": "sha256:ce356d287c9303a4a034f1987ed07022d44a163987468ee815054fd64e89ddd0",
+          "source_member": "problems/08.pdf"
+        }
+      ],
+      "source_members": [
+        "problems/08.pdf"
+      ],
+      "split": "reserve",
+      "status": "blocked_answer_free_problemization"
+    },
+    {
+      "candidate_id": "pdf10-cor22-hamiltonian-cycle-to-longest-circuit",
+      "canonical_source_label": "HAMILTONIAN CYCLE",
+      "canonical_target_label": "LONGEST CIRCUIT",
+      "capability_weight": 0,
+      "endpoint_readiness": "target_endpoint_missing",
+      "formalization_cost": "high",
+      "selection_reason": "Scorer-only PDF candidate; capability weight remains zero until independent answer-free problemization, endpoint/identity audits, and formal construction prerequisites are complete.",
+      "source_hashes": [
+        {
+          "sha256": "sha256:3f3ec6a26d2f7a7aa8509550650e4e164e9db7aa8e68570efc1655de93ed39fb",
+          "source_member": "problems/10.pdf"
+        }
+      ],
+      "source_members": [
+        "problems/10.pdf"
+      ],
+      "split": "reserve",
+      "status": "blocked_endpoint_formalization"
+    },
+    {
+      "candidate_id": "pdf10-ex08-dominating-set-to-k-center",
+      "canonical_source_label": "DOMINATING SET",
+      "canonical_target_label": "K-CENTER",
+      "capability_weight": 0,
+      "endpoint_readiness": "source_and_target_endpoints_missing",
+      "formalization_cost": "very_high",
+      "selection_reason": "Scorer-only PDF candidate; capability weight remains zero until independent answer-free problemization, endpoint/identity audits, and formal construction prerequisites are complete.",
+      "source_hashes": [
+        {
+          "sha256": "sha256:3f3ec6a26d2f7a7aa8509550650e4e164e9db7aa8e68570efc1655de93ed39fb",
+          "source_member": "problems/10.pdf"
+        }
+      ],
+      "source_members": [
+        "problems/10.pdf"
+      ],
+      "split": "frontier",
+      "status": "blocked_endpoint_formalization"
+    },
+    {
+      "candidate_id": "pdf10-thm15-nae-three-sat-to-max-cut",
+      "canonical_source_label": "NAE-3SAT",
+      "canonical_target_label": "MAX CUT",
+      "capability_weight": 0,
+      "endpoint_readiness": "source_endpoint_missing",
+      "formalization_cost": "high",
+      "selection_reason": "Scorer-only PDF candidate; capability weight remains zero until independent answer-free problemization, endpoint/identity audits, and formal construction prerequisites are complete.",
+      "source_hashes": [
+        {
+          "sha256": "sha256:3f3ec6a26d2f7a7aa8509550650e4e164e9db7aa8e68570efc1655de93ed39fb",
+          "source_member": "problems/10.pdf"
+        },
+        {
+          "sha256": "sha256:102c9ce8cc3ca52a1c145ae9ab13b6167e0b17f2b0327656737a79d18dd0802e",
+          "source_member": "problems/14.pdf"
+        }
+      ],
+      "source_members": [
+        "problems/10.pdf",
+        "problems/14.pdf"
+      ],
+      "split": "reserve",
+      "status": "blocked_endpoint_formalization"
+    },
+    {
+      "candidate_id": "pdf10-thm17-vertex-cover-to-undirected-hamiltonian-cycle",
+      "canonical_source_label": "VERTEX COVER",
+      "canonical_target_label": "UNDIRECTED HAMILTONIAN CYCLE",
+      "capability_weight": 0,
+      "endpoint_readiness": "endpoints_ready_pending_identity_audit",
+      "formalization_cost": "very_high",
+      "selection_reason": "Scorer-only PDF candidate; capability weight remains zero until independent answer-free problemization, endpoint/identity audits, and formal construction prerequisites are complete.",
+      "source_hashes": [
+        {
+          "sha256": "sha256:3f3ec6a26d2f7a7aa8509550650e4e164e9db7aa8e68570efc1655de93ed39fb",
+          "source_member": "problems/10.pdf"
+        }
+      ],
+      "source_members": [
+        "problems/10.pdf"
+      ],
+      "split": "frontier",
+      "status": "blocked_answer_free_problemization"
+    },
+    {
+      "candidate_id": "pdf11-exact-cover-to-directed-hamiltonian-cycle",
+      "canonical_source_label": "EXACT COVER",
+      "canonical_target_label": "DIRECTED HAMILTONIAN CYCLE",
+      "capability_weight": 0,
+      "endpoint_readiness": "endpoints_ready_pending_identity_audit",
+      "formalization_cost": "very_high",
+      "selection_reason": "Scorer-only PDF candidate; capability weight remains zero until independent answer-free problemization, endpoint/identity audits, and formal construction prerequisites are complete.",
+      "source_hashes": [
+        {
+          "sha256": "sha256:f59c6e72f81ff42b2082fda574a4643c452a497b88a91bb58dd7d7df6d19b05c",
+          "source_member": "problems/11.pdf"
+        }
+      ],
+      "source_members": [
+        "problems/11.pdf"
+      ],
+      "split": "frontier",
+      "status": "blocked_answer_free_problemization"
+    },
+    {
+      "candidate_id": "pdf11-exact-cover-to-subset-sum",
+      "canonical_source_label": "EXACT COVER",
+      "canonical_target_label": "SUBSET SUM",
+      "capability_weight": 0,
+      "endpoint_readiness": "target_endpoint_missing",
+      "formalization_cost": "high",
+      "selection_reason": "Scorer-only PDF candidate; capability weight remains zero until independent answer-free problemization, endpoint/identity audits, and formal construction prerequisites are complete.",
+      "source_hashes": [
+        {
+          "sha256": "sha256:f59c6e72f81ff42b2082fda574a4643c452a497b88a91bb58dd7d7df6d19b05c",
+          "source_member": "problems/11.pdf"
+        }
+      ],
+      "source_members": [
+        "problems/11.pdf"
+      ],
+      "split": "reserve",
+      "status": "blocked_endpoint_formalization"
+    },
+    {
+      "candidate_id": "pdf11-sat-to-exact-cover",
+      "canonical_source_label": "SAT",
+      "canonical_target_label": "EXACT COVER",
+      "capability_weight": 0,
+      "endpoint_readiness": "endpoints_ready_pending_identity_audit",
+      "formalization_cost": "very_high",
+      "selection_reason": "Scorer-only PDF candidate; capability weight remains zero until independent answer-free problemization, endpoint/identity audits, and formal construction prerequisites are complete.",
+      "source_hashes": [
+        {
+          "sha256": "sha256:f59c6e72f81ff42b2082fda574a4643c452a497b88a91bb58dd7d7df6d19b05c",
+          "source_member": "problems/11.pdf"
+        }
+      ],
+      "source_members": [
+        "problems/11.pdf"
+      ],
+      "split": "frontier",
+      "status": "blocked_answer_free_problemization"
+    },
+    {
+      "candidate_id": "pdf12-three-partition-to-minimum-makespan",
+      "canonical_source_label": "3-PARTITION",
+      "canonical_target_label": "MINIMUM MAKESPAN SCHEDULING",
+      "capability_weight": 0,
+      "endpoint_readiness": "source_and_target_endpoints_missing",
+      "formalization_cost": "very_high",
+      "selection_reason": "Scorer-only PDF candidate; capability weight remains zero until independent answer-free problemization, endpoint/identity audits, and formal construction prerequisites are complete.",
+      "source_hashes": [
+        {
+          "sha256": "sha256:165fb70cfc644dbe149ca87224bc0be6f0c1f557f871db5e76540e465a82c374",
+          "source_member": "problems/12.pdf"
+        }
+      ],
+      "source_members": [
+        "problems/12.pdf"
+      ],
+      "split": "frontier",
+      "status": "blocked_endpoint_formalization"
+    }
+  ],
+  "pdf_only_sources": [
+    {
+      "candidate_ids": [
+        "pdf08-ex07-three-color-to-twelve-color",
+        "pdf08-ex09-five-color-to-careful-five-color",
+        "pdf08-ex10c-hamiltonian-path-to-leaf-bounded-spanning-tree",
+        "pdf08-ex15a-hamiltonian-path-to-tonian-path",
+        "pdf08-ex15b-tonian-path-to-tonian-cycle",
+        "pdf08-ex16b-hamiltonian-cycle-to-double-hamiltonian-circuit",
+        "pdf08-ex17-hamiltonian-cycle-to-heavy-hamiltonian-cycle",
+        "pdf08-ex20-three-color-to-three-way-mumbletypeg"
+      ],
+      "capability_weight": 0,
+      "endpoint_readiness": "unassessed_answer_free_problemization",
+      "formalization_cost": "unknown_until_problemization",
+      "selection_reason": "Scorer-only provenance source; it remains outside every capability denominator until an independently rewritten answer-free case and its endpoints pass formalization audits.",
+      "sha256": "sha256:ce356d287c9303a4a034f1987ed07022d44a163987468ee815054fd64e89ddd0",
+      "source_member": "problems/08.pdf",
+      "status": "unstructured_pdf_only"
+    },
+    {
+      "candidate_ids": [],
+      "capability_weight": 0,
+      "endpoint_readiness": "unassessed_answer_free_problemization",
+      "formalization_cost": "unknown_until_problemization",
+      "selection_reason": "Scorer-only provenance source; it remains outside every capability denominator until an independently rewritten answer-free case and its endpoints pass formalization audits.",
+      "sha256": "sha256:db3b4e444d5ff96164a55ee6d207f83496b5250200af2302f76180dc6a1a15ec",
+      "source_member": "problems/09.pdf",
+      "status": "unstructured_pdf_only"
+    },
+    {
+      "candidate_ids": [
+        "pdf10-cor22-hamiltonian-cycle-to-longest-circuit",
+        "pdf10-ex08-dominating-set-to-k-center",
+        "pdf10-thm15-nae-three-sat-to-max-cut",
+        "pdf10-thm17-vertex-cover-to-undirected-hamiltonian-cycle"
+      ],
+      "capability_weight": 0,
+      "endpoint_readiness": "unassessed_answer_free_problemization",
+      "formalization_cost": "unknown_until_problemization",
+      "selection_reason": "Scorer-only provenance source; it remains outside every capability denominator until an independently rewritten answer-free case and its endpoints pass formalization audits.",
+      "sha256": "sha256:3f3ec6a26d2f7a7aa8509550650e4e164e9db7aa8e68570efc1655de93ed39fb",
+      "source_member": "problems/10.pdf",
+      "status": "unstructured_pdf_only"
+    },
+    {
+      "candidate_ids": [
+        "pdf11-exact-cover-to-directed-hamiltonian-cycle",
+        "pdf11-exact-cover-to-subset-sum",
+        "pdf11-sat-to-exact-cover"
+      ],
+      "capability_weight": 0,
+      "endpoint_readiness": "unassessed_answer_free_problemization",
+      "formalization_cost": "unknown_until_problemization",
+      "selection_reason": "Scorer-only provenance source; it remains outside every capability denominator until an independently rewritten answer-free case and its endpoints pass formalization audits.",
+      "sha256": "sha256:f59c6e72f81ff42b2082fda574a4643c452a497b88a91bb58dd7d7df6d19b05c",
+      "source_member": "problems/11.pdf",
+      "status": "unstructured_pdf_only"
+    },
+    {
+      "candidate_ids": [
+        "pdf12-three-partition-to-minimum-makespan"
+      ],
+      "capability_weight": 0,
+      "endpoint_readiness": "unassessed_answer_free_problemization",
+      "formalization_cost": "unknown_until_problemization",
+      "selection_reason": "Scorer-only provenance source; it remains outside every capability denominator until an independently rewritten answer-free case and its endpoints pass formalization audits.",
+      "sha256": "sha256:165fb70cfc644dbe149ca87224bc0be6f0c1f557f871db5e76540e465a82c374",
+      "source_member": "problems/12.pdf",
+      "status": "unstructured_pdf_only"
+    },
+    {
+      "candidate_ids": [],
+      "capability_weight": 0,
+      "endpoint_readiness": "unassessed_answer_free_problemization",
+      "formalization_cost": "unknown_until_problemization",
+      "selection_reason": "Scorer-only provenance source; it remains outside every capability denominator until an independently rewritten answer-free case and its endpoints pass formalization audits.",
+      "sha256": "sha256:f4847db7de566e25768c5360372522e5c5f596c94749c301dfa308555819c594",
+      "source_member": "problems/13.pdf",
+      "status": "unstructured_pdf_only"
+    },
+    {
+      "candidate_ids": [
+        "pdf10-thm15-nae-three-sat-to-max-cut"
+      ],
+      "capability_weight": 0,
+      "endpoint_readiness": "unassessed_answer_free_problemization",
+      "formalization_cost": "unknown_until_problemization",
+      "selection_reason": "Scorer-only provenance source; it remains outside every capability denominator until an independently rewritten answer-free case and its endpoints pass formalization audits.",
+      "sha256": "sha256:102c9ce8cc3ca52a1c145ae9ab13b6167e0b17f2b0327656737a79d18dd0802e",
+      "source_member": "problems/14.pdf",
+      "status": "unstructured_pdf_only"
+    }
+  ],
+  "problems": [
+    {
+      "archive_direction": {
+        "direction_id": "sha256:5e3ef8b5226e6e360ff503136711560dde2ef680a4c692c0024e4b18b728acea",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "SAT",
+        "target_label": "DOUBLE SAT"
+      },
+      "archive_id": "01-001",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:5e3ef8b5226e6e360ff503136711560dde2ef680a4c692c0024e4b18b728acea",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "SAT",
+        "target_label": "DOUBLE SAT"
+      },
+      "canonical_source": "ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem",
+      "canonical_target": "ComplexityReduction.Presentation.DoubleThreeSAT.structuredProblem",
+      "capability_weight": 1,
+      "cleaned_from": "top-level",
+      "data_quality_reason": null,
+      "data_quality_status": "extracted",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "01-001"
+      ],
+      "endpoint_readiness": "blocked_endpoint_formalization",
+      "formalization_cost": "endpoint-formalization-required",
+      "has_hint": false,
+      "has_solution": true,
+      "hint_sha256": null,
+      "record_sha256": "sha256:5591bec395e784489af79de61cfbf4003991f37f74a5bf034eec9e1b5c7abb96",
+      "selected_case_id": "edge-val-03-three-sat-to-double-sat",
+      "selection_reason": "Frozen exact-edge candidate; excluded from the scored denominator until both PresentedProblem endpoints pass independent formalization audits.",
+      "selection_status": "blocked_endpoint_formalization",
+      "solution_sha256": "sha256:a6b2bc7958aacac86430aab4d8b2c66bf1bd0fc7c0aa96e3a83428ef980c83f9",
+      "source_document_sha256": "sha256:94bfa1d8f0948d52d6bab06607fcd60c2218eef3b7d50df455792079310925b3",
+      "source_file": "01.md",
+      "source_name": "UCC CS4407 (2020) Problem Set: NP-Complete Reductions",
+      "source_pdf_sha256": "sha256:f5b995aff52df3b4694235f7539da860d03d269647b250b7786beebb7439d01a",
+      "split": "validation",
+      "statement_sha256": "sha256:67ec196532a5c7b84f83745f98dd32a8e56719e44c01c5da87d878209bcad56a"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:43a98a746e667700492666043f464a63d5c63573ccf4c42f0a360a359d36b3ba",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "VERTEX COVER",
+        "target_label": "WEIGHTED VERTEX COVER"
+      },
+      "archive_id": "01-002",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:43a98a746e667700492666043f464a63d5c63573ccf4c42f0a360a359d36b3ba",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "VERTEX COVER",
+        "target_label": "WEIGHTED VERTEX COVER"
+      },
+      "canonical_source": null,
+      "canonical_target": null,
+      "capability_weight": 1,
+      "cleaned_from": "top-level",
+      "data_quality_reason": null,
+      "data_quality_status": "extracted",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "01-002"
+      ],
+      "endpoint_readiness": "unassessed",
+      "formalization_cost": null,
+      "has_hint": false,
+      "has_solution": true,
+      "hint_sha256": null,
+      "record_sha256": "sha256:dd533fd4a6a37f6ff78913170cb5830ee1629889e1d5aeda72120a5db13e1816",
+      "selected_case_id": null,
+      "selection_reason": null,
+      "selection_status": "unselected",
+      "solution_sha256": "sha256:3d402f141343c7ed27721cf06e35e620030d9511616c8d0a4f6430101db660b0",
+      "source_document_sha256": "sha256:94bfa1d8f0948d52d6bab06607fcd60c2218eef3b7d50df455792079310925b3",
+      "source_file": "01.md",
+      "source_name": "UCC CS4407 (2020) Problem Set: NP-Complete Reductions",
+      "source_pdf_sha256": "sha256:f5b995aff52df3b4694235f7539da860d03d269647b250b7786beebb7439d01a",
+      "split": null,
+      "statement_sha256": "sha256:93149d68a942e02517c1ba9a2feeecc1b8ddd42e4da9009d305532bd641cd1d1"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:6c57577523c73176ca4ec30a0a3c41c231e99b35f9f2742dc2177062f2c71f92",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "HALF CLIQUE",
+        "target_label": "CLIQUE"
+      },
+      "archive_id": "01-003",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:6c57577523c73176ca4ec30a0a3c41c231e99b35f9f2742dc2177062f2c71f92",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "HALF CLIQUE",
+        "target_label": "CLIQUE"
+      },
+      "canonical_source": null,
+      "canonical_target": null,
+      "capability_weight": 1,
+      "cleaned_from": "top-level",
+      "data_quality_reason": null,
+      "data_quality_status": "extracted",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "01-003"
+      ],
+      "endpoint_readiness": "unassessed",
+      "formalization_cost": null,
+      "has_hint": false,
+      "has_solution": true,
+      "hint_sha256": null,
+      "record_sha256": "sha256:9a9a425282930f836613d0b81bbbfc55fb803dd0dfeaea8515e45e0a4f0cfba7",
+      "selected_case_id": null,
+      "selection_reason": null,
+      "selection_status": "unselected",
+      "solution_sha256": "sha256:132cf8bbdae72c00b82322762f5c1667befedac56794a2872ab29d00be94ae45",
+      "source_document_sha256": "sha256:94bfa1d8f0948d52d6bab06607fcd60c2218eef3b7d50df455792079310925b3",
+      "source_file": "01.md",
+      "source_name": "UCC CS4407 (2020) Problem Set: NP-Complete Reductions",
+      "source_pdf_sha256": "sha256:f5b995aff52df3b4694235f7539da860d03d269647b250b7786beebb7439d01a",
+      "split": null,
+      "statement_sha256": "sha256:e878e32617b5198a13490a308681452aaf0445dddc4c939a6ff0935ec0eca492"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:050c7ea99aacf3743d2e19b4ec64d3fcafd18add7eee1973bb724b55fe1834ad",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "CLIQUE",
+        "target_label": "HALF CLIQUE"
+      },
+      "archive_id": "01-004",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:050c7ea99aacf3743d2e19b4ec64d3fcafd18add7eee1973bb724b55fe1834ad",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "CLIQUE",
+        "target_label": "HALF CLIQUE"
+      },
+      "canonical_source": "ComplexityReduction.Problems.Karp21.GraphAtoms.cliqueStructuredProblem",
+      "canonical_target": "ComplexityReduction.Presentation.HalfClique.structuredProblem",
+      "capability_weight": 1,
+      "cleaned_from": "top-level",
+      "data_quality_reason": null,
+      "data_quality_status": "extracted",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "01-004"
+      ],
+      "endpoint_readiness": "blocked_endpoint_formalization",
+      "formalization_cost": "endpoint-formalization-required",
+      "has_hint": false,
+      "has_solution": true,
+      "hint_sha256": null,
+      "record_sha256": "sha256:3d5ed2faea7550a8f334ecc0ef628d6c74554689e6df8c61b153bf53247c8064",
+      "selected_case_id": "edge-val-02-clique-to-half-clique",
+      "selection_reason": "Frozen exact-edge candidate; excluded from the scored denominator until both PresentedProblem endpoints pass independent formalization audits.",
+      "selection_status": "blocked_endpoint_formalization",
+      "solution_sha256": "sha256:44663e482dba928de44f9829820c3278e77d993d12fc9ebc6ac633a7eb8dcd00",
+      "source_document_sha256": "sha256:94bfa1d8f0948d52d6bab06607fcd60c2218eef3b7d50df455792079310925b3",
+      "source_file": "01.md",
+      "source_name": "UCC CS4407 (2020) Problem Set: NP-Complete Reductions",
+      "source_pdf_sha256": "sha256:f5b995aff52df3b4694235f7539da860d03d269647b250b7786beebb7439d01a",
+      "split": "validation",
+      "statement_sha256": "sha256:b06ec75110fde54216ca62ebfa623fd2c430a3aeeb79a76a831f6aa776b01c0c"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:d860b6e3717405c312da7b35ec188c4feef4d3d6b666a99b2fa7b28b104f71e9",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "SUBSET SUM",
+        "target_label": "KNAPSACK"
+      },
+      "archive_id": "01-005",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:d860b6e3717405c312da7b35ec188c4feef4d3d6b666a99b2fa7b28b104f71e9",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "SUBSET SUM",
+        "target_label": "KNAPSACK"
+      },
+      "canonical_source": "ComplexityReduction.Presentation.SubsetSum.structuredProblem",
+      "canonical_target": "ComplexityReduction.Presentation.Knapsack.structuredProblem",
+      "capability_weight": 1,
+      "cleaned_from": "top-level",
+      "data_quality_reason": null,
+      "data_quality_status": "extracted",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "01-005"
+      ],
+      "endpoint_readiness": "blocked_endpoint_formalization",
+      "formalization_cost": "endpoint-formalization-required",
+      "has_hint": false,
+      "has_solution": true,
+      "hint_sha256": null,
+      "record_sha256": "sha256:ee1c1ad56afc324b467510d472987fc298d3120c08360be411940b143b2bd13a",
+      "selected_case_id": "edge-val-05-subset-sum-to-knapsack",
+      "selection_reason": "Frozen exact-edge candidate; excluded from the scored denominator until both PresentedProblem endpoints pass independent formalization audits.",
+      "selection_status": "blocked_endpoint_formalization",
+      "solution_sha256": "sha256:b72083446cbfc9c552bd5bb4a24469a261f2fe27fe7365a935bf6e67371fe968",
+      "source_document_sha256": "sha256:94bfa1d8f0948d52d6bab06607fcd60c2218eef3b7d50df455792079310925b3",
+      "source_file": "01.md",
+      "source_name": "UCC CS4407 (2020) Problem Set: NP-Complete Reductions",
+      "source_pdf_sha256": "sha256:f5b995aff52df3b4694235f7539da860d03d269647b250b7786beebb7439d01a",
+      "split": "validation",
+      "statement_sha256": "sha256:4375b12e770d0a8ba2ee789ad5c6c905a4976fddf62a2df9ef9273dccf43766a"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:59c5a0245a3aee98dff320a791e6b06f181f9578661677ca2cb67604c6066ebd",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "K-COLORING",
+        "target_label": "CLASS SCHEDULING"
+      },
+      "archive_id": "01-006",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:59c5a0245a3aee98dff320a791e6b06f181f9578661677ca2cb67604c6066ebd",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "K-COLORING",
+        "target_label": "CLASS SCHEDULING"
+      },
+      "canonical_source": null,
+      "canonical_target": null,
+      "capability_weight": 1,
+      "cleaned_from": "top-level",
+      "data_quality_reason": null,
+      "data_quality_status": "extracted",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "01-006"
+      ],
+      "endpoint_readiness": "unassessed",
+      "formalization_cost": null,
+      "has_hint": false,
+      "has_solution": true,
+      "hint_sha256": null,
+      "record_sha256": "sha256:99dfdd253b65010136cffd994135fd15042d839b70843d9be48f767057635215",
+      "selected_case_id": null,
+      "selection_reason": null,
+      "selection_status": "unselected",
+      "solution_sha256": "sha256:58f80dbc0dc1edfa74a55710a07f9e1ab84f8cc4b00993e81aeafec4af79ed30",
+      "source_document_sha256": "sha256:94bfa1d8f0948d52d6bab06607fcd60c2218eef3b7d50df455792079310925b3",
+      "source_file": "01.md",
+      "source_name": "UCC CS4407 (2020) Problem Set: NP-Complete Reductions",
+      "source_pdf_sha256": "sha256:f5b995aff52df3b4694235f7539da860d03d269647b250b7786beebb7439d01a",
+      "split": null,
+      "statement_sha256": "sha256:8a70912d124abe2dd53dcc95a9cc446ac8efa5f548ba813de16d15444c9329a3"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:d0b3417df19b2a489deac4d2018c575fd18e35f0d6633b4a7af8dcadf924c797",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "SUBSET SUM",
+        "target_label": "MULTI PATH"
+      },
+      "archive_id": "01-007",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:d0b3417df19b2a489deac4d2018c575fd18e35f0d6633b4a7af8dcadf924c797",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "SUBSET SUM",
+        "target_label": "MULTI PATH"
+      },
+      "canonical_source": null,
+      "canonical_target": null,
+      "capability_weight": 1,
+      "cleaned_from": "top-level",
+      "data_quality_reason": null,
+      "data_quality_status": "extracted",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "01-007"
+      ],
+      "endpoint_readiness": "unassessed",
+      "formalization_cost": null,
+      "has_hint": false,
+      "has_solution": true,
+      "hint_sha256": null,
+      "record_sha256": "sha256:875aed53fc70e898d87a7530c6bd7d093f2ca647e2d602903976c612f526842f",
+      "selected_case_id": null,
+      "selection_reason": null,
+      "selection_status": "unselected",
+      "solution_sha256": "sha256:4a48a8ec464c8ebe897f966edec54a9766a36561f6babd7a488e7132f8b29da2",
+      "source_document_sha256": "sha256:94bfa1d8f0948d52d6bab06607fcd60c2218eef3b7d50df455792079310925b3",
+      "source_file": "01.md",
+      "source_name": "UCC CS4407 (2020) Problem Set: NP-Complete Reductions",
+      "source_pdf_sha256": "sha256:f5b995aff52df3b4694235f7539da860d03d269647b250b7786beebb7439d01a",
+      "split": null,
+      "statement_sha256": "sha256:c9f0be69906c8fc6ea02c31c71869aebabc6de45fd8582cd47e60afdb9e34ba0"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:f79431ccad7371aaa44e97513b92236aa5e0de28e4edbf60ddc506d199c4acb2",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "3SAT",
+        "target_label": "DOUBLE SAT"
+      },
+      "archive_id": "02-001",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:f79431ccad7371aaa44e97513b92236aa5e0de28e4edbf60ddc506d199c4acb2",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "3SAT",
+        "target_label": "DOUBLE SAT"
+      },
+      "canonical_source": null,
+      "canonical_target": null,
+      "capability_weight": 1,
+      "cleaned_from": "top-level",
+      "data_quality_reason": null,
+      "data_quality_status": "extracted",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "02-001"
+      ],
+      "endpoint_readiness": "unassessed",
+      "formalization_cost": null,
+      "has_hint": false,
+      "has_solution": true,
+      "hint_sha256": null,
+      "record_sha256": "sha256:7626f9851c6e801cc1c360d4a52669613b9ec4d605acd47ea900ac1460400780",
+      "selected_case_id": null,
+      "selection_reason": null,
+      "selection_status": "unselected",
+      "solution_sha256": "sha256:223696fad92e8dee108232c4b5f3c9e69ef713c781c775090b2359b15646fd7c",
+      "source_document_sha256": "sha256:c3966ad1c138a835b0c7a2d8f7ebc0fb8712348f1dcb256acb92b7e5c3313e26",
+      "source_file": "02.md",
+      "source_name": "UCC CS4407 (2013) NP-Complete Reductions",
+      "source_pdf_sha256": "sha256:0e746a64b3141f0f93d9a0a85bbc155490d8b40fb31ed9f643baa39d2e6f5abe",
+      "split": null,
+      "statement_sha256": "sha256:d0b130d51982edee8673cf3e999dc22d0d15ce762ed721b80103b6f7e44f74a9"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:3d61f87bdefde73c4d7a5845c4e00312e66744a67b38f625364f5274624d16a4",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "HAMILTONIAN CYCLE",
+        "target_label": "DIRECTED HAMILTONIAN CYCLE"
+      },
+      "archive_id": "02-002",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:3d61f87bdefde73c4d7a5845c4e00312e66744a67b38f625364f5274624d16a4",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "HAMILTONIAN CYCLE",
+        "target_label": "DIRECTED HAMILTONIAN CYCLE"
+      },
+      "canonical_source": "ComplexityReduction.Presentation.UndirectedHamiltonianCircuit.structuredProblem",
+      "canonical_target": "ComplexityReduction.Presentation.DirectedHamiltonianCircuit.structuredProblem",
+      "capability_weight": 1,
+      "cleaned_from": "top-level",
+      "data_quality_reason": null,
+      "data_quality_status": "extracted",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "02-002"
+      ],
+      "endpoint_readiness": "ready",
+      "formalization_cost": "new-primitive-high",
+      "has_hint": false,
+      "has_solution": true,
+      "hint_sha256": null,
+      "record_sha256": "sha256:030eb37efb0d01758616e249655e248dbc15d4f2f41cc166fa9054a015abb331",
+      "selected_case_id": "edge-dev-06-undirected-to-directed-hc",
+      "selection_reason": "Both endpoints are formalized; the frozen direction requires a new direct program/gadget and all exact-edge audits.",
+      "selection_status": "ready",
+      "solution_sha256": "sha256:9c2ca3f561321518aad4923a94d9b73febea9467fa9d9334c19dd76d274e0113",
+      "source_document_sha256": "sha256:c3966ad1c138a835b0c7a2d8f7ebc0fb8712348f1dcb256acb92b7e5c3313e26",
+      "source_file": "02.md",
+      "source_name": "UCC CS4407 (2013) NP-Complete Reductions",
+      "source_pdf_sha256": "sha256:0e746a64b3141f0f93d9a0a85bbc155490d8b40fb31ed9f643baa39d2e6f5abe",
+      "split": "dev",
+      "statement_sha256": "sha256:f90283c1382d21c9975227d8161b3bb5d361b9463c65b7e544fb04d1a5a8997c"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:b5fdb1838aae7a417d6d13be33b0bf36215f3cae781b9e3176c1130f2879f403",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "SUBSET SUM",
+        "target_label": "SUBSET EQUALITY"
+      },
+      "archive_id": "02-003",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:b5fdb1838aae7a417d6d13be33b0bf36215f3cae781b9e3176c1130f2879f403",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "SUBSET SUM",
+        "target_label": "SUBSET EQUALITY"
+      },
+      "canonical_source": null,
+      "canonical_target": null,
+      "capability_weight": 1,
+      "cleaned_from": "top-level",
+      "data_quality_reason": "the archived solution does not establish the stated source-to-target transformation",
+      "data_quality_status": "quarantined_source_error",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "02-003"
+      ],
+      "endpoint_readiness": "unassessed",
+      "formalization_cost": null,
+      "has_hint": false,
+      "has_solution": true,
+      "hint_sha256": null,
+      "record_sha256": "sha256:6a9b1d923d030a11e0f982d52c23286161ff92f33c6401440af1f129089d3adf",
+      "selected_case_id": null,
+      "selection_reason": null,
+      "selection_status": "unselected",
+      "solution_sha256": "sha256:a1eab1341dad9e02a902d0913bbafdf74230c232e3085f2748045fe9c4c4d9b7",
+      "source_document_sha256": "sha256:c3966ad1c138a835b0c7a2d8f7ebc0fb8712348f1dcb256acb92b7e5c3313e26",
+      "source_file": "02.md",
+      "source_name": "UCC CS4407 (2013) NP-Complete Reductions",
+      "source_pdf_sha256": "sha256:0e746a64b3141f0f93d9a0a85bbc155490d8b40fb31ed9f643baa39d2e6f5abe",
+      "split": null,
+      "statement_sha256": "sha256:ca4ee785df29739095c9a30c13831b34be9c6e0d2e4d3eaf79b5708c68adcc64"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:f85c55da9fee4041b2a47e53f8ad0c5676276eca88822689080765ec820f4d92",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "3SAT",
+        "target_label": "NAE-3SAT"
+      },
+      "archive_id": "02-004",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:f85c55da9fee4041b2a47e53f8ad0c5676276eca88822689080765ec820f4d92",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "3SAT",
+        "target_label": "NAE-3SAT"
+      },
+      "canonical_source": "ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem",
+      "canonical_target": "ComplexityReduction.Presentation.NAEThreeSAT.structuredProblem",
+      "capability_weight": 1,
+      "cleaned_from": "top-level",
+      "data_quality_reason": null,
+      "data_quality_status": "extracted",
+      "duplicate_group_id": "sha256:f85c55da9fee4041b2a47e53f8ad0c5676276eca88822689080765ec820f4d92",
+      "duplicate_group_members": [
+        "02-004",
+        "06-006"
+      ],
+      "endpoint_readiness": "blocked_endpoint_formalization",
+      "formalization_cost": "endpoint-formalization-required",
+      "has_hint": false,
+      "has_solution": true,
+      "hint_sha256": null,
+      "record_sha256": "sha256:6b2efd631ea87885e1c86b394afafb45ace77e847eaa0d7ab467f94b8a6efa6b",
+      "selected_case_id": "edge-val-04-three-sat-to-nae-three-sat",
+      "selection_reason": "Frozen exact-edge candidate; excluded from the scored denominator until both PresentedProblem endpoints pass independent formalization audits.",
+      "selection_status": "blocked_endpoint_formalization",
+      "solution_sha256": "sha256:101dc001bb111fa62483f4f6889c8bfa2ef1c3e07dfc78c8715b2067109e5636",
+      "source_document_sha256": "sha256:c3966ad1c138a835b0c7a2d8f7ebc0fb8712348f1dcb256acb92b7e5c3313e26",
+      "source_file": "02.md",
+      "source_name": "UCC CS4407 (2013) NP-Complete Reductions",
+      "source_pdf_sha256": "sha256:0e746a64b3141f0f93d9a0a85bbc155490d8b40fb31ed9f643baa39d2e6f5abe",
+      "split": "validation",
+      "statement_sha256": "sha256:0f20407532015b612f0bcbf1c6e5781121d8f9a6b1ddc36c9f1f1fc9c73959aa"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:9645725761fc7205107e85ae028a182f52d3903ceaf62d5acb76148ccf562314",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "NAE-3SAT",
+        "target_label": "SET SPLITTING"
+      },
+      "archive_id": "02-005",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:9645725761fc7205107e85ae028a182f52d3903ceaf62d5acb76148ccf562314",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "NAE-3SAT",
+        "target_label": "SET SPLITTING"
+      },
+      "canonical_source": "ComplexityReduction.Presentation.NAEThreeSAT.structuredProblem",
+      "canonical_target": "ComplexityReduction.Presentation.SetSplitting.structuredProblem",
+      "capability_weight": 1,
+      "cleaned_from": "top-level",
+      "data_quality_reason": null,
+      "data_quality_status": "extracted",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "02-005"
+      ],
+      "endpoint_readiness": "blocked_endpoint_formalization",
+      "formalization_cost": "endpoint-formalization-required",
+      "has_hint": false,
+      "has_solution": true,
+      "hint_sha256": null,
+      "record_sha256": "sha256:a450bb7f703f16d76fd17dc33f2f74cc98a59ebbe83d023c2877d75d67259092",
+      "selected_case_id": "edge-held-05-nae-three-sat-to-set-splitting",
+      "selection_reason": "Frozen exact-edge candidate; excluded from the scored denominator until both PresentedProblem endpoints pass independent formalization audits.",
+      "selection_status": "blocked_endpoint_formalization",
+      "solution_sha256": "sha256:608b29a31c7998d6fe6ce327c1486d76e6ef2b0fe9878aea6ea53db8586bf32c",
+      "source_document_sha256": "sha256:c3966ad1c138a835b0c7a2d8f7ebc0fb8712348f1dcb256acb92b7e5c3313e26",
+      "source_file": "02.md",
+      "source_name": "UCC CS4407 (2013) NP-Complete Reductions",
+      "source_pdf_sha256": "sha256:0e746a64b3141f0f93d9a0a85bbc155490d8b40fb31ed9f643baa39d2e6f5abe",
+      "split": "heldout",
+      "statement_sha256": "sha256:f7003cb82207d91a77551efb68ac911986cc37abad4bacc4a284b9e9bb712fcb"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:63876d411bb4bff6a9d347ac3a3260064fe072cb39d8acb7d9bd51f182c856fb",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "CLIQUE",
+        "target_label": "DENSE SUBGRAPH"
+      },
+      "archive_id": "02-006",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:63876d411bb4bff6a9d347ac3a3260064fe072cb39d8acb7d9bd51f182c856fb",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "CLIQUE",
+        "target_label": "DENSE SUBGRAPH"
+      },
+      "canonical_source": "ComplexityReduction.Problems.Karp21.GraphAtoms.cliqueStructuredProblem",
+      "canonical_target": "ComplexityReduction.Presentation.DenseSubgraph.structuredProblem",
+      "capability_weight": 1,
+      "cleaned_from": "top-level",
+      "data_quality_reason": null,
+      "data_quality_status": "extracted",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "02-006"
+      ],
+      "endpoint_readiness": "blocked_endpoint_formalization",
+      "formalization_cost": "endpoint-formalization-required",
+      "has_hint": false,
+      "has_solution": true,
+      "hint_sha256": null,
+      "record_sha256": "sha256:d81ee7fbbda0d70627eee5caa077f0822f6aed44ddad23643799e3f48fa3ddcb",
+      "selected_case_id": "edge-held-02-clique-to-dense-subgraph",
+      "selection_reason": "Frozen exact-edge candidate; excluded from the scored denominator until both PresentedProblem endpoints pass independent formalization audits.",
+      "selection_status": "blocked_endpoint_formalization",
+      "solution_sha256": "sha256:44407d6b055eaa3460518c1a0685c3a2a04a455eef0afc1035ade8a7009be23c",
+      "source_document_sha256": "sha256:c3966ad1c138a835b0c7a2d8f7ebc0fb8712348f1dcb256acb92b7e5c3313e26",
+      "source_file": "02.md",
+      "source_name": "UCC CS4407 (2013) NP-Complete Reductions",
+      "source_pdf_sha256": "sha256:0e746a64b3141f0f93d9a0a85bbc155490d8b40fb31ed9f643baa39d2e6f5abe",
+      "split": "heldout",
+      "statement_sha256": "sha256:5cc325518761a013b02d2ba3abc79bf464b7b66c5488f13b28846a384995a8b6"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:53fd54806a13a59fe56636be338c78f74eab6b025e113967e1e2f25273ea175b",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "VERTEX COVER",
+        "target_label": "SET COVER"
+      },
+      "archive_id": "02-007",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:53fd54806a13a59fe56636be338c78f74eab6b025e113967e1e2f25273ea175b",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "VERTEX COVER",
+        "target_label": "SET COVER"
+      },
+      "canonical_source": "ComplexityReduction.Problems.Karp21.GraphAtoms.vertexCoverStructuredProblem",
+      "canonical_target": "ComplexityReduction.Presentation.SetSystem.setCoveringStructuredProblem",
+      "capability_weight": 1,
+      "cleaned_from": "top-level",
+      "data_quality_reason": null,
+      "data_quality_status": "extracted",
+      "duplicate_group_id": "sha256:53fd54806a13a59fe56636be338c78f74eab6b025e113967e1e2f25273ea175b",
+      "duplicate_group_members": [
+        "02-007",
+        "06-019"
+      ],
+      "endpoint_readiness": "ready",
+      "formalization_cost": "new-primitive-high",
+      "has_hint": false,
+      "has_solution": true,
+      "hint_sha256": null,
+      "record_sha256": "sha256:248e6902c492d03a2194d6dea38ba318c799720f9e24121cb4b30c6334484dc6",
+      "selected_case_id": "edge-val-01-vertex-cover-to-set-cover",
+      "selection_reason": "Both endpoints are formalized; the frozen direction requires a new direct program/gadget and all exact-edge audits.",
+      "selection_status": "ready",
+      "solution_sha256": "sha256:7e0a03fafa64f202dd87ef84449cd78aa21dc2b691df3a254eae29fc2116cb39",
+      "source_document_sha256": "sha256:c3966ad1c138a835b0c7a2d8f7ebc0fb8712348f1dcb256acb92b7e5c3313e26",
+      "source_file": "02.md",
+      "source_name": "UCC CS4407 (2013) NP-Complete Reductions",
+      "source_pdf_sha256": "sha256:0e746a64b3141f0f93d9a0a85bbc155490d8b40fb31ed9f643baa39d2e6f5abe",
+      "split": "validation",
+      "statement_sha256": "sha256:dd93f2555e41217556a3aee121b10d2defa077b15d79523631b55c554ece3e4b"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:38a27564419675aeba19c0c64984d0577180bb3a7eb7008e224e377fd952f764",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "HAMILTONIAN CYCLE",
+        "target_label": "TSP"
+      },
+      "archive_id": "02-008",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:38a27564419675aeba19c0c64984d0577180bb3a7eb7008e224e377fd952f764",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "HAMILTONIAN CYCLE",
+        "target_label": "TSP"
+      },
+      "canonical_source": "ComplexityReduction.Presentation.UndirectedHamiltonianCircuit.structuredProblem",
+      "canonical_target": "ComplexityReduction.Presentation.TSP.structuredProblem",
+      "capability_weight": 1,
+      "cleaned_from": "top-level",
+      "data_quality_reason": null,
+      "data_quality_status": "extracted",
+      "duplicate_group_id": "sha256:38a27564419675aeba19c0c64984d0577180bb3a7eb7008e224e377fd952f764",
+      "duplicate_group_members": [
+        "02-008",
+        "06-026"
+      ],
+      "endpoint_readiness": "blocked_endpoint_formalization",
+      "formalization_cost": "endpoint-formalization-required",
+      "has_hint": false,
+      "has_solution": true,
+      "hint_sha256": null,
+      "record_sha256": "sha256:caa305a6aaa599f484ab9d682b440008674d92cae8b595486f73699b80ce9f04",
+      "selected_case_id": "edge-held-11-hamiltonian-cycle-to-tsp",
+      "selection_reason": "Frozen exact-edge candidate; excluded from the scored denominator until both PresentedProblem endpoints pass independent formalization audits.",
+      "selection_status": "blocked_endpoint_formalization",
+      "solution_sha256": "sha256:7083ae05db5f696f89520151942644d60effedf6467ee8d7125f5082dfaefd83",
+      "source_document_sha256": "sha256:c3966ad1c138a835b0c7a2d8f7ebc0fb8712348f1dcb256acb92b7e5c3313e26",
+      "source_file": "02.md",
+      "source_name": "UCC CS4407 (2013) NP-Complete Reductions",
+      "source_pdf_sha256": "sha256:0e746a64b3141f0f93d9a0a85bbc155490d8b40fb31ed9f643baa39d2e6f5abe",
+      "split": "heldout",
+      "statement_sha256": "sha256:b861e5a9d4ca157aa056a8f42472f9f72fc9d4ed7821a6257fc17b73d1807e6a"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:6e46ea71ae1ad82e0294c08d5e6f9bece0d83ceb34a9d27fdae113d03f89c362",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "CLIQUE",
+        "target_label": "SUBGRAPH ISOMORPHISM"
+      },
+      "archive_id": "03-003a",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:6e46ea71ae1ad82e0294c08d5e6f9bece0d83ceb34a9d27fdae113d03f89c362",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "CLIQUE",
+        "target_label": "SUBGRAPH ISOMORPHISM"
+      },
+      "canonical_source": null,
+      "canonical_target": null,
+      "capability_weight": 1,
+      "cleaned_from": "manual_fix",
+      "data_quality_reason": null,
+      "data_quality_status": "manual_review_required",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "03-003a"
+      ],
+      "endpoint_readiness": "unassessed",
+      "formalization_cost": null,
+      "has_hint": false,
+      "has_solution": false,
+      "hint_sha256": null,
+      "record_sha256": "sha256:f45c5549df0c26f15972c516502c4969d895b9fb1a78fd8c0d096f0b4852b617",
+      "selected_case_id": null,
+      "selection_reason": null,
+      "selection_status": "unselected",
+      "solution_sha256": null,
+      "source_document_sha256": "sha256:0f535c8535c04dadecb9c48fe10ad6ab1c9268f4ec6f3590c53197370032ecae",
+      "source_file": "03.md",
+      "source_name": "UIUC CS573 (2013) NP Completeness Exercises (Sariel Har-Peled)",
+      "source_pdf_sha256": "sha256:79f568f3979842370081a03d575bbfa94e80308eca486448108cece29e646e76",
+      "split": null,
+      "statement_sha256": "sha256:36b42503cab58f838050060d9df3f94fad3cd3d743133ec569eec1128a854ff3"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:a1ba0e7bb02c8e65438a85eecd56d633bd3461ebec689c2cf048e92315d3d5ac",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "SUBGRAPH ISOMORPHISM",
+        "target_label": "LARGEST COMMON SUBGRAPH"
+      },
+      "archive_id": "03-003b",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:a1ba0e7bb02c8e65438a85eecd56d633bd3461ebec689c2cf048e92315d3d5ac",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "SUBGRAPH ISOMORPHISM",
+        "target_label": "LARGEST COMMON SUBGRAPH"
+      },
+      "canonical_source": null,
+      "canonical_target": null,
+      "capability_weight": 1,
+      "cleaned_from": "manual_fix",
+      "data_quality_reason": null,
+      "data_quality_status": "manual_review_required",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "03-003b"
+      ],
+      "endpoint_readiness": "unassessed",
+      "formalization_cost": null,
+      "has_hint": false,
+      "has_solution": false,
+      "hint_sha256": null,
+      "record_sha256": "sha256:85b5e883d3d9b0d52a86980186eb88b6ebc6742fa0584229cbf1398cfed49891",
+      "selected_case_id": null,
+      "selection_reason": null,
+      "selection_status": "unselected",
+      "solution_sha256": null,
+      "source_document_sha256": "sha256:0f535c8535c04dadecb9c48fe10ad6ab1c9268f4ec6f3590c53197370032ecae",
+      "source_file": "03.md",
+      "source_name": "UIUC CS573 (2013) NP Completeness Exercises (Sariel Har-Peled)",
+      "source_pdf_sha256": "sha256:79f568f3979842370081a03d575bbfa94e80308eca486448108cece29e646e76",
+      "split": null,
+      "statement_sha256": "sha256:616326fbd2a893740ac20a837b65cff9e784cf241e2eeffed59bfea9575710a7"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:941d21f2f3d4516ad147f6a8502b0ab69273af9049a324574a7eece1dfc544ac",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "PARTITION",
+        "target_label": "BIN PACKING"
+      },
+      "archive_id": "03-004b",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:941d21f2f3d4516ad147f6a8502b0ab69273af9049a324574a7eece1dfc544ac",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "PARTITION",
+        "target_label": "BIN PACKING"
+      },
+      "canonical_source": null,
+      "canonical_target": null,
+      "capability_weight": 1,
+      "cleaned_from": "manual_fix",
+      "data_quality_reason": null,
+      "data_quality_status": "manual_review_required",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "03-004b"
+      ],
+      "endpoint_readiness": "unassessed",
+      "formalization_cost": null,
+      "has_hint": false,
+      "has_solution": false,
+      "hint_sha256": null,
+      "record_sha256": "sha256:910eb84e48386936b59b220df156adeeb673276a2d8b6a7a0e4b23ce20dcc6bd",
+      "selected_case_id": null,
+      "selection_reason": null,
+      "selection_status": "unselected",
+      "solution_sha256": null,
+      "source_document_sha256": "sha256:0f535c8535c04dadecb9c48fe10ad6ab1c9268f4ec6f3590c53197370032ecae",
+      "source_file": "03.md",
+      "source_name": "UIUC CS573 (2013) NP Completeness Exercises (Sariel Har-Peled)",
+      "source_pdf_sha256": "sha256:79f568f3979842370081a03d575bbfa94e80308eca486448108cece29e646e76",
+      "split": null,
+      "statement_sha256": "sha256:75c8fd68624d1eec3d3e4f8ecb39e08bf558502617c274207769833110b0d7a8"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:36627b1d6fae01dee5bb4dc3e1826c16564db13d6eb60f06a7cf17e3ec02a769",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "3SAT",
+        "target_label": "TILING"
+      },
+      "archive_id": "03-004c",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:36627b1d6fae01dee5bb4dc3e1826c16564db13d6eb60f06a7cf17e3ec02a769",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "3SAT",
+        "target_label": "TILING"
+      },
+      "canonical_source": null,
+      "canonical_target": null,
+      "capability_weight": 1,
+      "cleaned_from": "manual_fix",
+      "data_quality_reason": "metadata says 3SAT -> TILING while the statement says PARTITION -> TILING",
+      "data_quality_status": "quarantined_source_error",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "03-004c"
+      ],
+      "endpoint_readiness": "unassessed",
+      "formalization_cost": null,
+      "has_hint": false,
+      "has_solution": false,
+      "hint_sha256": null,
+      "record_sha256": "sha256:b98f902e9f8348aac597bfd3ffe94d189b61cf640e6fbf05b28c15b96c1f4483",
+      "selected_case_id": null,
+      "selection_reason": null,
+      "selection_status": "unselected",
+      "solution_sha256": null,
+      "source_document_sha256": "sha256:0f535c8535c04dadecb9c48fe10ad6ab1c9268f4ec6f3590c53197370032ecae",
+      "source_file": "03.md",
+      "source_name": "UIUC CS573 (2013) NP Completeness Exercises (Sariel Har-Peled)",
+      "source_pdf_sha256": "sha256:79f568f3979842370081a03d575bbfa94e80308eca486448108cece29e646e76",
+      "split": null,
+      "statement_sha256": "sha256:df818dfcc216bdc285fc0eb3e06e2659950dbe4da53fcca4524423bd841da141"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:b608e0167098f2fc189364ce85516d33b732f748c2ee2a909dd220809d78f5d1",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "VERTEX COVER",
+        "target_label": "HITTING SET"
+      },
+      "archive_id": "03-004d",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:1a1e1e0baefb584874bf692d836ef379aaa374481a3491759ef5d91cbfa2e54b",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "SET COVER",
+        "target_label": "HITTING SET"
+      },
+      "canonical_source": "ComplexityReduction.Presentation.SetSystem.setCoveringStructuredProblem",
+      "canonical_target": "ComplexityReduction.Presentation.SetSystem.hittingSetStructuredProblem",
+      "capability_weight": 1,
+      "cleaned_from": "manual_fix",
+      "data_quality_reason": "metadata says VERTEX COVER -> HITTING SET while the statement says SET COVER -> HITTING SET",
+      "data_quality_status": "source_metadata_correction_required",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "03-004d"
+      ],
+      "endpoint_readiness": "ready",
+      "formalization_cost": "existing-edge-reconstruction",
+      "has_hint": false,
+      "has_solution": false,
+      "hint_sha256": null,
+      "record_sha256": "sha256:3522e3563716f24a03cd8d9d57494c488d661e2ff428fd8b0442ca63ff624a16",
+      "selected_case_id": "edge-dev-05-set-cover-to-hitting-set",
+      "selection_reason": "Both endpoints and a public forward edge are formalized; retained as an exact-edge reconstruction control. The archive metadata source label is corrected to Set Covering from the answer-free statement before scoring.",
+      "selection_status": "ready",
+      "solution_sha256": null,
+      "source_document_sha256": "sha256:0f535c8535c04dadecb9c48fe10ad6ab1c9268f4ec6f3590c53197370032ecae",
+      "source_file": "03.md",
+      "source_name": "UIUC CS573 (2013) NP Completeness Exercises (Sariel Har-Peled)",
+      "source_pdf_sha256": "sha256:79f568f3979842370081a03d575bbfa94e80308eca486448108cece29e646e76",
+      "split": "dev",
+      "statement_sha256": "sha256:408cf7f5d5f2f6b4b1823843ec5779fac8e291cad8e2c77520180c29c47b3285"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:0d9b46b8a1d94950da81322c69130283eaf824fd8e046e7fe107b17877f8c3fd",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "HAMILTONIAN PATH",
+        "target_label": "LONGEST PATH"
+      },
+      "archive_id": "03-005",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:0d9b46b8a1d94950da81322c69130283eaf824fd8e046e7fe107b17877f8c3fd",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "HAMILTONIAN PATH",
+        "target_label": "LONGEST PATH"
+      },
+      "canonical_source": null,
+      "canonical_target": null,
+      "capability_weight": 1,
+      "cleaned_from": "manual_fix",
+      "data_quality_reason": null,
+      "data_quality_status": "manual_review_required",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "03-005"
+      ],
+      "endpoint_readiness": "unassessed",
+      "formalization_cost": null,
+      "has_hint": false,
+      "has_solution": false,
+      "hint_sha256": null,
+      "record_sha256": "sha256:d3b4bc0fb8ddb13458cdf3a1716757fd19b16a7b2eb3b033ac58572bb249a74d",
+      "selected_case_id": null,
+      "selection_reason": null,
+      "selection_status": "unselected",
+      "solution_sha256": null,
+      "source_document_sha256": "sha256:0f535c8535c04dadecb9c48fe10ad6ab1c9268f4ec6f3590c53197370032ecae",
+      "source_file": "03.md",
+      "source_name": "UIUC CS573 (2013) NP Completeness Exercises (Sariel Har-Peled)",
+      "source_pdf_sha256": "sha256:79f568f3979842370081a03d575bbfa94e80308eca486448108cece29e646e76",
+      "split": null,
+      "statement_sha256": "sha256:f677868e552b8670cc52174a375304c0c21217d43899619580f3b0dc6bc9994c"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:3b0342555294a1ddb88559911644e880ad6a2e2fd8e879845559dc4af34dfa58",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "EXACT COVER BY 3 SETS",
+        "target_label": "EXACT COVER BY 4 SETS"
+      },
+      "archive_id": "03-006",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:3b0342555294a1ddb88559911644e880ad6a2e2fd8e879845559dc4af34dfa58",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "EXACT COVER BY 3 SETS",
+        "target_label": "EXACT COVER BY 4 SETS"
+      },
+      "canonical_source": "ComplexityReduction.Presentation.ExactCoverBy3.structuredProblem",
+      "canonical_target": "ComplexityReduction.Presentation.ExactCoverBy4.structuredProblem",
+      "capability_weight": 1,
+      "cleaned_from": "top-level",
+      "data_quality_reason": null,
+      "data_quality_status": "extracted",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "03-006"
+      ],
+      "endpoint_readiness": "blocked_endpoint_formalization",
+      "formalization_cost": "endpoint-formalization-required",
+      "has_hint": false,
+      "has_solution": false,
+      "hint_sha256": null,
+      "record_sha256": "sha256:d815122e4c5cdce2d958be3ebdf01067903d2012f5bd0bd5eb371f08738d4b69",
+      "selected_case_id": "edge-held-09-exact-cover-three-to-four",
+      "selection_reason": "Frozen exact-edge candidate; excluded from the scored denominator until both PresentedProblem endpoints pass independent formalization audits.",
+      "selection_status": "blocked_endpoint_formalization",
+      "solution_sha256": null,
+      "source_document_sha256": "sha256:0f535c8535c04dadecb9c48fe10ad6ab1c9268f4ec6f3590c53197370032ecae",
+      "source_file": "03.md",
+      "source_name": "UIUC CS573 (2013) NP Completeness Exercises (Sariel Har-Peled)",
+      "source_pdf_sha256": "sha256:79f568f3979842370081a03d575bbfa94e80308eca486448108cece29e646e76",
+      "split": "heldout",
+      "statement_sha256": "sha256:339f1cce75c96678ed481390eed137c7a3f320f714688f74da04039db57407ad"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:73bbb9ab2a19cf7f0542179abe95d9173c65e8cd77960a85a7dab10a7d5f15b1",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "HAMILTONIAN CYCLE",
+        "target_label": "HAMILTONIAN PATH"
+      },
+      "archive_id": "03-013c",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:73bbb9ab2a19cf7f0542179abe95d9173c65e8cd77960a85a7dab10a7d5f15b1",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "HAMILTONIAN CYCLE",
+        "target_label": "HAMILTONIAN PATH"
+      },
+      "canonical_source": "ComplexityReduction.Presentation.UndirectedHamiltonianCircuit.structuredProblem",
+      "canonical_target": "ComplexityReduction.Presentation.HamiltonianPath.structuredProblem",
+      "capability_weight": 1,
+      "cleaned_from": "manual_fix",
+      "data_quality_reason": null,
+      "data_quality_status": "manual_review_required",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "03-013c"
+      ],
+      "endpoint_readiness": "blocked_endpoint_formalization",
+      "formalization_cost": "endpoint-formalization-required",
+      "has_hint": false,
+      "has_solution": false,
+      "hint_sha256": null,
+      "record_sha256": "sha256:4efedd25bc4d2d21620653f1248d69f8eb94ab35e85ade8b423888805db4c8bb",
+      "selected_case_id": "edge-held-12-hamiltonian-cycle-to-path",
+      "selection_reason": "Frozen exact-edge candidate; excluded from the scored denominator until both PresentedProblem endpoints pass independent formalization audits.",
+      "selection_status": "blocked_endpoint_formalization",
+      "solution_sha256": null,
+      "source_document_sha256": "sha256:0f535c8535c04dadecb9c48fe10ad6ab1c9268f4ec6f3590c53197370032ecae",
+      "source_file": "03.md",
+      "source_name": "UIUC CS573 (2013) NP Completeness Exercises (Sariel Har-Peled)",
+      "source_pdf_sha256": "sha256:79f568f3979842370081a03d575bbfa94e80308eca486448108cece29e646e76",
+      "split": "heldout",
+      "statement_sha256": "sha256:fb6bb376ff1d4cfdf1fd80985145558527dae9271d74c60564c9bdff413e771f"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:81143f67743eb3c2052084c4498b516784b570402d8e7b2bef2ef7176c513167",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "HAMILTONIAN PATH",
+        "target_label": "MAX DEGREE SPANNING TREE"
+      },
+      "archive_id": "03-013d",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:81143f67743eb3c2052084c4498b516784b570402d8e7b2bef2ef7176c513167",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "HAMILTONIAN PATH",
+        "target_label": "MAX DEGREE SPANNING TREE"
+      },
+      "canonical_source": null,
+      "canonical_target": null,
+      "capability_weight": 1,
+      "cleaned_from": "manual_fix",
+      "data_quality_reason": null,
+      "data_quality_status": "manual_review_required",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "03-013d"
+      ],
+      "endpoint_readiness": "unassessed",
+      "formalization_cost": null,
+      "has_hint": false,
+      "has_solution": false,
+      "hint_sha256": null,
+      "record_sha256": "sha256:4b5565787b08785c3b9d8386164ea2560acc66a031d7cf7354c4a0456c435418",
+      "selected_case_id": null,
+      "selection_reason": null,
+      "selection_status": "unselected",
+      "solution_sha256": null,
+      "source_document_sha256": "sha256:0f535c8535c04dadecb9c48fe10ad6ab1c9268f4ec6f3590c53197370032ecae",
+      "source_file": "03.md",
+      "source_name": "UIUC CS573 (2013) NP Completeness Exercises (Sariel Har-Peled)",
+      "source_pdf_sha256": "sha256:79f568f3979842370081a03d575bbfa94e80308eca486448108cece29e646e76",
+      "split": null,
+      "statement_sha256": "sha256:723bd7bc4db01221b082f84eed8b5990a960b3a69bef1265dbc2fe89e28d4122"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:256e52d0f1610fd3bdd28b71ece8749c7d0f510304bca96e18b9b2f6b9f683c6",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "SUBSET SUM",
+        "target_label": "PARTITION"
+      },
+      "archive_id": "03-015",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:256e52d0f1610fd3bdd28b71ece8749c7d0f510304bca96e18b9b2f6b9f683c6",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "SUBSET SUM",
+        "target_label": "PARTITION"
+      },
+      "canonical_source": "ComplexityReduction.Presentation.SubsetSum.structuredProblem",
+      "canonical_target": "ComplexityReduction.Presentation.Partition.structuredProblem",
+      "capability_weight": 1,
+      "cleaned_from": "top-level",
+      "data_quality_reason": null,
+      "data_quality_status": "extracted",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "03-015"
+      ],
+      "endpoint_readiness": "blocked_endpoint_formalization",
+      "formalization_cost": "endpoint-formalization-required",
+      "has_hint": false,
+      "has_solution": false,
+      "hint_sha256": null,
+      "record_sha256": "sha256:c8c06f4ead8947cf7b90206040e3b24fbad2f4357e0d1159de053437572813a7",
+      "selected_case_id": "edge-held-10-subset-sum-to-partition",
+      "selection_reason": "Frozen exact-edge candidate; excluded from the scored denominator until both PresentedProblem endpoints pass independent formalization audits.",
+      "selection_status": "blocked_endpoint_formalization",
+      "solution_sha256": null,
+      "source_document_sha256": "sha256:0f535c8535c04dadecb9c48fe10ad6ab1c9268f4ec6f3590c53197370032ecae",
+      "source_file": "03.md",
+      "source_name": "UIUC CS573 (2013) NP Completeness Exercises (Sariel Har-Peled)",
+      "source_pdf_sha256": "sha256:79f568f3979842370081a03d575bbfa94e80308eca486448108cece29e646e76",
+      "split": "heldout",
+      "statement_sha256": "sha256:1d9b0e2049a18d4ab4c568899f1fc7f55e071ab864cf0540c041f54eeb84efb6"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:4643cd559d31e81707c31ca1a2cf5c42dc1e0d5f97c0e1416a3e4e8cf23c0e43",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "PARTITION",
+        "target_label": "MULTIPROCESSOR SCHEDULING"
+      },
+      "archive_id": "03-018b",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:4643cd559d31e81707c31ca1a2cf5c42dc1e0d5f97c0e1416a3e4e8cf23c0e43",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "PARTITION",
+        "target_label": "MULTIPROCESSOR SCHEDULING"
+      },
+      "canonical_source": null,
+      "canonical_target": null,
+      "capability_weight": 1,
+      "cleaned_from": "manual_fix",
+      "data_quality_reason": null,
+      "data_quality_status": "manual_review_required",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "03-018b"
+      ],
+      "endpoint_readiness": "unassessed",
+      "formalization_cost": null,
+      "has_hint": false,
+      "has_solution": false,
+      "hint_sha256": null,
+      "record_sha256": "sha256:84237aeb39ce857d64643011133a8f2590ec8c7e6de2dc13dfc342d0bdbe12f2",
+      "selected_case_id": null,
+      "selection_reason": null,
+      "selection_status": "unselected",
+      "solution_sha256": null,
+      "source_document_sha256": "sha256:0f535c8535c04dadecb9c48fe10ad6ab1c9268f4ec6f3590c53197370032ecae",
+      "source_file": "03.md",
+      "source_name": "UIUC CS573 (2013) NP Completeness Exercises (Sariel Har-Peled)",
+      "source_pdf_sha256": "sha256:79f568f3979842370081a03d575bbfa94e80308eca486448108cece29e646e76",
+      "split": null,
+      "statement_sha256": "sha256:dbfa8e4208658554d788c86b3e383b7353a6a4b55da3aaf35cf11b6440e4373f"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:9cfcf4fe2dd13379c83b85a299c71272d26cf37025820d063fb0f46969cfa50d",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "DOMINATING SET",
+        "target_label": "R-DISK COVER"
+      },
+      "archive_id": "03-022e",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:9cfcf4fe2dd13379c83b85a299c71272d26cf37025820d063fb0f46969cfa50d",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "DOMINATING SET",
+        "target_label": "R-DISK COVER"
+      },
+      "canonical_source": null,
+      "canonical_target": null,
+      "capability_weight": 1,
+      "cleaned_from": "manual_fix",
+      "data_quality_reason": "the direction was manually supplied and lacks the geometric restrictions needed for a formal endpoint",
+      "data_quality_status": "provenance_unverified",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "03-022e"
+      ],
+      "endpoint_readiness": "unassessed",
+      "formalization_cost": null,
+      "has_hint": false,
+      "has_solution": false,
+      "hint_sha256": null,
+      "record_sha256": "sha256:04f17e9b8bfd38dceec2351e32233c3a86d93a172d6e99e3a1172f66a4b20b1e",
+      "selected_case_id": null,
+      "selection_reason": null,
+      "selection_status": "unselected",
+      "solution_sha256": null,
+      "source_document_sha256": "sha256:0f535c8535c04dadecb9c48fe10ad6ab1c9268f4ec6f3590c53197370032ecae",
+      "source_file": "03.md",
+      "source_name": "UIUC CS573 (2013) NP Completeness Exercises (Sariel Har-Peled)",
+      "source_pdf_sha256": "sha256:79f568f3979842370081a03d575bbfa94e80308eca486448108cece29e646e76",
+      "split": null,
+      "statement_sha256": "sha256:b31e90c4708e0533f572d0b344a8d7a1f6633fc3e01a3ca77a86733fe16b57e8"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:f461170716edfaa68dffb0fc9253d800c41e75dc782ba37c37988921a04bf4c2",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "3SAT",
+        "target_label": "MAX SAT"
+      },
+      "archive_id": "03-023a",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:f461170716edfaa68dffb0fc9253d800c41e75dc782ba37c37988921a04bf4c2",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "3SAT",
+        "target_label": "MAX SAT"
+      },
+      "canonical_source": null,
+      "canonical_target": null,
+      "capability_weight": 1,
+      "cleaned_from": "manual_fix",
+      "data_quality_reason": null,
+      "data_quality_status": "manual_review_required",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "03-023a"
+      ],
+      "endpoint_readiness": "unassessed",
+      "formalization_cost": null,
+      "has_hint": false,
+      "has_solution": false,
+      "hint_sha256": null,
+      "record_sha256": "sha256:e152b5a375783f583f09807312e1320341d21a65efb0f1bbc43521f57a61598d",
+      "selected_case_id": null,
+      "selection_reason": null,
+      "selection_status": "unselected",
+      "solution_sha256": null,
+      "source_document_sha256": "sha256:0f535c8535c04dadecb9c48fe10ad6ab1c9268f4ec6f3590c53197370032ecae",
+      "source_file": "03.md",
+      "source_name": "UIUC CS573 (2013) NP Completeness Exercises (Sariel Har-Peled)",
+      "source_pdf_sha256": "sha256:79f568f3979842370081a03d575bbfa94e80308eca486448108cece29e646e76",
+      "split": null,
+      "statement_sha256": "sha256:405c3385011e8d37638c61660435fd789353f633ee57e93ee948ff940b5ad921"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:941a605d257342a4d45615f3789cf20ea654fcd3545639f5fb490cc26d8d027d",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "3-COLORING",
+        "target_label": "PLANAR 3-COLOR"
+      },
+      "archive_id": "03-027",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:941a605d257342a4d45615f3789cf20ea654fcd3545639f5fb490cc26d8d027d",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "3-COLORING",
+        "target_label": "PLANAR 3-COLOR"
+      },
+      "canonical_source": null,
+      "canonical_target": null,
+      "capability_weight": 1,
+      "cleaned_from": "top-level",
+      "data_quality_reason": null,
+      "data_quality_status": "extracted",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "03-027"
+      ],
+      "endpoint_readiness": "unassessed",
+      "formalization_cost": null,
+      "has_hint": true,
+      "has_solution": false,
+      "hint_sha256": "sha256:110189522d959ac919602534ed39dc5d51b6c15a86155e15e08aec753368d0c5",
+      "record_sha256": "sha256:28556e01e66df0e1adcd811517548471e96905bc6a978671de0966bba7844b51",
+      "selected_case_id": null,
+      "selection_reason": null,
+      "selection_status": "unselected",
+      "solution_sha256": null,
+      "source_document_sha256": "sha256:0f535c8535c04dadecb9c48fe10ad6ab1c9268f4ec6f3590c53197370032ecae",
+      "source_file": "03.md",
+      "source_name": "UIUC CS573 (2013) NP Completeness Exercises (Sariel Har-Peled)",
+      "source_pdf_sha256": "sha256:79f568f3979842370081a03d575bbfa94e80308eca486448108cece29e646e76",
+      "split": null,
+      "statement_sha256": "sha256:bb7e64e3995ddd98a39505fe7e3b57d02b00f66c31321700f92fc6f155d7c289"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:cc78b124329cc540f98ed867c458e344b16c794dcd6c22e849be816be8fd172d",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "PLANAR 3-COLOR",
+        "target_label": "DEGREE 4 PLANAR 3-COLOR"
+      },
+      "archive_id": "03-028",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:cc78b124329cc540f98ed867c458e344b16c794dcd6c22e849be816be8fd172d",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "PLANAR 3-COLOR",
+        "target_label": "DEGREE 4 PLANAR 3-COLOR"
+      },
+      "canonical_source": null,
+      "canonical_target": null,
+      "capability_weight": 1,
+      "cleaned_from": "top-level",
+      "data_quality_reason": null,
+      "data_quality_status": "extracted",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "03-028"
+      ],
+      "endpoint_readiness": "unassessed",
+      "formalization_cost": null,
+      "has_hint": true,
+      "has_solution": false,
+      "hint_sha256": "sha256:09da7b2e34b755522cccb57295f1d863782be7a0ce2d2068be58571ce9d7e7a5",
+      "record_sha256": "sha256:e02eb9b4fcc946976893d019fe3be62cb851c11546d2717a2f0cde886edf28f1",
+      "selected_case_id": null,
+      "selection_reason": null,
+      "selection_status": "unselected",
+      "solution_sha256": null,
+      "source_document_sha256": "sha256:0f535c8535c04dadecb9c48fe10ad6ab1c9268f4ec6f3590c53197370032ecae",
+      "source_file": "03.md",
+      "source_name": "UIUC CS573 (2013) NP Completeness Exercises (Sariel Har-Peled)",
+      "source_pdf_sha256": "sha256:79f568f3979842370081a03d575bbfa94e80308eca486448108cece29e646e76",
+      "split": null,
+      "statement_sha256": "sha256:a223d115b074a641ef3ed5852f6a8a3b21db0106e953dba381d526b46f07dc30"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:0d7fb94bab303e5c88a0c93551148284baab706939f4e680b3f6e8915ccad59e",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "3SAT",
+        "target_label": "CLIQUE"
+      },
+      "archive_id": "05-007",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:0d7fb94bab303e5c88a0c93551148284baab706939f4e680b3f6e8915ccad59e",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "3SAT",
+        "target_label": "CLIQUE"
+      },
+      "canonical_source": "ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem",
+      "canonical_target": "ComplexityReduction.Problems.Karp21.GraphAtoms.cliqueStructuredProblem",
+      "capability_weight": 1,
+      "cleaned_from": "top-level",
+      "data_quality_reason": null,
+      "data_quality_status": "extracted",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "05-007"
+      ],
+      "endpoint_readiness": "ready",
+      "formalization_cost": "existing-edge-reconstruction",
+      "has_hint": true,
+      "has_solution": false,
+      "hint_sha256": "sha256:b58a87c2085ce9e685f5e9bec67948d373d6680ec83215cccacef6c93481b85e",
+      "record_sha256": "sha256:4f69159de3c863ab3d93cd67194d40ccf9219d6e7ece5e95eb1e31468307f0a0",
+      "selected_case_id": "edge-dev-01-three-sat-to-clique",
+      "selection_reason": "Both endpoints and a public forward edge are formalized; retained as an exact-edge reconstruction control.",
+      "selection_status": "ready",
+      "solution_sha256": null,
+      "source_document_sha256": "sha256:0dac0ee910ccdf38493a6b6c44775460bf86778a04521cab49ec768323475a1f",
+      "source_file": "05.md",
+      "source_name": "LUMS CS310 Problem Set 10: Complexity Theory",
+      "source_pdf_sha256": "sha256:ca0dd1a175490b538ed13fcd43e30d7355aca7445ec2b9928ae859c7d791cb04",
+      "split": "dev",
+      "statement_sha256": "sha256:480eae62d75ca3ac191373c74db5c718d3961220dfaddc8fbaa0b1180aba0c86"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:7f6289e62d4164e564ec6dd1378cfaac3edc9af15042c79573bbdcfc19b6ec58",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "VERTEX COVER",
+        "target_label": "DOMINATING SET"
+      },
+      "archive_id": "05-008",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:7f6289e62d4164e564ec6dd1378cfaac3edc9af15042c79573bbdcfc19b6ec58",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "VERTEX COVER",
+        "target_label": "DOMINATING SET"
+      },
+      "canonical_source": "ComplexityReduction.Problems.Karp21.GraphAtoms.vertexCoverStructuredProblem",
+      "canonical_target": "ComplexityReduction.Presentation.DominatingSet.structuredProblem",
+      "capability_weight": 1,
+      "cleaned_from": "top-level",
+      "data_quality_reason": null,
+      "data_quality_status": "extracted",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "05-008"
+      ],
+      "endpoint_readiness": "blocked_endpoint_formalization",
+      "formalization_cost": "endpoint-formalization-required",
+      "has_hint": true,
+      "has_solution": false,
+      "hint_sha256": "sha256:3d7bfe75c42e882c23a126c80056347d7e7b886a97c5125051105df18c1f3b56",
+      "record_sha256": "sha256:0887ad778fc92b0d8fe84d97de5b8844cae2dcf333511062760e68262b1f6065",
+      "selected_case_id": "edge-held-01-vertex-cover-to-dominating-set",
+      "selection_reason": "Frozen exact-edge candidate; excluded from the scored denominator until both PresentedProblem endpoints pass independent formalization audits.",
+      "selection_status": "blocked_endpoint_formalization",
+      "solution_sha256": null,
+      "source_document_sha256": "sha256:0dac0ee910ccdf38493a6b6c44775460bf86778a04521cab49ec768323475a1f",
+      "source_file": "05.md",
+      "source_name": "LUMS CS310 Problem Set 10: Complexity Theory",
+      "source_pdf_sha256": "sha256:ca0dd1a175490b538ed13fcd43e30d7355aca7445ec2b9928ae859c7d791cb04",
+      "split": "heldout",
+      "statement_sha256": "sha256:eb5b8d3af1b16f9b7506d3d9d8857056f70a5e2c350ef9cce5d8fb684717a180"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:b27dacfd217fed4f237bbb80f329ead6d69d6a0dbe9d597f74c84a1e049442ea",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "3SAT",
+        "target_label": "3-COLORING"
+      },
+      "archive_id": "05-009",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:b27dacfd217fed4f237bbb80f329ead6d69d6a0dbe9d597f74c84a1e049442ea",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "3SAT",
+        "target_label": "3-COLORING"
+      },
+      "canonical_source": "ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem",
+      "canonical_target": "ComplexityReduction.Presentation.ChromaticNumber.structuredProblem",
+      "capability_weight": 1,
+      "cleaned_from": "top-level",
+      "data_quality_reason": null,
+      "data_quality_status": "extracted",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "05-009"
+      ],
+      "endpoint_readiness": "ready",
+      "formalization_cost": "existing-edge-reconstruction",
+      "has_hint": true,
+      "has_solution": false,
+      "hint_sha256": "sha256:8936af26dc24798ff56c75f95434364aab9774bd746884d35dbf7bf50129bab5",
+      "record_sha256": "sha256:ac21587f34e5fb818f1b5eacfac487d2891d927852bcffef7807d3b53ad6366e",
+      "selected_case_id": "edge-dev-03-three-sat-to-chromatic",
+      "selection_reason": "Both endpoints and a public forward edge are formalized; retained as an exact-edge reconstruction control.",
+      "selection_status": "ready",
+      "solution_sha256": null,
+      "source_document_sha256": "sha256:0dac0ee910ccdf38493a6b6c44775460bf86778a04521cab49ec768323475a1f",
+      "source_file": "05.md",
+      "source_name": "LUMS CS310 Problem Set 10: Complexity Theory",
+      "source_pdf_sha256": "sha256:ca0dd1a175490b538ed13fcd43e30d7355aca7445ec2b9928ae859c7d791cb04",
+      "split": "dev",
+      "statement_sha256": "sha256:80cae8f08170d1da970915ffb390f6a37dca0a2eaca3df0cf6792856d4196e8e"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:a7d5e2573fc39cb1eff38db5d053ab4bf6a77837659d8325f3de71b50327a410",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "any NP language",
+        "target_label": "ACCEPTS SOMETHING FAST"
+      },
+      "archive_id": "06-001",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:a7d5e2573fc39cb1eff38db5d053ab4bf6a77837659d8325f3de71b50327a410",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "any NP language",
+        "target_label": "ACCEPTS SOMETHING FAST"
+      },
+      "canonical_source": null,
+      "canonical_target": null,
+      "capability_weight": 1,
+      "cleaned_from": "top-level",
+      "data_quality_reason": null,
+      "data_quality_status": "extracted",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "06-001"
+      ],
+      "endpoint_readiness": "unassessed",
+      "formalization_cost": null,
+      "has_hint": false,
+      "has_solution": true,
+      "hint_sha256": null,
+      "record_sha256": "sha256:00cbe494c9627d911288aca06f14e4a6b8bd32ce21d8bd5693e665ce36c19ddb",
+      "selected_case_id": null,
+      "selection_reason": null,
+      "selection_status": "unselected",
+      "solution_sha256": "sha256:8d71312768ebed3a73479f09991015196bbde6696cbdaa03a0212f0cd919d4db",
+      "source_document_sha256": "sha256:d828047842264a4f57deab3ecaddffcf0d91a6d381e4f3eb9f6798b2aaf96b62",
+      "source_file": "06.md",
+      "source_name": "HSE Moscow -- Show that the following problems are NP-complete",
+      "source_pdf_sha256": "sha256:9b34d173cda2c088206206ec136177466996dd0b44252541dfa63e419bbf1b50",
+      "split": null,
+      "statement_sha256": "sha256:ab9f8381387c204ad574f6bb11bc1699c14735240346ea53efbb89f038fdac34"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:1e7be87f8980913cf4d046d8172a737b99bd805e2e3dfe2428c0f919fc5c2194",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "ACCEPTS SOMETHING FAST",
+        "target_label": "CIRCUIT SAT"
+      },
+      "archive_id": "06-002",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:1e7be87f8980913cf4d046d8172a737b99bd805e2e3dfe2428c0f919fc5c2194",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "ACCEPTS SOMETHING FAST",
+        "target_label": "CIRCUIT SAT"
+      },
+      "canonical_source": null,
+      "canonical_target": null,
+      "capability_weight": 1,
+      "cleaned_from": "top-level",
+      "data_quality_reason": null,
+      "data_quality_status": "extracted",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "06-002"
+      ],
+      "endpoint_readiness": "unassessed",
+      "formalization_cost": null,
+      "has_hint": false,
+      "has_solution": true,
+      "hint_sha256": null,
+      "record_sha256": "sha256:1bd09ec3cece71ebe0efa5cc2a1dfb8678859295beca2be2c3fc76e0ba83746a",
+      "selected_case_id": null,
+      "selection_reason": null,
+      "selection_status": "unselected",
+      "solution_sha256": "sha256:2dfc8a1049d505c1552f7190e31d662c16b0375252b6213c88a6f9b628601aa9",
+      "source_document_sha256": "sha256:d828047842264a4f57deab3ecaddffcf0d91a6d381e4f3eb9f6798b2aaf96b62",
+      "source_file": "06.md",
+      "source_name": "HSE Moscow -- Show that the following problems are NP-complete",
+      "source_pdf_sha256": "sha256:9b34d173cda2c088206206ec136177466996dd0b44252541dfa63e419bbf1b50",
+      "split": null,
+      "statement_sha256": "sha256:1fc25cfccf650ff2d766df52d9f1ad7ee16d576542bed7241a0d52a8934309da"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:cc7b6e04e1a49643c3098a21a114ed919833d351542bff9261f22424b6fbbad0",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "CIRCUIT SAT",
+        "target_label": "DOUBLE CIRCUIT SAT"
+      },
+      "archive_id": "06-003",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:cc7b6e04e1a49643c3098a21a114ed919833d351542bff9261f22424b6fbbad0",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "CIRCUIT SAT",
+        "target_label": "DOUBLE CIRCUIT SAT"
+      },
+      "canonical_source": null,
+      "canonical_target": null,
+      "capability_weight": 1,
+      "cleaned_from": "top-level",
+      "data_quality_reason": null,
+      "data_quality_status": "extracted",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "06-003"
+      ],
+      "endpoint_readiness": "unassessed",
+      "formalization_cost": null,
+      "has_hint": false,
+      "has_solution": false,
+      "hint_sha256": null,
+      "record_sha256": "sha256:2e949579448765149445dab0277de17739fff9b59513ce1db7bbf9f2daf4301f",
+      "selected_case_id": null,
+      "selection_reason": null,
+      "selection_status": "unselected",
+      "solution_sha256": null,
+      "source_document_sha256": "sha256:d828047842264a4f57deab3ecaddffcf0d91a6d381e4f3eb9f6798b2aaf96b62",
+      "source_file": "06.md",
+      "source_name": "HSE Moscow -- Show that the following problems are NP-complete",
+      "source_pdf_sha256": "sha256:9b34d173cda2c088206206ec136177466996dd0b44252541dfa63e419bbf1b50",
+      "split": null,
+      "statement_sha256": "sha256:594e6d83975c4417d235d310294416680f69e7915189be705201538a4078d040"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:f232ef75f99d16d53aab6f77aa560f2d40c369ba98c30c9360934964303c77fb",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "CIRCUIT SAT",
+        "target_label": "3CSAT"
+      },
+      "archive_id": "06-004",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:f232ef75f99d16d53aab6f77aa560f2d40c369ba98c30c9360934964303c77fb",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "CIRCUIT SAT",
+        "target_label": "3CSAT"
+      },
+      "canonical_source": null,
+      "canonical_target": null,
+      "capability_weight": 1,
+      "cleaned_from": "top-level",
+      "data_quality_reason": null,
+      "data_quality_status": "extracted",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "06-004"
+      ],
+      "endpoint_readiness": "unassessed",
+      "formalization_cost": null,
+      "has_hint": false,
+      "has_solution": true,
+      "hint_sha256": null,
+      "record_sha256": "sha256:327f837a82df2a06aecd07a6b8f22dc7c684ebd0bae1c8bba241b0d47956cbd7",
+      "selected_case_id": null,
+      "selection_reason": null,
+      "selection_status": "unselected",
+      "solution_sha256": "sha256:7c32e7e14bbf04094e54e3a0db611dbec763aa29944cd48b18706d40a712417c",
+      "source_document_sha256": "sha256:d828047842264a4f57deab3ecaddffcf0d91a6d381e4f3eb9f6798b2aaf96b62",
+      "source_file": "06.md",
+      "source_name": "HSE Moscow -- Show that the following problems are NP-complete",
+      "source_pdf_sha256": "sha256:9b34d173cda2c088206206ec136177466996dd0b44252541dfa63e419bbf1b50",
+      "split": null,
+      "statement_sha256": "sha256:8a5941064095c0aa8c885860178b9919c4cb0ba855b5c3c467cac4583a9a2235"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:a2ba7a77a76cb3afc11d2617a6ed5985ced77ae5d871ac38db8fb7be9fb94bf6",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "CIRCUIT SAT",
+        "target_label": "3SAT"
+      },
+      "archive_id": "06-005",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:a2ba7a77a76cb3afc11d2617a6ed5985ced77ae5d871ac38db8fb7be9fb94bf6",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "CIRCUIT SAT",
+        "target_label": "3SAT"
+      },
+      "canonical_source": null,
+      "canonical_target": null,
+      "capability_weight": 1,
+      "cleaned_from": "top-level",
+      "data_quality_reason": null,
+      "data_quality_status": "extracted",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "06-005"
+      ],
+      "endpoint_readiness": "unassessed",
+      "formalization_cost": null,
+      "has_hint": false,
+      "has_solution": true,
+      "hint_sha256": null,
+      "record_sha256": "sha256:5f06687f7be2ccd1704d0df965372dcf6f9b569b48c4a46a66c1c5c75523e090",
+      "selected_case_id": null,
+      "selection_reason": null,
+      "selection_status": "unselected",
+      "solution_sha256": "sha256:60b5eb34812f0a98ac8cb62d05ee66b4acd8bc79d466bc9ad1e0e387a546e1dc",
+      "source_document_sha256": "sha256:d828047842264a4f57deab3ecaddffcf0d91a6d381e4f3eb9f6798b2aaf96b62",
+      "source_file": "06.md",
+      "source_name": "HSE Moscow -- Show that the following problems are NP-complete",
+      "source_pdf_sha256": "sha256:9b34d173cda2c088206206ec136177466996dd0b44252541dfa63e419bbf1b50",
+      "split": null,
+      "statement_sha256": "sha256:5a24c60c517a4def3b6e7704ed93fbe2482990de19cc674e1f72ad0b6c9206b0"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:f85c55da9fee4041b2a47e53f8ad0c5676276eca88822689080765ec820f4d92",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "3SAT",
+        "target_label": "NAE-3SAT"
+      },
+      "archive_id": "06-006",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:f85c55da9fee4041b2a47e53f8ad0c5676276eca88822689080765ec820f4d92",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "3SAT",
+        "target_label": "NAE-3SAT"
+      },
+      "canonical_source": null,
+      "canonical_target": null,
+      "capability_weight": 0,
+      "cleaned_from": "top-level",
+      "data_quality_reason": null,
+      "data_quality_status": "extracted",
+      "duplicate_group_id": "sha256:f85c55da9fee4041b2a47e53f8ad0c5676276eca88822689080765ec820f4d92",
+      "duplicate_group_members": [
+        "02-004",
+        "06-006"
+      ],
+      "endpoint_readiness": "unassessed",
+      "formalization_cost": null,
+      "has_hint": true,
+      "has_solution": true,
+      "hint_sha256": "sha256:4c76c53a8bd0e85a766018440b0bc510ad1bd952ad1353e56e985496b82c1445",
+      "record_sha256": "sha256:509b475e034aed6f6a8abbae3b3d790362e38a82e993b842deeb57fac8be9f92",
+      "selected_case_id": null,
+      "selection_reason": null,
+      "selection_status": "unselected",
+      "solution_sha256": "sha256:8556528696c62673bc4eca7ad39a34c08690119a8ff85f45b48eaad19e1451da",
+      "source_document_sha256": "sha256:d828047842264a4f57deab3ecaddffcf0d91a6d381e4f3eb9f6798b2aaf96b62",
+      "source_file": "06.md",
+      "source_name": "HSE Moscow -- Show that the following problems are NP-complete",
+      "source_pdf_sha256": "sha256:9b34d173cda2c088206206ec136177466996dd0b44252541dfa63e419bbf1b50",
+      "split": null,
+      "statement_sha256": "sha256:864aa4ddec7dcdabd346f0aa14c690efe27ef577f8cf395b29d71f6bc72b1e2c"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:cf3577ae419eeeff444f680662f4e41d639e90f6fd1b140c87e407b76206d4cf",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "3SAT",
+        "target_label": "1-IN-3 SAT"
+      },
+      "archive_id": "06-007",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:cf3577ae419eeeff444f680662f4e41d639e90f6fd1b140c87e407b76206d4cf",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "3SAT",
+        "target_label": "1-IN-3 SAT"
+      },
+      "canonical_source": "ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem",
+      "canonical_target": "ComplexityReduction.Presentation.OneInThreeSAT.structuredProblem",
+      "capability_weight": 1,
+      "cleaned_from": "top-level",
+      "data_quality_reason": null,
+      "data_quality_status": "extracted",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "06-007"
+      ],
+      "endpoint_readiness": "blocked_endpoint_formalization",
+      "formalization_cost": "endpoint-formalization-required",
+      "has_hint": true,
+      "has_solution": true,
+      "hint_sha256": "sha256:597527c51a9dbdaf6d41814fc6e7cbed074c7015d2425c2db5060e853121b9de",
+      "record_sha256": "sha256:27ac6f0fb21863ff9261a0464cb176957599232fff3b415411838e76ba66f183",
+      "selected_case_id": "edge-held-06-three-sat-to-one-in-three-sat",
+      "selection_reason": "Frozen exact-edge candidate; excluded from the scored denominator until both PresentedProblem endpoints pass independent formalization audits.",
+      "selection_status": "blocked_endpoint_formalization",
+      "solution_sha256": "sha256:079b3966e463cb677e2da868fd67d5c88e7720b194c9ec090936d9518764402f",
+      "source_document_sha256": "sha256:d828047842264a4f57deab3ecaddffcf0d91a6d381e4f3eb9f6798b2aaf96b62",
+      "source_file": "06.md",
+      "source_name": "HSE Moscow -- Show that the following problems are NP-complete",
+      "source_pdf_sha256": "sha256:9b34d173cda2c088206206ec136177466996dd0b44252541dfa63e419bbf1b50",
+      "split": "heldout",
+      "statement_sha256": "sha256:501c471d16980bc5235ded48210cee477f806757c6aa87515141973ab75fb817"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:92f5e359f220ebadf8d17b937904a8a5ed02295f4ec924c50aa56bd7b6d7a161",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "3SAT",
+        "target_label": "0-1 INTEGER PROGRAMMING"
+      },
+      "archive_id": "06-008",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:92f5e359f220ebadf8d17b937904a8a5ed02295f4ec924c50aa56bd7b6d7a161",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "3SAT",
+        "target_label": "0-1 INTEGER PROGRAMMING"
+      },
+      "canonical_source": "ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem",
+      "canonical_target": "ComplexityReduction.Presentation.ZeroOneIP.structuredProblem",
+      "capability_weight": 1,
+      "cleaned_from": "top-level",
+      "data_quality_reason": null,
+      "data_quality_status": "extracted",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "06-008"
+      ],
+      "endpoint_readiness": "ready",
+      "formalization_cost": "existing-edge-reconstruction",
+      "has_hint": true,
+      "has_solution": true,
+      "hint_sha256": "sha256:fb0073b5df40d7ed5d3db1575eeb7589a2312f615a2de3a1c9fa0a9ae9abee0f",
+      "record_sha256": "sha256:22009b21e0e2f66fed5de4d1ec46fd706af535a3938155a8febf8a760df4850a",
+      "selected_case_id": "edge-dev-02-three-sat-to-zero-one-ip",
+      "selection_reason": "Both endpoints and a public forward edge are formalized; retained as an exact-edge reconstruction control.",
+      "selection_status": "ready",
+      "solution_sha256": "sha256:dd910e3bff1a0a83819711487f1c41b6b7d30bca88f0f5cb90c68474be4aef5f",
+      "source_document_sha256": "sha256:d828047842264a4f57deab3ecaddffcf0d91a6d381e4f3eb9f6798b2aaf96b62",
+      "source_file": "06.md",
+      "source_name": "HSE Moscow -- Show that the following problems are NP-complete",
+      "source_pdf_sha256": "sha256:9b34d173cda2c088206206ec136177466996dd0b44252541dfa63e419bbf1b50",
+      "split": "dev",
+      "statement_sha256": "sha256:9e626b4cf7eb56ab3bc9e509a6eec3033ae6354f5f50fb2d82695993b0380fca"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:bc8b4f2198fa50d8d48edcb00c8226636f243695f014830d74668a25fb4b382d",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "3SAT",
+        "target_label": "BINARY QUADRATIC PROGRAMMING"
+      },
+      "archive_id": "06-009",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:bc8b4f2198fa50d8d48edcb00c8226636f243695f014830d74668a25fb4b382d",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "3SAT",
+        "target_label": "BINARY QUADRATIC PROGRAMMING"
+      },
+      "canonical_source": null,
+      "canonical_target": null,
+      "capability_weight": 1,
+      "cleaned_from": "top-level",
+      "data_quality_reason": "the target specification and archived construction use different equation semantics",
+      "data_quality_status": "quarantined_source_error",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "06-009"
+      ],
+      "endpoint_readiness": "unassessed",
+      "formalization_cost": null,
+      "has_hint": true,
+      "has_solution": true,
+      "hint_sha256": "sha256:27ca8ee81dc31802a2cde14dd2cb418397bf656d1719a0da1b79b8dad9d68c6b",
+      "record_sha256": "sha256:53f4dae90d8e482adac6cd6043107051cf2350e647bd4a5ec66a9f8f32272cb3",
+      "selected_case_id": null,
+      "selection_reason": null,
+      "selection_status": "unselected",
+      "solution_sha256": "sha256:9afe9159fa03c83c349b56c4a77713471c6db72c7245a7c4470977a2829cdf51",
+      "source_document_sha256": "sha256:d828047842264a4f57deab3ecaddffcf0d91a6d381e4f3eb9f6798b2aaf96b62",
+      "source_file": "06.md",
+      "source_name": "HSE Moscow -- Show that the following problems are NP-complete",
+      "source_pdf_sha256": "sha256:9b34d173cda2c088206206ec136177466996dd0b44252541dfa63e419bbf1b50",
+      "split": null,
+      "statement_sha256": "sha256:b944eb23a329e7f64fb62d2deaaed82e8db9c0bd68527c02e1f464c02d863135"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:18b156deaad6eea340f364e5370c955768482ae9d1e8592c2d6941e5777183d4",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "3SAT",
+        "target_label": "WINNABLE SOLITAIRE GAME"
+      },
+      "archive_id": "06-010",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:18b156deaad6eea340f364e5370c955768482ae9d1e8592c2d6941e5777183d4",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "3SAT",
+        "target_label": "WINNABLE SOLITAIRE GAME"
+      },
+      "canonical_source": null,
+      "canonical_target": null,
+      "capability_weight": 1,
+      "cleaned_from": "top-level",
+      "data_quality_reason": null,
+      "data_quality_status": "extracted",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "06-010"
+      ],
+      "endpoint_readiness": "unassessed",
+      "formalization_cost": null,
+      "has_hint": false,
+      "has_solution": false,
+      "hint_sha256": null,
+      "record_sha256": "sha256:d491f1a8d86ceed2d548e52b89d0c8ce7e30f77d1a1e1113e6940a30c2e5d229",
+      "selected_case_id": null,
+      "selection_reason": null,
+      "selection_status": "unselected",
+      "solution_sha256": null,
+      "source_document_sha256": "sha256:d828047842264a4f57deab3ecaddffcf0d91a6d381e4f3eb9f6798b2aaf96b62",
+      "source_file": "06.md",
+      "source_name": "HSE Moscow -- Show that the following problems are NP-complete",
+      "source_pdf_sha256": "sha256:9b34d173cda2c088206206ec136177466996dd0b44252541dfa63e419bbf1b50",
+      "split": null,
+      "statement_sha256": "sha256:5ef660998173aec0dc56cb665c9d67dfa662565b7458a98f02d757f5563a91ab"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:11415272f4786b6e8c736560dedf4bbc99c489181eb85a720b5b88281aabc924",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "3SAT",
+        "target_label": "AUTOMATON REJECTS SOME SMALL STRING"
+      },
+      "archive_id": "06-011",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:11415272f4786b6e8c736560dedf4bbc99c489181eb85a720b5b88281aabc924",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "3SAT",
+        "target_label": "AUTOMATON REJECTS SOME SMALL STRING"
+      },
+      "canonical_source": null,
+      "canonical_target": null,
+      "capability_weight": 1,
+      "cleaned_from": "top-level",
+      "data_quality_reason": null,
+      "data_quality_status": "extracted",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "06-011"
+      ],
+      "endpoint_readiness": "unassessed",
+      "formalization_cost": null,
+      "has_hint": true,
+      "has_solution": true,
+      "hint_sha256": "sha256:9c621b8e3f0cfe4f1ada6d4c5571aa31f76fb41efc8401792f053169a1933649",
+      "record_sha256": "sha256:323cc3f3aa8e4896aef1583c4662833af80c26d90da968d0c1ba8ed399ca2f27",
+      "selected_case_id": null,
+      "selection_reason": null,
+      "selection_status": "unselected",
+      "solution_sha256": "sha256:0dc5f1b0b0eeba71452209ca4cba4ff45a3b11366ad4f870540fcda4ed804a3d",
+      "source_document_sha256": "sha256:d828047842264a4f57deab3ecaddffcf0d91a6d381e4f3eb9f6798b2aaf96b62",
+      "source_file": "06.md",
+      "source_name": "HSE Moscow -- Show that the following problems are NP-complete",
+      "source_pdf_sha256": "sha256:9b34d173cda2c088206206ec136177466996dd0b44252541dfa63e419bbf1b50",
+      "split": null,
+      "statement_sha256": "sha256:d8aa75cdbb099e6d43c4e2447a439c06fd02f401da5215efda0e2c7249a09634"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:9eabc5a3e3a7e1aca374335694388d3a02e03140cf0a7f64514b1168965a6ebf",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "AUTOMATON REJECTS SOME SMALL STRING",
+        "target_label": "DIFFERENT FINITE REGULAR LANGUAGES"
+      },
+      "archive_id": "06-012",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:9eabc5a3e3a7e1aca374335694388d3a02e03140cf0a7f64514b1168965a6ebf",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "AUTOMATON REJECTS SOME SMALL STRING",
+        "target_label": "DIFFERENT FINITE REGULAR LANGUAGES"
+      },
+      "canonical_source": null,
+      "canonical_target": null,
+      "capability_weight": 1,
+      "cleaned_from": "top-level",
+      "data_quality_reason": null,
+      "data_quality_status": "extracted",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "06-012"
+      ],
+      "endpoint_readiness": "unassessed",
+      "formalization_cost": null,
+      "has_hint": true,
+      "has_solution": true,
+      "hint_sha256": "sha256:3393864b8ad20ef3a1047e69829e4cf9cb3eb7e3fbcbb180bb17a0e05a59fc26",
+      "record_sha256": "sha256:37772aab0e704671279f988f4366fe010e421cf37a6b8f561e64bf7d2c6a9e9e",
+      "selected_case_id": null,
+      "selection_reason": null,
+      "selection_status": "unselected",
+      "solution_sha256": "sha256:0a322b1a677b854893d98c07d0663db4c4fd651031484e1290052190aa1323c7",
+      "source_document_sha256": "sha256:d828047842264a4f57deab3ecaddffcf0d91a6d381e4f3eb9f6798b2aaf96b62",
+      "source_file": "06.md",
+      "source_name": "HSE Moscow -- Show that the following problems are NP-complete",
+      "source_pdf_sha256": "sha256:9b34d173cda2c088206206ec136177466996dd0b44252541dfa63e419bbf1b50",
+      "split": null,
+      "statement_sha256": "sha256:3831c6051e0e41e87647a66339f5334b23a348d1d0c641c1404ee58ce1f33ced"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:a8344fc5c211075db7875f3b9df7e2cf9273b70e252226df9bcbf90aabdc135d",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "1-IN-3 SAT",
+        "target_label": "CONTAINS PARTITION"
+      },
+      "archive_id": "06-013",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:a8344fc5c211075db7875f3b9df7e2cf9273b70e252226df9bcbf90aabdc135d",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "1-IN-3 SAT",
+        "target_label": "CONTAINS PARTITION"
+      },
+      "canonical_source": "ComplexityReduction.Presentation.OneInThreeSAT.structuredProblem",
+      "canonical_target": "ComplexityReduction.Presentation.SetSystem.exactCoverStructuredProblem",
+      "capability_weight": 1,
+      "cleaned_from": "top-level",
+      "data_quality_reason": null,
+      "data_quality_status": "extracted",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "06-013"
+      ],
+      "endpoint_readiness": "blocked_endpoint_formalization",
+      "formalization_cost": "endpoint-formalization-required",
+      "has_hint": false,
+      "has_solution": true,
+      "hint_sha256": null,
+      "record_sha256": "sha256:be89b181efefc40fcd33656f8d3ed4198241a66c75e481b8da12fde59b35ba46",
+      "selected_case_id": "edge-held-07-one-in-three-to-exact-cover",
+      "selection_reason": "Frozen exact-edge candidate; excluded from the scored denominator until both PresentedProblem endpoints pass independent formalization audits.",
+      "selection_status": "blocked_endpoint_formalization",
+      "solution_sha256": "sha256:7734f9e1825509633b3de47afd5f2ece4077252b2b1c51994cc15654d86d399d",
+      "source_document_sha256": "sha256:d828047842264a4f57deab3ecaddffcf0d91a6d381e4f3eb9f6798b2aaf96b62",
+      "source_file": "06.md",
+      "source_name": "HSE Moscow -- Show that the following problems are NP-complete",
+      "source_pdf_sha256": "sha256:9b34d173cda2c088206206ec136177466996dd0b44252541dfa63e419bbf1b50",
+      "split": "heldout",
+      "statement_sha256": "sha256:be3b4998152954cf036bb2f8fba940d5d3c5d13b7a79e7b71b17c77f17658e14"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:812f9a64b1f76dc37237949f070d9f39531894dc3735302f4f0d39f6f0abee89",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "CONTAINS PARTITION",
+        "target_label": "SUBSET SUM"
+      },
+      "archive_id": "06-014",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:812f9a64b1f76dc37237949f070d9f39531894dc3735302f4f0d39f6f0abee89",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "CONTAINS PARTITION",
+        "target_label": "SUBSET SUM"
+      },
+      "canonical_source": null,
+      "canonical_target": null,
+      "capability_weight": 1,
+      "cleaned_from": "top-level",
+      "data_quality_reason": null,
+      "data_quality_status": "extracted",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "06-014"
+      ],
+      "endpoint_readiness": "unassessed",
+      "formalization_cost": null,
+      "has_hint": true,
+      "has_solution": true,
+      "hint_sha256": "sha256:1555ab7f2d6ac953ed916941734b05944596828b0b241965447f05c315e0c593",
+      "record_sha256": "sha256:60fa07d5e051192b808ddf77b15566f5fb5dd6822a0e196f51056ca58b82edc0",
+      "selected_case_id": null,
+      "selection_reason": null,
+      "selection_status": "unselected",
+      "solution_sha256": "sha256:630a0747c44eeab07fc6887a25c27ec8ea6ae247e1dfda133cb6014a5437de0f",
+      "source_document_sha256": "sha256:d828047842264a4f57deab3ecaddffcf0d91a6d381e4f3eb9f6798b2aaf96b62",
+      "source_file": "06.md",
+      "source_name": "HSE Moscow -- Show that the following problems are NP-complete",
+      "source_pdf_sha256": "sha256:9b34d173cda2c088206206ec136177466996dd0b44252541dfa63e419bbf1b50",
+      "split": null,
+      "statement_sha256": "sha256:8a3b226ea595a13a8a54a19b9fffde42d67689c6798f4eee234d3f0d1566fd83"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:a8b40b03b51f1fbd0909758ac25a1e2c87705a6cd28d97314c88edb586161b57",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "1-IN-3 SAT",
+        "target_label": "DISJOINT SETS"
+      },
+      "archive_id": "06-016",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:a8b40b03b51f1fbd0909758ac25a1e2c87705a6cd28d97314c88edb586161b57",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "1-IN-3 SAT",
+        "target_label": "DISJOINT SETS"
+      },
+      "canonical_source": null,
+      "canonical_target": null,
+      "capability_weight": 1,
+      "cleaned_from": "top-level",
+      "data_quality_reason": null,
+      "data_quality_status": "extracted",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "06-016"
+      ],
+      "endpoint_readiness": "unassessed",
+      "formalization_cost": null,
+      "has_hint": true,
+      "has_solution": false,
+      "hint_sha256": "sha256:a17a64736951c8228111713d6d0fbc988ad88e805fd14a944e0096264059620a",
+      "record_sha256": "sha256:e903c1fae56f907c082d43007b677a6488206bdc189b77163144f8cc0d18d0b5",
+      "selected_case_id": null,
+      "selection_reason": null,
+      "selection_status": "unselected",
+      "solution_sha256": null,
+      "source_document_sha256": "sha256:d828047842264a4f57deab3ecaddffcf0d91a6d381e4f3eb9f6798b2aaf96b62",
+      "source_file": "06.md",
+      "source_name": "HSE Moscow -- Show that the following problems are NP-complete",
+      "source_pdf_sha256": "sha256:9b34d173cda2c088206206ec136177466996dd0b44252541dfa63e419bbf1b50",
+      "split": null,
+      "statement_sha256": "sha256:6d7dd56bb40400425cb520d634151229ad9d353a0b1d84f031c4b378bf82e58d"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:098e34f4097607e57107816601ad3c41e910a017804ea2a7af2896906af673b5",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "CLIQUE",
+        "target_label": "INDEPENDENT SET"
+      },
+      "archive_id": "06-017",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:098e34f4097607e57107816601ad3c41e910a017804ea2a7af2896906af673b5",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "CLIQUE",
+        "target_label": "INDEPENDENT SET"
+      },
+      "canonical_source": "ComplexityReduction.Problems.Karp21.GraphAtoms.cliqueStructuredProblem",
+      "canonical_target": "ComplexityReduction.Presentation.IndependentSet.structuredProblem",
+      "capability_weight": 1,
+      "cleaned_from": "top-level",
+      "data_quality_reason": null,
+      "data_quality_status": "extracted",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "06-017"
+      ],
+      "endpoint_readiness": "blocked_endpoint_formalization",
+      "formalization_cost": "endpoint-formalization-required",
+      "has_hint": false,
+      "has_solution": true,
+      "hint_sha256": null,
+      "record_sha256": "sha256:6b0d99aa4cd57509e7b6e322478a2416cea8e960cf5d0d2bb4de4d23b674f266",
+      "selected_case_id": "edge-val-06-clique-to-independent-set",
+      "selection_reason": "Frozen exact-edge candidate; excluded from the scored denominator until both PresentedProblem endpoints pass independent formalization audits.",
+      "selection_status": "blocked_endpoint_formalization",
+      "solution_sha256": "sha256:8960493ce6483c7e0c8e1943c4f02137888bf523918cc7ea956087c8db4e922f",
+      "source_document_sha256": "sha256:d828047842264a4f57deab3ecaddffcf0d91a6d381e4f3eb9f6798b2aaf96b62",
+      "source_file": "06.md",
+      "source_name": "HSE Moscow -- Show that the following problems are NP-complete",
+      "source_pdf_sha256": "sha256:9b34d173cda2c088206206ec136177466996dd0b44252541dfa63e419bbf1b50",
+      "split": "validation",
+      "statement_sha256": "sha256:1499f7a4fe321b2ff532c53c86f6b2fd5e56c825b9cfcbdae9d3c7c112b7f09e"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:f554181819e12eb6a8759a4095d13262f8fa39a349e7351cf3e5909a7b49f0a6",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "INDEPENDENT SET",
+        "target_label": "VERTEX COVER"
+      },
+      "archive_id": "06-018",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:f554181819e12eb6a8759a4095d13262f8fa39a349e7351cf3e5909a7b49f0a6",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "INDEPENDENT SET",
+        "target_label": "VERTEX COVER"
+      },
+      "canonical_source": "ComplexityReduction.Presentation.IndependentSet.structuredProblem",
+      "canonical_target": "ComplexityReduction.Problems.Karp21.GraphAtoms.vertexCoverStructuredProblem",
+      "capability_weight": 1,
+      "cleaned_from": "top-level",
+      "data_quality_reason": null,
+      "data_quality_status": "extracted",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "06-018"
+      ],
+      "endpoint_readiness": "blocked_endpoint_formalization",
+      "formalization_cost": "endpoint-formalization-required",
+      "has_hint": false,
+      "has_solution": true,
+      "hint_sha256": null,
+      "record_sha256": "sha256:7618b01861308a957559855aaf1cc30a9878c5de6b8df5273073a15ca21d302f",
+      "selected_case_id": "edge-held-03-independent-set-to-vertex-cover",
+      "selection_reason": "Frozen exact-edge candidate; excluded from the scored denominator until both PresentedProblem endpoints pass independent formalization audits.",
+      "selection_status": "blocked_endpoint_formalization",
+      "solution_sha256": "sha256:8aebccfb085eee8e61a37814c511e3032436bd4a0062890e04a4da43ad16d5d7",
+      "source_document_sha256": "sha256:d828047842264a4f57deab3ecaddffcf0d91a6d381e4f3eb9f6798b2aaf96b62",
+      "source_file": "06.md",
+      "source_name": "HSE Moscow -- Show that the following problems are NP-complete",
+      "source_pdf_sha256": "sha256:9b34d173cda2c088206206ec136177466996dd0b44252541dfa63e419bbf1b50",
+      "split": "heldout",
+      "statement_sha256": "sha256:e1e084c2e8cca7d93b94c7cc81463ed76c01e874a6366ad621676e7f0f922155"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:53fd54806a13a59fe56636be338c78f74eab6b025e113967e1e2f25273ea175b",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "VERTEX COVER",
+        "target_label": "SET COVER"
+      },
+      "archive_id": "06-019",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:53fd54806a13a59fe56636be338c78f74eab6b025e113967e1e2f25273ea175b",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "VERTEX COVER",
+        "target_label": "SET COVER"
+      },
+      "canonical_source": null,
+      "canonical_target": null,
+      "capability_weight": 0,
+      "cleaned_from": "top-level",
+      "data_quality_reason": null,
+      "data_quality_status": "extracted",
+      "duplicate_group_id": "sha256:53fd54806a13a59fe56636be338c78f74eab6b025e113967e1e2f25273ea175b",
+      "duplicate_group_members": [
+        "02-007",
+        "06-019"
+      ],
+      "endpoint_readiness": "unassessed",
+      "formalization_cost": null,
+      "has_hint": false,
+      "has_solution": true,
+      "hint_sha256": null,
+      "record_sha256": "sha256:8ae1657de67770b11717d2d21a98826062caa433eab6dbd6414a2a8c9eec0b25",
+      "selected_case_id": null,
+      "selection_reason": null,
+      "selection_status": "unselected",
+      "solution_sha256": "sha256:7c4ce29cde2e4a08e7ecb2ec10dc49516eb9af305cb4f2512f3f47a71d61f96b",
+      "source_document_sha256": "sha256:d828047842264a4f57deab3ecaddffcf0d91a6d381e4f3eb9f6798b2aaf96b62",
+      "source_file": "06.md",
+      "source_name": "HSE Moscow -- Show that the following problems are NP-complete",
+      "source_pdf_sha256": "sha256:9b34d173cda2c088206206ec136177466996dd0b44252541dfa63e419bbf1b50",
+      "split": null,
+      "statement_sha256": "sha256:d2e75343de644b6ff3c8be6d4483e8a628228b5750665821cb2b4dc3b4315aed"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:bdaa4eb83fd1ce254cd0eab91220f743517442e101d1a98818473f226a654af5",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "INDEPENDENT SET",
+        "target_label": "SET PACKING"
+      },
+      "archive_id": "06-020",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:bdaa4eb83fd1ce254cd0eab91220f743517442e101d1a98818473f226a654af5",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "INDEPENDENT SET",
+        "target_label": "SET PACKING"
+      },
+      "canonical_source": "ComplexityReduction.Presentation.IndependentSet.structuredProblem",
+      "canonical_target": "ComplexityReduction.Presentation.SetSystem.setPackingStructuredProblem",
+      "capability_weight": 1,
+      "cleaned_from": "top-level",
+      "data_quality_reason": null,
+      "data_quality_status": "extracted",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "06-020"
+      ],
+      "endpoint_readiness": "blocked_endpoint_formalization",
+      "formalization_cost": "endpoint-formalization-required",
+      "has_hint": false,
+      "has_solution": true,
+      "hint_sha256": null,
+      "record_sha256": "sha256:5bd25ba62a8463ac035863a2853001b4006720a0ee319be33fac5262e6abf957",
+      "selected_case_id": "edge-held-04-independent-set-to-set-packing",
+      "selection_reason": "Frozen exact-edge candidate; excluded from the scored denominator until both PresentedProblem endpoints pass independent formalization audits.",
+      "selection_status": "blocked_endpoint_formalization",
+      "solution_sha256": "sha256:34efd7ebdb28d92c51e34aa86c4f1e64a8e7c35bc02dafc92d80b6b7ec6c2e55",
+      "source_document_sha256": "sha256:d828047842264a4f57deab3ecaddffcf0d91a6d381e4f3eb9f6798b2aaf96b62",
+      "source_file": "06.md",
+      "source_name": "HSE Moscow -- Show that the following problems are NP-complete",
+      "source_pdf_sha256": "sha256:9b34d173cda2c088206206ec136177466996dd0b44252541dfa63e419bbf1b50",
+      "split": "heldout",
+      "statement_sha256": "sha256:16123ef79cd3bd43aad17e8df08233c115eda41a1f4f16878d0c77c86595b4d9"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:36b132547b7e7971145e645ba68ed22bcdbfd0fbdb5cdfbdac474e523361dc6d",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "3SAT",
+        "target_label": "PATH WITH FORBIDDEN PAIRS"
+      },
+      "archive_id": "06-021",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:36b132547b7e7971145e645ba68ed22bcdbfd0fbdb5cdfbdac474e523361dc6d",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "3SAT",
+        "target_label": "PATH WITH FORBIDDEN PAIRS"
+      },
+      "canonical_source": null,
+      "canonical_target": null,
+      "capability_weight": 1,
+      "cleaned_from": "top-level",
+      "data_quality_reason": null,
+      "data_quality_status": "extracted",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "06-021"
+      ],
+      "endpoint_readiness": "unassessed",
+      "formalization_cost": null,
+      "has_hint": true,
+      "has_solution": true,
+      "hint_sha256": "sha256:7dca137c4a320c2892fffe78284149486ca3c1dbb30f2efa40087fd11073a402",
+      "record_sha256": "sha256:f9248039bf5b36bf4489c534cc086638bc8b7760a3dfabcc8a5c0d7e258b01c2",
+      "selected_case_id": null,
+      "selection_reason": null,
+      "selection_status": "unselected",
+      "solution_sha256": "sha256:66a99ca61eadb53c4e305a6aa802fe0d48c3478686b0865c4a5fa143505af217",
+      "source_document_sha256": "sha256:d828047842264a4f57deab3ecaddffcf0d91a6d381e4f3eb9f6798b2aaf96b62",
+      "source_file": "06.md",
+      "source_name": "HSE Moscow -- Show that the following problems are NP-complete",
+      "source_pdf_sha256": "sha256:9b34d173cda2c088206206ec136177466996dd0b44252541dfa63e419bbf1b50",
+      "split": null,
+      "statement_sha256": "sha256:ada52bb7caf1b45c640600a8401f2668ae90bc426b7b66284f0daf32146ff26f"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:a46d3de16b49bf53aeaff252821100abf8cd27e61aec60f26c85a0f363355707",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "3SAT",
+        "target_label": "DIRECTED HAMILTONIAN PATH"
+      },
+      "archive_id": "06-022",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:a46d3de16b49bf53aeaff252821100abf8cd27e61aec60f26c85a0f363355707",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "3SAT",
+        "target_label": "DIRECTED HAMILTONIAN PATH"
+      },
+      "canonical_source": null,
+      "canonical_target": null,
+      "capability_weight": 1,
+      "cleaned_from": "top-level",
+      "data_quality_reason": null,
+      "data_quality_status": "extracted",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "06-022"
+      ],
+      "endpoint_readiness": "unassessed",
+      "formalization_cost": null,
+      "has_hint": false,
+      "has_solution": false,
+      "hint_sha256": null,
+      "record_sha256": "sha256:76d137b3ceeac1cbf6a1f4c3575f257ba846936b0cb646ab7a7bddd0076ed4a3",
+      "selected_case_id": null,
+      "selection_reason": null,
+      "selection_status": "unselected",
+      "solution_sha256": null,
+      "source_document_sha256": "sha256:d828047842264a4f57deab3ecaddffcf0d91a6d381e4f3eb9f6798b2aaf96b62",
+      "source_file": "06.md",
+      "source_name": "HSE Moscow -- Show that the following problems are NP-complete",
+      "source_pdf_sha256": "sha256:9b34d173cda2c088206206ec136177466996dd0b44252541dfa63e419bbf1b50",
+      "split": null,
+      "statement_sha256": "sha256:a68f0cf1fae90dc3faec86ad7481321031f9a669d4e947d876db0bf31d26a67c"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:fb50d877314e1c3a6a80233cf0285c9ec32ee7303cc82ef18a3fac2efd36ea20",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "DIRECTED HAMILTONIAN PATH",
+        "target_label": "HAMILTONIAN PATH"
+      },
+      "archive_id": "06-023",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:fb50d877314e1c3a6a80233cf0285c9ec32ee7303cc82ef18a3fac2efd36ea20",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "DIRECTED HAMILTONIAN PATH",
+        "target_label": "HAMILTONIAN PATH"
+      },
+      "canonical_source": null,
+      "canonical_target": null,
+      "capability_weight": 1,
+      "cleaned_from": "top-level",
+      "data_quality_reason": null,
+      "data_quality_status": "extracted",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "06-023"
+      ],
+      "endpoint_readiness": "unassessed",
+      "formalization_cost": null,
+      "has_hint": false,
+      "has_solution": false,
+      "hint_sha256": null,
+      "record_sha256": "sha256:20462f3a3801322508aedf62d70671a6414433ccd4141982af7850ad763cb44c",
+      "selected_case_id": null,
+      "selection_reason": null,
+      "selection_status": "unselected",
+      "solution_sha256": null,
+      "source_document_sha256": "sha256:d828047842264a4f57deab3ecaddffcf0d91a6d381e4f3eb9f6798b2aaf96b62",
+      "source_file": "06.md",
+      "source_name": "HSE Moscow -- Show that the following problems are NP-complete",
+      "source_pdf_sha256": "sha256:9b34d173cda2c088206206ec136177466996dd0b44252541dfa63e419bbf1b50",
+      "split": null,
+      "statement_sha256": "sha256:46685b77afe0abff5ab613ecb6ec0a8b1df7c2f6c77c752e723bdef94d143751"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:af16ee657e3b546f019c28d8f0ace1ee3fbfdff6b952b3086c3b6cd3ff3ab307",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "DIRECTED HAMILTONIAN PATH",
+        "target_label": "DIRECTED HAMILTONIAN CYCLE"
+      },
+      "archive_id": "06-024",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:af16ee657e3b546f019c28d8f0ace1ee3fbfdff6b952b3086c3b6cd3ff3ab307",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "DIRECTED HAMILTONIAN PATH",
+        "target_label": "DIRECTED HAMILTONIAN CYCLE"
+      },
+      "canonical_source": null,
+      "canonical_target": null,
+      "capability_weight": 1,
+      "cleaned_from": "top-level",
+      "data_quality_reason": null,
+      "data_quality_status": "extracted",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "06-024"
+      ],
+      "endpoint_readiness": "unassessed",
+      "formalization_cost": null,
+      "has_hint": false,
+      "has_solution": true,
+      "hint_sha256": null,
+      "record_sha256": "sha256:44cbb066b29d1d7edfe4ce25e1926cfe13a4caabbd09d89476bb10da00aa771d",
+      "selected_case_id": null,
+      "selection_reason": null,
+      "selection_status": "unselected",
+      "solution_sha256": "sha256:33fb0aa60039b15ef60ecd6c7d278f7adfc5a0f9d523969a1f9017a5b76324a1",
+      "source_document_sha256": "sha256:d828047842264a4f57deab3ecaddffcf0d91a6d381e4f3eb9f6798b2aaf96b62",
+      "source_file": "06.md",
+      "source_name": "HSE Moscow -- Show that the following problems are NP-complete",
+      "source_pdf_sha256": "sha256:9b34d173cda2c088206206ec136177466996dd0b44252541dfa63e419bbf1b50",
+      "split": null,
+      "statement_sha256": "sha256:f184ccb91bb7b80a3c5aa593dbdb5785d28774d5fcbc085be33feffc1e47d183"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:e78f0cd3cdc99829b8b257bc1993f81ef17adc6be8c3e840365ab84a73f59866",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "HAMILTONIAN PATH",
+        "target_label": "HAMILTONIAN CYCLE"
+      },
+      "archive_id": "06-025",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:e78f0cd3cdc99829b8b257bc1993f81ef17adc6be8c3e840365ab84a73f59866",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "HAMILTONIAN PATH",
+        "target_label": "HAMILTONIAN CYCLE"
+      },
+      "canonical_source": null,
+      "canonical_target": null,
+      "capability_weight": 1,
+      "cleaned_from": "top-level",
+      "data_quality_reason": "the entry defines the target but does not give a source construction task",
+      "data_quality_status": "incomplete_source_statement",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "06-025"
+      ],
+      "endpoint_readiness": "unassessed",
+      "formalization_cost": null,
+      "has_hint": false,
+      "has_solution": false,
+      "hint_sha256": null,
+      "record_sha256": "sha256:18d7bbfca7beac3745f7a18772bd19f9dccccd78add236727352ae3e566bfd91",
+      "selected_case_id": null,
+      "selection_reason": null,
+      "selection_status": "unselected",
+      "solution_sha256": null,
+      "source_document_sha256": "sha256:d828047842264a4f57deab3ecaddffcf0d91a6d381e4f3eb9f6798b2aaf96b62",
+      "source_file": "06.md",
+      "source_name": "HSE Moscow -- Show that the following problems are NP-complete",
+      "source_pdf_sha256": "sha256:9b34d173cda2c088206206ec136177466996dd0b44252541dfa63e419bbf1b50",
+      "split": null,
+      "statement_sha256": "sha256:a07a1cf4db635eaed5ef027ff54603b0f161071a9340d3a63eec2501ac7609bd"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:38a27564419675aeba19c0c64984d0577180bb3a7eb7008e224e377fd952f764",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "HAMILTONIAN CYCLE",
+        "target_label": "TSP"
+      },
+      "archive_id": "06-026",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:38a27564419675aeba19c0c64984d0577180bb3a7eb7008e224e377fd952f764",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "HAMILTONIAN CYCLE",
+        "target_label": "TSP"
+      },
+      "canonical_source": null,
+      "canonical_target": null,
+      "capability_weight": 0,
+      "cleaned_from": "top-level",
+      "data_quality_reason": null,
+      "data_quality_status": "extracted",
+      "duplicate_group_id": "sha256:38a27564419675aeba19c0c64984d0577180bb3a7eb7008e224e377fd952f764",
+      "duplicate_group_members": [
+        "02-008",
+        "06-026"
+      ],
+      "endpoint_readiness": "unassessed",
+      "formalization_cost": null,
+      "has_hint": false,
+      "has_solution": true,
+      "hint_sha256": null,
+      "record_sha256": "sha256:63ff67b0269af9a53422ef063b17e361dffb682dc4aacce3132439c896f58607",
+      "selected_case_id": null,
+      "selection_reason": null,
+      "selection_status": "unselected",
+      "solution_sha256": "sha256:9a57bc87fba1434a5a292264ea8e7911a04bca908eb751e1fb55af7cc07dc4a9",
+      "source_document_sha256": "sha256:d828047842264a4f57deab3ecaddffcf0d91a6d381e4f3eb9f6798b2aaf96b62",
+      "source_file": "06.md",
+      "source_name": "HSE Moscow -- Show that the following problems are NP-complete",
+      "source_pdf_sha256": "sha256:9b34d173cda2c088206206ec136177466996dd0b44252541dfa63e419bbf1b50",
+      "split": null,
+      "statement_sha256": "sha256:fbb8e9542c8e0626f82aa8489f573420184f59d7314327036fc8585871b38145"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:2542fcef8d69cb4cdb4fdda37502cad0548e6e5216aafd44962ee60076fc09ef",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "NAE-3SAT",
+        "target_label": "3-COLORING"
+      },
+      "archive_id": "06-027",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:2542fcef8d69cb4cdb4fdda37502cad0548e6e5216aafd44962ee60076fc09ef",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "NAE-3SAT",
+        "target_label": "3-COLORING"
+      },
+      "canonical_source": "ComplexityReduction.Presentation.NAEThreeSAT.structuredProblem",
+      "canonical_target": "ComplexityReduction.Presentation.ChromaticNumber.structuredProblem",
+      "capability_weight": 1,
+      "cleaned_from": "top-level",
+      "data_quality_reason": null,
+      "data_quality_status": "extracted",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "06-027"
+      ],
+      "endpoint_readiness": "blocked_endpoint_formalization",
+      "formalization_cost": "endpoint-formalization-required",
+      "has_hint": true,
+      "has_solution": true,
+      "hint_sha256": "sha256:25692b58e70c320d81559375164a00415f4fc112ec8cdce94eb7b4efbd79766a",
+      "record_sha256": "sha256:70adf3687da7e6e507278bdf78f5b233509c69c61dde36bf0e4992dc161a27b2",
+      "selected_case_id": "edge-held-08-nae-three-sat-to-chromatic",
+      "selection_reason": "Frozen exact-edge candidate; excluded from the scored denominator until both PresentedProblem endpoints pass independent formalization audits.",
+      "selection_status": "blocked_endpoint_formalization",
+      "solution_sha256": "sha256:33fb6b9c626cca376b1c6da3381d274b96f23635941ec453550498b1f6554d9f",
+      "source_document_sha256": "sha256:d828047842264a4f57deab3ecaddffcf0d91a6d381e4f3eb9f6798b2aaf96b62",
+      "source_file": "06.md",
+      "source_name": "HSE Moscow -- Show that the following problems are NP-complete",
+      "source_pdf_sha256": "sha256:9b34d173cda2c088206206ec136177466996dd0b44252541dfa63e419bbf1b50",
+      "split": "heldout",
+      "statement_sha256": "sha256:ae799de4ed6e23026b483b961527441280f7f59f150bbb9248eafe148d0c0560"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:e5883c612b97fa2812c9acb865e4a60b93caed5beb4085c08782e4ad519c30a8",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "3-COLORING",
+        "target_label": "CLIQUE COVER"
+      },
+      "archive_id": "06-028",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:e5883c612b97fa2812c9acb865e4a60b93caed5beb4085c08782e4ad519c30a8",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "3-COLORING",
+        "target_label": "CLIQUE COVER"
+      },
+      "canonical_source": "ComplexityReduction.Presentation.ChromaticNumber.structuredProblem",
+      "canonical_target": "ComplexityReduction.Presentation.CliqueCover.structuredProblem",
+      "capability_weight": 1,
+      "cleaned_from": "top-level",
+      "data_quality_reason": null,
+      "data_quality_status": "extracted",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "06-028"
+      ],
+      "endpoint_readiness": "ready",
+      "formalization_cost": "existing-edge-reconstruction",
+      "has_hint": true,
+      "has_solution": false,
+      "hint_sha256": "sha256:8c40bf407d168705ab070ba60509703bf5ed8b63e16fd6320338717180e486e6",
+      "record_sha256": "sha256:1b16a6186093c5a36d254e22de48af0de8d159792f2c7eb148fb10b5f805f762",
+      "selected_case_id": "edge-dev-04-chromatic-to-clique-cover",
+      "selection_reason": "Both endpoints and a public forward edge are formalized; retained as an exact-edge reconstruction control. The public benchmark is explicitly a generalized Chromatic Number edge, not the archive's fixed three-colorability identity.",
+      "selection_status": "ready",
+      "solution_sha256": null,
+      "source_document_sha256": "sha256:d828047842264a4f57deab3ecaddffcf0d91a6d381e4f3eb9f6798b2aaf96b62",
+      "source_file": "06.md",
+      "source_name": "HSE Moscow -- Show that the following problems are NP-complete",
+      "source_pdf_sha256": "sha256:9b34d173cda2c088206206ec136177466996dd0b44252541dfa63e419bbf1b50",
+      "split": "dev",
+      "statement_sha256": "sha256:7b1c42a6da801433cb20d0b430956d254ecc3030571cbb5a23d158be3221140d"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:96b9787b03212eb42cba3e85072a19fc97f9cd60cc5caf2f93f33fff39a7e00b",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "3-COLORING",
+        "target_label": "EXAM SCHEDULING"
+      },
+      "archive_id": "06-029",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:96b9787b03212eb42cba3e85072a19fc97f9cd60cc5caf2f93f33fff39a7e00b",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "3-COLORING",
+        "target_label": "EXAM SCHEDULING"
+      },
+      "canonical_source": null,
+      "canonical_target": null,
+      "capability_weight": 1,
+      "cleaned_from": "top-level",
+      "data_quality_reason": null,
+      "data_quality_status": "extracted",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "06-029"
+      ],
+      "endpoint_readiness": "unassessed",
+      "formalization_cost": null,
+      "has_hint": false,
+      "has_solution": false,
+      "hint_sha256": null,
+      "record_sha256": "sha256:eb34284d3b113f020907879c6c2b1b4a48918a595002eaf1281c21c22715da6a",
+      "selected_case_id": null,
+      "selection_reason": null,
+      "selection_status": "unselected",
+      "solution_sha256": null,
+      "source_document_sha256": "sha256:d828047842264a4f57deab3ecaddffcf0d91a6d381e4f3eb9f6798b2aaf96b62",
+      "source_file": "06.md",
+      "source_name": "HSE Moscow -- Show that the following problems are NP-complete",
+      "source_pdf_sha256": "sha256:9b34d173cda2c088206206ec136177466996dd0b44252541dfa63e419bbf1b50",
+      "split": null,
+      "statement_sha256": "sha256:b032585b3d5845be8716f0a3e1635bd39f4b17985dbc0f094379f7defa52452f"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:085463745ab1b3585dd7e04a2c63540edb3b6ecc1553ffbe4d2fd37620094c1d",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "3SAT",
+        "target_label": "INDEPENDENT SET"
+      },
+      "archive_id": "07-003a",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:085463745ab1b3585dd7e04a2c63540edb3b6ecc1553ffbe4d2fd37620094c1d",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "3SAT",
+        "target_label": "INDEPENDENT SET"
+      },
+      "canonical_source": null,
+      "canonical_target": null,
+      "capability_weight": 1,
+      "cleaned_from": "sub_problem",
+      "data_quality_reason": null,
+      "data_quality_status": "extracted",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "07-003a"
+      ],
+      "endpoint_readiness": "unassessed",
+      "formalization_cost": null,
+      "has_hint": false,
+      "has_solution": true,
+      "hint_sha256": null,
+      "record_sha256": "sha256:c207997baca5c66e53045b37742a6c396ceb47919b6034039fa1b6ccdbfb91ea",
+      "selected_case_id": null,
+      "selection_reason": null,
+      "selection_status": "unselected",
+      "solution_sha256": "sha256:f97a5df43cb7d8e83d8782df315a4762ea9e335c9c018cdc7f6f7f689896d17e",
+      "source_document_sha256": "sha256:a45a2808bf6f57347036fd5042338393de476b63ab2f96193ddf05024ff6f759",
+      "source_file": "07.md",
+      "source_name": "University of Ottawa CSI 4105 Midterm",
+      "source_pdf_sha256": "sha256:b1a96f8bbaa6ef5d454219543de36801142212c0ebaf1a6f1d628d91e230efbe",
+      "split": null,
+      "statement_sha256": "sha256:74281adea33ecc938c3573ab3dfa6a4f5c6a987909d76077c6b77562cce2ebe1"
+    },
+    {
+      "archive_direction": {
+        "direction_id": "sha256:00b42b653bd40c90e648d5de4257e5f1b9ae7bebe06abe8b9bb8d16ce5978509",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "3SAT",
+        "target_label": "DIRECTED HAMILTONIAN CYCLE"
+      },
+      "archive_id": "07-003b",
+      "canonical_archive_direction": {
+        "direction_id": "sha256:00b42b653bd40c90e648d5de4257e5f1b9ae7bebe06abe8b9bb8d16ce5978509",
+        "schema_version": "hardness_np_hard_archive_direction_v1",
+        "source_label": "3SAT",
+        "target_label": "DIRECTED HAMILTONIAN CYCLE"
+      },
+      "canonical_source": null,
+      "canonical_target": null,
+      "capability_weight": 1,
+      "cleaned_from": "sub_problem",
+      "data_quality_reason": null,
+      "data_quality_status": "extracted",
+      "duplicate_group_id": null,
+      "duplicate_group_members": [
+        "07-003b"
+      ],
+      "endpoint_readiness": "unassessed",
+      "formalization_cost": null,
+      "has_hint": false,
+      "has_solution": true,
+      "hint_sha256": null,
+      "record_sha256": "sha256:4a9284df8e4a487caf0dc756ce0f1f3086811252a25731176a621bdc361d81eb",
+      "selected_case_id": null,
+      "selection_reason": null,
+      "selection_status": "unselected",
+      "solution_sha256": "sha256:4aa05d41a5cbb7a94ac593306d3118e8ab921b2c27f9d1c0d15f949a837f5898",
+      "source_document_sha256": "sha256:a45a2808bf6f57347036fd5042338393de476b63ab2f96193ddf05024ff6f759",
+      "source_file": "07.md",
+      "source_name": "University of Ottawa CSI 4105 Midterm",
+      "source_pdf_sha256": "sha256:b1a96f8bbaa6ef5d454219543de36801142212c0ebaf1a6f1d628d91e230efbe",
+      "split": null,
+      "statement_sha256": "sha256:466519c49b58154df752a3610f227a262d444be3b90a7706ffd3388d76e17fc5"
+    }
+  ],
+  "schema_version": "hardness_np_hard_problem_archive_audit_v1",
+  "selection_source": {
+    "entry_count": 24,
+    "file": "np_hard_problem_archive_selection_v1.json",
+    "pdf_only_candidate_count": 16,
+    "pdf_only_source_count": 7,
+    "schema_version": "hardness_np_hard_problem_archive_selection_v1",
+    "sha256": "sha256:887f37e9332c44708a18ab2eb52790935500d9bab32e6bc37d5ff212fe1a5aef"
+  },
+  "structured_source": {
+    "member": "problems/problems_clean.json",
+    "meta": {
+      "cleaned_at": "2026-08-05T07:04:33",
+      "original_total": 102,
+      "total": 63,
+      "unique_directions": 60,
+      "unique_problems": 57
+    },
+    "meta_validation": {
+      "clean_original_total_matches_raw": true,
+      "computed": {
+        "raw_total": 102,
+        "total": 63,
+        "unique_directions": 60,
+        "unique_problems": 57
+      },
+      "declared": {
+        "raw_total": 102,
+        "total": 63,
+        "unique_directions": 60,
+        "unique_problems": 57
+      },
+      "valid": true
+    },
+    "raw_member": "problems/problems.json",
+    "raw_meta": {
+      "extracted_at": "2026-08-05T05:45:25",
+      "total": 102
+    },
+    "raw_sha256": "sha256:3217fd45cd325764ed19f40e326589bb7a66b094f507ea3e7ae275c3bb9f58af",
+    "sha256": "sha256:443ec72563085dfe735e6f49f4997c62e4ef85fdb2604e41afabd1f146e71231"
+  }
+}

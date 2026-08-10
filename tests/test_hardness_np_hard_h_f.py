@@ -32,10 +32,10 @@ from agent.hardness.np_hard_scope_policy import (
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SUITE = ROOT / "Benchmark/Hardness/Suites/np_hard_h_f_qualification_inputs.json"
-ORACLE = ROOT / "Benchmark/Hardness/Evaluation/np_hard_h_f_qualification_oracle.json"
-MATRIX = ROOT / "Benchmark/Hardness/NP_HARD_TARGET_MATRIX.json"
-INVENTORY = ROOT / "Benchmark/Hardness/NP_HARD_H_F_INVENTORY.json"
+SUITE = ROOT / "Gate/Suites/np_hard_h_f_qualification_inputs.json"
+ORACLE = ROOT / "Evaluation/np_hard_h_f_qualification_oracle.json"
+MATRIX = ROOT / "Gate/NP_HARD_TARGET_MATRIX.json"
+INVENTORY = ROOT / "Gate/NP_HARD_H_F_INVENTORY.json"
 
 
 class RecommendedBodyModel:

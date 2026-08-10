@@ -1,0 +1,76 @@
+{
+  "cases": [
+    {
+      "budget_profile": "formal-default",
+      "case_id": "r1-pub-01-graph-coloring-ir",
+      "family": "graph",
+      "module": "ComplexityReduction.Domain.Core.GraphColoringIR",
+      "problem": "ComplexityReduction.Domain.GraphColoringIR.chromaticNumberProblem"
+    },
+    {
+      "budget_profile": "formal-default",
+      "case_id": "r1-pub-02-incidence-ir-exact-cover",
+      "family": "set-system",
+      "module": "ComplexityReduction.Domain.Core.IncidenceIR",
+      "problem": "ComplexityReduction.Domain.IncidenceIR.exactCoverProblem"
+    },
+    {
+      "budget_profile": "formal-default",
+      "case_id": "r1-pub-03-clique-cover",
+      "family": "graph",
+      "module": "ComplexityReduction.Presentation.CliqueCover",
+      "problem": "ComplexityReduction.Presentation.CliqueCover.structuredProblem"
+    },
+    {
+      "budget_profile": "formal-default",
+      "case_id": "r1-pub-04-exactly-one-neighbor",
+      "family": "graph",
+      "module": "ComplexityReduction.Presentation.ExactlyOneNeighbor",
+      "problem": "ComplexityReduction.Presentation.ExactlyOneNeighbor.presentedProblem"
+    },
+    {
+      "budget_profile": "formal-default",
+      "case_id": "r1-pub-05-most-neighbors",
+      "family": "graph",
+      "module": "ComplexityReduction.Presentation.MostNeighbors",
+      "problem": "ComplexityReduction.Presentation.MostNeighbors.presentedProblem"
+    },
+    {
+      "budget_profile": "formal-default",
+      "case_id": "r1-pub-06-steiner-tree",
+      "family": "graph",
+      "module": "ComplexityReduction.Presentation.SteinerTree",
+      "problem": "ComplexityReduction.Presentation.SteinerTree.structuredProblem"
+    },
+    {
+      "budget_profile": "formal-default",
+      "case_id": "r1-pub-07-three-sat-like",
+      "family": "sat-csp",
+      "module": "ComplexityReduction.Presentation.ThreeSATLike",
+      "problem": "ComplexityReduction.Presentation.ThreeSATLike.presentedProblem"
+    },
+    {
+      "budget_profile": "formal-default",
+      "case_id": "r1-pub-08-undirected-hamiltonian",
+      "family": "graph",
+      "module": "ComplexityReduction.Presentation.UndirectedHamiltonianCircuit",
+      "problem": "ComplexityReduction.Presentation.UndirectedHamiltonianCircuit.structuredProblem"
+    },
+    {
+      "budget_profile": "frontier-default",
+      "case_id": "r1-pub-09-job-sequencing-unary-boundary",
+      "family": "numeric",
+      "module": "ComplexityReduction.Presentation.JobSequencing",
+      "problem": "ComplexityReduction.Presentation.JobSequencing.structuredProblem"
+    },
+    {
+      "budget_profile": "formal-default",
+      "case_id": "r1-pub-10-cnf-sat",
+      "family": "sat-csp",
+      "module": "ComplexityReduction.Problems.Karp21.Satisfiability",
+      "problem": "ComplexityReduction.Problems.Karp21.Satisfiability.cnfSATStructuredProblem"
+    }
+  ],
+  "schema_version": "hardness_np_hard_public_r1_coverage_suite_v2",
+  "suite_id": "np-hard-public-r1-coverage-v2"
+}

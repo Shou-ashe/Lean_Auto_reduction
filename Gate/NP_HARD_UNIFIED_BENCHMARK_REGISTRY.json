@@ -1,0 +1,1561 @@
+{
+  "benchmark_id": "np-hard-regression-v2",
+  "compatibility_views": {
+    "legacy-regression-45": {
+      "capability_weight": 0,
+      "case_count": 45,
+      "executable_as_independent_suite": false
+    },
+    "legacy-release-reliability-12": {
+      "capability_weight": 0,
+      "case_count": 12,
+      "executable_as_independent_suite": false
+    }
+  },
+  "default_jobs": 4,
+  "logical_cases": [
+    {
+      "audits": [
+        "expected_outcome",
+        "lean_kernel",
+        "independent_replay",
+        "standard_axioms"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [
+        {
+          "case_id": "existing-route",
+          "view": "legacy-regression-45"
+        }
+      ],
+      "execution_backend": "legacy_main45",
+      "fixture": true,
+      "freshness": "isolated_case",
+      "logical_case_id": "regression.main45.existing-route",
+      "migration_reason": "Legacy main-45 regression behavior; retained with zero capability weight.",
+      "model_requirement": "forbidden",
+      "public_identity": null,
+      "selector": "production",
+      "semantic_motif": "existing-route",
+      "source_case_id": "existing-route",
+      "tier": "R1"
+    },
+    {
+      "audits": [
+        "production_entry",
+        "fresh_artifact",
+        "exact_endpoint",
+        "independent_replay",
+        "standard_axioms",
+        "zero_model_calls"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [
+        {
+          "case_id": "three-sat-refl",
+          "view": "legacy-regression-45"
+        },
+        {
+          "case_id": "nphg-existing-canonical-three-sat",
+          "view": "legacy-release-reliability-12"
+        }
+      ],
+      "execution_backend": "release_real_round",
+      "fixture": true,
+      "freshness": "fresh_production_job",
+      "logical_case_id": "regression.main45.three-sat-refl",
+      "migration_reason": "The release seed case is the fresh production variant of the legacy reflexive ThreeSAT regression.",
+      "model_requirement": "forbidden",
+      "public_identity": null,
+      "selector": "production",
+      "semantic_motif": "canonical-three-sat-seed",
+      "source_case_id": "nphg-existing-canonical-three-sat",
+      "tier": "R1"
+    },
+    {
+      "audits": [
+        "expected_outcome",
+        "lean_kernel"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [
+        {
+          "case_id": "no-route",
+          "view": "legacy-regression-45"
+        }
+      ],
+      "execution_backend": "legacy_main45",
+      "fixture": true,
+      "freshness": "isolated_case",
+      "logical_case_id": "regression.main45.no-route",
+      "migration_reason": "Legacy main-45 regression behavior; retained with zero capability weight.",
+      "model_requirement": "forbidden",
+      "public_identity": null,
+      "selector": "contract",
+      "semantic_motif": "no-route",
+      "source_case_id": "no-route",
+      "tier": "R0"
+    },
+    {
+      "audits": [
+        "production_entry",
+        "fresh_artifact",
+        "exact_endpoint",
+        "independent_replay",
+        "standard_axioms",
+        "zero_model_calls"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [
+        {
+          "case_id": "three-sat-explicit-suffix",
+          "view": "legacy-regression-45"
+        },
+        {
+          "case_id": "nphg-existing-clique",
+          "view": "legacy-release-reliability-12"
+        }
+      ],
+      "execution_backend": "release_real_round",
+      "fixture": true,
+      "freshness": "fresh_production_job",
+      "logical_case_id": "regression.main45.three-sat-explicit-suffix",
+      "migration_reason": "The release Clique case is the fresh production variant of the legacy explicit Clique suffix route.",
+      "model_requirement": "forbidden",
+      "public_identity": null,
+      "selector": "production",
+      "semantic_motif": "three-sat-to-clique-existing-route",
+      "source_case_id": "nphg-existing-clique",
+      "tier": "R1"
+    },
+    {
+      "audits": [
+        "production_entry",
+        "fresh_artifact",
+        "exact_endpoint",
+        "independent_replay",
+        "standard_axioms",
+        "zero_model_calls"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [
+        {
+          "case_id": "tagged-three-sat-normalization",
+          "view": "legacy-regression-45"
+        },
+        {
+          "case_id": "nphg-existing-membership-free",
+          "view": "legacy-release-reliability-12"
+        }
+      ],
+      "execution_backend": "release_real_round",
+      "fixture": true,
+      "freshness": "fresh_production_job",
+      "logical_case_id": "regression.main45.tagged-three-sat-normalization",
+      "migration_reason": "The membership-free release route is the production variant of the legacy tagged presentation normalization motif.",
+      "model_requirement": "forbidden",
+      "public_identity": null,
+      "selector": "production",
+      "semantic_motif": "three-sat-presentation-without-membership",
+      "source_case_id": "nphg-existing-membership-free",
+      "tier": "R1"
+    },
+    {
+      "audits": [
+        "expected_outcome",
+        "lean_kernel",
+        "independent_replay",
+        "standard_axioms"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [
+        {
+          "case_id": "graph-coloring-route",
+          "view": "legacy-regression-45"
+        }
+      ],
+      "execution_backend": "legacy_main45",
+      "fixture": true,
+      "freshness": "isolated_case",
+      "logical_case_id": "regression.main45.graph-coloring-route",
+      "migration_reason": "Legacy main-45 regression behavior; retained with zero capability weight.",
+      "model_requirement": "forbidden",
+      "public_identity": null,
+      "selector": "production",
+      "semantic_motif": "graph-coloring-route",
+      "source_case_id": "graph-coloring-route",
+      "tier": "R1"
+    },
+    {
+      "audits": [
+        "expected_outcome",
+        "lean_kernel",
+        "matched_pair"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [
+        {
+          "case_id": "graph-to-role-graph-flat",
+          "view": "legacy-regression-45"
+        }
+      ],
+      "execution_backend": "legacy_main45",
+      "fixture": true,
+      "freshness": "isolated_case",
+      "logical_case_id": "regression.main45.graph-to-role-graph-flat",
+      "migration_reason": "Legacy main-45 regression behavior; retained with zero capability weight.",
+      "model_requirement": "forbidden",
+      "public_identity": null,
+      "selector": "contract",
+      "semantic_motif": "graph-to-role-graph-flat",
+      "source_case_id": "graph-to-role-graph-flat",
+      "tier": "R0"
+    },
+    {
+      "audits": [
+        "expected_outcome",
+        "lean_kernel",
+        "matched_pair"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [
+        {
+          "case_id": "graph-to-role-graph-ir",
+          "view": "legacy-regression-45"
+        }
+      ],
+      "execution_backend": "legacy_main45",
+      "fixture": true,
+      "freshness": "isolated_case",
+      "logical_case_id": "regression.main45.graph-to-role-graph-ir",
+      "migration_reason": "Legacy main-45 regression behavior; retained with zero capability weight.",
+      "model_requirement": "forbidden",
+      "public_identity": null,
+      "selector": "contract",
+      "semantic_motif": "graph-to-role-graph-ir",
+      "source_case_id": "graph-to-role-graph-ir",
+      "tier": "R0"
+    },
+    {
+      "audits": [
+        "expected_outcome",
+        "lean_kernel",
+        "matched_pair"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [
+        {
+          "case_id": "structured-cnf-to-csp-flat",
+          "view": "legacy-regression-45"
+        }
+      ],
+      "execution_backend": "legacy_main45",
+      "fixture": true,
+      "freshness": "isolated_case",
+      "logical_case_id": "regression.main45.structured-cnf-to-csp-flat",
+      "migration_reason": "Legacy main-45 regression behavior; retained with zero capability weight.",
+      "model_requirement": "forbidden",
+      "public_identity": null,
+      "selector": "contract",
+      "semantic_motif": "structured-cnf-to-csp-flat",
+      "source_case_id": "structured-cnf-to-csp-flat",
+      "tier": "R0"
+    },
+    {
+      "audits": [
+        "expected_outcome",
+        "lean_kernel",
+        "matched_pair"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [
+        {
+          "case_id": "structured-cnf-to-csp-ir",
+          "view": "legacy-regression-45"
+        }
+      ],
+      "execution_backend": "legacy_main45",
+      "fixture": true,
+      "freshness": "isolated_case",
+      "logical_case_id": "regression.main45.structured-cnf-to-csp-ir",
+      "migration_reason": "Legacy main-45 regression behavior; retained with zero capability weight.",
+      "model_requirement": "forbidden",
+      "public_identity": null,
+      "selector": "contract",
+      "semantic_motif": "structured-cnf-to-csp-ir",
+      "source_case_id": "structured-cnf-to-csp-ir",
+      "tier": "R0"
+    },
+    {
+      "audits": [
+        "expected_outcome",
+        "lean_kernel",
+        "matched_pair"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [
+        {
+          "case_id": "two-cnf-to-csp-flat",
+          "view": "legacy-regression-45"
+        }
+      ],
+      "execution_backend": "legacy_main45",
+      "fixture": true,
+      "freshness": "isolated_case",
+      "logical_case_id": "regression.main45.two-cnf-to-csp-flat",
+      "migration_reason": "Legacy main-45 regression behavior; retained with zero capability weight.",
+      "model_requirement": "forbidden",
+      "public_identity": null,
+      "selector": "contract",
+      "semantic_motif": "two-cnf-to-csp-flat",
+      "source_case_id": "two-cnf-to-csp-flat",
+      "tier": "R0"
+    },
+    {
+      "audits": [
+        "expected_outcome",
+        "lean_kernel",
+        "matched_pair"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [
+        {
+          "case_id": "two-cnf-to-csp-ir",
+          "view": "legacy-regression-45"
+        }
+      ],
+      "execution_backend": "legacy_main45",
+      "fixture": true,
+      "freshness": "isolated_case",
+      "logical_case_id": "regression.main45.two-cnf-to-csp-ir",
+      "migration_reason": "Legacy main-45 regression behavior; retained with zero capability weight.",
+      "model_requirement": "forbidden",
+      "public_identity": null,
+      "selector": "contract",
+      "semantic_motif": "two-cnf-to-csp-ir",
+      "source_case_id": "two-cnf-to-csp-ir",
+      "tier": "R0"
+    },
+    {
+      "audits": [
+        "expected_outcome",
+        "lean_kernel",
+        "matched_pair"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [
+        {
+          "case_id": "three-sat-to-csp-flat",
+          "view": "legacy-regression-45"
+        }
+      ],
+      "execution_backend": "legacy_main45",
+      "fixture": true,
+      "freshness": "isolated_case",
+      "logical_case_id": "regression.main45.three-sat-to-csp-flat",
+      "migration_reason": "Legacy main-45 regression behavior; retained with zero capability weight.",
+      "model_requirement": "forbidden",
+      "public_identity": null,
+      "selector": "contract",
+      "semantic_motif": "three-sat-to-csp-flat",
+      "source_case_id": "three-sat-to-csp-flat",
+      "tier": "R0"
+    },
+    {
+      "audits": [
+        "expected_outcome",
+        "lean_kernel",
+        "matched_pair"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [
+        {
+          "case_id": "three-sat-to-csp-ir",
+          "view": "legacy-regression-45"
+        }
+      ],
+      "execution_backend": "legacy_main45",
+      "fixture": true,
+      "freshness": "isolated_case",
+      "logical_case_id": "regression.main45.three-sat-to-csp-ir",
+      "migration_reason": "Legacy main-45 regression behavior; retained with zero capability weight.",
+      "model_requirement": "forbidden",
+      "public_identity": null,
+      "selector": "contract",
+      "semantic_motif": "three-sat-to-csp-ir",
+      "source_case_id": "three-sat-to-csp-ir",
+      "tier": "R0"
+    },
+    {
+      "audits": [
+        "expected_outcome",
+        "lean_kernel",
+        "matched_pair"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [
+        {
+          "case_id": "exact-cover-to-eon-flat",
+          "view": "legacy-regression-45"
+        }
+      ],
+      "execution_backend": "legacy_main45",
+      "fixture": true,
+      "freshness": "isolated_case",
+      "logical_case_id": "regression.main45.exact-cover-to-eon-flat",
+      "migration_reason": "Legacy main-45 regression behavior; retained with zero capability weight.",
+      "model_requirement": "forbidden",
+      "public_identity": null,
+      "selector": "contract",
+      "semantic_motif": "exact-cover-to-eon-flat",
+      "source_case_id": "exact-cover-to-eon-flat",
+      "tier": "R0"
+    },
+    {
+      "audits": [
+        "expected_outcome",
+        "lean_kernel",
+        "matched_pair"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [
+        {
+          "case_id": "exact-cover-to-eon-ir",
+          "view": "legacy-regression-45"
+        }
+      ],
+      "execution_backend": "legacy_main45",
+      "fixture": true,
+      "freshness": "isolated_case",
+      "logical_case_id": "regression.main45.exact-cover-to-eon-ir",
+      "migration_reason": "Legacy main-45 regression behavior; retained with zero capability weight.",
+      "model_requirement": "forbidden",
+      "public_identity": null,
+      "selector": "contract",
+      "semantic_motif": "exact-cover-to-eon-ir",
+      "source_case_id": "exact-cover-to-eon-ir",
+      "tier": "R0"
+    },
+    {
+      "audits": [
+        "expected_outcome",
+        "lean_kernel",
+        "matched_pair"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [
+        {
+          "case_id": "modified-exact-cover-to-eon-flat",
+          "view": "legacy-regression-45"
+        }
+      ],
+      "execution_backend": "legacy_main45",
+      "fixture": true,
+      "freshness": "isolated_case",
+      "logical_case_id": "regression.main45.modified-exact-cover-to-eon-flat",
+      "migration_reason": "Legacy main-45 regression behavior; retained with zero capability weight.",
+      "model_requirement": "forbidden",
+      "public_identity": null,
+      "selector": "contract",
+      "semantic_motif": "modified-exact-cover-to-eon-flat",
+      "source_case_id": "modified-exact-cover-to-eon-flat",
+      "tier": "R0"
+    },
+    {
+      "audits": [
+        "expected_outcome",
+        "lean_kernel",
+        "matched_pair"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [
+        {
+          "case_id": "modified-exact-cover-to-eon-ir",
+          "view": "legacy-regression-45"
+        }
+      ],
+      "execution_backend": "legacy_main45",
+      "fixture": true,
+      "freshness": "isolated_case",
+      "logical_case_id": "regression.main45.modified-exact-cover-to-eon-ir",
+      "migration_reason": "Legacy main-45 regression behavior; retained with zero capability weight.",
+      "model_requirement": "forbidden",
+      "public_identity": null,
+      "selector": "contract",
+      "semantic_motif": "modified-exact-cover-to-eon-ir",
+      "source_case_id": "modified-exact-cover-to-eon-ir",
+      "tier": "R0"
+    },
+    {
+      "audits": [
+        "expected_outcome",
+        "lean_kernel",
+        "independent_replay",
+        "standard_axioms"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [
+        {
+          "case_id": "knapsack-native-cook-levin",
+          "view": "legacy-regression-45"
+        }
+      ],
+      "execution_backend": "legacy_main45",
+      "fixture": true,
+      "freshness": "isolated_case",
+      "logical_case_id": "regression.main45.knapsack-native-cook-levin",
+      "migration_reason": "Legacy main-45 regression behavior; retained with zero capability weight.",
+      "model_requirement": "forbidden",
+      "public_identity": null,
+      "selector": "production",
+      "semantic_motif": "knapsack-native-cook-levin",
+      "source_case_id": "knapsack-native-cook-levin",
+      "tier": "R1"
+    },
+    {
+      "audits": [
+        "expected_outcome",
+        "lean_kernel",
+        "independent_replay",
+        "standard_axioms"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [
+        {
+          "case_id": "knapsack-native-cook-levin-clique",
+          "view": "legacy-regression-45"
+        }
+      ],
+      "execution_backend": "legacy_main45",
+      "fixture": true,
+      "freshness": "isolated_case",
+      "logical_case_id": "regression.main45.knapsack-native-cook-levin-clique",
+      "migration_reason": "Legacy main-45 regression behavior; retained with zero capability weight.",
+      "model_requirement": "forbidden",
+      "public_identity": null,
+      "selector": "production",
+      "semantic_motif": "knapsack-native-cook-levin-clique",
+      "source_case_id": "knapsack-native-cook-levin-clique",
+      "tier": "R1"
+    },
+    {
+      "audits": [
+        "production_entry",
+        "fresh_artifact",
+        "endpoint_mutation",
+        "zero_model_calls"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [
+        {
+          "case_id": "wrong-membership-endpoint",
+          "view": "legacy-regression-45"
+        },
+        {
+          "case_id": "nphg-negative-endpoint-mutation",
+          "view": "legacy-release-reliability-12"
+        }
+      ],
+      "execution_backend": "release_real_round",
+      "fixture": true,
+      "freshness": "fresh_production_job",
+      "logical_case_id": "regression.main45.wrong-membership-endpoint",
+      "migration_reason": "The release endpoint mutation is the production variant of the legacy wrong-endpoint contract motif.",
+      "model_requirement": "forbidden",
+      "public_identity": null,
+      "selector": "production",
+      "semantic_motif": "wrong-endpoint-rejection",
+      "source_case_id": "nphg-negative-endpoint-mutation",
+      "tier": "R0/R1"
+    },
+    {
+      "audits": [
+        "expected_outcome",
+        "lean_kernel"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [
+        {
+          "case_id": "backend-only-membership",
+          "view": "legacy-regression-45"
+        }
+      ],
+      "execution_backend": "legacy_main45",
+      "fixture": true,
+      "freshness": "isolated_case",
+      "logical_case_id": "regression.main45.backend-only-membership",
+      "migration_reason": "Legacy main-45 regression behavior; retained with zero capability weight.",
+      "model_requirement": "forbidden",
+      "public_identity": null,
+      "selector": "contract",
+      "semantic_motif": "backend-only-membership",
+      "source_case_id": "backend-only-membership",
+      "tier": "R0"
+    },
+    {
+      "audits": [
+        "expected_outcome",
+        "lean_kernel"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [
+        {
+          "case_id": "missing-verifier-discipline",
+          "view": "legacy-regression-45"
+        }
+      ],
+      "execution_backend": "legacy_main45",
+      "fixture": true,
+      "freshness": "isolated_case",
+      "logical_case_id": "regression.main45.missing-verifier-discipline",
+      "migration_reason": "Legacy main-45 regression behavior; retained with zero capability weight.",
+      "model_requirement": "forbidden",
+      "public_identity": null,
+      "selector": "contract",
+      "semantic_motif": "missing-verifier-discipline",
+      "source_case_id": "missing-verifier-discipline",
+      "tier": "R0"
+    },
+    {
+      "audits": [
+        "expected_outcome",
+        "lean_kernel"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [
+        {
+          "case_id": "representation-mismatch-gap",
+          "view": "legacy-regression-45"
+        }
+      ],
+      "execution_backend": "legacy_main45",
+      "fixture": true,
+      "freshness": "isolated_case",
+      "logical_case_id": "regression.main45.representation-mismatch-gap",
+      "migration_reason": "Legacy main-45 regression behavior; retained with zero capability weight.",
+      "model_requirement": "forbidden",
+      "public_identity": null,
+      "selector": "contract",
+      "semantic_motif": "representation-mismatch-gap",
+      "source_case_id": "representation-mismatch-gap",
+      "tier": "R0"
+    },
+    {
+      "audits": [
+        "expected_outcome",
+        "lean_kernel"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [
+        {
+          "case_id": "missing-primitive-gap",
+          "view": "legacy-regression-45"
+        }
+      ],
+      "execution_backend": "legacy_main45",
+      "fixture": true,
+      "freshness": "isolated_case",
+      "logical_case_id": "regression.main45.missing-primitive-gap",
+      "migration_reason": "Legacy main-45 regression behavior; retained with zero capability weight.",
+      "model_requirement": "forbidden",
+      "public_identity": null,
+      "selector": "contract",
+      "semantic_motif": "missing-primitive-gap",
+      "source_case_id": "missing-primitive-gap",
+      "tier": "R0"
+    },
+    {
+      "audits": [
+        "expected_outcome",
+        "lean_kernel"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [
+        {
+          "case_id": "missing-native-membership-gap",
+          "view": "legacy-regression-45"
+        }
+      ],
+      "execution_backend": "legacy_main45",
+      "fixture": true,
+      "freshness": "isolated_case",
+      "logical_case_id": "regression.main45.missing-native-membership-gap",
+      "migration_reason": "Legacy main-45 regression behavior; retained with zero capability weight.",
+      "model_requirement": "forbidden",
+      "public_identity": null,
+      "selector": "contract",
+      "semantic_motif": "missing-native-membership-gap",
+      "source_case_id": "missing-native-membership-gap",
+      "tier": "R0"
+    },
+    {
+      "audits": [
+        "expected_outcome",
+        "lean_kernel"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [
+        {
+          "case_id": "closed-family-template-authoring",
+          "view": "legacy-regression-45"
+        }
+      ],
+      "execution_backend": "legacy_main45",
+      "fixture": true,
+      "freshness": "isolated_case",
+      "logical_case_id": "regression.main45.closed-family-template-authoring",
+      "migration_reason": "Legacy main-45 regression behavior; retained with zero capability weight.",
+      "model_requirement": "forbidden",
+      "public_identity": null,
+      "selector": "contract",
+      "semantic_motif": "closed-family-template-authoring",
+      "source_case_id": "closed-family-template-authoring",
+      "tier": "R0"
+    },
+    {
+      "audits": [
+        "expected_outcome",
+        "lean_kernel",
+        "candidate_deletion",
+        "resume"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [
+        {
+          "case_id": "closed-family-candidate-absent",
+          "view": "legacy-regression-45"
+        }
+      ],
+      "execution_backend": "legacy_main45",
+      "fixture": true,
+      "freshness": "isolated_case",
+      "logical_case_id": "regression.main45.closed-family-candidate-absent",
+      "migration_reason": "Legacy main-45 regression behavior; retained with zero capability weight.",
+      "model_requirement": "forbidden",
+      "public_identity": null,
+      "selector": "contract",
+      "semantic_motif": "closed-family-candidate-absent",
+      "source_case_id": "closed-family-candidate-absent",
+      "tier": "R0"
+    },
+    {
+      "audits": [
+        "expected_outcome",
+        "lean_kernel"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [
+        {
+          "case_id": "lawful-presentation-template-authoring",
+          "view": "legacy-regression-45"
+        }
+      ],
+      "execution_backend": "legacy_main45",
+      "fixture": true,
+      "freshness": "isolated_case",
+      "logical_case_id": "regression.main45.lawful-presentation-template-authoring",
+      "migration_reason": "Legacy main-45 regression behavior; retained with zero capability weight.",
+      "model_requirement": "forbidden",
+      "public_identity": null,
+      "selector": "contract",
+      "semantic_motif": "lawful-presentation-template-authoring",
+      "source_case_id": "lawful-presentation-template-authoring",
+      "tier": "R0"
+    },
+    {
+      "audits": [
+        "expected_outcome",
+        "lean_kernel",
+        "candidate_deletion",
+        "resume"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [
+        {
+          "case_id": "lawful-presentation-candidate-absent",
+          "view": "legacy-regression-45"
+        }
+      ],
+      "execution_backend": "legacy_main45",
+      "fixture": true,
+      "freshness": "isolated_case",
+      "logical_case_id": "regression.main45.lawful-presentation-candidate-absent",
+      "migration_reason": "Legacy main-45 regression behavior; retained with zero capability weight.",
+      "model_requirement": "forbidden",
+      "public_identity": null,
+      "selector": "contract",
+      "semantic_motif": "lawful-presentation-candidate-absent",
+      "source_case_id": "lawful-presentation-candidate-absent",
+      "tier": "R0"
+    },
+    {
+      "audits": [
+        "expected_outcome",
+        "lean_kernel"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [
+        {
+          "case_id": "primitive-admission-template-authoring",
+          "view": "legacy-regression-45"
+        }
+      ],
+      "execution_backend": "legacy_main45",
+      "fixture": true,
+      "freshness": "isolated_case",
+      "logical_case_id": "regression.main45.primitive-admission-template-authoring",
+      "migration_reason": "Legacy main-45 regression behavior; retained with zero capability weight.",
+      "model_requirement": "forbidden",
+      "public_identity": null,
+      "selector": "contract",
+      "semantic_motif": "primitive-admission-template-authoring",
+      "source_case_id": "primitive-admission-template-authoring",
+      "tier": "R0"
+    },
+    {
+      "audits": [
+        "expected_outcome",
+        "lean_kernel",
+        "candidate_deletion",
+        "resume"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [
+        {
+          "case_id": "primitive-admission-candidate-absent",
+          "view": "legacy-regression-45"
+        }
+      ],
+      "execution_backend": "legacy_main45",
+      "fixture": true,
+      "freshness": "isolated_case",
+      "logical_case_id": "regression.main45.primitive-admission-candidate-absent",
+      "migration_reason": "Legacy main-45 regression behavior; retained with zero capability weight.",
+      "model_requirement": "forbidden",
+      "public_identity": null,
+      "selector": "contract",
+      "semantic_motif": "primitive-admission-candidate-absent",
+      "source_case_id": "primitive-admission-candidate-absent",
+      "tier": "R0"
+    },
+    {
+      "audits": [
+        "production_entry",
+        "fresh_artifact",
+        "real_model_http",
+        "fresh_core",
+        "independent_replay",
+        "standard_axioms",
+        "deletion_audit"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [
+        {
+          "case_id": "program-indexed-reduction-authoring",
+          "view": "legacy-regression-45"
+        },
+        {
+          "case_id": "program-indexed-candidate-absent",
+          "view": "legacy-regression-45"
+        },
+        {
+          "case_id": "nphg-author-set-system-composition",
+          "view": "legacy-release-reliability-12"
+        }
+      ],
+      "execution_backend": "release_real_round",
+      "fixture": true,
+      "freshness": "fresh_production_job",
+      "logical_case_id": "regression.main45.program-indexed-reduction-authoring",
+      "migration_reason": "The set-system release authoring case is the sole production execution for the legacy program-indexed source and candidate-deletion compatibility aliases.",
+      "model_requirement": "required",
+      "public_identity": null,
+      "selector": "production",
+      "semantic_motif": "program-composition-authoring",
+      "source_case_id": "nphg-author-set-system-composition",
+      "tier": "R0/R1"
+    },
+    {
+      "audits": [
+        "expected_outcome",
+        "lean_kernel"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [
+        {
+          "case_id": "missing-direct-tm-authoring-blocker",
+          "view": "legacy-regression-45"
+        }
+      ],
+      "execution_backend": "legacy_main45",
+      "fixture": true,
+      "freshness": "isolated_case",
+      "logical_case_id": "regression.main45.missing-direct-tm-authoring-blocker",
+      "migration_reason": "Legacy main-45 regression behavior; retained with zero capability weight.",
+      "model_requirement": "forbidden",
+      "public_identity": null,
+      "selector": "contract",
+      "semantic_motif": "missing-direct-tm-authoring-blocker",
+      "source_case_id": "missing-direct-tm-authoring-blocker",
+      "tier": "R0"
+    },
+    {
+      "audits": [
+        "expected_outcome",
+        "lean_kernel",
+        "standard_axioms",
+        "job_isolation"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [
+        {
+          "case_id": "program-indexed-retry-isolation",
+          "view": "legacy-regression-45"
+        }
+      ],
+      "execution_backend": "legacy_main45",
+      "fixture": true,
+      "freshness": "isolated_case",
+      "logical_case_id": "regression.main45.program-indexed-retry-isolation",
+      "migration_reason": "Legacy main-45 regression behavior; retained with zero capability weight.",
+      "model_requirement": "forbidden",
+      "public_identity": null,
+      "selector": "contract",
+      "semantic_motif": "program-indexed-retry-isolation",
+      "source_case_id": "program-indexed-retry-isolation",
+      "tier": "R0"
+    },
+    {
+      "audits": [
+        "production_entry",
+        "fresh_artifact",
+        "real_model_http",
+        "fresh_core",
+        "independent_replay",
+        "standard_axioms",
+        "deletion_audit"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [
+        {
+          "case_id": "model-semantic-proof-authoring",
+          "view": "legacy-regression-45"
+        },
+        {
+          "case_id": "nphg-author-sat-proof-only",
+          "view": "legacy-release-reliability-12"
+        }
+      ],
+      "execution_backend": "release_real_round",
+      "fixture": true,
+      "freshness": "fresh_production_job",
+      "logical_case_id": "regression.main45.model-semantic-proof-authoring",
+      "migration_reason": "The release SAT proof-only case is the fresh production variant of the legacy model semantic-proof protocol.",
+      "model_requirement": "required",
+      "public_identity": null,
+      "selector": "production",
+      "semantic_motif": "single-semantic-proof-authoring",
+      "source_case_id": "nphg-author-sat-proof-only",
+      "tier": "R1"
+    },
+    {
+      "audits": [
+        "expected_outcome",
+        "lean_kernel",
+        "independent_replay",
+        "standard_axioms"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [
+        {
+          "case_id": "exact-registered-native-membership",
+          "view": "legacy-regression-45"
+        }
+      ],
+      "execution_backend": "legacy_main45",
+      "fixture": true,
+      "freshness": "isolated_case",
+      "logical_case_id": "regression.main45.exact-registered-native-membership",
+      "migration_reason": "Legacy main-45 regression behavior; retained with zero capability weight.",
+      "model_requirement": "forbidden",
+      "public_identity": null,
+      "selector": "production",
+      "semantic_motif": "exact-registered-native-membership",
+      "source_case_id": "exact-registered-native-membership",
+      "tier": "R1"
+    },
+    {
+      "audits": [
+        "expected_outcome",
+        "lean_kernel"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [
+        {
+          "case_id": "backend-only-prove-in-np-blocker",
+          "view": "legacy-regression-45"
+        }
+      ],
+      "execution_backend": "legacy_main45",
+      "fixture": true,
+      "freshness": "isolated_case",
+      "logical_case_id": "regression.main45.backend-only-prove-in-np-blocker",
+      "migration_reason": "Legacy main-45 regression behavior; retained with zero capability weight.",
+      "model_requirement": "forbidden",
+      "public_identity": null,
+      "selector": "contract",
+      "semantic_motif": "backend-only-prove-in-np-blocker",
+      "source_case_id": "backend-only-prove-in-np-blocker",
+      "tier": "R0"
+    },
+    {
+      "audits": [
+        "expected_outcome",
+        "lean_kernel"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [
+        {
+          "case_id": "native-membership-deterministic-authoring",
+          "view": "legacy-regression-45"
+        }
+      ],
+      "execution_backend": "legacy_main45",
+      "fixture": true,
+      "freshness": "isolated_case",
+      "logical_case_id": "regression.main45.native-membership-deterministic-authoring",
+      "migration_reason": "Legacy main-45 regression behavior; retained with zero capability weight.",
+      "model_requirement": "forbidden",
+      "public_identity": null,
+      "selector": "contract",
+      "semantic_motif": "native-membership-deterministic-authoring",
+      "source_case_id": "native-membership-deterministic-authoring",
+      "tier": "R0"
+    },
+    {
+      "audits": [
+        "expected_outcome",
+        "lean_kernel",
+        "independent_replay",
+        "standard_axioms"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [
+        {
+          "case_id": "exact-registered-three-sat-completeness",
+          "view": "legacy-regression-45"
+        }
+      ],
+      "execution_backend": "legacy_main45",
+      "fixture": true,
+      "freshness": "isolated_case",
+      "logical_case_id": "regression.main45.exact-registered-three-sat-completeness",
+      "migration_reason": "Legacy main-45 regression behavior; retained with zero capability weight.",
+      "model_requirement": "forbidden",
+      "public_identity": null,
+      "selector": "production",
+      "semantic_motif": "exact-registered-three-sat-completeness",
+      "source_case_id": "exact-registered-three-sat-completeness",
+      "tier": "R1"
+    },
+    {
+      "audits": [
+        "expected_outcome",
+        "lean_kernel",
+        "independent_replay",
+        "standard_axioms"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [
+        {
+          "case_id": "three-sat-to-clique-transported-completeness",
+          "view": "legacy-regression-45"
+        }
+      ],
+      "execution_backend": "legacy_main45",
+      "fixture": true,
+      "freshness": "isolated_case",
+      "logical_case_id": "regression.main45.three-sat-to-clique-transported-completeness",
+      "migration_reason": "Legacy main-45 regression behavior; retained with zero capability weight.",
+      "model_requirement": "forbidden",
+      "public_identity": null,
+      "selector": "production",
+      "semantic_motif": "three-sat-to-clique-transported-completeness",
+      "source_case_id": "three-sat-to-clique-transported-completeness",
+      "tier": "R1"
+    },
+    {
+      "audits": [
+        "expected_outcome",
+        "lean_kernel"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [
+        {
+          "case_id": "completeness-target-missing-membership",
+          "view": "legacy-regression-45"
+        }
+      ],
+      "execution_backend": "legacy_main45",
+      "fixture": true,
+      "freshness": "isolated_case",
+      "logical_case_id": "regression.main45.completeness-target-missing-membership",
+      "migration_reason": "Legacy main-45 regression behavior; retained with zero capability weight.",
+      "model_requirement": "forbidden",
+      "public_identity": null,
+      "selector": "contract",
+      "semantic_motif": "completeness-target-missing-membership",
+      "source_case_id": "completeness-target-missing-membership",
+      "tier": "R0"
+    },
+    {
+      "audits": [
+        "production_entry",
+        "fresh_artifact",
+        "wrong_direction",
+        "zero_model_calls"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [
+        {
+          "case_id": "completeness-wrong-direction",
+          "view": "legacy-regression-45"
+        },
+        {
+          "case_id": "nphg-negative-reverse-only",
+          "view": "legacy-release-reliability-12"
+        }
+      ],
+      "execution_backend": "release_real_round",
+      "fixture": true,
+      "freshness": "fresh_production_job",
+      "logical_case_id": "regression.main45.completeness-wrong-direction",
+      "migration_reason": "The release reverse-only case is the production variant of the legacy wrong-direction contract motif.",
+      "model_requirement": "forbidden",
+      "public_identity": null,
+      "selector": "production",
+      "semantic_motif": "wrong-direction-rejection",
+      "source_case_id": "nphg-negative-reverse-only",
+      "tier": "R0/R1"
+    },
+    {
+      "audits": [
+        "expected_outcome",
+        "lean_kernel"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [
+        {
+          "case_id": "backend-completeness-cannot-pass-native-gate",
+          "view": "legacy-regression-45"
+        }
+      ],
+      "execution_backend": "legacy_main45",
+      "fixture": true,
+      "freshness": "isolated_case",
+      "logical_case_id": "regression.main45.backend-completeness-cannot-pass-native-gate",
+      "migration_reason": "Legacy main-45 regression behavior; retained with zero capability weight.",
+      "model_requirement": "forbidden",
+      "public_identity": null,
+      "selector": "contract",
+      "semantic_motif": "backend-completeness-cannot-pass-native-gate",
+      "source_case_id": "backend-completeness-cannot-pass-native-gate",
+      "tier": "R0"
+    },
+    {
+      "audits": [
+        "production_entry",
+        "fresh_artifact",
+        "exact_endpoint",
+        "independent_replay",
+        "standard_axioms",
+        "zero_model_calls"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [
+        {
+          "case_id": "nphg-existing-vertex-cover",
+          "view": "legacy-release-reliability-12"
+        }
+      ],
+      "execution_backend": "release_real_round",
+      "fixture": false,
+      "freshness": "fresh_production_job",
+      "logical_case_id": "regression.release12.nphg-existing-vertex-cover",
+      "migration_reason": "Former release reliability case; retained once as a production regression with zero capability weight.",
+      "model_requirement": "forbidden",
+      "public_identity": "ComplexityReduction.Problems.Karp21.GraphAtoms.vertexCoverStructuredProblem",
+      "selector": "production",
+      "semantic_motif": "existing-vertex-cover",
+      "source_case_id": "nphg-existing-vertex-cover",
+      "tier": "R1"
+    },
+    {
+      "audits": [
+        "production_entry",
+        "fresh_artifact",
+        "exact_endpoint",
+        "independent_replay",
+        "standard_axioms",
+        "zero_model_calls"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [
+        {
+          "case_id": "nphg-existing-exact-cover",
+          "view": "legacy-release-reliability-12"
+        }
+      ],
+      "execution_backend": "release_real_round",
+      "fixture": false,
+      "freshness": "fresh_production_job",
+      "logical_case_id": "regression.release12.nphg-existing-exact-cover",
+      "migration_reason": "Former release reliability case; retained once as a production regression with zero capability weight.",
+      "model_requirement": "forbidden",
+      "public_identity": "ComplexityReduction.Presentation.SetSystem.exactCoverStructuredProblem",
+      "selector": "production",
+      "semantic_motif": "existing-exact-cover",
+      "source_case_id": "nphg-existing-exact-cover",
+      "tier": "R1"
+    },
+    {
+      "audits": [
+        "production_entry",
+        "fresh_artifact",
+        "real_model_http",
+        "fresh_core",
+        "independent_replay",
+        "standard_axioms",
+        "deletion_audit"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [
+        {
+          "case_id": "nphg-author-graph-proof-only",
+          "view": "legacy-release-reliability-12"
+        }
+      ],
+      "execution_backend": "release_real_round",
+      "fixture": true,
+      "freshness": "fresh_production_job",
+      "logical_case_id": "regression.release12.nphg-author-graph-proof-only",
+      "migration_reason": "Former release reliability case; retained once as a production regression with zero capability weight.",
+      "model_requirement": "required",
+      "public_identity": null,
+      "selector": "production",
+      "semantic_motif": "author-graph-proof-only",
+      "source_case_id": "nphg-author-graph-proof-only",
+      "tier": "R1"
+    },
+    {
+      "audits": [
+        "production_entry",
+        "fresh_artifact",
+        "real_model_http",
+        "fresh_core",
+        "independent_replay",
+        "standard_axioms",
+        "deletion_audit"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [
+        {
+          "case_id": "nphg-author-numeric-composition",
+          "view": "legacy-release-reliability-12"
+        }
+      ],
+      "execution_backend": "release_real_round",
+      "fixture": true,
+      "freshness": "fresh_production_job",
+      "logical_case_id": "regression.release12.nphg-author-numeric-composition",
+      "migration_reason": "Former release reliability case; retained once as a production regression with zero capability weight.",
+      "model_requirement": "required",
+      "public_identity": null,
+      "selector": "production",
+      "semantic_motif": "author-numeric-composition",
+      "source_case_id": "nphg-author-numeric-composition",
+      "tier": "R1"
+    },
+    {
+      "audits": [
+        "production_entry",
+        "fresh_artifact",
+        "real_model_http",
+        "fresh_core",
+        "independent_replay",
+        "standard_axioms",
+        "deletion_audit"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [
+        {
+          "case_id": "nphg-author-graph-program-synthesis",
+          "view": "legacy-release-reliability-12"
+        }
+      ],
+      "execution_backend": "release_real_round",
+      "fixture": true,
+      "freshness": "fresh_production_job",
+      "logical_case_id": "regression.release12.nphg-author-graph-program-synthesis",
+      "migration_reason": "Former release reliability case; retained once as a production regression with zero capability weight.",
+      "model_requirement": "required",
+      "public_identity": null,
+      "selector": "production",
+      "semantic_motif": "author-graph-program-synthesis",
+      "source_case_id": "nphg-author-graph-program-synthesis",
+      "tier": "R1"
+    },
+    {
+      "audits": [
+        "production_entry",
+        "fresh_artifact",
+        "exact_endpoint",
+        "shortest_route",
+        "independent_replay",
+        "standard_axioms",
+        "zero_model_calls"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [],
+      "execution_backend": "public_existing_route",
+      "fixture": false,
+      "freshness": "fresh_production_job",
+      "logical_case_id": "regression.public-r1.graph-coloring-ir",
+      "migration_reason": "Frozen R1 public existing-route coverage; capability motif is controlled by C0 and receives zero weight.",
+      "model_requirement": "forbidden",
+      "public_identity": "ComplexityReduction.Domain.GraphColoringIR.chromaticNumberProblem",
+      "selector": "production",
+      "semantic_motif": "public-existing-route-graph-coloring-ir",
+      "source_case_id": "r1-pub-01-graph-coloring-ir",
+      "tier": "R1"
+    },
+    {
+      "audits": [
+        "production_entry",
+        "fresh_artifact",
+        "exact_endpoint",
+        "shortest_route",
+        "independent_replay",
+        "standard_axioms",
+        "zero_model_calls"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [],
+      "execution_backend": "public_existing_route",
+      "fixture": false,
+      "freshness": "fresh_production_job",
+      "logical_case_id": "regression.public-r1.incidence-ir-exact-cover",
+      "migration_reason": "Frozen R1 public existing-route coverage; capability motif is controlled by C0 and receives zero weight.",
+      "model_requirement": "forbidden",
+      "public_identity": "ComplexityReduction.Domain.IncidenceIR.exactCoverProblem",
+      "selector": "production",
+      "semantic_motif": "public-existing-route-incidence-ir-exact-cover",
+      "source_case_id": "r1-pub-02-incidence-ir-exact-cover",
+      "tier": "R1"
+    },
+    {
+      "audits": [
+        "production_entry",
+        "fresh_artifact",
+        "exact_endpoint",
+        "shortest_route",
+        "independent_replay",
+        "standard_axioms",
+        "zero_model_calls"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [],
+      "execution_backend": "public_existing_route",
+      "fixture": false,
+      "freshness": "fresh_production_job",
+      "logical_case_id": "regression.public-r1.clique-cover",
+      "migration_reason": "Frozen R1 public existing-route coverage; capability motif is controlled by C0 and receives zero weight.",
+      "model_requirement": "forbidden",
+      "public_identity": "ComplexityReduction.Presentation.CliqueCover.structuredProblem",
+      "selector": "production",
+      "semantic_motif": "public-existing-route-clique-cover",
+      "source_case_id": "r1-pub-03-clique-cover",
+      "tier": "R1"
+    },
+    {
+      "audits": [
+        "production_entry",
+        "fresh_artifact",
+        "exact_endpoint",
+        "shortest_route",
+        "independent_replay",
+        "standard_axioms",
+        "zero_model_calls"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [],
+      "execution_backend": "public_existing_route",
+      "fixture": false,
+      "freshness": "fresh_production_job",
+      "logical_case_id": "regression.public-r1.exactly-one-neighbor",
+      "migration_reason": "Frozen R1 public existing-route coverage; capability motif is controlled by C0 and receives zero weight.",
+      "model_requirement": "forbidden",
+      "public_identity": "ComplexityReduction.Presentation.ExactlyOneNeighbor.presentedProblem",
+      "selector": "production",
+      "semantic_motif": "public-existing-route-exactly-one-neighbor",
+      "source_case_id": "r1-pub-04-exactly-one-neighbor",
+      "tier": "R1"
+    },
+    {
+      "audits": [
+        "production_entry",
+        "fresh_artifact",
+        "exact_endpoint",
+        "shortest_route",
+        "independent_replay",
+        "standard_axioms",
+        "zero_model_calls"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [],
+      "execution_backend": "public_existing_route",
+      "fixture": false,
+      "freshness": "fresh_production_job",
+      "logical_case_id": "regression.public-r1.most-neighbors",
+      "migration_reason": "Frozen R1 public existing-route coverage; capability motif is controlled by C0 and receives zero weight.",
+      "model_requirement": "forbidden",
+      "public_identity": "ComplexityReduction.Presentation.MostNeighbors.presentedProblem",
+      "selector": "production",
+      "semantic_motif": "public-existing-route-most-neighbors",
+      "source_case_id": "r1-pub-05-most-neighbors",
+      "tier": "R1"
+    },
+    {
+      "audits": [
+        "production_entry",
+        "fresh_artifact",
+        "exact_endpoint",
+        "shortest_route",
+        "independent_replay",
+        "standard_axioms",
+        "zero_model_calls"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [],
+      "execution_backend": "public_existing_route",
+      "fixture": false,
+      "freshness": "fresh_production_job",
+      "logical_case_id": "regression.public-r1.steiner-tree",
+      "migration_reason": "Frozen R1 public existing-route coverage; capability motif is controlled by C0 and receives zero weight.",
+      "model_requirement": "forbidden",
+      "public_identity": "ComplexityReduction.Presentation.SteinerTree.structuredProblem",
+      "selector": "production",
+      "semantic_motif": "public-existing-route-steiner-tree",
+      "source_case_id": "r1-pub-06-steiner-tree",
+      "tier": "R1"
+    },
+    {
+      "audits": [
+        "production_entry",
+        "fresh_artifact",
+        "exact_endpoint",
+        "shortest_route",
+        "independent_replay",
+        "standard_axioms",
+        "zero_model_calls"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [],
+      "execution_backend": "public_existing_route",
+      "fixture": false,
+      "freshness": "fresh_production_job",
+      "logical_case_id": "regression.public-r1.three-sat-like",
+      "migration_reason": "Frozen R1 public existing-route coverage; capability motif is controlled by C0 and receives zero weight.",
+      "model_requirement": "forbidden",
+      "public_identity": "ComplexityReduction.Presentation.ThreeSATLike.presentedProblem",
+      "selector": "production",
+      "semantic_motif": "public-existing-route-three-sat-like",
+      "source_case_id": "r1-pub-07-three-sat-like",
+      "tier": "R1"
+    },
+    {
+      "audits": [
+        "production_entry",
+        "fresh_artifact",
+        "exact_endpoint",
+        "shortest_route",
+        "independent_replay",
+        "standard_axioms",
+        "zero_model_calls"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [],
+      "execution_backend": "public_existing_route",
+      "fixture": false,
+      "freshness": "fresh_production_job",
+      "logical_case_id": "regression.public-r1.undirected-hamiltonian",
+      "migration_reason": "Frozen R1 public existing-route coverage; capability motif is controlled by C0 and receives zero weight.",
+      "model_requirement": "forbidden",
+      "public_identity": "ComplexityReduction.Presentation.UndirectedHamiltonianCircuit.structuredProblem",
+      "selector": "production",
+      "semantic_motif": "public-existing-route-undirected-hamiltonian",
+      "source_case_id": "r1-pub-08-undirected-hamiltonian",
+      "tier": "R1"
+    },
+    {
+      "audits": [
+        "production_entry",
+        "fresh_artifact",
+        "exact_endpoint",
+        "shortest_route",
+        "independent_replay",
+        "standard_axioms",
+        "zero_model_calls"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [],
+      "execution_backend": "public_existing_route",
+      "fixture": false,
+      "freshness": "fresh_production_job",
+      "logical_case_id": "regression.public-r1.zero-one-ip-binary",
+      "migration_reason": "Frozen R1 public existing-route coverage; capability motif is controlled by C0 and receives zero weight.",
+      "model_requirement": "forbidden",
+      "public_identity": "ComplexityReduction.Presentation.ZeroOneIPBinary.binaryStructuredProblem",
+      "selector": "production",
+      "semantic_motif": "public-existing-route-zero-one-ip-binary",
+      "source_case_id": "r1-pub-09-zero-one-ip-binary",
+      "tier": "R1"
+    },
+    {
+      "audits": [
+        "production_entry",
+        "fresh_artifact",
+        "exact_endpoint",
+        "shortest_route",
+        "independent_replay",
+        "standard_axioms",
+        "zero_model_calls"
+      ],
+      "capability_weight": 0,
+      "compatibility_aliases": [],
+      "execution_backend": "public_existing_route",
+      "fixture": false,
+      "freshness": "fresh_production_job",
+      "logical_case_id": "regression.public-r1.cnf-sat",
+      "migration_reason": "Frozen R1 public existing-route coverage; capability motif is controlled by C0 and receives zero weight.",
+      "model_requirement": "forbidden",
+      "public_identity": "ComplexityReduction.Problems.Karp21.Satisfiability.cnfSATStructuredProblem",
+      "selector": "production",
+      "semantic_motif": "public-existing-route-cnf-sat",
+      "source_case_id": "r1-pub-10-cnf-sat",
+      "tier": "R1"
+    }
+  ],
+  "schema_version": "hardness_np_hard_unified_registry_v1",
+  "selectors": {
+    "all": {
+      "description": "De-duplicated union of contract and production logical cases."
+    },
+    "contract": {
+      "description": "R0 fixture, mutation, blocker, state-machine, and protocol regressions; no model calls."
+    },
+    "production": {
+      "description": "R1 production regressions, including exactly one fresh release real round."
+    }
+  }
+}

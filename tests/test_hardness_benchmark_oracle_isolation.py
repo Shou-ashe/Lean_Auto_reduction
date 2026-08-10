@@ -61,7 +61,10 @@ def test_active_case_cannot_reference_oracle_module(tmp_path: Path) -> None:
 
 def test_active_suite_files_do_not_reference_legacy_oracles() -> None:
     root = Path(__file__).resolve().parents[1]
-    for suite in (root / "Benchmark" / "Hardness" / "Suites").glob("*.json"):
+    for suite in sorted(
+        list((root / "Benchmark" / "Hardness" / "Suites").glob("*.json"))
+        + list((root / "Gate" / "Suites").glob("*.json"))
+    ):
         text = suite.read_text()
         assert "HiddenTargets" not in text
         assert "GoldProofs" not in text

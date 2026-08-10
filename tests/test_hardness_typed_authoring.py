@@ -40,7 +40,7 @@ from scripts.typed_authoring_benchmark import merge_candidate_work_roots
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SUITE = ROOT / "Benchmark" / "Hardness" / "Suites" / "typed_authoring.json"
+SUITE = ROOT / "Gate" / "Suites" / "typed_authoring.json"
 SOURCE = "Benchmark.Hardness.Inputs.TypedAuthoring.SingleEdgeProgram.source"
 TARGET = "Benchmark.Hardness.Inputs.TypedAuthoring.SingleEdgeProgram.target"
 

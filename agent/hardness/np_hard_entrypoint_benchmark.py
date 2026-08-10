@@ -226,7 +226,7 @@ def run_np_hard_entrypoint_benchmark(
         "passed": passed,
         "suite_sha256": sha256_file(suite_path),
         "input_registry_sha256": sha256_file(
-            root / "Benchmark" / "Hardness" / "np_hard_input_registry.json"
+            root / "Gate" / "np_hard_input_registry.json"
         ),
         "active_plan_sha256": sha256_file(root / "ACTIVE_AGENT_IMPROVEMENT_PLAN.md"),
         "prebuild": prebuild.to_dict(),

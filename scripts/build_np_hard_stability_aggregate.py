@@ -23,7 +23,7 @@ def main() -> int:
     parser.add_argument(
         "--output",
         type=Path,
-        default=ROOT / "Benchmark/Hardness/NP_HARD_MVP_STABILITY_AGGREGATE.json",
+        default=ROOT / "Reports/NP_HARD_MVP_STABILITY_AGGREGATE.json",
     )
     arguments = parser.parse_args()
     aggregate = build_np_hard_stability_aggregate(

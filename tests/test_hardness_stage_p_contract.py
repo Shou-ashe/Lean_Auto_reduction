@@ -27,10 +27,10 @@ from agent.hardness.stage_p_contract import (
 
 
 ROOT = Path(__file__).resolve().parents[1]
-POSITIVE = ROOT / "Benchmark/Hardness/Suites/stage_p_open_world.json"
-NEGATIVE = ROOT / "Benchmark/Hardness/Suites/stage_p_adversarial.json"
-MUTATIONS = ROOT / "Benchmark/Hardness/Suites/stage_p_mutations.json"
-WORKER = ROOT / "Benchmark/Hardness/Suites/stage_p_lean_worker_microbenchmark.json"
+POSITIVE = ROOT / "Gate/Suites/stage_p_open_world.json"
+NEGATIVE = ROOT / "Gate/Suites/stage_p_adversarial.json"
+MUTATIONS = ROOT / "Gate/Suites/stage_p_mutations.json"
+WORKER = ROOT / "Gate/Suites/stage_p_lean_worker_microbenchmark.json"
 
 
 def suites():

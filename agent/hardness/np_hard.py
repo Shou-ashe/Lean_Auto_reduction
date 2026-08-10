@@ -617,9 +617,17 @@ class NPHardAgentV1:
         store.write_json("np-hard-seed-catalog.json", payload)
         catalog_path = self.root / ".reduction-agent" / "np-hard-seed-catalog.json"
         catalog_path.parent.mkdir(parents=True, exist_ok=True)
-        temporary = catalog_path.with_suffix(".json.tmp")
-        temporary.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-        temporary.replace(catalog_path)
+        temporary = catalog_path.with_name(
+            f".{catalog_path.name}.{secrets.token_hex(16)}.tmp"
+        )
+        try:
+            temporary.write_text(
+                json.dumps(payload, indent=2, sort_keys=True) + "\n",
+                encoding="utf-8",
+            )
+            temporary.replace(catalog_path)
+        finally:
+            temporary.unlink(missing_ok=True)
 
     def _validate(self) -> tuple[NPHardInputReferenceV1, Path, str, str, str]:
         reference = self.config.input_reference or resolve_np_hard_input_reference(

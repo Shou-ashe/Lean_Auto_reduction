@@ -117,7 +117,7 @@ def run_np_hard_h_e_heldout(
         if expected["validation_mode"] == "endpoint_mutation_audit":
             matched = _endpoint_mutation_rejected(
                 root=root,
-                suite_path=root / "Benchmark/Hardness/Suites/np_hard_generalization.json",
+                suite_path=root / "Gate/Suites/np_hard_generalization.json",
             )
             row = {
                 "case_id": case["id"],

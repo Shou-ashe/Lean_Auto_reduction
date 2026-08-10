@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import json
+import threading
+import time
 from dataclasses import replace
 from datetime import datetime, timezone
 from pathlib import Path
@@ -33,6 +36,67 @@ NP_HARD_RELEASE_OFFLINE_SCHEMA_V1 = "hardness_np_hard_release_offline_v2"
 NP_HARD_RELEASE_RUN_SCHEMA_V1 = "hardness_np_hard_release_real_run_v2"
 NP_HARD_RELEASE_AGGREGATE_SCHEMA_V1 = "hardness_np_hard_release_aggregate_v2"
 _QUARANTINED = (".Oracles.", ".Gold.", ".GoldProofs.", ".HiddenTargets.")
+DEFAULT_RELEASE_CASE_JOBS = 4
+MAX_RELEASE_CASE_JOBS = 4
+
+
+def _validate_release_case_jobs(jobs: int) -> int:
+    if isinstance(jobs, bool) or not isinstance(jobs, int) or not 1 <= jobs <= MAX_RELEASE_CASE_JOBS:
+        raise ValueError(f"release case jobs must be in 1..{MAX_RELEASE_CASE_JOBS}")
+    return jobs
+
+
+def _run_release_case_tasks(
+    tasks: list[tuple[str, Callable[[], dict[str, Any]]]],
+    *,
+    jobs: int,
+) -> tuple[dict[str, dict[str, Any]], dict[str, Any]]:
+    """Run isolated release cases concurrently while preserving keyed results."""
+
+    jobs = _validate_release_case_jobs(jobs)
+    if len({task_id for task_id, _ in tasks}) != len(tasks):
+        raise ValueError("release case task identifiers must be unique")
+    lock = threading.Lock()
+    active = 0
+    maximum_active = 0
+    started = time.monotonic()
+
+    def tracked(run: Callable[[], dict[str, Any]]) -> dict[str, Any]:
+        nonlocal active, maximum_active
+        with lock:
+            active += 1
+            maximum_active = max(maximum_active, active)
+        try:
+            return run()
+        finally:
+            with lock:
+                active -= 1
+
+    results: dict[str, dict[str, Any]] = {}
+    if jobs == 1 or len(tasks) <= 1:
+        for task_id, run in tasks:
+            results[task_id] = tracked(run)
+    else:
+        with ThreadPoolExecutor(
+            max_workers=min(jobs, len(tasks)),
+            thread_name_prefix="np-hard-release-case",
+        ) as executor:
+            pending = {
+                executor.submit(tracked, run): task_id for task_id, run in tasks
+            }
+            for future in as_completed(pending):
+                results[pending[future]] = future.result()
+    parallel_execution = {
+        "configured_jobs": jobs,
+        "submitted_case_tasks": len(tasks),
+        "maximum_concurrent_case_tasks": maximum_active,
+        "final_active_case_tasks": active,
+        "wall_duration_seconds": round(time.monotonic() - started, 6),
+        "observed_parallelism": (
+            jobs == 1 or len(tasks) <= 1 or maximum_active >= min(2, jobs, len(tasks))
+        ),
+    }
+    return results, parallel_execution
 
 
 def _write_json(path: Path, value: Any) -> None:
@@ -75,15 +139,15 @@ def _source_fingerprint(root: Path) -> dict[str, Any]:
         "Lean/Reference/ComplexityReduction/Agent/Hardness/AuthoringPlanner.lean",
         "Lean/Reference/ComplexityReduction/Agent/Hardness/InputNormalization.lean",
         "Lean/Reference/ComplexityReduction/Agent/Hardness/Gap.lean",
-        "Lean/Reference/Benchmark/Hardness/Inputs/HCCrossModule/Problem.lean",
-        "Lean/Reference/Benchmark/Hardness/Inputs/HCCrossModule/Adapters.lean",
-        "Lean/Reference/Benchmark/Hardness/Inputs/HCCrossModule/Specification.lean",
-        "Lean/Reference/Benchmark/Hardness/Inputs/HCCrossModule/Entry.lean",
-        "Lean/Reference/Benchmark/Hardness/Inputs/HDCrossModuleEncoding.lean",
-        "Lean/Reference/Benchmark/Hardness/Inputs/NPHardGeneralization/InputNormalizationOpenWorld.lean",
-        "Benchmark/Hardness/np_hard_input_registry.json",
-        "Benchmark/Hardness/Suites/np_hard_h_e_heldout_inputs.json",
-        "Benchmark/Hardness/Evaluation/np_hard_h_e_heldout_oracle.json",
+        "Lean/Reference/Reports/Inputs/HCCrossModule/Problem.lean",
+        "Lean/Reference/Reports/Inputs/HCCrossModule/Adapters.lean",
+        "Lean/Reference/Reports/Inputs/HCCrossModule/Specification.lean",
+        "Lean/Reference/Reports/Inputs/HCCrossModule/Entry.lean",
+        "Lean/Reference/Reports/Inputs/HDCrossModuleEncoding.lean",
+        "Lean/Reference/Reports/Inputs/NPHardGeneralization/InputNormalizationOpenWorld.lean",
+        "Gate/np_hard_input_registry.json",
+        "Gate/Suites/np_hard_h_e_heldout_inputs.json",
+        "Evaluation/np_hard_h_e_heldout_oracle.json",
     )
     files = {name: sha256_file(root / name) for name in tracked}
     return {
@@ -228,7 +292,7 @@ def _run_production_orchestrator_offline(
                 lean_timeout_seconds=600,
                 authoring_policy="model-required",
                 attempt_budget=4,
-                call_budget=8,
+                call_budget=None,
                 runtime_prebuilt=True,
             ),
             model_client=model,
@@ -390,10 +454,12 @@ def run_np_hard_release_real_round(
     report_path: Path,
     deepseek: DeepSeekConfig,
     round_index: int,
+    jobs: int = DEFAULT_RELEASE_CASE_JOBS,
 ) -> dict[str, Any]:
     root = root.resolve()
     suite_path = suite_path.resolve()
     output_root = output_root.resolve()
+    jobs = _validate_release_case_jobs(jobs)
     _fresh(output_root)
     suite = load_np_hard_generalization_suite(suite_path, root=root)
     existing_cases = [case for case in suite.cases if case.kind == "existing_route"]
@@ -406,8 +472,7 @@ def run_np_hard_release_real_round(
     if not prebuild.ok:
         raise ValueError("G-F real-round prebuild failed")
 
-    existing_rows: list[dict[str, Any]] = []
-    for case in existing_cases:
+    def run_existing(case) -> dict[str, Any]:
         result = NPHardOrchestratorV2(
             NPHardOrchestratorConfigV2(
                 root=root,
@@ -427,24 +492,21 @@ def run_np_hard_release_real_round(
             and payload["selected_hub"] is not None
             and payload["independent_replay"].get("passed") is True
         )
-        existing_rows.append(
-            {
-                "case_id": case.id,
-                "kind": case.kind,
-                "family": case.family,
-                "status": result.status,
-                "model_calls": result.model_calls,
-                "input_identity": payload["input_identity"],
-                "request_id": payload["request_id"],
-                "hub": payload["selected_hub"],
-                "artifact": payload["artifact"],
-                "independent_replay": payload["independent_replay"],
-                "matched": matched,
-            }
-        )
+        return {
+            "case_id": case.id,
+            "kind": case.kind,
+            "family": case.family,
+            "status": result.status,
+            "model_calls": result.model_calls,
+            "input_identity": payload["input_identity"],
+            "request_id": payload["request_id"],
+            "hub": payload["selected_hub"],
+            "artifact": payload["artifact"],
+            "independent_replay": payload["independent_replay"],
+            "matched": matched,
+        }
 
-    authoring_rows: list[dict[str, Any]] = []
-    for case in authoring_cases:
+    def run_authoring(case) -> dict[str, Any]:
         assert case.authoring is not None
         case_root = output_root / "cases" / case.id
         result = NPHardOrchestratorV2(
@@ -456,7 +518,7 @@ def run_np_hard_release_real_round(
                 lean_timeout_seconds=600,
                 authoring_policy="model-required",
                 attempt_budget=4,
-                call_budget=8,
+                call_budget=None,
                 deepseek=deepseek,
                 runtime_prebuilt=True,
             )
@@ -490,73 +552,90 @@ def run_np_hard_release_real_round(
         )
         deletion_evidence = result_payload.get("deletion_audit") or {}
         deletion_passed = bool(deletion_evidence.get("passed"))
-        authoring_rows.append(
-            {
-                "case_id": case.id,
-                "kind": case.kind,
-                "family": case.family,
-                "task_class": task.task_class if task is not None else None,
-                "requires_nontrivial_semantics": bool(
-                    case.authoring["requires_nontrivial_semantics"]
-                ),
-                "requires_multi_gap": bool(case.authoring["requires_multi_gap"]),
-                "task": task.to_dict() if task is not None else None,
-                "request": json.loads((case_root / "request.json").read_text(encoding="utf-8")),
-                "result": result_payload,
-                "runtime": payload,
-                "model_call_ledger": ledger,
-                "final_file": _relative(final_path, root) if final_path.is_file() else None,
-                "final_sha256": sha256_file(final_path) if final_path.is_file() else None,
-                "deletion_audit": {
-                    "status": "AUDITED",
-                    "failure_code": "generated_node_required",
-                    "model_calls": 0,
-                    "node_count": deletion_evidence.get("node_count", 0),
-                    "nodes": deletion_evidence.get("nodes", []),
-                    "passed": deletion_passed,
-                },
-                "matched": matched and deletion_passed,
-            }
-        )
+        return {
+            "case_id": case.id,
+            "kind": case.kind,
+            "family": case.family,
+            "task_class": task.task_class if task is not None else None,
+            "requires_nontrivial_semantics": bool(
+                case.authoring["requires_nontrivial_semantics"]
+            ),
+            "requires_multi_gap": bool(case.authoring["requires_multi_gap"]),
+            "task": task.to_dict() if task is not None else None,
+            "request": json.loads((case_root / "request.json").read_text(encoding="utf-8")),
+            "result": result_payload,
+            "runtime": payload,
+            "model_call_ledger": ledger,
+            "final_file": _relative(final_path, root) if final_path.is_file() else None,
+            "final_sha256": sha256_file(final_path) if final_path.is_file() else None,
+            "deletion_audit": {
+                "status": "AUDITED",
+                "failure_code": "generated_node_required",
+                "model_calls": 0,
+                "node_count": deletion_evidence.get("node_count", 0),
+                "nodes": deletion_evidence.get("nodes", []),
+                "passed": deletion_passed,
+            },
+            "matched": matched and deletion_passed,
+        }
 
     reverse_case = next(case for case in negative_cases if case.negative["kind"] == "wrong_direction")
-    reverse = NPHardOrchestratorV2(
-        NPHardOrchestratorConfigV2(
-            root=root,
-            input_module=reverse_case.module,
-            problem_declaration=reverse_case.problem,
-            output_dir=output_root / "cases" / reverse_case.id,
-            lean_timeout_seconds=600,
-            authoring_policy="model-auto",
-            deepseek=deepseek,
-            runtime_prebuilt=True,
-        )
-    ).run()
-    reverse_matched = (
-        reverse.status == "BLOCKED"
-        and reverse.failure_code == "wrong_direction_only"
-        and reverse.model_calls == 0
-    )
     endpoint_case = next(case for case in negative_cases if case.negative["kind"] == "endpoint_mutation")
-    endpoint_matched = _endpoint_mutation_rejected(root=root, suite_path=suite_path)
-    negative_rows = [
-        {
+
+    def run_reverse() -> dict[str, Any]:
+        reverse = NPHardOrchestratorV2(
+            NPHardOrchestratorConfigV2(
+                root=root,
+                input_module=reverse_case.module,
+                problem_declaration=reverse_case.problem,
+                output_dir=output_root / "cases" / reverse_case.id,
+                lean_timeout_seconds=600,
+                authoring_policy="model-auto",
+                deepseek=deepseek,
+                runtime_prebuilt=True,
+            )
+        ).run()
+        reverse_matched = (
+            reverse.status == "BLOCKED"
+            and reverse.failure_code == "wrong_direction_only"
+            and reverse.model_calls == 0
+        )
+        return {
             "case_id": reverse_case.id,
             "kind": reverse_case.kind,
             "status": reverse.status,
             "failure_code": reverse.failure_code,
             "model_calls": reverse.model_calls,
             "matched": reverse_matched,
-        },
-        {
+        }
+
+    def run_endpoint_mutation() -> dict[str, Any]:
+        endpoint_matched = _endpoint_mutation_rejected(root=root, suite_path=suite_path)
+        return {
             "case_id": endpoint_case.id,
             "kind": endpoint_case.kind,
             "status": "BLOCKED",
             "failure_code": "candidate_wrong_endpoint",
             "model_calls": 0,
             "matched": endpoint_matched,
-        },
+        }
+
+    case_tasks: list[tuple[str, Callable[[], dict[str, Any]]]] = [
+        *[
+            (case.id, lambda case=case: run_existing(case))
+            for case in existing_cases
+        ],
+        *[
+            (case.id, lambda case=case: run_authoring(case))
+            for case in authoring_cases
+        ],
+        (reverse_case.id, run_reverse),
+        (endpoint_case.id, run_endpoint_mutation),
     ]
+    case_results, parallel_execution = _run_release_case_tasks(case_tasks, jobs=jobs)
+    existing_rows = [case_results[case.id] for case in existing_cases]
+    authoring_rows = [case_results[case.id] for case in authoring_cases]
+    negative_rows = [case_results[case.id] for case in negative_cases]
 
     rows = [*existing_rows, *authoring_rows, *negative_rows]
     total_calls = sum(row.get("model_calls", 0) for row in existing_rows + negative_rows) + sum(
@@ -592,6 +671,10 @@ def run_np_hard_release_real_round(
         "deletion_audit_count": sum(row["deletion_audit"]["passed"] for row in authoring_rows),
         "worker_fallback_count": fallback_count,
         "real_api_calls": total_calls,
+        "configured_case_jobs": jobs,
+        "maximum_concurrent_case_tasks": parallel_execution[
+            "maximum_concurrent_case_tasks"
+        ],
         "token_usage": _token_usage(
             [call for row in authoring_rows for call in row["model_call_ledger"]]
         ),
@@ -613,6 +696,8 @@ def run_np_hard_release_real_round(
         and metrics["deletion_audit_count"] == 5
         and metrics["worker_fallback_count"] == 0
         and metrics["real_api_calls"] == 12
+        and parallel_execution["observed_parallelism"] is True
+        and parallel_execution["final_active_case_tasks"] == 0
         and no_secret
     )
     report = {
@@ -629,6 +714,7 @@ def run_np_hard_release_real_round(
         "source_fingerprint": _source_fingerprint(root),
         "prebuild": prebuild.to_dict(),
         "metrics": metrics,
+        "parallel_execution": parallel_execution,
         "security": {
             "secret_absent": no_secret,
             "oracle_or_gold_prompt_acceptance_count": 0,
@@ -649,9 +735,11 @@ def run_np_hard_release_stability(
     report_path: Path,
     deepseek: DeepSeekConfig,
     round_count: int = 3,
+    jobs: int = DEFAULT_RELEASE_CASE_JOBS,
 ) -> dict[str, Any]:
     root = root.resolve()
     output_root = output_root.resolve()
+    jobs = _validate_release_case_jobs(jobs)
     _fresh(output_root)
     if round_count != 3:
         raise ValueError("formal G-F stability requires exactly three rounds")
@@ -666,6 +754,7 @@ def run_np_hard_release_stability(
                 report_path=round_report,
                 deepseek=deepseek,
                 round_index=index,
+                jobs=jobs,
             )
         rounds.append(completed_round)
         if not completed_round["passed"]:
@@ -698,6 +787,14 @@ def run_np_hard_release_stability(
         "deletion_audit_count": sum(run["metrics"]["deletion_audit_count"] for run in rounds),
         "worker_fallback_count": sum(run["metrics"]["worker_fallback_count"] for run in rounds),
         "real_api_calls": sum(run["metrics"]["real_api_calls"] for run in rounds),
+        "configured_case_jobs": jobs,
+        "minimum_round_maximum_concurrency": min(
+            (
+                run["parallel_execution"]["maximum_concurrent_case_tasks"]
+                for run in rounds
+            ),
+            default=0,
+        ),
         "token_usage": {
             name: sum(run["metrics"]["token_usage"].get(name, 0) for run in rounds)
             for name in sorted(
@@ -721,6 +818,12 @@ def run_np_hard_release_stability(
         and aggregate_metrics["deletion_audit_count"] == 15
         and aggregate_metrics["worker_fallback_count"] == 0
         and aggregate_metrics["real_api_calls"] == 36
+        and jobs >= 2
+        and all(
+            run["parallel_execution"]["observed_parallelism"] is True
+            and run["parallel_execution"]["final_active_case_tasks"] == 0
+            for run in rounds
+        )
         and all(len(values) == 3 and all(item["matched"] for item in values) for values in case_matrix.values())
     )
     run_refs = []
@@ -733,6 +836,7 @@ def run_np_hard_release_stability(
                 "file": _relative(path, root),
                 "sha256": sha256_file(path),
                 "metrics": run["metrics"],
+                "parallel_execution": run["parallel_execution"],
             }
         )
     report = {
@@ -745,6 +849,18 @@ def run_np_hard_release_stability(
         "source_fingerprint": _source_fingerprint(root),
         "model": deepseek.to_public_dict(),
         "metrics": aggregate_metrics,
+        "parallel_execution": {
+            "configured_case_jobs": jobs,
+            "rounds_sequential": True,
+            "case_tasks_parallel_within_round": True,
+            "all_rounds_observed_parallelism": all(
+                run["parallel_execution"]["observed_parallelism"] is True
+                for run in rounds
+            ),
+            "minimum_round_maximum_concurrency": aggregate_metrics[
+                "minimum_round_maximum_concurrency"
+            ],
+        },
         "rounds": run_refs,
         "case_matrix": case_matrix,
     }
@@ -781,7 +897,7 @@ def run_np_hard_h_a_heldout(
             lean_timeout_seconds=600,
             authoring_policy="model-required",
             attempt_budget=4,
-            call_budget=8,
+            call_budget=None,
             deepseek=deepseek,
             authoring_task=task,
             final_program_declaration=_final_program(task, dict(case.authoring)),
@@ -861,7 +977,7 @@ def run_np_hard_h_b_heldout(
             lean_timeout_seconds=600,
             authoring_policy="model-required",
             attempt_budget=4,
-            call_budget=8,
+            call_budget=None,
             deepseek=deepseek,
         )
     ).run()
@@ -910,7 +1026,7 @@ def run_np_hard_h_b_heldout(
         "input": {
             "module": input_module,
             "problem": problem,
-            "source_sha256": sha256_file(root / "Lean/Reference/Benchmark/Hardness/Inputs/NPHardGeneralization/GraphProofOnly.lean"),
+            "source_sha256": sha256_file(root / "Lean/Reference/Reports/Inputs/NPHardGeneralization/GraphProofOnly.lean"),
         },
         "source_fingerprint": _source_fingerprint(root),
         "model": deepseek.to_public_dict(),
@@ -970,7 +1086,7 @@ def run_np_hard_h_c_heldout(
             lean_timeout_seconds=600,
             authoring_policy="model-required",
             attempt_budget=4,
-            call_budget=8,
+            call_budget=None,
             deepseek=deepseek,
         )
     ).run()
@@ -1034,10 +1150,10 @@ def run_np_hard_h_c_heldout(
     sources = {
         relative: sha256_file(root / relative)
         for relative in (
-            "Lean/Reference/Benchmark/Hardness/Inputs/HCCrossModule/Problem.lean",
-            "Lean/Reference/Benchmark/Hardness/Inputs/HCCrossModule/Adapters.lean",
-            "Lean/Reference/Benchmark/Hardness/Inputs/HCCrossModule/Specification.lean",
-            "Lean/Reference/Benchmark/Hardness/Inputs/HCCrossModule/Entry.lean",
+            "Lean/Reference/Reports/Inputs/HCCrossModule/Problem.lean",
+            "Lean/Reference/Reports/Inputs/HCCrossModule/Adapters.lean",
+            "Lean/Reference/Reports/Inputs/HCCrossModule/Specification.lean",
+            "Lean/Reference/Reports/Inputs/HCCrossModule/Entry.lean",
         )
     }
     report = {
@@ -1113,7 +1229,7 @@ def run_np_hard_h_d_heldout(
             lean_timeout_seconds=600,
             authoring_policy="model-required",
             attempt_budget=4,
-            call_budget=8,
+            call_budget=None,
             deepseek=deepseek,
         )
     ).run()
@@ -1192,7 +1308,7 @@ def run_np_hard_h_d_heldout(
             "canonical_problem": canonical_problem,
             "source_sha256": sha256_file(
                 root
-                / "Lean/Reference/Benchmark/Hardness/Inputs/HDCrossModuleEncoding.lean"
+                / "Lean/Reference/Reports/Inputs/HDCrossModuleEncoding.lean"
             ),
         },
         "source_fingerprint": _source_fingerprint(root),

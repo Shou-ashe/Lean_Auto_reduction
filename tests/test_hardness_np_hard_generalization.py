@@ -14,8 +14,8 @@ from agent.hardness.np_hard_generalization import (
 
 ROOT = Path(__file__).resolve().parents[1]
 HARDNESS = ROOT / "Benchmark" / "Hardness"
-SUITE_PATH = HARDNESS / "Suites" / "np_hard_generalization.json"
-INVENTORY_PATH = HARDNESS / "np_hard_inventory.json"
+SUITE_PATH = ROOT / "Gate" / "Suites" / "np_hard_generalization.json"
+INVENTORY_PATH = ROOT / "Gate/np_hard_inventory.json"
 
 
 def _suite_payload() -> dict:

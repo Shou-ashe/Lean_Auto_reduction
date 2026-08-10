@@ -35,6 +35,7 @@ NP_HARD_INPUT_NORMALIZATION_MODULE = (
 _NORMALIZATION_MARKER = "HARDNESS_NP_HARD_INPUT"
 _HASH_PREFIX = "sha256:"
 _STABLE_ID_RE = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
+_LEAN_DECLARATION_RE_TEMPLATE = r"\b(?:abbrev|def|theorem)\s+{name}\b"
 
 
 class NPHardInputError(ValueError):
@@ -191,7 +192,7 @@ class NPHardInputIdentityV1:
 
 
 def _registry(root: Path) -> tuple[dict[str, Any], ...]:
-    path = root / "Benchmark" / "Hardness" / "np_hard_input_registry.json"
+    path = root / "Gate" / "np_hard_input_registry.json"
     raw = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(raw, dict) or raw.get("schema_version") != NP_HARD_INPUT_REGISTRY_SCHEMA_V1:
         raise ValueError("unsupported NP-hard input registry schema")
@@ -227,6 +228,182 @@ def _registry(root: Path) -> tuple[dict[str, Any], ...]:
         seen_terms.add(term)
         normalized.append(entry)
     return tuple(normalized)
+
+
+def _public_module_path(root: Path, module: str) -> Path:
+    return (
+        root
+        / "Lean"
+        / "Reference"
+        / Path(*module.split(".")).with_suffix(".lean")
+    )
+
+
+def _target_matrix_canonical(
+    *, root: Path, declarations: set[str]
+) -> tuple[str, str] | None:
+    """Read the content-addressed H-F canonical identity when available.
+
+    The Lean normalization observation remains the authority: a matrix choice
+    is used only when that declaration is present in the current import
+    closure and definitionally equal to the requested problem.
+    """
+
+    path = root / "Gate" / "NP_HARD_TARGET_MATRIX.json"
+    if not path.is_file():
+        return None
+    try:
+        value = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    if value.get("schema_version") not in {
+        "hardness_np_hard_target_matrix_v1",
+        "hardness_np_hard_target_matrix_v2",
+    }:
+        return None
+    for row in value.get("identities", []):
+        members = set(row.get("member_declarations") or [])
+        canonical = row.get("canonical_declaration")
+        module = row.get("canonical_module")
+        if (
+            declarations.intersection(members)
+            and isinstance(canonical, str)
+            and canonical in declarations
+            and isinstance(module, str)
+        ):
+            return canonical, module
+    return None
+
+
+def _inventory_module_candidates(*, root: Path, declaration: str) -> set[str]:
+    candidates: set[str] = set()
+    inventory_path = root / "Gate" / "NP_HARD_H_F_INVENTORY.json"
+    if inventory_path.is_file():
+        try:
+            inventory = json.loads(inventory_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            inventory = {}
+        for row in inventory.get("entries", []):
+            if row.get("declaration") == declaration and isinstance(
+                row.get("declaration_module"), str
+            ):
+                candidates.add(row["declaration_module"])
+        for identity in inventory.get("identities", []):
+            for member in identity.get("members", []):
+                if member.get("declaration") == declaration and isinstance(
+                    member.get("module"), str
+                ):
+                    candidates.add(member["module"])
+            if identity.get("canonical_declaration") == declaration and isinstance(
+                identity.get("canonical_module"), str
+            ):
+                candidates.add(identity["canonical_module"])
+
+    # Most declarations live in a module matching their namespace.
+    namespace = declaration.rpartition(".")[0]
+    components = namespace.split(".")
+    for end in range(len(components), 0, -1):
+        candidates.add(".".join(components[:end]))
+
+    # Namespace and physical module occasionally differ (for example
+    # ``Domain.Core`` modules).  A source-level leaf search only proposes
+    # candidates; Lean validates the winning import below.
+    leaf = re.escape(declaration.rpartition(".")[2])
+    declaration_re = re.compile(_LEAN_DECLARATION_RE_TEMPLATE.format(name=leaf))
+    reference = root / "Lean" / "Reference"
+    public_root = reference / "ComplexityReduction"
+    if public_root.is_dir():
+        for path in public_root.rglob("*.lean"):
+            try:
+                text = path.read_text(encoding="utf-8")
+            except OSError:
+                continue
+            if declaration_re.search(text):
+                candidates.add(".".join(path.relative_to(reference).with_suffix("").parts))
+    return {
+        module
+        for module in candidates
+        if module.startswith("ComplexityReduction.")
+        and _public_module_path(root, module).is_file()
+    }
+
+
+def discover_np_hard_input_module(
+    *, root: Path, requested_term: str, timeout_seconds: int = 600
+) -> str:
+    """Discover the public module for a stable ID or full declaration.
+
+    Discovery never guesses between multiple valid owners.  Every proposed
+    source module is checked by the same Lean normalization observation used
+    by the production entrypoint.
+    """
+
+    root = root.resolve()
+    entries = _registry(root)
+    if _STABLE_ID_RE.fullmatch(requested_term):
+        entry = next(
+            (item for item in entries if item["stable_id"] == requested_term), None
+        )
+        if entry is None:
+            raise NPHardInputError(
+                "input_problem_not_found",
+                f"unknown registered encoding stable ID: {requested_term}",
+            )
+        return str(entry["module"])
+
+    validate_declaration_name(requested_term, label="problem")
+    if not requested_term.startswith("ComplexityReduction."):
+        raise NPHardInputError(
+            "input_problem_not_found",
+            "automatic module discovery is restricted to public ComplexityReduction declarations",
+        )
+    candidates = {
+        str(entry["module"])
+        for entry in entries
+        if entry["problem"] == requested_term
+    }
+    candidates.update(_inventory_module_candidates(root=root, declaration=requested_term))
+    valid: list[tuple[str, int]] = []
+    first_semantic_error: NPHardInputError | None = None
+    for module in sorted(candidates):
+        try:
+            observation = observe_np_hard_input_normalization(
+                root=root,
+                input_module=module,
+                input_declaration=requested_term,
+                timeout_seconds=timeout_seconds,
+            )
+        except NPHardInputError as error:
+            if error.code != "input_problem_not_found" and first_semantic_error is None:
+                first_semantic_error = error
+            continue
+        valid.append((module, len(observation.import_modules)))
+    if not valid:
+        if first_semantic_error is not None:
+            raise first_semantic_error
+        raise NPHardInputError(
+            "input_problem_not_found",
+            "no public module exports the requested declaration",
+            candidates=tuple(sorted(candidates)),
+        )
+    # Prefer the most specific module; importing a broader umbrella is valid
+    # but is not the declaration's owning public module.
+    valid.sort(key=lambda item: (item[1], -len(item[0].split(".")), item[0]))
+    best_closure_size = valid[0][1]
+    most_specific = len(valid[0][0].split("."))
+    winners = [
+        module
+        for module, closure_size in valid
+        if closure_size == best_closure_size
+        and len(module.split(".")) == most_specific
+    ]
+    if len(winners) > 1:
+        raise NPHardInputError(
+            "ambiguous_input_module",
+            "multiple public modules export the requested declaration",
+            candidates=tuple(winners),
+        )
+    return winners[0]
 
 
 def _tagged_file_hash(path: Path) -> str:
@@ -580,7 +757,11 @@ def _encoding_problem_groups(
 
 
 def resolve_np_hard_input_reference(
-    *, root: Path, input_module: str, requested_term: str, timeout_seconds: int = 600
+    *,
+    root: Path,
+    input_module: str | None,
+    requested_term: str,
+    timeout_seconds: int = 600,
 ) -> NPHardInputReferenceV1:
     root = root.resolve()
     entries = _registry(root)
@@ -600,6 +781,12 @@ def resolve_np_hard_input_reference(
         input_module = entry["module"]
         requested_declaration = entry["problem"]
     else:
+        if not input_module:
+            input_module = discover_np_hard_input_module(
+                root=root,
+                requested_term=requested_term,
+                timeout_seconds=timeout_seconds,
+            )
         validate_module_name(input_module)
         validate_declaration_name(requested_term, label="problem")
         requested_declaration = requested_term
@@ -624,7 +811,23 @@ def resolve_np_hard_input_reference(
             "input is neither an exact PresentedProblem nor a LawfulEncodedType",
         )
     if observation.input_kind == "presented_problem":
-        canonical_problem = entry["canonical_problem"] if entry else requested_declaration
+        matching_declarations = {
+            candidate.declaration
+            for candidate in observation.candidates
+            if candidate.problem_matches_input
+        }
+        matrix_canonical = _target_matrix_canonical(
+            root=root, declarations=matching_declarations
+        )
+        canonical_problem = (
+            entry["canonical_problem"]
+            if entry
+            else (
+                matrix_canonical[0]
+                if matrix_canonical is not None
+                else requested_declaration
+            )
+        )
         canonical = candidates.get(canonical_problem)
         if canonical is None or not canonical.problem_matches_input:
             raise NPHardInputError(
@@ -632,7 +835,11 @@ def resolve_np_hard_input_reference(
                 "registered alias/wrapper does not normalize to its canonical PresentedProblem",
             )
         canonical_module = canonical.module
-        normalization_kind = entry["normalization_kind"] if entry else "exact"
+        normalization_kind = (
+            entry["normalization_kind"]
+            if entry
+            else ("exact" if canonical_problem == requested_declaration else "alias")
+        )
         resolved_encoding = f"{canonical_problem}.representation"
         normalization_candidates = tuple(
             sorted(
@@ -662,7 +869,15 @@ def resolve_np_hard_input_reference(
             for item in entries
             if item["canonical_problem"] in {candidate.declaration for candidate in group}
         }
-        registered_canonical = entry["canonical_problem"] if entry else None
+        matrix_canonical = _target_matrix_canonical(
+            root=root,
+            declarations={candidate.declaration for candidate in group},
+        )
+        registered_canonical = (
+            entry["canonical_problem"]
+            if entry
+            else (matrix_canonical[0] if matrix_canonical is not None else None)
+        )
         canonical = min(
             group,
             key=lambda candidate: (

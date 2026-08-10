@@ -250,7 +250,7 @@ def test_model_authored_forward_reduction_closes_real_lean_request(tmp_path) -> 
 def test_formal_real_model_report_records_fresh_core_and_deletion_audit() -> None:
     root = Path(__file__).resolve().parents[1]
     report = json.loads(
-        (root / "Benchmark/Hardness/NP_HARD_MVP_REPORT.json").read_text(
+        (root / "Reports/NP_HARD_MVP_REPORT.json").read_text(
             encoding="utf-8"
         )
     )

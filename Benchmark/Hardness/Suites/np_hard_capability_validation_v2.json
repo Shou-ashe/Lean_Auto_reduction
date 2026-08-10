@@ -1,0 +1,63 @@
+{
+  "cases": [
+    {
+      "budget_profile": "formal-default",
+      "case_id": "cval-er-01-zero-one-ip-direct",
+      "family": "numeric",
+      "module": "ComplexityReduction.Presentation.ZeroOneIP",
+      "problem": "ComplexityReduction.Presentation.ZeroOneIP.structuredProblem"
+    },
+    {
+      "budget_profile": "formal-default",
+      "case_id": "cval-er-02-exact-cover-two-hop",
+      "family": "set-system",
+      "module": "ComplexityReduction.Presentation.SetSystem",
+      "problem": "ComplexityReduction.Presentation.SetSystem.exactCoverStructuredProblem"
+    },
+    {
+      "budget_profile": "formal-default",
+      "case_id": "cval-er-03-knapsack-binary-three-hop",
+      "family": "numeric",
+      "module": "ComplexityReduction.Presentation.KnapsackBinary",
+      "problem": "ComplexityReduction.Presentation.KnapsackBinary.structuredProblem"
+    },
+    {
+      "budget_profile": "formal-default",
+      "case_id": "cval-er-04-job-sequencing-binary-four-hop",
+      "family": "numeric",
+      "module": "ComplexityReduction.Presentation.JobSequencingBinary",
+      "problem": "ComplexityReduction.Presentation.JobSequencingBinary.binaryStructuredProblem"
+    },
+    {
+      "budget_profile": "formal-default",
+      "case_id": "cval-er-05-zero-one-ip-binary",
+      "family": "numeric",
+      "module": "ComplexityReduction.Presentation.ZeroOneIPBinary",
+      "problem": "ComplexityReduction.Presentation.ZeroOneIPBinary.binaryStructuredProblem"
+    },
+    {
+      "budget_profile": "formal-default",
+      "case_id": "cval-au-03-seeing-set",
+      "family": "set-system",
+      "module": "ComplexityReduction.Presentation.SeeingSet",
+      "problem": "ComplexityReduction.Presentation.SeeingSet.presentedProblem"
+    },
+    {
+      "budget_profile": "formal-default",
+      "case_id": "cval-sf-01-role-graph-ir-internal",
+      "family": "graph",
+      "module": "ComplexityReduction.Domain.Core.RoleGraphIR",
+      "problem": "ComplexityReduction.Domain.RoleGraphIR.roleAssignedGraphProblem"
+    },
+    {
+      "budget_profile": "formal-default",
+      "case_id": "cval-sf-02-graph-wellformed-policy",
+      "family": "graph",
+      "module": "ComplexityReduction.Presentation.Graph",
+      "problem": "ComplexityReduction.Presentation.Graph.wellFormedProblem"
+    }
+  ],
+  "schema_version": "hardness_np_hard_capability_suite_v2",
+  "split": "validation",
+  "suite_id": "np-hard-capability-validation-v2"
+}

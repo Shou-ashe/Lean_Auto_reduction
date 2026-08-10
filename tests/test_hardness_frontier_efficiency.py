@@ -14,7 +14,7 @@ from agent.hardness.model_client import ModelResponse
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SUITE = ROOT / "Benchmark" / "Hardness" / "Suites" / "frontier_efficiency.json"
+SUITE = ROOT / "Gate" / "Suites" / "frontier_efficiency.json"
 
 
 def response(payload: dict) -> ModelResponse:

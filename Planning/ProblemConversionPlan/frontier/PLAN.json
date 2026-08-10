@@ -1,0 +1,256 @@
+{
+ "schema_version": "problems7z_frontier_conversion_plan_v1",
+ "category": "frontier",
+ "source_plan_section": "ACTIVE_AGENT_IMPROVEMENT_PLAN.md 12.4 + 12.5",
+ "plan_rule": "Unscored F0/reserve candidates; promotion into a scored lane only after endpoint modules freeze, solution isolation and oracle mutation pass, and required new codecs/predicates are audited.",
+ "structured_reserve_count": 15,
+ "pdf_only_count": 16,
+ "long_term_f0_archive_ids": [
+  "06-001",
+  "06-002",
+  "06-003",
+  "06-004",
+  "06-005",
+  "06-010",
+  "06-011",
+  "06-012",
+  "03-022e"
+ ],
+ "structured_reserve": [
+  {
+   "archive_id": "01-002",
+   "direction": "Vertex Cover -> Weighted Vertex Cover",
+   "convert_plan": "New WeightedVertexCover endpoint: weighted graph codec plus vertex-weight list.",
+   "promotion_conditions": "Unify weights to 1; define vertex/weight index well-formedness first. Promotion: after codec audit.",
+   "status": "reserve"
+  },
+  {
+   "archive_id": "01-006",
+   "direction": "k-Coloring -> Class Scheduling",
+   "convert_plan": "New ConflictScheduling endpoint; normalize vague time-slot text to conflict graph + room bound.",
+   "promotion_conditions": "Presentation adapter of ChromaticNumber; 06-029 Exam Scheduling is a statement variant of the same edge. Promotion: after endpoint audit.",
+   "status": "reserve"
+  },
+  {
+   "archive_id": "01-007",
+   "direction": "Subset Sum -> Multi-Path",
+   "convert_plan": "New weighted multigraph closed-trail endpoint (loops/multiple edges allowed, no repeated edge, total weight exactly t).",
+   "promotion_conditions": "Needs faithful multigraph codec and trail verifier. Promotion: after codec audit.",
+   "status": "reserve"
+  },
+  {
+   "archive_id": "06-014",
+   "direction": "Exact Cover -> Subset Sum",
+   "convert_plan": "Normalize Contains Partition to Exact Cover; base |C|+1 incidence-digit encoding.",
+   "promotion_conditions": "Prove carry-free addition and polynomial encoding length. Promotion: after SubsetSum endpoint.",
+   "status": "reserve"
+  },
+  {
+   "archive_id": "06-016",
+   "direction": "1-IN-3 SAT -> Disjoint Sets",
+   "convert_plan": "Normalize Disjoint Sets to Set Packing.",
+   "promotion_conditions": "Freeze k and set-multiplicity semantics to avoid double scoring with 06-020. Promotion: after normalization.",
+   "status": "reserve"
+  },
+  {
+   "archive_id": "06-021",
+   "direction": "3SAT -> Path With Forbidden Pairs",
+   "convert_plan": "New forbidden-pair path endpoint: graph + endpoints + forbidden pairs presentation.",
+   "promotion_conditions": "Variable/clause chained gadgets; L5 frontier. Promotion: after endpoint formalization.",
+   "status": "reserve"
+  },
+  {
+   "archive_id": "06-022",
+   "direction": "3SAT -> Directed Hamiltonian Path",
+   "convert_plan": "New directed HPath endpoint with specified s,t on the directed graph carrier.",
+   "promotion_conditions": "Variable-path/clause-detour gadget construction. Promotion: after endpoint formalization.",
+   "status": "reserve"
+  },
+  {
+   "archive_id": "06-023",
+   "direction": "Directed HPath -> Undirected HPath",
+   "convert_plan": "Two new HPath endpoints; entry/middle/exit gadget per directed vertex.",
+   "promotion_conditions": "Prove undirected path can only traverse in the prescribed direction. Promotion: after both endpoints.",
+   "status": "reserve"
+  },
+  {
+   "archive_id": "06-024",
+   "direction": "Directed HPath -> Directed HC",
+   "convert_plan": "New directed HPath to current DHC; trivial t->s edge only when source contract fixes s with no in-edge and t with no out-edge.",
+   "promotion_conditions": "Otherwise endpoint-normalization adapter required. Promotion: after source contract freeze.",
+   "status": "reserve"
+  },
+  {
+   "archive_id": "03-005",
+   "direction": "Hamiltonian Path -> Longest Path",
+   "convert_plan": "New HPath -> new LongestPath endpoint; simple path plus length unit; bound=|V|-1.",
+   "promotion_conditions": "Handle greater-than-k vs at-least-k off-by-one. Promotion: after both endpoints.",
+   "status": "reserve"
+  },
+  {
+   "archive_id": "03-004b",
+   "direction": "Partition -> Bin Packing",
+   "convert_plan": "Current Partition -> new Bin Packing with two bins of half-total capacity.",
+   "promotion_conditions": "Handle odd sums and at-most-capacity (not exactly-capacity) semantics. Promotion: after BinPacking endpoint.",
+   "status": "reserve"
+  },
+  {
+   "archive_id": "03-018b",
+   "direction": "Partition -> Multiprocessor Scheduling",
+   "convert_plan": "Current Partition -> new makespan scheduling with m=2, deadline=sum/2.",
+   "promotion_conditions": "Reuse JobSequencing numeric codec parts but never conflate with the Job Sequencing predicate. Promotion: after endpoint.",
+   "status": "reserve"
+  },
+  {
+   "archive_id": "03-003a",
+   "direction": "Clique -> Subgraph Isomorphism",
+   "convert_plan": "Current Clique -> new graph-pair endpoint; map H=K_k.",
+   "promotion_conditions": "Needs injective vertex map witness, edge preservation, graph-pair codec. Promotion: after endpoint formalization.",
+   "status": "reserve"
+  },
+  {
+   "archive_id": "03-013d",
+   "direction": "Hamiltonian Path -> Bounded-Degree Spanning Tree",
+   "convert_plan": "New HPath -> new spanning-tree endpoint with degree bound 2.",
+   "promotion_conditions": "Formally prove connected spanning tree of max degree <=2 is a path. Promotion: after both endpoints.",
+   "status": "reserve"
+  },
+  {
+   "archive_id": "03-023a",
+   "direction": "3SAT -> MAX-SAT",
+   "convert_plan": "Current 3SAT -> new decision MAX-SAT: whether at least k of m clauses are satisfiable; set k=m.",
+   "promotion_conditions": "Archive statement too short; rewrite as (formula,k). Promotion: after formal predicate.",
+   "status": "reserve"
+  }
+ ],
+ "pdf_only": [
+  {
+   "candidate_id": "pdf08-ex07-three-color-to-twelve-color",
+   "direction": "3-COLOR -> 12-COLOR",
+   "convert_plan": "New fixed-palette endpoint: add a 9-clique fully connected to the original graph, consuming 9 colors; reverse direction restricts the 12-coloring to the original graph.",
+   "promotion_conditions": "Measure padding gadget; capability weight stays 0 until answer-free problemization.",
+   "capability_weight": 0,
+   "status": "pdf_only"
+  },
+  {
+   "candidate_id": "pdf08-ex09-five-color-to-careful-five-color",
+   "direction": "5-COLOR -> CAREFUL-5-COLOR",
+   "convert_plan": "New cyclic-distance coloring predicate: color differences not 0,+/-1 mod 5; replace edges per the lecture gadget.",
+   "promotion_conditions": "High formalization risk; requires new predicate and gadget audit.",
+   "capability_weight": 0,
+   "status": "pdf_only"
+  },
+  {
+   "candidate_id": "pdf08-ex10c-hamiltonian-path-to-leaf-bounded-spanning-tree",
+   "direction": "HAMILTONIAN PATH -> SPANNING TREE WITH <=42 LEAVES",
+   "convert_plan": "New leaf-bounded spanning-tree endpoint: add universal start vertex s plus 41 degree-1 leaves; tree has >=41 leaves, total <=42 iff the original part is a spanning path from s.",
+   "promotion_conditions": "Gadget chain; both endpoints missing.",
+   "capability_weight": 0,
+   "status": "pdf_only"
+  },
+  {
+   "candidate_id": "pdf08-ex15a-hamiltonian-path-to-tonian-path",
+   "direction": "HAMILTONIAN PATH -> TONIAN PATH",
+   "convert_plan": "New at-least-half-coverage path predicate: add n isolated vertices; a non-trivial long path lives in the original component, so covering >=half iff original has a Hamiltonian path.",
+   "promotion_conditions": "Padding construction; both endpoints missing.",
+   "capability_weight": 0,
+   "status": "pdf_only"
+  },
+  {
+   "candidate_id": "pdf08-ex15b-tonian-path-to-tonian-cycle",
+   "direction": "TONIAN PATH -> TONIAN CYCLE",
+   "convert_plan": "New Tonian Cycle endpoint: universal closure vertex plus an isolated parity vertex; threshold ceil((n+2)/2)=ceil(n/2)+1; delete closure vertex from the cycle to get a long path.",
+   "promotion_conditions": "Parity-sensitive threshold; both endpoints missing.",
+   "capability_weight": 0,
+   "status": "pdf_only"
+  },
+  {
+   "candidate_id": "pdf08-ex16b-hamiltonian-cycle-to-double-hamiltonian-circuit",
+   "direction": "HAMILTONIAN CYCLE -> DOUBLE-HAMILTONIAN CIRCUIT",
+   "convert_plan": "New closed-walk predicate visiting every vertex exactly twice; must exclude spurious repeated-walk solutions.",
+   "promotion_conditions": "Semantic risk of accidental solutions.",
+   "capability_weight": 0,
+   "status": "pdf_only"
+  },
+  {
+   "candidate_id": "pdf08-ex17-hamiltonian-cycle-to-heavy-hamiltonian-cycle",
+   "direction": "HAMILTONIAN CYCLE -> HEAVY HAMILTONIAN CYCLE",
+   "convert_plan": "Reuse weighted graph codec; weights chosen so a Hamiltonian cycle exists iff one of weight at least half the total edge weight exists.",
+   "promotion_conditions": "Weight thresholds need audit.",
+   "capability_weight": 0,
+   "status": "pdf_only"
+  },
+  {
+   "candidate_id": "pdf08-ex20-three-color-to-three-way-mumbletypeg",
+   "direction": "3-COLOR -> THREE-WAY MUMBLETYPEG",
+   "convert_plan": "Normalize to CliqueCover k=3 special case on the complement of the conflict graph; handle non-empty-group conditions.",
+   "promotion_conditions": "Endpoints ready pending identity audit.",
+   "capability_weight": 0,
+   "status": "pdf_only"
+  },
+  {
+   "candidate_id": "pdf10-thm15-nae-three-sat-to-max-cut",
+   "direction": "NAE-3SAT -> MAX CUT",
+   "convert_plan": "Use the unweighted PDF 10 construction: normalize clauses so clause triangles share no edge, variable edges per x/not-x, clause triangles, threshold n+2m; PDF 14's weighted M=10m version is a WeightedMaxCut frontier.",
+   "promotion_conditions": "Weights need a proven weight-to-unweighted adapter before reuse of the current endpoint.",
+   "capability_weight": 0,
+   "status": "pdf_only"
+  },
+  {
+   "candidate_id": "pdf10-thm17-vertex-cover-to-undirected-hamiltonian-cycle",
+   "direction": "VERTEX COVER -> UNDIRECTED HAMILTONIAN CYCLE",
+   "convert_plan": "Direct gadget VC->UHC; composition VC->DHC->UHC forbidden; tests large edge-pattern synthesis.",
+   "promotion_conditions": "Both endpoints ready pending identity audit.",
+   "capability_weight": 0,
+   "status": "pdf_only"
+  },
+  {
+   "candidate_id": "pdf10-cor22-hamiltonian-cycle-to-longest-circuit",
+   "direction": "HAMILTONIAN CYCLE -> LONGEST CIRCUIT",
+   "convert_plan": "Current UHC -> new weighted longest-simple-cycle endpoint, all edge weights 1, bound n.",
+   "promotion_conditions": "Weighted cycle endpoint needed.",
+   "capability_weight": 0,
+   "status": "pdf_only"
+  },
+  {
+   "candidate_id": "pdf10-ex08-dominating-set-to-k-center",
+   "direction": "DOMINATING SET -> K-CENTER",
+   "convert_plan": "New Dominating Set -> new weighted K-Center; distances in a 1/2 metric, radius 1.",
+   "promotion_conditions": "Requires complete weighted representation proof; both endpoints missing.",
+   "capability_weight": 0,
+   "status": "pdf_only"
+  },
+  {
+   "candidate_id": "pdf11-sat-to-exact-cover",
+   "direction": "SAT -> EXACT COVER",
+   "convert_plan": "Current CNF/3SAT -> current Exact Cover via direct set gadget; composition through ChromaticNumber/SetCovering forbidden.",
+   "promotion_conditions": "Large direct-edge challenge; endpoints ready pending identity audit.",
+   "capability_weight": 0,
+   "status": "pdf_only"
+  },
+  {
+   "candidate_id": "pdf11-exact-cover-to-directed-hamiltonian-cycle",
+   "direction": "EXACT COVER -> DIRECTED HAMILTONIAN CYCLE",
+   "convert_plan": "Formalize the lecture subset-selector gadget; large L5/L6 direct-edge challenge.",
+   "promotion_conditions": "Endpoints ready pending identity audit.",
+   "capability_weight": 0,
+   "status": "pdf_only"
+  },
+  {
+   "candidate_id": "pdf11-exact-cover-to-subset-sum",
+   "direction": "EXACT COVER -> SUBSET SUM",
+   "convert_plan": "Carry-free base encoding; shares the numeric primitive with 06-014 but keeps a different source oracle.",
+   "promotion_conditions": "SubsetSum endpoint missing.",
+   "capability_weight": 0,
+   "status": "pdf_only"
+  },
+  {
+   "candidate_id": "pdf12-three-partition-to-minimum-makespan",
+   "direction": "3-PARTITION -> MINIMUM MAKESPAN SCHEDULING",
+   "convert_plan": "New 3-Partition and makespan endpoints; m=n, bound B forces exactly three jobs per machine; strong-NP-hard numeric frontier.",
+   "promotion_conditions": "Both endpoints missing.",
+   "capability_weight": 0,
+   "status": "pdf_only"
+  }
+ ]
+}

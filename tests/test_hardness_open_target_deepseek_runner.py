@@ -34,7 +34,7 @@ from scripts.run_deepseek_open_target_benchmark import (
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SUITE = ROOT / "Benchmark" / "Hardness" / "Suites" / "open_target.json"
+SUITE = ROOT / "Gate" / "Suites" / "open_target.json"
 DYNAMIC_TARGET = "ComplexityReduction.Problems.Dynamic.problem"
 DYNAMIC_EVIDENCE = "ComplexityReduction.Evidence.dynamicNativeNP"
 DYNAMIC_TARGET_ID = "sha256:dynamic-target"
@@ -85,7 +85,7 @@ def test_formal_runner_requires_fresh_root_and_has_no_resume_or_replay_cli(
     assert "replay" not in destinations
     parsed = command.parse_args([])
     assert parsed.canonical_report == (
-        ROOT / "Benchmark" / "Hardness" / "OPEN_TARGET_REPORT.json"
+        ROOT / "Reports" / "OPEN_TARGET_REPORT.json"
     )
 
 

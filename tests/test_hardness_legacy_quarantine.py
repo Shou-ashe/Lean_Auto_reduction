@@ -25,7 +25,7 @@ def test_original_legacy_benchmark_paths_are_removed_from_active_root() -> None:
 
 
 def test_current_manifest_never_loads_legacy_files() -> None:
-    manifest = json.loads((HARDNESS / "MANIFEST.json").read_text())
+    manifest = json.loads((ROOT / "Gate" / "MANIFEST.json").read_text())
     assert all("Legacy" not in suite for suite in manifest["suites"])
 
 

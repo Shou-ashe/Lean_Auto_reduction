@@ -26,7 +26,7 @@ def parser() -> argparse.ArgumentParser:
     command.add_argument(
         "--suite",
         type=Path,
-        default=ROOT / "Benchmark" / "Hardness" / "Suites" / "predicate_input.json",
+        default=ROOT / "Gate" / "Suites" / "predicate_input.json",
     )
     command.add_argument(
         "--output-root",

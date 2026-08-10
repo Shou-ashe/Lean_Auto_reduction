@@ -11,6 +11,7 @@ class, primitives, or dependency edges.
 from __future__ import annotations
 
 import json
+import re
 import secrets
 from dataclasses import asdict, dataclass
 from functools import lru_cache
@@ -27,19 +28,70 @@ from .lean_runner import (
 from .models import CommandResult, sha256_id
 from .np_hard_authoring import (
     NPHardAuthoringTaskV2,
+    _NP_HARD_CERTIFIED_REDUCTION_HEAD_V2,
+    _exact_certified_reduction_endpoints_v2,
+    _exact_gadget_packet_endpoints_v2,
+    _exact_tmkarp_reduction_endpoints_v2,
+    _successor_only_observer_chain_payload_v2,
     build_np_hard_authoring_task_v2,
 )
 
 
-NP_HARD_AUTHORING_OBSERVATION_SCHEMA_V1 = (
-    "hardness_np_hard_authoring_observation_v2"
+NP_HARD_AUTHORING_OBSERVATION_SCHEMA_V3 = (
+    "hardness_np_hard_authoring_observation_v3"
 )
+# Compatibility export for callers that imported the pre-H-J constant name.
+NP_HARD_AUTHORING_OBSERVATION_SCHEMA_V1 = NP_HARD_AUTHORING_OBSERVATION_SCHEMA_V3
 NP_HARD_AUTHORING_PLAN_SCHEMA_V2 = "hardness_np_hard_authoring_plan_v2"
 NP_HARD_AUTHORING_PLANNER_MODULE = (
     "ComplexityReduction.Agent.Hardness.AuthoringPlanner"
 )
 _MARKER = "HARDNESS_NP_HARD_PLAN"
 _HASH_PREFIX = "sha256:"
+_TYPED_CAPABILITY_ROW_FIELD_COUNT = 11
+_TYPED_CAPABILITY_KINDS = frozenset(
+    {
+        "forward_representation_adapter",
+        "forward_tmkarp_admission",
+        "forward_successor_only_tmkarp_admission",
+        "forward_certified_successor",
+        "forward_program_indexed_admission",
+        "forward_gadget_indexed_admission",
+    }
+)
+_TYPED_CAPABILITY_AUTHORITIES = {
+    "forward_representation_adapter": "lean_exact_type_defeq",
+    "forward_tmkarp_admission": "lean_exact_tmkarp_public_source",
+    "forward_successor_only_tmkarp_admission": (
+        "lean_exact_successor_only_tmkarp_shared_source"
+    ),
+    "forward_certified_successor": "lean_registry_exact_certified_successor",
+    "forward_program_indexed_admission": (
+        "lean_exact_program_indexed_public_packet"
+    ),
+    "forward_gadget_indexed_admission": (
+        "lean_exact_gadget_indexed_shared_packet"
+    ),
+}
+_TMKARP_ADMISSION_MODULE = (
+    "ComplexityReduction.Agent.Hardness.AuthoringSources"
+)
+_SUCCESSOR_ONLY_TMKARP_ADMISSION_MODULE = (
+    "ComplexityReduction.Agent.Hardness.SuccessorAuthoringSources"
+)
+_PROGRAM_INDEXED_ADMISSION_MODULE = (
+    "ComplexityReduction.Agent.Hardness.ProgramAuthoringSources"
+)
+_GADGET_INDEXED_ADMISSION_MODULE = (
+    "ComplexityReduction.Agent.Hardness.GadgetAuthoringSources"
+)
+_TYPED_CAPABILITY_REQUIRED_WITNESS_TERMS = (
+    "PolyProg.const",
+    "PolyProg.id",
+    "false",
+)
+_TYPED_CAPABILITY_PAIR_WITNESS_TERMS = ("PolyProg.pair", ").pair", ".pair (")
+_TYPED_CAPABILITY_FORBIDDEN_WITNESS_TERMS = ("PolyProg.snd",)
 _FORBIDDEN_TEXT = (
     '"case_id"',
     '"expected"',
@@ -49,6 +101,28 @@ _FORBIDDEN_TEXT = (
     ".oracles.",
     ".hiddentargets.",
 )
+_SOURCE_CONTEXT_STOP_WORDS = {
+    "agent",
+    "complexity",
+    "core",
+    "domain",
+    "hardness",
+    "input",
+    "karp",
+    "legacy",
+    "presentation",
+    "problem",
+    "problems",
+    "reduction",
+    "route",
+    "routes",
+    "runtime",
+    "source",
+    "structured",
+    "target",
+    "the",
+    "to",
+}
 
 
 class NPHardAuthoringPlannerError(ValueError):
@@ -70,6 +144,54 @@ def _assert_public(value: str, *, label: str) -> None:
     lowered = value.lower()
     if any(token in lowered for token in _FORBIDDEN_TEXT):
         _fail("oracle_or_gold_import", f"{label} contains benchmark-only metadata")
+
+
+def _identifier_tokens(value: str) -> set[str]:
+    expanded = re.sub(r"([a-z0-9])([A-Z])", r"\1 \2", value)
+    return {
+        token
+        for token in re.findall(r"[A-Za-z0-9]+", expanded.lower())
+        if len(token) >= 3 and token not in _SOURCE_CONTEXT_STOP_WORDS
+    }
+
+
+def _canonical_lean_text(value: str) -> str:
+    return " ".join(value.split())
+
+
+def _relevant_direct_public_sources(
+    *, root: Path, source_files: Iterable[Path], query_values: Iterable[str]
+) -> tuple[Path, ...]:
+    """Select bounded, content-addressed public context from direct imports."""
+
+    query_tokens = set().union(*(_identifier_tokens(value) for value in query_values))
+    ranked: dict[Path, tuple[int, str]] = {}
+    for source_file in source_files:
+        for line in source_file.read_text(encoding="utf-8").splitlines():
+            stripped = line.strip()
+            if not stripped.startswith("import "):
+                continue
+            imported = stripped.removeprefix("import ").strip()
+            if not imported or any(token in imported.lower() for token in _FORBIDDEN_TEXT):
+                continue
+            score = len(query_tokens & _identifier_tokens(imported))
+            if score <= 0:
+                continue
+            try:
+                imported_file = module_file(root / "Lean", imported).resolve()
+                imported_file.relative_to(root)
+            except (ValueError, OSError):
+                continue
+            if imported_file.is_file() and imported_file not in source_files:
+                ranked[imported_file] = max(
+                    ranked.get(imported_file, (0, imported)), (score, imported)
+                )
+    return tuple(
+        path
+        for path, _ in sorted(
+            ranked.items(), key=lambda item: (-item[1][0], item[1][1])
+        )[:2]
+    )
 
 
 def _ilean_roots(root: Path) -> tuple[Path, ...]:
@@ -266,6 +388,43 @@ class PlannerCertifiedReductionV1:
 
 
 @dataclass(frozen=True)
+class PlannerTypedCapabilityV3:
+    capability_kind: str
+    capability_id: str
+    source: str
+    target: str
+    source_node: str
+    target_node: str
+    witness: str
+    exact_type: str
+    module: str
+    authority: str
+
+    @property
+    def observation_key(self) -> tuple[str, str, str, str]:
+        return (
+            self.capability_kind,
+            self.source_node,
+            self.target_node,
+            self.capability_id,
+        )
+
+    def to_dict(self) -> dict[str, str]:
+        return {
+            "capability_kind": self.capability_kind,
+            "id": self.capability_id,
+            "source": self.source,
+            "target": self.target,
+            "source_node": self.source_node,
+            "target_node": self.target_node,
+            "witness": self.witness,
+            "exact_type": self.exact_type,
+            "module": self.module,
+            "authority": self.authority,
+        }
+
+
+@dataclass(frozen=True)
 class NPHardAuthoringObservationV1:
     nonce: str
     input_module: str
@@ -286,6 +445,7 @@ class NPHardAuthoringObservationV1:
     hardness_seeds: tuple[PlannerHardnessSeedV1, ...]
     primitives: tuple[PlannerPrimitiveV1, ...]
     certified_reductions: tuple[PlannerCertifiedReductionV1, ...]
+    typed_capabilities: tuple[PlannerTypedCapabilityV3, ...]
     complete_problem_count: int
     schema_version: str = NP_HARD_AUTHORING_OBSERVATION_SCHEMA_V1
 
@@ -322,6 +482,9 @@ class NPHardAuthoringObservationV1:
             "certified_reductions": [
                 {**asdict(item), "edge_id": item.edge_id}
                 for item in self.certified_reductions
+            ],
+            "typed_capabilities": [
+                item.to_dict() for item in self.typed_capabilities
             ],
             "complete_problem_count": self.complete_problem_count,
         }
@@ -373,6 +536,7 @@ def parse_np_hard_authoring_observation(
     seeds: list[PlannerHardnessSeedV1] = []
     primitives: list[PlannerPrimitiveV1] = []
     reductions: list[PlannerCertifiedReductionV1] = []
+    typed_capabilities: list[PlannerTypedCapabilityV3] = []
     completes: list[list[str]] = []
     fingerprints: set[str] = set()
     for row in rows:
@@ -387,6 +551,7 @@ def parse_np_hard_authoring_observation(
             "hardness_seed": 7,
             "primitive": 8,
             "certified_reduction": 12,
+            "typed_capability": _TYPED_CAPABILITY_ROW_FIELD_COUNT,
             "complete": 2,
         }
         if kind not in expected_fields or len(fields) != expected_fields[kind]:
@@ -416,6 +581,8 @@ def parse_np_hard_authoring_observation(
             primitives.append(PlannerPrimitiveV1(*fields[:-1]))
         elif kind == "certified_reduction":
             reductions.append(PlannerCertifiedReductionV1(*fields[:-1]))
+        elif kind == "typed_capability":
+            typed_capabilities.append(PlannerTypedCapabilityV3(*fields[:-1]))
         elif kind == "complete":
             completes.append(fields)
     if len(inputs) != 1 or len(completes) != 1 or len(fingerprints) != 1:
@@ -439,6 +606,13 @@ def parse_np_hard_authoring_observation(
         {item.edge_id for item in reductions}
     ) != len(reductions):
         _fail("invalid_authoring_planner_observation", "duplicate registered capability")
+    if len({item.capability_id for item in typed_capabilities}) != len(
+        typed_capabilities
+    ):
+        _fail(
+            "invalid_authoring_planner_observation",
+            "duplicate typed capability identifier",
+        )
     problem_names = {problem.declaration for problem in problems}
     for program in programs:
         if program.source not in problem_names or program.target not in problem_names:
@@ -457,6 +631,267 @@ def parse_np_hard_authoring_observation(
             _fail("candidate_wrong_endpoint", "certified edge escaped the problem set")
         if reduction.direction not in {"forward", "backward"}:
             _fail("candidate_wrong_direction", "certified edge direction is invalid")
+    problems_by_name = {problem.declaration: problem for problem in problems}
+    for capability in typed_capabilities:
+        if capability.capability_kind not in _TYPED_CAPABILITY_KINDS:
+            _fail(
+                "invalid_authoring_planner_observation",
+                f"unsupported typed capability kind: {capability.capability_kind}",
+            )
+        if capability.authority != _TYPED_CAPABILITY_AUTHORITIES[
+            capability.capability_kind
+        ]:
+            _fail(
+                "invalid_authoring_planner_observation",
+                "typed capability authority differs from its closed Lean observation kind",
+            )
+        if not capability.capability_id.strip() or len(capability.capability_id) > 12_000:
+            _fail(
+                "invalid_authoring_planner_observation",
+                "typed capability identifier is invalid",
+            )
+        source = problems_by_name.get(capability.source)
+        target = problems_by_name.get(capability.target)
+        if source is None or target is None:
+            _fail(
+                "candidate_wrong_endpoint",
+                "typed capability endpoint escaped the exact problem set",
+            )
+        if capability.capability_kind == "forward_representation_adapter":
+            if source.module not in import_modules or target.module not in import_modules:
+                _fail(
+                    "authoring_catalog_dependency_stale",
+                    "representation adapter endpoint escaped the input import closure",
+                )
+        elif target.module not in import_modules:
+            dependent_successors = tuple(
+                successor
+                for successor in typed_capabilities
+                if capability.capability_kind
+                in {
+                    "forward_tmkarp_admission",
+                    "forward_successor_only_tmkarp_admission",
+                }
+                and successor.capability_kind
+                in {
+                    "forward_certified_successor",
+                    "forward_program_indexed_admission",
+                }
+                and successor.source_node == capability.target_node
+                and successor.target_node == input_node
+            )
+            if len(dependent_successors) != 1:
+                _fail(
+                    "authoring_catalog_dependency_stale",
+                    "typed forward capability target escaped the input import closure without one exact successor",
+                )
+        if (
+            capability.source_node != source.endpoint_node
+            or capability.target_node != target.endpoint_node
+        ):
+            _fail(
+                "candidate_wrong_endpoint",
+                "typed capability endpoint node does not match its Lean problem",
+            )
+        if capability.source_node == capability.target_node:
+            _fail(
+                "candidate_wrong_direction",
+                "typed capability collapsed source and target endpoint nodes",
+            )
+        if not capability.witness.strip() or not capability.exact_type.strip():
+            _fail(
+                "invalid_authoring_planner_observation",
+                "typed capability lacks its exact public witness or type",
+            )
+        if capability.capability_kind == "forward_representation_adapter":
+            if capability.module != target.module:
+                _fail(
+                    "authoring_catalog_dependency_stale",
+                    "representation adapter owner differs from its target problem module",
+                )
+            if "PolyProg" not in capability.exact_type:
+                _fail(
+                    "invalid_authoring_planner_observation",
+                    "forward representation adapter is not an exact PolyProg",
+                )
+            source_representation_index = capability.exact_type.find(
+                source.rendered_representation
+            )
+            target_representation_index = capability.exact_type.rfind(
+                target.rendered_representation
+            )
+            if (
+                source_representation_index < 0
+                or target_representation_index < 0
+                or source_representation_index >= target_representation_index
+            ):
+                _fail(
+                    "candidate_wrong_direction",
+                    "forward representation adapter exact type reverses its representations",
+                )
+            if any(
+                token not in capability.witness
+                for token in _TYPED_CAPABILITY_REQUIRED_WITNESS_TERMS
+            ) or not any(
+                token in capability.witness
+                for token in _TYPED_CAPABILITY_PAIR_WITNESS_TERMS
+            ) or any(
+                token in capability.witness
+                for token in _TYPED_CAPABILITY_FORBIDDEN_WITNESS_TERMS
+            ):
+                _fail(
+                    "candidate_wrong_direction",
+                    "forward representation adapter witness has the wrong structural direction",
+                )
+        elif capability.capability_kind in {
+            "forward_tmkarp_admission",
+            "forward_successor_only_tmkarp_admission",
+        }:
+            expected_module = (
+                _TMKARP_ADMISSION_MODULE
+                if capability.capability_kind == "forward_tmkarp_admission"
+                else _SUCCESSOR_ONLY_TMKARP_ADMISSION_MODULE
+            )
+            if capability.module != expected_module:
+                _fail(
+                    "authoring_catalog_dependency_stale",
+                    "TMKarp admission witness escaped its closed public source authority",
+                )
+            try:
+                validate_declaration_name(
+                    capability.witness, label="typed TMKarp admission witness"
+                )
+            except ValueError as error:
+                _fail("invalid_authoring_planner_observation", str(error))
+            if not capability.witness.startswith(capability.module + "."):
+                _fail(
+                    "authoring_catalog_dependency_stale",
+                    "TMKarp admission witness is not owned by its observed public module",
+                )
+            source_endpoint = (
+                source.rendered_endpoint + ".toEncodedDecisionProblem"
+            )
+            target_endpoint = (
+                target.rendered_endpoint + ".toEncodedDecisionProblem"
+            )
+            if _exact_tmkarp_reduction_endpoints_v2(
+                capability.exact_type
+            ) != (source_endpoint, target_endpoint):
+                _fail(
+                    "candidate_wrong_direction",
+                    "TMKarp admission exact type reverses or substitutes its endpoints",
+                )
+        elif capability.capability_kind == "forward_program_indexed_admission":
+            if capability.module != _PROGRAM_INDEXED_ADMISSION_MODULE:
+                _fail(
+                    "authoring_catalog_dependency_stale",
+                    "program-indexed packet escaped the closed public source module",
+                )
+            try:
+                validate_declaration_name(
+                    capability.witness,
+                    label="typed program-indexed admission witness",
+                )
+            except ValueError as error:
+                _fail("invalid_authoring_planner_observation", str(error))
+            if not capability.witness.startswith(capability.module + "."):
+                _fail(
+                    "authoring_catalog_dependency_stale",
+                    "program-indexed packet is not owned by its observed public module",
+                )
+            if "ProgramIndexedAdmissionPacket" not in capability.exact_type:
+                _fail(
+                    "invalid_authoring_planner_observation",
+                    "program-indexed admission lacks its exact packet type",
+                )
+            source_index = capability.exact_type.find(source.rendered_endpoint)
+            target_index = capability.exact_type.rfind(target.rendered_endpoint)
+            if (
+                source_index < 0
+                or target_index < 0
+                or source_index >= target_index
+            ):
+                _fail(
+                    "candidate_wrong_direction",
+                    "program-indexed packet exact type reverses or substitutes its endpoints",
+                )
+        elif capability.capability_kind == "forward_gadget_indexed_admission":
+            if capability.module != _GADGET_INDEXED_ADMISSION_MODULE:
+                _fail(
+                    "authoring_catalog_dependency_stale",
+                    "gadget-indexed packet escaped the closed public source module",
+                )
+            try:
+                validate_declaration_name(
+                    capability.witness,
+                    label="typed gadget-indexed admission witness",
+                )
+            except ValueError as error:
+                _fail("invalid_authoring_planner_observation", str(error))
+            if not capability.witness.startswith(capability.module + "."):
+                _fail(
+                    "authoring_catalog_dependency_stale",
+                    "gadget-indexed packet is not owned by its observed public module",
+                )
+            packet_endpoints = _exact_gadget_packet_endpoints_v2(
+                capability.exact_type
+            )
+            reference_matches = tuple(
+                problem
+                for problem in problems
+                if problem.declaration not in {source.declaration, target.declaration}
+                and packet_endpoints
+                == (
+                    source.rendered_endpoint,
+                    problem.rendered_endpoint,
+                    target.rendered_endpoint,
+                )
+            )
+            if len(reference_matches) != 1:
+                _fail(
+                    "candidate_wrong_direction",
+                    "gadget-indexed packet does not bind one ordered source/reference/target triple",
+                )
+        else:
+            try:
+                validate_module_name(capability.module)
+                validate_declaration_name(
+                    capability.witness, label="typed certified successor witness"
+                )
+            except ValueError as error:
+                _fail("invalid_authoring_planner_observation", str(error))
+            if _exact_certified_reduction_endpoints_v2(
+                capability.exact_type
+            ) is None:
+                _fail(
+                    "invalid_authoring_planner_observation",
+                    "forward certified successor lacks an exact CertifiedReduction type",
+                )
+            matching_registered_edges = tuple(
+                reduction
+                for reduction in reductions
+                if reduction.direction == "forward"
+                and reduction.role not in {"ingress", "finalComposition"}
+                and reduction.source_node == capability.source_node
+                and reduction.target_node == capability.target_node
+                and reduction.module == capability.module
+                and _canonical_lean_text(reduction.exact_type)
+                == _canonical_lean_text(capability.exact_type)
+                and capability.witness
+                in {reduction.declaration, reduction.lean_term}
+            )
+            if len(matching_registered_edges) != 1:
+                _fail(
+                    "invalid_authoring_planner_observation",
+                    "certified successor is not one unique forward exportValidated registry edge",
+                )
+        for label, value in {
+            "typed capability ID": capability.capability_id,
+            "typed capability witness": capability.witness,
+            "typed capability exact type": capability.exact_type,
+            "typed capability module": capability.module,
+        }.items():
+            _assert_public(value, label=label)
     for seed in seeds:
         if seed.problem not in problem_names:
             _fail("fabricated_hardness_seed", "hardness seed endpoint escaped the problem set")
@@ -470,9 +905,56 @@ def parse_np_hard_authoring_observation(
         _fail("authoring_catalog_dependency_stale", "input declaration escaped its import closure")
     for capability in (*programs, *relations, *gaps):
         if capability.module not in closure_set:
+            capability_name = getattr(
+                capability,
+                "declaration",
+                getattr(capability, "capability_id", "unknown-capability"),
+            )
             _fail(
                 "authoring_catalog_dependency_stale",
-                f"closure capability escaped its import graph: {capability.declaration}",
+                f"closure capability escaped its import graph: {capability_name}",
+            )
+    for capability in typed_capabilities:
+        if (
+            capability.capability_kind == "forward_representation_adapter"
+            and capability.module not in closure_set
+        ):
+            _fail(
+                "authoring_catalog_dependency_stale",
+                "representation adapter escaped its input import graph",
+            )
+        if (
+            capability.capability_kind == "forward_tmkarp_admission"
+            and capability.module != _TMKARP_ADMISSION_MODULE
+        ):
+            _fail(
+                "authoring_catalog_dependency_stale",
+                "TMKarp admission escaped the closed public source module",
+            )
+        if (
+            capability.capability_kind
+            == "forward_successor_only_tmkarp_admission"
+            and capability.module != _SUCCESSOR_ONLY_TMKARP_ADMISSION_MODULE
+        ):
+            _fail(
+                "authoring_catalog_dependency_stale",
+                "successor-only TMKarp admission escaped its closed public source module",
+            )
+        if (
+            capability.capability_kind == "forward_program_indexed_admission"
+            and capability.module != _PROGRAM_INDEXED_ADMISSION_MODULE
+        ):
+            _fail(
+                "authoring_catalog_dependency_stale",
+                "program-indexed packet escaped the closed public source module",
+            )
+        if (
+            capability.capability_kind == "forward_gadget_indexed_admission"
+            and capability.module != _GADGET_INDEXED_ADMISSION_MODULE
+        ):
+            _fail(
+                "authoring_catalog_dependency_stale",
+                "gadget-indexed packet escaped the closed public source module",
             )
     if not import_closure_sha256.startswith(_HASH_PREFIX):
         _fail("authoring_catalog_dependency_stale", "import closure is not content addressed")
@@ -505,6 +987,9 @@ def parse_np_hard_authoring_observation(
         primitives=tuple(sorted(primitives, key=lambda item: item.declaration)),
         certified_reductions=tuple(
             sorted(reductions, key=lambda item: item.edge_id)
+        ),
+        typed_capabilities=tuple(
+            sorted(typed_capabilities, key=lambda item: item.observation_key)
         ),
         complete_problem_count=complete_count,
     )
@@ -543,6 +1028,9 @@ class NPHardAuthoringPlanV2:
     final_program_declaration: str | None
     capability_dag: tuple[PlannerCapabilityNodeV2, ...]
     commands: tuple[CommandResult, ...]
+    terminal_node_id: str | None = None
+    final_program_node_id: str | None = None
+    final_node_id: str | None = None
     selected_hub: str | None = None
     ranked_hubs: tuple[str, ...] = ()
     rejected_hubs: tuple[Mapping[str, Any], ...] = ()
@@ -561,6 +1049,9 @@ class NPHardAuthoringPlanV2:
                 "task_request_id": self.task.request_id if self.task is not None else None,
                 "final_program_declaration": self.final_program_declaration,
                 "capability_dag": [node.to_dict() for node in self.capability_dag],
+                "terminal_node_id": self.terminal_node_id,
+                "final_program_node_id": self.final_program_node_id,
+                "final_node_id": self.final_node_id,
                 "selected_hub": self.selected_hub,
                 "ranked_hubs": list(self.ranked_hubs),
                 "rejected_hubs": [dict(item) for item in self.rejected_hubs],
@@ -579,6 +1070,9 @@ class NPHardAuthoringPlanV2:
             "final_program_declaration": self.final_program_declaration,
             "capability_dag": [node.to_dict() for node in self.capability_dag],
             "commands": [command.to_dict() for command in self.commands],
+            "terminal_node_id": self.terminal_node_id,
+            "final_program_node_id": self.final_program_node_id,
+            "final_node_id": self.final_node_id,
             "selected_hub": self.selected_hub,
             "ranked_hubs": list(self.ranked_hubs),
             "rejected_hubs": [dict(item) for item in self.rejected_hubs],
@@ -744,7 +1238,333 @@ def _task_gap_nodes(
                 "depends_on": ["mapping-invariant"],
             },
         )
+    if task_class == "typed_capability_dag":
+        return (
+            {
+                "id": "representation-adapter",
+                "reason": "representationAdapter",
+                "depends_on": [],
+            },
+            {
+                "id": "semantic-forward",
+                "reason": "semanticForwardImplication",
+                "depends_on": ["representation-adapter"],
+            },
+            {
+                "id": "semantic-reverse",
+                "reason": "semanticReverseImplication",
+                "depends_on": ["representation-adapter"],
+            },
+            {
+                "id": "semantic-iff",
+                "reason": "semanticIff",
+                "depends_on": ["semantic-forward", "semantic-reverse"],
+            },
+        )
+    if task_class == "typed_tmkarp_admission_dag":
+        return (
+            {
+                "id": "tmkarp-primitive",
+                "reason": "tmKarpPrimitiveAdmission",
+                "depends_on": [],
+            },
+            {
+                "id": "tmkarp-program",
+                "reason": "tmKarpProgramAssembly",
+                "depends_on": ["tmkarp-primitive"],
+            },
+            {
+                "id": "tmkarp-semantic-iff",
+                "reason": "tmKarpSemanticIff",
+                "depends_on": ["tmkarp-program"],
+            },
+        )
+    if task_class == "typed_tmkarp_dependent_composition_dag":
+        return (
+            {
+                "id": "tmkarp-primitive",
+                "reason": "tmKarpPrimitiveAdmission",
+                "depends_on": [],
+            },
+            {
+                "id": "tmkarp-program",
+                "reason": "tmKarpProgramAssembly",
+                "depends_on": ["tmkarp-primitive"],
+            },
+            {
+                "id": "tmkarp-semantic-iff",
+                "reason": "tmKarpSemanticIff",
+                "depends_on": ["tmkarp-program"],
+            },
+            {
+                "id": "composed-program",
+                "reason": "dependentProgramComposition",
+                "depends_on": ["tmkarp-program"],
+            },
+            {
+                "id": "composed-semantic-iff",
+                "reason": "dependentSemanticComposition",
+                "depends_on": ["tmkarp-semantic-iff", "composed-program"],
+            },
+        )
+    if task_class == "typed_program_indexed_admission_dag":
+        return (
+            {
+                "id": "program-executable",
+                "reason": "programIndexedExecutable",
+                "depends_on": [],
+            },
+            {
+                "id": "program-primitive",
+                "reason": "programIndexedPrimitive",
+                "depends_on": ["program-executable"],
+            },
+            {
+                "id": "program",
+                "reason": "programIndexedProgram",
+                "depends_on": ["program-primitive"],
+            },
+            {
+                "id": "program-run-coherence-direct-tm",
+                "reason": "programRunCoherenceDirectTM",
+                "depends_on": ["program"],
+            },
+            {
+                "id": "program-semantic-iff",
+                "reason": "programIndexedSemanticIff",
+                "depends_on": ["program-run-coherence-direct-tm"],
+            },
+        )
+    if task_class == "typed_tmkarp_program_indexed_composition_dag":
+        return (
+            {
+                "id": "tmkarp-primitive",
+                "reason": "tmKarpPrimitiveAdmission",
+                "depends_on": [],
+            },
+            {
+                "id": "tmkarp-program",
+                "reason": "tmKarpProgramAssembly",
+                "depends_on": ["tmkarp-primitive"],
+            },
+            {
+                "id": "tmkarp-semantic-iff",
+                "reason": "tmKarpSemanticIff",
+                "depends_on": ["tmkarp-program"],
+            },
+            {
+                "id": "program-executable",
+                "reason": "programIndexedExecutable",
+                "depends_on": [],
+            },
+            {
+                "id": "program-primitive",
+                "reason": "programIndexedPrimitive",
+                "depends_on": ["program-executable"],
+            },
+            {
+                "id": "program",
+                "reason": "programIndexedProgram",
+                "depends_on": ["program-primitive"],
+            },
+            {
+                "id": "program-run-coherence-direct-tm",
+                "reason": "programRunCoherenceDirectTM",
+                "depends_on": ["program"],
+            },
+            {
+                "id": "program-semantic-iff",
+                "reason": "programIndexedSemanticIff",
+                "depends_on": ["program-run-coherence-direct-tm"],
+            },
+            {
+                "id": "composed-program",
+                "reason": "tmKarpProgramIndexedComposition",
+                "depends_on": ["tmkarp-program", "program"],
+            },
+            {
+                "id": "composed-semantic-iff",
+                "reason": "tmKarpProgramIndexedSemanticComposition",
+                "depends_on": [
+                    "tmkarp-semantic-iff",
+                    "program-semantic-iff",
+                    "composed-program",
+                ],
+            },
+        )
+    if task_class == "typed_gadget_indexed_admission_dag":
+        return (
+            {
+                "id": "gadget-reference-audit",
+                "reason": "gadgetReferenceAudit",
+                "depends_on": [],
+            },
+            {
+                "id": "gadget-normalization-audit",
+                "reason": "gadgetNormalizationAudit",
+                "depends_on": ["gadget-reference-audit"],
+            },
+            {
+                "id": "gadget-executable",
+                "reason": "gadgetExecutable",
+                "depends_on": [
+                    "gadget-reference-audit",
+                    "gadget-normalization-audit",
+                ],
+            },
+            {
+                "id": "gadget-parameter-audit",
+                "reason": "gadgetParameterAudit",
+                "depends_on": ["gadget-executable"],
+            },
+            {
+                "id": "gadget-semantic-forward",
+                "reason": "gadgetSemanticForward",
+                "depends_on": [
+                    "gadget-executable",
+                    "gadget-parameter-audit",
+                ],
+            },
+            {
+                "id": "gadget-semantic-reverse",
+                "reason": "gadgetSemanticReverse",
+                "depends_on": [
+                    "gadget-executable",
+                    "gadget-parameter-audit",
+                ],
+            },
+            {
+                "id": "gadget-direct-tm",
+                "reason": "gadgetDirectTM",
+                "depends_on": [
+                    "gadget-executable",
+                    "gadget-parameter-audit",
+                    "gadget-semantic-forward",
+                    "gadget-semantic-reverse",
+                ],
+            },
+            {
+                "id": "gadget-program",
+                "reason": "gadgetProgramAssembly",
+                "depends_on": ["gadget-executable", "gadget-direct-tm"],
+            },
+            {
+                "id": "gadget-composed-program",
+                "reason": "gadgetProgramComposition",
+                "depends_on": ["gadget-program"],
+            },
+            {
+                "id": "gadget-composed-semantic-iff",
+                "reason": "gadgetSemanticComposition",
+                "depends_on": [
+                    "gadget-semantic-forward",
+                    "gadget-semantic-reverse",
+                    "gadget-program",
+                    "gadget-composed-program",
+                ],
+            },
+        )
+    if task_class == "typed_exact_edge_construction_dag":
+        return (
+            {
+                "id": "parameter-normalization",
+                "reason": "parameterNormalization",
+                "depends_on": [],
+            },
+            {
+                "id": "reduction-primitive",
+                "reason": "reductionPrimitive",
+                "depends_on": ["parameter-normalization"],
+            },
+            {
+                "id": "gadget-definitions",
+                "reason": "gadgetDefinitions",
+                "depends_on": ["reduction-primitive"],
+            },
+            {
+                "id": "output-wellformed",
+                "reason": "outputWellformed",
+                "depends_on": [
+                    "parameter-normalization",
+                    "reduction-primitive",
+                    "gadget-definitions",
+                ],
+            },
+            {
+                "id": "polynomial-bound",
+                "reason": "polynomialBound",
+                "depends_on": ["reduction-primitive"],
+            },
+            {
+                "id": "poly-program",
+                "reason": "polyProgram",
+                "depends_on": ["reduction-primitive", "polynomial-bound"],
+            },
+            {
+                "id": "program-direct-tm-coherence",
+                "reason": "programDirectTMCoherence",
+                "depends_on": ["poly-program", "reduction-primitive"],
+            },
+            {
+                "id": "semantic-forward",
+                "reason": "semanticForwardImplication",
+                "depends_on": ["poly-program"],
+            },
+            {
+                "id": "semantic-reverse",
+                "reason": "semanticReverseImplication",
+                "depends_on": ["poly-program"],
+            },
+            {
+                "id": "semantic-iff",
+                "reason": "semanticIff",
+                "depends_on": ["semantic-forward", "semantic-reverse"],
+            },
+            {
+                "id": "certified-reduction",
+                "reason": "certifiedReduction",
+                "depends_on": [
+                    "parameter-normalization",
+                    "reduction-primitive",
+                    "gadget-definitions",
+                    "output-wellformed",
+                    "polynomial-bound",
+                    "poly-program",
+                    "program-direct-tm-coherence",
+                    "semantic-forward",
+                    "semantic-reverse",
+                    "semantic-iff",
+                ],
+            },
+        )
     _fail("authoring_plan_unsupported", f"unsupported task class: {task_class}")
+
+
+def _gadget_reference_problem(
+    *,
+    capability: PlannerTypedCapabilityV3,
+    problems: Mapping[str, PlannerProblemV1],
+) -> PlannerProblemV1:
+    """Recover the packet's unique middle endpoint from its exact Lean type."""
+
+    source = problems[capability.source]
+    target = problems[capability.target]
+    source_index = capability.exact_type.find(source.rendered_endpoint)
+    target_index = capability.exact_type.rfind(target.rendered_endpoint)
+    candidates = tuple(
+        problem
+        for problem in problems.values()
+        if problem.declaration not in {source.declaration, target.declaration}
+        and source_index
+        < capability.exact_type.find(problem.rendered_endpoint, source_index + 1)
+        < target_index
+    )
+    if source_index < 0 or target_index < 0 or len(candidates) != 1:
+        _fail(
+            "candidate_wrong_endpoint",
+            "gadget packet does not determine one exact reference endpoint",
+        )
+    return candidates[0]
 
 
 def _full_capability_dag(
@@ -754,6 +1574,9 @@ def _full_capability_dag(
     hardness_route: tuple[PlannerCertifiedReductionV1, ...],
     existing_programs: tuple[PlannerPolyProgramV1, ...],
     mapping_relation: PlannerMappingRelationV1 | None,
+    typed_capability: PlannerTypedCapabilityV3 | None,
+    successor_capability: PlannerTypedCapabilityV3 | None,
+    program_packet_capability: PlannerTypedCapabilityV3 | None,
     final_program_declaration: str,
 ) -> tuple[PlannerCapabilityNodeV2, ...]:
     nodes: list[PlannerCapabilityNodeV2] = [
@@ -805,43 +1628,131 @@ def _full_capability_dag(
                 authority="lean_exact_type_observation",
             )
         )
+    typed_capability_node: str | None = None
+    typed_capability_binding_node: str | None = None
+    if typed_capability is not None:
+        if typed_capability.capability_kind == "forward_representation_adapter":
+            typed_capability_node = "public-forward-representation-adapter"
+            typed_capability_binding_node = task.final_program_node_id
+        elif (
+            typed_capability.capability_kind
+            == "forward_program_indexed_admission"
+        ):
+            typed_capability_node = "public-forward-program-indexed-packet"
+            typed_capability_binding_node = "program-executable"
+        elif (
+            typed_capability.capability_kind
+            == "forward_gadget_indexed_admission"
+        ):
+            typed_capability_node = "public-forward-gadget-indexed-packet"
+            typed_capability_binding_node = "gadget-reference-audit"
+        else:
+            typed_capability_node = "public-forward-tmkarp-admission"
+            typed_capability_binding_node = "tmkarp-primitive"
+        nodes.append(
+            PlannerCapabilityNodeV2(
+                node_id=typed_capability_node,
+                capability=typed_capability.capability_kind,
+                declaration=typed_capability.witness,
+                exact_type=typed_capability.exact_type,
+                depends_on=(),
+                authority=typed_capability.authority,
+            )
+        )
+    successor_binding_node: str | None = None
+    if successor_capability is not None:
+        successor_binding_node = "composed-program"
+        nodes.append(
+            PlannerCapabilityNodeV2(
+                node_id="public-forward-certified-successor",
+                capability=successor_capability.capability_kind,
+                declaration=successor_capability.witness,
+                exact_type=successor_capability.exact_type,
+                depends_on=(),
+                authority=successor_capability.authority,
+            )
+        )
+    program_packet_binding_node: str | None = None
+    if program_packet_capability is not None:
+        program_packet_binding_node = "program-executable"
+        nodes.append(
+            PlannerCapabilityNodeV2(
+                node_id="public-forward-program-indexed-packet",
+                capability=program_packet_capability.capability_kind,
+                declaration=program_packet_capability.witness,
+                exact_type=program_packet_capability.exact_type,
+                depends_on=(),
+                authority=program_packet_capability.authority,
+            )
+        )
     for obligation in task.gap_nodes:
+        dependencies = list(obligation.depends_on)
+        if obligation.node_id == typed_capability_binding_node:
+            if typed_capability_node is not None:
+                dependencies.append(typed_capability_node)
+        elif (
+            obligation.node_id == task.final_program_node_id
+            and typed_capability_binding_node is None
+        ):
+            if previous_existing is not None:
+                dependencies.append(previous_existing)
+        if obligation.node_id == successor_binding_node:
+            dependencies.append("public-forward-certified-successor")
+        if obligation.node_id == program_packet_binding_node:
+            dependencies.append("public-forward-program-indexed-packet")
+        if obligation.capability == "mapping_invariant" and mapping_relation is not None:
+            dependencies.append("public-mapping-relation")
         nodes.append(
             PlannerCapabilityNodeV2(
                 node_id=obligation.node_id,
                 capability=obligation.capability,
                 declaration=obligation.declaration,
                 exact_type=obligation.exact_type,
-                depends_on=obligation.depends_on,
+                depends_on=tuple(dict.fromkeys(dependencies)),
                 authority="model_body_plus_lean_kernel",
             )
         )
-    semantic_node = task.gap_nodes[-1].node_id
-    semantic_declaration = task.gap_nodes[-1].declaration
-    nodes.extend(
-        (
+    semantic = next(
+        node for node in task.gap_nodes if node.node_id == task.terminal_node_id
+    )
+    semantic_node = semantic.node_id
+    semantic_declaration = semantic.declaration
+    explicit_capabilities = {node.capability for node in task.gap_nodes}
+    if "semantic_forward" not in explicit_capabilities:
+        nodes.append(
             PlannerCapabilityNodeV2(
                 node_id="semantic-forward-implication",
                 capability="semantic_forward_implication",
                 declaration=semantic_declaration,
-                exact_type=f"forward projection of {task.gap_nodes[-1].exact_type}",
+                exact_type=f"forward projection of {semantic.exact_type}",
                 depends_on=(semantic_node,),
                 authority="lean_iff_projection",
-            ),
+            )
+        )
+    if "semantic_reverse" not in explicit_capabilities:
+        nodes.append(
             PlannerCapabilityNodeV2(
                 node_id="semantic-reverse-implication",
                 capability="semantic_reverse_implication",
                 declaration=semantic_declaration,
-                exact_type=f"reverse projection of {task.gap_nodes[-1].exact_type}",
+                exact_type=f"reverse projection of {semantic.exact_type}",
                 depends_on=(semantic_node,),
                 authority="lean_iff_projection",
-            ),
+            )
+        )
+    final_dependencies = [semantic_node, previous_hardness]
+    if task.final_program_node_id is not None:
+        final_dependencies.append(task.final_program_node_id)
+    elif previous_existing is not None:
+        final_dependencies.append(previous_existing)
+    nodes.extend(
+        (
             PlannerCapabilityNodeV2(
                 node_id="certified-reduction",
                 capability="certified_reduction",
                 declaration=task.final_candidate_declaration,
                 exact_type=task.final_exact_type,
-                depends_on=(semantic_node, previous_hardness),
+                depends_on=tuple(dict.fromkeys(final_dependencies)),
                 authority=f"runner_owned_assembly_with_program:{final_program_declaration}",
             ),
             PlannerCapabilityNodeV2(
@@ -926,12 +1837,79 @@ def plan_np_hard_authoring_from_observation(
         )
         if path:
             incoming_program_sources.add(program.source)
-    candidate_names = gap_source_names or incoming_program_sources
+    direct_typed_capability_sources = {
+        capability.source
+        for capability in observation.typed_capabilities
+        if capability.target_node == target_node
+        and capability.source_node != target_node
+        and capability.capability_kind
+        in {
+            "forward_representation_adapter",
+            "forward_tmkarp_admission",
+            "forward_program_indexed_admission",
+            "forward_gadget_indexed_admission",
+        }
+    }
+    successor_capabilities = tuple(
+        capability
+        for capability in observation.typed_capabilities
+        if capability.capability_kind == "forward_certified_successor"
+        and capability.target_node == target_node
+        and capability.source_node != target_node
+    )
+    dependent_chains = tuple(
+        (admission, successor)
+        for successor in successor_capabilities
+        for admission in observation.typed_capabilities
+        if admission.capability_kind
+        in {
+            "forward_tmkarp_admission",
+            "forward_successor_only_tmkarp_admission",
+        }
+        and admission.target_node == successor.source_node
+        and admission.source_node != successor.target_node
+    )
+    dependent_capability_sources = {
+        admission.source for admission, _ in dependent_chains
+    }
+    program_packet_capabilities = tuple(
+        capability
+        for capability in observation.typed_capabilities
+        if capability.capability_kind == "forward_program_indexed_admission"
+        and capability.target_node == target_node
+        and capability.source_node != target_node
+    )
+    tmkarp_program_packet_chains = tuple(
+        (admission, packet)
+        for packet in program_packet_capabilities
+        for admission in observation.typed_capabilities
+        if admission.capability_kind == "forward_tmkarp_admission"
+        and admission.target_node == packet.source_node
+        and admission.source_node != packet.target_node
+    )
+    tmkarp_program_packet_sources = {
+        admission.source for admission, _ in tmkarp_program_packet_chains
+    }
+    candidate_names = (
+        gap_source_names
+        | incoming_program_sources
+        | direct_typed_capability_sources
+        | dependent_capability_sources
+        | tmkarp_program_packet_sources
+    )
     if not candidate_names:
         return NPHardAuthoringPlanV2(
             status="BLOCKED",
             failure_code="authoring_plan_missing_capability",
-            missing_capabilities=("forward_hardness_hub", "typed_forward_gap"),
+            missing_capabilities=(
+                "forward_hardness_hub",
+                "typed_forward_gap",
+                "forward_representation_adapter",
+                "forward_tmkarp_dependent_composition",
+                "forward_successor_only_tmkarp_admission",
+                "forward_program_indexed_admission",
+                "forward_gadget_indexed_admission",
+            ),
             observation=observation,
             task=None,
             final_program_declaration=None,
@@ -939,15 +1917,24 @@ def plan_np_hard_authoring_from_observation(
             commands=commands,
         )
 
-    # Definitionally equal aliases are one hub.  Prefer the exact name carried
-    # by a typed gap, then use a deterministic declaration tie-break.
+    # Definitionally equal aliases are one hub. Prefer exact typed evidence,
+    # then a declared gap/program name, with a deterministic declaration
+    # tie-break only inside one already-equal endpoint node.
     by_endpoint: dict[str, list[str]] = {}
     for name in candidate_names:
         by_endpoint.setdefault(problem_node(name), []).append(name)
     canonical_candidates = tuple(
         min(
             names,
-            key=lambda name: (name not in gap_source_names, len(name), name),
+            key=lambda name: (
+                name not in direct_typed_capability_sources
+                and name not in dependent_capability_sources,
+                name not in tmkarp_program_packet_sources,
+                name not in gap_source_names,
+                name not in incoming_program_sources,
+                len(name),
+                name,
+            ),
         )
         for _, names in sorted(by_endpoint.items())
         if _ != target_node
@@ -1007,6 +1994,106 @@ def plan_np_hard_authoring_from_observation(
             ),
             None,
         )
+        typed_matches = tuple(
+            sorted(
+                (
+                    capability
+                    for capability in observation.typed_capabilities
+                    if capability.source_node == hub_problem.endpoint_node
+                    and capability.target_node == target_node
+                    and capability.capability_kind
+                    in {
+                        "forward_representation_adapter",
+                    "forward_tmkarp_admission",
+                    "forward_program_indexed_admission",
+                    "forward_gadget_indexed_admission",
+                    }
+                ),
+                key=lambda item: item.observation_key,
+            )
+        )
+        dependent_matches = tuple(
+            sorted(
+                (
+                    (admission, successor)
+                    for admission, successor in dependent_chains
+                    if admission.source_node == hub_problem.endpoint_node
+                ),
+                key=lambda item: (
+                    item[0].observation_key,
+                    item[1].observation_key,
+                ),
+            )
+        )
+        program_packet_matches = tuple(
+            sorted(
+                (
+                    (admission, packet)
+                    for admission, packet in tmkarp_program_packet_chains
+                    if admission.source_node == hub_problem.endpoint_node
+                ),
+                key=lambda item: (
+                    item[0].observation_key,
+                    item[1].observation_key,
+                ),
+            )
+        )
+        if (
+            len(typed_matches)
+            + len(dependent_matches)
+            + len(program_packet_matches)
+            > 1
+        ):
+            rejected.append(
+                {
+                    "hub": hub,
+                    "endpoint_node": hub_problem.endpoint_node,
+                    "code": "ambiguous_authoring_capability",
+                    "missing_capabilities": [
+                        "unique_forward_typed_capability"
+                    ],
+                    "candidate_capability_ids": [
+                        item.capability_id for item in typed_matches
+                    ]
+                    + [
+                        f"{admission.capability_id}+{successor.capability_id}"
+                        for admission, successor in dependent_matches
+                    ]
+                    + [
+                        f"{admission.capability_id}+{packet.capability_id}"
+                        for admission, packet in program_packet_matches
+                    ],
+                }
+            )
+            continue
+        program_packet_capability = None
+        if program_packet_matches:
+            typed_capability, program_packet_capability = (
+                program_packet_matches[0]
+            )
+            successor_capability = None
+        elif dependent_matches:
+            typed_capability, successor_capability = dependent_matches[0]
+        else:
+            typed_capability = typed_matches[0] if typed_matches else None
+            successor_capability = None
+        if successor_capability is not None and path is not None:
+            rejected.append(
+                {
+                    "hub": hub,
+                    "endpoint_node": hub_problem.endpoint_node,
+                    "code": "ambiguous_authoring_capability",
+                    "missing_capabilities": [
+                        "unique_dependent_composition_route"
+                    ],
+                    "candidate_capability_ids": [
+                        typed_capability.capability_id,
+                        successor_capability.capability_id,
+                        *[program.declaration for program in path],
+                    ],
+                }
+            )
+            continue
         missing: list[str] = []
         if path is not None and len(path) == 1:
             task_class = "semantic_proof"
@@ -1016,12 +2103,33 @@ def plan_np_hard_authoring_from_observation(
             task_class = "program_composition"
             selected_programs = path
             risk_rank = 2
+        elif typed_capability is not None:
+            task_class = (
+                "typed_tmkarp_program_indexed_composition_dag"
+                if program_packet_capability is not None
+                else (
+                    "typed_tmkarp_dependent_composition_dag"
+                    if successor_capability is not None
+                    else {
+                    "forward_representation_adapter": "typed_capability_dag",
+                    "forward_tmkarp_admission": "typed_tmkarp_admission_dag",
+                    "forward_program_indexed_admission": (
+                        "typed_program_indexed_admission_dag"
+                    ),
+                    "forward_gadget_indexed_admission": (
+                        "typed_gadget_indexed_admission_dag"
+                    ),
+                    }[typed_capability.capability_kind]
+                )
+            )
+            selected_programs = ()
+            risk_rank = 3
         elif {"primitive", "executableRelationContract", "semanticProof"}.issubset(
             gap_reasons
         ):
             task_class = "program_synthesis"
             selected_programs = ()
-            risk_rank = 3
+            risk_rank = 4
             if relation is None:
                 missing.append("mapping_invariant")
             if not expected_builtins.issubset(builtin_names):
@@ -1029,7 +2137,7 @@ def plan_np_hard_authoring_from_observation(
         else:
             task_class = "unsupported"
             selected_programs = ()
-            risk_rank = 4
+            risk_rank = 5
             if path is None:
                 missing.append("poly_program")
             if "semanticProof" not in gap_reasons:
@@ -1064,6 +2172,9 @@ def plan_np_hard_authoring_from_observation(
                 "task_class": task_class,
                 "programs": selected_programs,
                 "relation": relation,
+                "typed_capability": typed_capability,
+                "successor_capability": successor_capability,
+                "program_packet_capability": program_packet_capability,
                 "seed": seed,
                 "hardness_route": hardness_route,
                 "safety_rank": safety_rank,
@@ -1071,7 +2182,25 @@ def plan_np_hard_authoring_from_observation(
             }
         )
     ranked.sort(key=lambda item: item["stable_rank"])
+    if any(item["successor_capability"] is not None for item in ranked) and len(
+        ranked
+    ) != 1:
+        return NPHardAuthoringPlanV2(
+            status="BLOCKED",
+            failure_code="ambiguous_authoring_hub",
+            missing_capabilities=("unique_dependent_composition_chain",),
+            observation=observation,
+            task=None,
+            final_program_declaration=None,
+            capability_dag=(),
+            commands=commands,
+            ranked_hubs=tuple(item["hub"] for item in ranked),
+            rejected_hubs=tuple(rejected),
+        )
     if not ranked:
+        ambiguous_capability = any(
+            item["code"] == "ambiguous_authoring_capability" for item in rejected
+        )
         missing = tuple(
             sorted(
                 {
@@ -1084,7 +2213,15 @@ def plan_np_hard_authoring_from_observation(
         )
         return NPHardAuthoringPlanV2(
             status="BLOCKED",
-            failure_code=("wrong_direction_only" if reverse_observed else "authoring_plan_missing_capability"),
+            failure_code=(
+                "ambiguous_authoring_capability"
+                if ambiguous_capability
+                else (
+                    "wrong_direction_only"
+                    if reverse_observed
+                    else "authoring_plan_missing_capability"
+                )
+            ),
             missing_capabilities=missing,
             observation=observation,
             task=None,
@@ -1119,9 +2256,17 @@ def plan_np_hard_authoring_from_observation(
     task_class = selected["task_class"]
     selected_programs = selected["programs"]
     relation = selected["relation"]
+    typed_capability = selected["typed_capability"]
+    successor_capability = selected["successor_capability"]
+    program_packet_capability = selected["program_packet_capability"]
     hardness_seed = selected["seed"]
     hardness_route = selected["hardness_route"]
     direct = selected_programs[0] if task_class == "semantic_proof" else None
+    composition_intermediate_problem: PlannerProblemV1 | None = None
+    composition_successor_source: str | None = None
+    composition_successor_target: str | None = None
+    composition_admission_observation: dict[str, str] | None = None
+    composition_successor_observation: dict[str, str] | None = None
     if task_class == "program_synthesis":
         compatible_primitives = tuple(
             primitive.declaration
@@ -1139,17 +2284,196 @@ def plan_np_hard_authoring_from_observation(
             )
         )
         program_reference = None
+        observed_capability_terms: dict[str, str] = {}
+        observed_capability_exact_types: dict[str, str] = {}
+        representation_adapter_exact_type = None
+    elif task_class == "typed_capability_dag":
+        assert typed_capability is not None
+        allowed_primitives = tuple(
+            sorted(builtin.declaration for builtin in observation.builtins)
+        )
+        program_reference = typed_capability.witness
+        observed_capability_terms = {
+            "representation-adapter": typed_capability.witness
+        }
+        representation_adapter_exact_type = typed_capability.exact_type
+        observed_capability_exact_types: dict[str, str] = {}
+    elif task_class == "typed_tmkarp_admission_dag":
+        assert typed_capability is not None
+        allowed_primitives = (
+            typed_capability.witness,
+            "ComplexityReduction.Program.Primitive.ofTMPolyTime",
+            "ComplexityReduction.Program.PolyProg.atom",
+        )
+        program_reference = typed_capability.witness
+        observed_capability_terms = {
+            "tmkarp-primitive": typed_capability.witness
+        }
+        observed_capability_exact_types = {
+            "tmkarp-primitive": typed_capability.exact_type
+        }
+        representation_adapter_exact_type = None
+    elif task_class == "typed_tmkarp_dependent_composition_dag":
+        assert typed_capability is not None and successor_capability is not None
+        composition_intermediate_problem = problems.get(typed_capability.target)
+        if (
+            composition_intermediate_problem is None
+            or composition_intermediate_problem.endpoint_node
+            != successor_capability.source_node
+            or typed_capability.target_node != successor_capability.source_node
+        ):
+            _fail(
+                "candidate_wrong_endpoint",
+                "dependent composition capabilities do not share one exact intermediate endpoint",
+            )
+        allowed_primitives = (
+            typed_capability.witness,
+            successor_capability.witness,
+            "ComplexityReduction.Program.Primitive.ofTMPolyTime",
+            "ComplexityReduction.Program.PolyProg.atom",
+            "ComplexityReduction.Program.PolyProg.comp",
+        )
+        program_reference = typed_capability.witness
+        observed_capability_terms = {
+            "tmkarp-primitive": typed_capability.witness,
+            "composed-program": successor_capability.witness,
+        }
+        successor_exact_type = successor_capability.exact_type
+        if (
+            typed_capability.capability_kind
+            == "forward_successor_only_tmkarp_admission"
+        ):
+            composition_successor_source = successor_capability.source
+            composition_successor_target = successor_capability.target
+            composition_admission_observation = {
+                **typed_capability.to_dict(),
+                "registry_fingerprint": observation.registry_fingerprint,
+            }
+            successor_exact_type = (
+                f"{_NP_HARD_CERTIFIED_REDUCTION_HEAD_V2} "
+                f"{composition_successor_source} {composition_successor_target}"
+            )
+            composition_successor_observation = {
+                **successor_capability.to_dict(),
+                "exact_type": successor_exact_type,
+                "registry_fingerprint": observation.registry_fingerprint,
+            }
+        observed_capability_exact_types = {
+            "tmkarp-primitive": typed_capability.exact_type,
+            "composed-program": successor_exact_type,
+        }
+        representation_adapter_exact_type = None
+    elif task_class == "typed_tmkarp_program_indexed_composition_dag":
+        assert typed_capability is not None and program_packet_capability is not None
+        composition_intermediate_problem = problems.get(typed_capability.target)
+        if (
+            composition_intermediate_problem is None
+            or composition_intermediate_problem.endpoint_node
+            != program_packet_capability.source_node
+            or typed_capability.target_node
+            != program_packet_capability.source_node
+            or program_packet_capability.target_node != target_problem.endpoint_node
+        ):
+            _fail(
+                "candidate_wrong_endpoint",
+                "TMKarp/program-indexed capabilities do not share one exact intermediate endpoint",
+            )
+        packet_namespace = (
+            "ComplexityReduction.Agent.Hardness.ProgramAuthoringSources."
+            "ProgramIndexedAdmissionPacket"
+        )
+        allowed_primitives = (
+            typed_capability.witness,
+            program_packet_capability.witness,
+            "ComplexityReduction.Program.Primitive.ofTMPolyTime",
+            "ComplexityReduction.Program.PolyProg.atom",
+            "ComplexityReduction.Program.PolyProg.comp",
+            f"{packet_namespace}.toExecutable",
+            f"{packet_namespace}.toPrimitive",
+            f"{packet_namespace}.toProgram",
+            f"{packet_namespace}.ProgramRunCoherenceDirectTM.ofProgram",
+            f"{packet_namespace}.toSemanticProof",
+        )
+        program_reference = typed_capability.witness
+        observed_capability_terms = {
+            "tmkarp-primitive": typed_capability.witness,
+            "program-executable": program_packet_capability.witness,
+        }
+        observed_capability_exact_types = {
+            "tmkarp-primitive": typed_capability.exact_type,
+            "program-executable": program_packet_capability.exact_type,
+        }
+        representation_adapter_exact_type = None
+    elif task_class == "typed_program_indexed_admission_dag":
+        assert typed_capability is not None
+        packet_namespace = (
+            "ComplexityReduction.Agent.Hardness.ProgramAuthoringSources."
+            "ProgramIndexedAdmissionPacket"
+        )
+        allowed_primitives = (
+            typed_capability.witness,
+            f"{packet_namespace}.toExecutable",
+            f"{packet_namespace}.toPrimitive",
+            f"{packet_namespace}.toProgram",
+            f"{packet_namespace}.ProgramRunCoherenceDirectTM.ofProgram",
+            f"{packet_namespace}.toSemanticProof",
+        )
+        program_reference = typed_capability.witness
+        observed_capability_terms = {
+            "program-executable": typed_capability.witness
+        }
+        observed_capability_exact_types = {
+            "program-executable": typed_capability.exact_type
+        }
+        representation_adapter_exact_type = None
+    elif task_class == "typed_gadget_indexed_admission_dag":
+        assert typed_capability is not None
+        composition_intermediate_problem = _gadget_reference_problem(
+            capability=typed_capability, problems=problems
+        )
+        packet_namespace = (
+            "ComplexityReduction.Agent.Hardness.GadgetAuthoringSources."
+            "GadgetIndexedAdmissionPacket"
+        )
+        allowed_primitives = (
+            typed_capability.witness,
+            f"{packet_namespace}.toReferenceAudit",
+            f"{packet_namespace}.toNormalizationAudit",
+            f"{packet_namespace}.toGadgetExecutable",
+            f"{packet_namespace}.toParameterAudit",
+            f"{packet_namespace}.toSemanticForward",
+            f"{packet_namespace}.toSemanticReverse",
+            f"{packet_namespace}.toGadgetDirectTM",
+            f"{packet_namespace}.toGadgetProgram",
+            f"{packet_namespace}.toComposedProgram",
+            f"{packet_namespace}.toComposedSemanticProof",
+        )
+        program_reference = typed_capability.witness
+        observed_capability_terms = {
+            "gadget-reference-audit": typed_capability.witness
+        }
+        observed_capability_exact_types = {
+            "gadget-reference-audit": typed_capability.exact_type
+        }
+        representation_adapter_exact_type = None
     else:
         allowed_primitives = tuple(program.declaration for program in selected_programs)
         if task_class == "semantic_proof" and relation is not None:
             allowed_primitives += (relation.declaration,)
         program_reference = direct.declaration if direct is not None else None
+        observed_capability_terms = {}
+        observed_capability_exact_types = {}
+        representation_adapter_exact_type = None
     public_modules = {
         input_module,
         observation.declaration_module,
         hub_problem.module,
         *(program.module for program in selected_programs),
         *((relation.module,) if relation is not None else ()),
+        *((typed_capability.module,) if typed_capability is not None else ()),
+        *((successor_capability.module,) if successor_capability is not None else ()),
+        *((program_packet_capability.module,) if program_packet_capability is not None else ()),
+        *((composition_intermediate_problem.module,) if composition_intermediate_problem else ()),
         *(
             gap.module
             for gap in observation.gaps
@@ -1157,11 +2481,37 @@ def plan_np_hard_authoring_from_observation(
             and gap.target_node == target_node
         ),
     }
-    public_files = tuple(
-        sorted(
-            str(module_file(root.resolve() / "Lean", module).relative_to(root.resolve()))
-            for module in public_modules
+    public_paths = {
+        module_file(root.resolve() / "Lean", module).resolve()
+        for module in public_modules
+    }
+    # Typed public packets are the complete model-visible admission surface.
+    # Their implementation modules remain compiler dependencies, but exposing
+    # those source files here would reveal the legacy template/gadget that the
+    # staged authoring task is required to reconstruct node by node.
+    if task_class not in {
+        "typed_tmkarp_admission_dag",
+        "typed_tmkarp_dependent_composition_dag",
+        "typed_program_indexed_admission_dag",
+        "typed_tmkarp_program_indexed_composition_dag",
+        "typed_gadget_indexed_admission_dag",
+    }:
+        public_paths.update(
+            _relevant_direct_public_sources(
+                root=root.resolve(),
+                source_files=public_paths,
+                query_values=(
+                    hub,
+                    target,
+                    *(program.declaration for program in selected_programs),
+                    *allowed_primitives,
+                    *((typed_capability.capability_id,) if typed_capability else ()),
+                    *((typed_capability.witness,) if typed_capability else ()),
+                ),
+            )
         )
+    public_files = tuple(
+        sorted(str(path.relative_to(root.resolve())) for path in public_paths)
     )
     task = build_np_hard_authoring_task_v2(
         root=root,
@@ -1176,7 +2526,63 @@ def plan_np_hard_authoring_from_observation(
         public_source_files=public_files,
         allowed_primitives=allowed_primitives,
         program_reference=program_reference,
+        program_packet_reference=(
+            program_packet_capability.witness
+            if program_packet_capability is not None
+            else (
+                typed_capability.witness
+                if typed_capability is not None
+                and typed_capability.capability_kind
+                == "forward_program_indexed_admission"
+                else None
+            )
+        ),
         mapping_invariant=relation.declaration if relation is not None else None,
+        observed_capability_terms=observed_capability_terms,
+        observed_capability_exact_types=observed_capability_exact_types,
+        representation_adapter_exact_type=representation_adapter_exact_type,
+        composition_intermediate_module=(
+            composition_intermediate_problem.module
+            if composition_intermediate_problem is not None
+            else None
+        ),
+        composition_intermediate_declaration=(
+            composition_intermediate_problem.declaration
+            if composition_intermediate_problem is not None
+            else None
+        ),
+        composition_successor_module=(
+            successor_capability.module
+            if successor_capability is not None
+            else (
+                program_packet_capability.module
+                if program_packet_capability is not None
+                else None
+            )
+        ),
+        composition_successor_source=composition_successor_source,
+        composition_successor_target=composition_successor_target,
+        composition_admission_observation=composition_admission_observation,
+        composition_successor_observation=composition_successor_observation,
+        additional_allowed_imports=tuple(
+            dict.fromkeys(
+                capability.module
+                for capability in (
+                    typed_capability,
+                    successor_capability,
+                    program_packet_capability,
+                )
+                if capability is not None
+                and capability.capability_kind
+                in {
+                    "forward_tmkarp_admission",
+                    "forward_successor_only_tmkarp_admission",
+                    "forward_certified_successor",
+                    "forward_program_indexed_admission",
+                    "forward_gadget_indexed_admission",
+                }
+            )
+        ),
         additional_dependency_hashes={
             "content:lean-planner-observation": observation.observation_id,
             "content:lean-registry-fingerprint": sha256_id(
@@ -1187,6 +2593,85 @@ def plan_np_hard_authoring_from_observation(
                 root.resolve() / "Lean" / "lean-toolchain"
             ),
             "content:lake-manifest": observation.lake_manifest_sha256,
+            **(
+                {
+                    "content:lean-typed-capability": sha256_id(
+                        typed_capability.to_dict()
+                    )
+                }
+                if typed_capability is not None
+                else {}
+            ),
+            **(
+                {
+                    "content:lean-gadget-indexed-packet": sha256_id(
+                        typed_capability.to_dict()
+                    )
+                }
+                if typed_capability is not None
+                and typed_capability.capability_kind
+                == "forward_gadget_indexed_admission"
+                else {}
+            ),
+            **(
+                {
+                    "content:lean-successor-only-tmkarp-admission": sha256_id(
+                        composition_admission_observation
+                    )
+                }
+                if typed_capability is not None
+                and typed_capability.capability_kind
+                == "forward_successor_only_tmkarp_admission"
+                else {}
+            ),
+            **(
+                {
+                    "content:lean-certified-successor": sha256_id(
+                        composition_successor_observation
+                        if composition_successor_observation is not None
+                        else successor_capability.to_dict()
+                    ),
+                    "content:lean-typed-capability-chain": sha256_id(
+                        _successor_only_observer_chain_payload_v2(
+                            admission=composition_admission_observation,
+                            successor=composition_successor_observation,
+                            canonical_successor_source=(
+                                composition_successor_source
+                            ),
+                            canonical_successor_target=(
+                                composition_successor_target
+                            ),
+                        )
+                        if composition_admission_observation is not None
+                        and composition_successor_observation is not None
+                        and composition_successor_source is not None
+                        and composition_successor_target is not None
+                        else {
+                            "admission": typed_capability.to_dict(),
+                            "successor": successor_capability.to_dict(),
+                        }
+                    ),
+                }
+                if typed_capability is not None
+                and successor_capability is not None
+                else {}
+            ),
+            **(
+                {
+                    "content:lean-program-indexed-packet": sha256_id(
+                        program_packet_capability.to_dict()
+                    ),
+                    "content:lean-tmkarp-program-indexed-chain": sha256_id(
+                        {
+                            "admission": typed_capability.to_dict(),
+                            "packet": program_packet_capability.to_dict(),
+                        }
+                    ),
+                }
+                if typed_capability is not None
+                and program_packet_capability is not None
+                else {}
+            ),
         },
         attempt_budget=attempt_budget,
         timeout_seconds=timeout_seconds,
@@ -1197,6 +2682,18 @@ def plan_np_hard_authoring_from_observation(
         final_program = direct.declaration
     elif task_class == "program_composition":
         final_program = f"{task.candidate_module}.composedProgram"
+    elif task_class == "typed_capability_dag":
+        final_program = f"{task.candidate_module}.representationAdapter"
+    elif task_class == "typed_tmkarp_admission_dag":
+        final_program = f"{task.candidate_module}.tmKarpProgram"
+    elif task_class == "typed_tmkarp_dependent_composition_dag":
+        final_program = f"{task.candidate_module}.composedProgram"
+    elif task_class == "typed_program_indexed_admission_dag":
+        final_program = f"{task.candidate_module}.programIndexedProgram"
+    elif task_class == "typed_tmkarp_program_indexed_composition_dag":
+        final_program = f"{task.candidate_module}.composedProgram"
+    elif task_class == "typed_gadget_indexed_admission_dag":
+        final_program = f"{task.candidate_module}.gadgetComposedProgram"
     else:
         final_program = f"{task.candidate_module}.synthesizedProgram"
     dag = _full_capability_dag(
@@ -1205,6 +2702,9 @@ def plan_np_hard_authoring_from_observation(
         hardness_route=hardness_route,
         existing_programs=selected_programs,
         mapping_relation=relation,
+        typed_capability=typed_capability,
+        successor_capability=successor_capability,
+        program_packet_capability=program_packet_capability,
         final_program_declaration=final_program,
     )
     plan = NPHardAuthoringPlanV2(
@@ -1216,6 +2716,22 @@ def plan_np_hard_authoring_from_observation(
         final_program_declaration=final_program,
         capability_dag=dag,
         commands=commands,
+        terminal_node_id=task.terminal_node_id,
+        final_program_node_id=(
+            task.final_program_node_id
+            if task.final_program_node_id is not None
+            else next(
+                (
+                    node.node_id
+                    for node in reversed(dag)
+                    if node.declaration == final_program
+                    and node.capability
+                    in {"poly_program", "forward_representation_adapter"}
+                ),
+                None,
+            )
+        ),
+        final_node_id="native-tm-np-hard",
         selected_hub=hub,
         ranked_hubs=tuple(item["hub"] for item in ranked),
         rejected_hubs=tuple(rejected),
@@ -1360,3 +2876,20 @@ class NPHardAuthoringPlannerV2:
             encoding="utf-8",
         )
         return plan
+
+
+def exact_edge_construction_gap_nodes() -> tuple[Mapping[str, Any], ...]:
+    """Freeze the public exact-edge typed construction DAG.
+
+    This is the planner's public-policy path for ``direct_new_edge`` cases.
+    It derives the DAG only from the frozen node motif; it never reads a
+    solution, oracle, gold route, or conversion plan.
+    """
+
+    nodes = _task_gap_nodes(
+        task_class="typed_exact_edge_construction_dag",
+        has_mapping_relation=False,
+    )
+    if not nodes:
+        _fail("authoring_plan_unsupported", "exact-edge construction DAG is empty")
+    return nodes

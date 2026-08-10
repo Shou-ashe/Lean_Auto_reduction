@@ -1,0 +1,186 @@
+{
+ "cases": [
+  {
+   "case_id": "edge-held-01-vertex-cover-to-dominating-set",
+   "module": "Benchmark.Hardness.Inputs.ExactReductionEdgeV1.HeldoutEndpoints",
+   "source": "ComplexityReduction.Problems.Karp21.GraphAtoms.vertexCoverStructuredProblem",
+   "target": "ComplexityReduction.Presentation.DominatingSet.structuredProblem",
+   "statement": "Construct a certified reduction from structured Vertex Cover to structured Dominating Set.",
+   "statement_hash": "sha256:e302757cd38822ed52b4e02ff7dbd02ec7f2729081a18e0742594539aea6d4b9",
+   "budget_profile": "formal-default",
+   "construction_policy": {
+    "mode": "direct_new_edge",
+    "allow_composition": false,
+    "require_new_primitive": true
+   },
+   "endpoint_contract_version": "exact-edge-endpoint-v1"
+  },
+  {
+   "case_id": "edge-held-02-clique-to-dense-subgraph",
+   "module": "Benchmark.Hardness.Inputs.ExactReductionEdgeV1.HeldoutEndpoints",
+   "source": "ComplexityReduction.Problems.Karp21.GraphAtoms.cliqueStructuredProblem",
+   "target": "ComplexityReduction.Presentation.DenseSubgraph.structuredProblem",
+   "statement": "Construct a certified reduction from structured Clique to structured Dense Subgraph.",
+   "statement_hash": "sha256:9a46864da8c66899ebd4804b6b40792e1aed2cd749da579cea1f2507250de8bc",
+   "budget_profile": "formal-default",
+   "construction_policy": {
+    "mode": "direct_new_edge",
+    "allow_composition": false,
+    "require_new_primitive": true
+   },
+   "endpoint_contract_version": "exact-edge-endpoint-v1"
+  },
+  {
+   "case_id": "edge-held-03-independent-set-to-vertex-cover",
+   "module": "Benchmark.Hardness.Inputs.ExactReductionEdgeV1.HeldoutEndpoints",
+   "source": "ComplexityReduction.Presentation.IndependentSet.structuredProblem",
+   "target": "ComplexityReduction.Problems.Karp21.GraphAtoms.vertexCoverStructuredProblem",
+   "statement": "Construct a certified reduction from structured Independent Set to structured Vertex Cover.",
+   "statement_hash": "sha256:8b1b9856febbfc07ce543a888b7e84d45a012853497ef959037f4379f0d5b0b7",
+   "budget_profile": "formal-default",
+   "construction_policy": {
+    "mode": "direct_new_edge",
+    "allow_composition": false,
+    "require_new_primitive": true
+   },
+   "endpoint_contract_version": "exact-edge-endpoint-v1"
+  },
+  {
+   "case_id": "edge-held-04-independent-set-to-set-packing",
+   "module": "Benchmark.Hardness.Inputs.ExactReductionEdgeV1.HeldoutEndpoints",
+   "source": "ComplexityReduction.Presentation.IndependentSet.structuredProblem",
+   "target": "ComplexityReduction.Presentation.SetSystem.setPackingStructuredProblem",
+   "statement": "Construct a certified reduction from structured Independent Set to structured Set Packing.",
+   "statement_hash": "sha256:e18596c5386713ee13b15953b49568394ad6e3df58eefcf47aa3e85e12fa6953",
+   "budget_profile": "formal-default",
+   "construction_policy": {
+    "mode": "direct_new_edge",
+    "allow_composition": false,
+    "require_new_primitive": true
+   },
+   "endpoint_contract_version": "exact-edge-endpoint-v1"
+  },
+  {
+   "case_id": "edge-held-05-nae-three-sat-to-set-splitting",
+   "module": "Benchmark.Hardness.Inputs.ExactReductionEdgeV1.HeldoutEndpoints",
+   "source": "ComplexityReduction.Presentation.NAEThreeSAT.structuredProblem",
+   "target": "ComplexityReduction.Presentation.SetSplitting.structuredProblem",
+   "statement": "Construct a certified reduction from structured Not-All-Equal 3SAT to structured Set Splitting.",
+   "statement_hash": "sha256:62039866a4ab57d4e38764ea6386cc3f81f6d76d4a7392baca5517cb6a9b71c5",
+   "budget_profile": "formal-default",
+   "construction_policy": {
+    "mode": "direct_new_edge",
+    "allow_composition": false,
+    "require_new_primitive": true
+   },
+   "endpoint_contract_version": "exact-edge-endpoint-v1"
+  },
+  {
+   "case_id": "edge-held-06-three-sat-to-one-in-three-sat",
+   "module": "Benchmark.Hardness.Inputs.ExactReductionEdgeV1.HeldoutEndpoints",
+   "source": "ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem",
+   "target": "ComplexityReduction.Presentation.OneInThreeSAT.structuredProblem",
+   "statement": "Construct a certified reduction from structured 3SAT to structured One-In-Three 3SAT.",
+   "statement_hash": "sha256:64d58b16950d0496e6cdcf978d354abbcb83cd4206827624a9caa4765a5f4208",
+   "budget_profile": "formal-default",
+   "construction_policy": {
+    "mode": "direct_new_edge",
+    "allow_composition": false,
+    "require_new_primitive": true
+   },
+   "endpoint_contract_version": "exact-edge-endpoint-v1"
+  },
+  {
+   "case_id": "edge-held-07-one-in-three-to-exact-cover",
+   "module": "Benchmark.Hardness.Inputs.ExactReductionEdgeV1.HeldoutEndpoints",
+   "source": "ComplexityReduction.Presentation.OneInThreeSAT.structuredProblem",
+   "target": "ComplexityReduction.Presentation.SetSystem.exactCoverStructuredProblem",
+   "statement": "Construct a certified reduction from structured One-In-Three 3SAT to structured Exact Cover.",
+   "statement_hash": "sha256:ab7cf54fbb6b2c2a861107a5e93752d990141c961ba9bfe3691131939e801828",
+   "budget_profile": "formal-default",
+   "construction_policy": {
+    "mode": "direct_new_edge",
+    "allow_composition": false,
+    "require_new_primitive": true
+   },
+   "endpoint_contract_version": "exact-edge-endpoint-v1"
+  },
+  {
+   "case_id": "edge-held-08-nae-three-sat-to-chromatic",
+   "module": "Benchmark.Hardness.Inputs.ExactReductionEdgeV1.HeldoutEndpoints",
+   "source": "ComplexityReduction.Presentation.NAEThreeSAT.structuredProblem",
+   "target": "ComplexityReduction.Presentation.ChromaticNumber.structuredProblem",
+   "statement": "Construct a certified reduction from structured Not-All-Equal 3SAT to structured Chromatic Number.",
+   "statement_hash": "sha256:78f3efb70ab5a3e64cee6df7a7b86d0295311f9543e3da68dedc3204efa972cf",
+   "budget_profile": "formal-default",
+   "construction_policy": {
+    "mode": "direct_new_edge",
+    "allow_composition": false,
+    "require_new_primitive": true
+   },
+   "endpoint_contract_version": "exact-edge-endpoint-v1"
+  },
+  {
+   "case_id": "edge-held-09-exact-cover-three-to-four",
+   "module": "Benchmark.Hardness.Inputs.ExactReductionEdgeV1.HeldoutEndpoints",
+   "source": "ComplexityReduction.Presentation.ExactCoverBy3.structuredProblem",
+   "target": "ComplexityReduction.Presentation.ExactCoverBy4.structuredProblem",
+   "statement": "Construct a certified reduction from structured Exact Cover by 3-Sets to structured Exact Cover by 4-Sets.",
+   "statement_hash": "sha256:0ee92f2e4539972a3f766f3f2d269dc5497becfabeccdb44687f23845b09c575",
+   "budget_profile": "formal-default",
+   "construction_policy": {
+    "mode": "direct_new_edge",
+    "allow_composition": false,
+    "require_new_primitive": true
+   },
+   "endpoint_contract_version": "exact-edge-endpoint-v1"
+  },
+  {
+   "case_id": "edge-held-10-subset-sum-to-partition",
+   "module": "Benchmark.Hardness.Inputs.ExactReductionEdgeV1.HeldoutEndpoints",
+   "source": "ComplexityReduction.Presentation.SubsetSum.structuredProblem",
+   "target": "ComplexityReduction.Presentation.Partition.structuredProblem",
+   "statement": "Construct a certified reduction from structured Subset Sum to structured Partition.",
+   "statement_hash": "sha256:e92365eeda0dfaa9e1c2004051b3793ec591e20a26bb7205c45f4ae61549a829",
+   "budget_profile": "formal-default",
+   "construction_policy": {
+    "mode": "direct_new_edge",
+    "allow_composition": false,
+    "require_new_primitive": true
+   },
+   "endpoint_contract_version": "exact-edge-endpoint-v1"
+  },
+  {
+   "case_id": "edge-held-11-hamiltonian-cycle-to-tsp",
+   "module": "Benchmark.Hardness.Inputs.ExactReductionEdgeV1.HeldoutEndpoints",
+   "source": "ComplexityReduction.Presentation.UndirectedHamiltonianCircuit.structuredProblem",
+   "target": "ComplexityReduction.Presentation.TSP.structuredProblem",
+   "statement": "Construct a certified reduction from structured Undirected Hamiltonian Circuit to structured Traveling Salesperson.",
+   "statement_hash": "sha256:1351e50b955bea6d6080a2a3cc42b93b9978b051556679cdba17288f026bde45",
+   "budget_profile": "formal-default",
+   "construction_policy": {
+    "mode": "direct_new_edge",
+    "allow_composition": false,
+    "require_new_primitive": true
+   },
+   "endpoint_contract_version": "exact-edge-endpoint-v1"
+  },
+  {
+   "case_id": "edge-held-12-hamiltonian-cycle-to-path",
+   "module": "Benchmark.Hardness.Inputs.ExactReductionEdgeV1.HeldoutEndpoints",
+   "source": "ComplexityReduction.Presentation.UndirectedHamiltonianCircuit.structuredProblem",
+   "target": "ComplexityReduction.Presentation.HamiltonianPath.structuredProblem",
+   "statement": "Construct a certified reduction from structured Undirected Hamiltonian Circuit to structured Hamiltonian Path.",
+   "statement_hash": "sha256:fe3f902a7cb886b24997d0b6c30c888450b7f4e8c03fd8eefe5bd68430803392",
+   "budget_profile": "formal-default",
+   "construction_policy": {
+    "mode": "direct_new_edge",
+    "allow_composition": false,
+    "require_new_primitive": true
+   },
+   "endpoint_contract_version": "exact-edge-endpoint-v1"
+  }
+ ],
+ "schema_version": "hardness_exact_reduction_edge_input_suite_v1",
+ "split": "heldout"
+}

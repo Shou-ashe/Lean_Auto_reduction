@@ -42,13 +42,13 @@ from scripts.typed_authoring_benchmark import (
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_FORMALIZATION_SUITE = (
-    ROOT / "Benchmark" / "Hardness" / "Suites" / "quals_formalization.json"
+    ROOT / "Gate" / "Suites" / "quals_formalization.json"
 )
 DEFAULT_COMPLETENESS_SUITE = (
-    ROOT / "Benchmark" / "Hardness" / "Suites" / "quals_completeness.json"
+    ROOT / "Gate" / "Suites" / "quals_completeness.json"
 )
 DEFAULT_ADVERSARIAL_SUITE = (
-    ROOT / "Benchmark" / "Hardness" / "Suites" / "quals_adversarial.json"
+    ROOT / "Gate" / "Suites" / "quals_adversarial.json"
 )
 MAX_JOBS = 4
 

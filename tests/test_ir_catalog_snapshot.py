@@ -3,7 +3,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SNAPSHOT = ROOT / "Benchmark" / "Hardness" / "IR_CATALOG_SNAPSHOT.json"
+SNAPSHOT = ROOT / "Reports" / "IR_CATALOG_SNAPSHOT.json"
 
 
 def test_snapshot_contains_compiled_endpoint_topology_for_reference_ir_paths() -> None:

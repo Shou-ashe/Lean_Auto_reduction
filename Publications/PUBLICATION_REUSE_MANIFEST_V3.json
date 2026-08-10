@@ -1,0 +1,88 @@
+{
+  "base_capability_manifest": {
+    "benchmark_id": "np-hard-capability-v2",
+    "file": "Benchmark/Hardness/CAPABILITY_MANIFEST_V2.json",
+    "schema_version": "hardness_np_hard_capability_manifest_v2",
+    "sha256": "sha256:d1992908b547c748a63c02b17af6137ef19442541c6e5fdaaa185f535384a935"
+  },
+  "benchmark_id": "np-hard-publication-reuse-v3",
+  "case_count": 34,
+  "manifest_id": "sha256:cfc9df097b6393ba4c110cdc26c8fb0b8c207f283f3e483fe48a07a4378db528",
+  "objective": "target-hardness-publication-reuse",
+  "publication_catalog": {
+    "active_publication_count": 4,
+    "catalog_id": "sha256:c7079b94e30d135b7fd74dca6bcc30b9e801da058228e15fccc0b46d47695acc",
+    "file": "Publications/NP_HARD_PUBLICATION_CATALOG.json",
+    "sha256": "sha256:abba490106d66934b3d7d2ff4d61861844123e3ce41fc1dc91f4523558057822"
+  },
+  "required_model_profile": {
+    "base_url": "https://api.deepseek.com",
+    "max_retries": 0,
+    "max_tokens": 16000,
+    "model": "deepseek-v4-flash",
+    "provider": "DeepSeek",
+    "reasoning_effort": "low",
+    "temperature": 0.0,
+    "timeout_seconds": 300
+  },
+  "reuse_policy": {
+    "direct": [
+      {
+        "asset_declaration": "ComplexityReduction.Generated.Hardness.Ce9751f385584594e3ba9.Reduction.authoredForwardReduction",
+        "asset_module": "ComplexityReduction.Generated.Hardness.Assets.C93329a3453cbbc82505aee15.Reduction",
+        "candidate_id": "sha256:93329a3453cbbc82505aee1562ea107954c412e5350e419f6f2f2bef76cc8016",
+        "canonical_endpoint": "ComplexityReduction.Routes.ThreeSATToClique.IngressAdapters.taggedThreeSATProblem",
+        "canonical_identity_id": "sha256:97994ca373693d9c1ca40602e8c4240801b5263185205c9a79aa83620003a102",
+        "case_id": "cdev-au-01-tagged-three-sat-adapter",
+        "publication_id": "sha256:4163a339668a2776c79d449ee31ea9d370f741edb0b120ec2a30d7ae3069e017"
+      },
+      {
+        "asset_declaration": "ComplexityReduction.Generated.Hardness.C878ab5c0f5232e514499.Reduction.authoredForwardReduction",
+        "asset_module": "ComplexityReduction.Generated.Hardness.Assets.C3c85bb64a024770d87e194ca.Reduction",
+        "candidate_id": "sha256:3c85bb64a024770d87e194ca08615423bcdf3de59a7cd35e086ffd1007c53567",
+        "canonical_endpoint": "ComplexityReduction.Presentation.SetSystem.setCoveringStructuredProblem",
+        "canonical_identity_id": "sha256:fa2dbd61a9bf19b4800d3813cfc16ddbf08e75d8e4e2e8e5946b1dd4366deac7",
+        "case_id": "chld-au-07-set-covering",
+        "publication_id": "sha256:948a3027270f369e0c56b52c38649c608d2ba3f811c3e8f5ac481cc9e548a99a"
+      },
+      {
+        "asset_declaration": "ComplexityReduction.Generated.Hardness.C15c953ce5e20344bf87b.Reduction.authoredForwardReduction",
+        "asset_module": "ComplexityReduction.Generated.Hardness.Assets.C1a9f5872e7801d03bf297a7d.Reduction",
+        "candidate_id": "sha256:1a9f5872e7801d03bf297a7d984030b4c6956089f47683e447005dc971ddf3e5",
+        "canonical_endpoint": "ComplexityReduction.Presentation.FeedbackArcSet.structuredProblem",
+        "canonical_identity_id": "sha256:7d29f5088357095226b22fd8781baf1bc9bd0c10750085e5b1bc98f2ee234564",
+        "case_id": "chld-au-09-feedback-arc-set",
+        "publication_id": "sha256:a64be4b105fd3d5f750bf0988587b2ecb1a630c21f4dd34f10739f0f87ea4e00"
+      },
+      {
+        "asset_declaration": "ComplexityReduction.Generated.Hardness.C4ddadc69d69dcce12634.Reduction.authoredForwardReduction",
+        "asset_module": "ComplexityReduction.Generated.Hardness.Assets.Cb8bdcb980c2d25956c5b503c.Reduction",
+        "candidate_id": "sha256:b8bdcb980c2d25956c5b503c4255d06c7ea28864200b816bac0e2737a09d00a2",
+        "canonical_endpoint": "ComplexityReduction.Presentation.ThreeDimensionalMatching.structuredProblem",
+        "canonical_identity_id": "sha256:872cc330dbe4b94612d28b3f382815711bd02a583c107620174d89a9dc70808f",
+        "case_id": "chld-au-10-three-dimensional-matching",
+        "publication_id": "sha256:0432f71e58caf40d18ef2723c64ad9db6812b136065b3cbf605e0bb7faf9cf0a"
+      }
+    ],
+    "remaining_cases_use_base_v2_production": true,
+    "reuse_requires_zero_model_calls": true,
+    "transitive": [
+      {
+        "canonical_endpoint": "ComplexityReduction.Presentation.SetSystem.hittingSetStructuredProblem",
+        "canonical_identity_id": "sha256:27b6e9d316664126af1af5137dafd75ef5955e2edc844d1e0aefef7f2466e062",
+        "case_id": "chld-au-06-hitting-set",
+        "consumer_declaration": "ComplexityReduction.Routes.SetCoveringToHittingSet.certifiedReduction",
+        "publisher_case_id": "chld-au-07-set-covering",
+        "publisher_declaration": "ComplexityReduction.Generated.Hardness.C878ab5c0f5232e514499.Reduction.authoredForwardReduction",
+        "publisher_publication_id": "sha256:948a3027270f369e0c56b52c38649c608d2ba3f811c3e8f5ac481cc9e548a99a"
+      }
+    ]
+  },
+  "schema_version": "hardness_np_hard_publication_reuse_manifest_v3",
+  "selected_splits": [
+    "dev",
+    "validation",
+    "heldout",
+    "frontier"
+  ]
+}

@@ -1,0 +1,180 @@
+{
+  "benchmark_id": "np-hard-capability-v2",
+  "budget_profiles": {
+    "formal-default": {
+      "attempt_budget": 4,
+      "call_budget": "typed-dag-auto",
+      "lean_timeout_seconds": 600
+    },
+    "frontier-default": {
+      "attempt_budget": 4,
+      "call_budget": "typed-dag-auto",
+      "lean_timeout_seconds": 600
+    }
+  },
+  "contract_counts": {
+    "blocker_bucket_counts": {
+      "encoding_complexity_boundary": 2
+    },
+    "case_count": 34,
+    "expected_case_buckets": [
+      {
+        "count": 4,
+        "outcome_class": "existing-route",
+        "scored": true,
+        "split": "dev",
+        "tier": "C0-existing"
+      },
+      {
+        "count": 2,
+        "outcome_class": "first-authoring",
+        "scored": true,
+        "split": "dev",
+        "tier": "C0-authoring"
+      },
+      {
+        "count": 2,
+        "outcome_class": "safety",
+        "scored": true,
+        "split": "dev",
+        "tier": "C0-safety"
+      },
+      {
+        "count": 5,
+        "outcome_class": "existing-route",
+        "scored": true,
+        "split": "validation",
+        "tier": "C0-existing"
+      },
+      {
+        "count": 1,
+        "outcome_class": "first-authoring",
+        "scored": true,
+        "split": "validation",
+        "tier": "C0-authoring"
+      },
+      {
+        "count": 2,
+        "outcome_class": "safety",
+        "scored": true,
+        "split": "validation",
+        "tier": "C0-safety"
+      },
+      {
+        "count": 4,
+        "outcome_class": "existing-route",
+        "scored": true,
+        "split": "heldout",
+        "tier": "C0-existing"
+      },
+      {
+        "count": 8,
+        "outcome_class": "first-authoring",
+        "scored": true,
+        "split": "heldout",
+        "tier": "C0-authoring"
+      },
+      {
+        "count": 4,
+        "outcome_class": "safety",
+        "scored": true,
+        "split": "heldout",
+        "tier": "C0-safety"
+      },
+      {
+        "count": 2,
+        "outcome_class": "frontier",
+        "scored": false,
+        "split": "frontier",
+        "tier": "F0-frontier"
+      }
+    ],
+    "split_counts": {
+      "dev": 8,
+      "frontier": 2,
+      "heldout": 16,
+      "validation": 8
+    },
+    "unique_identity_count": 34
+  },
+  "final_lean_type": "ComplexityReduction.Certificate.NativeTMNPHard input",
+  "forbidden_runner_paths": [
+    "ACTIVE_AGENT_IMPROVEMENT_PLAN.md",
+    "Benchmark/Hardness/Evaluation",
+    "problems.7z",
+    "problems",
+    "problems.json",
+    "problems_clean.json"
+  ],
+  "objective": "target-hardness",
+  "oracle": {
+    "file": "Benchmark/Hardness/Evaluation/np_hard_capability_oracle_v2.json",
+    "runner_access": "forbidden",
+    "sha256": "45a00b107f72cdf664ec9172fa3b5648d3decfca52b9362a405443fb2b429346"
+  },
+  "public_suite_case_fields": [
+    "case_id",
+    "module",
+    "problem",
+    "family",
+    "budget_profile"
+  ],
+  "required_model_profile": {
+    "base_url": "https://api.deepseek.com",
+    "max_retries": 0,
+    "max_tokens": 16000,
+    "model": "deepseek-v4-flash",
+    "provider": "DeepSeek",
+    "reasoning_effort": "low",
+    "temperature": 0.0,
+    "timeout_seconds": 300
+  },
+  "reserve_policy": {
+    "intermediate_case_threshold": 0.1,
+    "promote_consecutive_versions": 2,
+    "promote_threshold": 0.9
+  },
+  "schema_version": "hardness_np_hard_capability_manifest_v2",
+  "scope_policy": {
+    "file": "agent/hardness/data/np_hard_scope_policy_v2.json",
+    "sha256": "a70d6e055d4dac5945daab8beb4bdcf213aed9e94a7014e073c782f513216f5c"
+  },
+  "split_policy": {
+    "canonical_identity_disjoint": true,
+    "capability_node_heldout": [
+      "new-gadget",
+      "polynomial-bound"
+    ],
+    "counts": {
+      "dev": 8,
+      "frontier": 2,
+      "heldout": 16,
+      "validation": 8
+    },
+    "family_heldout": [
+      "other"
+    ]
+  },
+  "suites": {
+    "dev": {
+      "file": "Benchmark/Hardness/Suites/np_hard_capability_dev_v2.json",
+      "sha256": "db80c75b3d974a01eb6f1401117fe2ea9691379f2a220754a24f400c46d03186"
+    },
+    "frontier": {
+      "file": "Benchmark/Hardness/Suites/np_hard_capability_frontier_v2.json",
+      "sha256": "0d0e6ae92025e590f0fe4d1723d16d21da1ba6be2490d27baa040ae65c264531"
+    },
+    "heldout": {
+      "file": "Benchmark/Hardness/Suites/np_hard_capability_heldout_v2.json",
+      "sha256": "dbd1b8ef4e19ce01e9f919aa7f1e2e3977d8ad389f695ffe37e7314a7a7415de"
+    },
+    "validation": {
+      "file": "Benchmark/Hardness/Suites/np_hard_capability_validation_v2.json",
+      "sha256": "b884fb236986fdb6b7affc07f543358da33b013c38a39ffdc1bbfa4cfe6f8765"
+    }
+  },
+  "target_matrix": {
+    "file": "Benchmark/Hardness/NP_HARD_TARGET_MATRIX_V2.json",
+    "sha256": "3633b6b551f6d719bc5c18d3d0e49d31cc96bfd1859a06d7ea23b27bcf316d61"
+  }
+}

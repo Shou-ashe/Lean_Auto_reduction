@@ -1,0 +1,33 @@
+{
+ "benchmark_id": "exact-reduction-edge-v1",
+ "budget_profiles": {
+  "formal-default": {
+   "authoring_attempt_budget": 4,
+   "authoring_mode": "model-auto",
+   "lean_timeout_seconds": 600
+  }
+ },
+ "execution": {
+  "isolate_workspace": true,
+  "max_jobs": 4,
+  "runtime_prebuilt": true
+ },
+ "schema_version": "hardness_exact_reduction_edge_manifest_v1",
+ "scoring": {
+  "oracle_sha256": "sha256:aec8ed8919fc6d3c57fa4ab215acfb94fb7059782b7b564e4da9f121340fd3f8"
+ },
+ "splits": {
+  "dev": {
+   "sha256": "sha256:a00f20c52f491e0709f7d139a66619bc7d799a8ac8257cd8a45cd44caf9b19eb",
+   "suite": "Suites/exact_reduction_edge_dev_v1.json"
+  },
+  "heldout": {
+   "sha256": "sha256:6dddcc94fccaa27902c614fdf19869ce9add7ee3c70d625976d6bebe37cb95ff",
+   "suite": "Suites/exact_reduction_edge_heldout_v1.json"
+  },
+  "validation": {
+   "sha256": "sha256:509d3908d288122729d97d8ede3a82362d7d805f8d5ce92f6a6f9b205f4aee99",
+   "suite": "Suites/exact_reduction_edge_validation_v1.json"
+  }
+ }
+}

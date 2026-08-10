@@ -44,8 +44,8 @@ from agent.hardness.stage_o_runtime import (
 
 
 ROOT = Path(__file__).resolve().parents[1]
-POSITIVE = load_benchmark_suite(ROOT / "Benchmark/Hardness/Suites/stage_o_multi_gap.json")
-NEGATIVE = load_benchmark_suite(ROOT / "Benchmark/Hardness/Suites/stage_o_adversarial.json")
+POSITIVE = load_benchmark_suite(ROOT / "Gate/Suites/stage_o_multi_gap.json")
+NEGATIVE = load_benchmark_suite(ROOT / "Gate/Suites/stage_o_adversarial.json")
 
 
 def _hash(label: str) -> str:

@@ -147,7 +147,7 @@ def test_old_identity_is_rejected_after_related_source_drift(
 ) -> None:
     source_path = (
         ROOT
-        / "Lean/Reference/Benchmark/Hardness/Inputs/NPHardGeneralization/"
+        / "Lean/Reference/Reports/Inputs/NPHardGeneralization/"
         "InputNormalizationOpenWorld.lean"
     )
     original = source_path.read_text(encoding="utf-8")

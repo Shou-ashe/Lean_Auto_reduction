@@ -1,241 +1,387 @@
 # Complexity Reduction Agent：活动改进计划
 
-> 状态：Active  
-> 更新日期：2026-08-09  
-> 当前工作包：H-G（正式 CLI 输入契约与验收配置统一）  
-> 初步目标：用户输入 Complexity Reduction 公共 Lean 库内已有的决策问题，agent 自动复用或构造从库内已知 NP-hard 问题到该输入的正向规约，并输出由 Lean kernel 接受、结论精确为 `NativeTMNPHard input` 的证明。
+> 状态：Active
+>
+> 更新日期：2026-08-10
+>
+> 当前唯一优先主线：把 `problems.7z` 中冻结的真实 reduction 题变成可运行、可评分、真实调用模型的 exact-edge benchmark。
 
-本文件已删除此前的完成态内容，只保留尚未完成的改进工作。工作包通过全部验收后必须从本文件删除；实现历史、命令、指标和内容哈希只保留在 `Benchmark/Hardness/MAIN_H_*_FULL_REPORT.json` 及其引用报告中。
+## 0. 本文档只保留未完成工作
 
-## 一、初步目标的严格输入与成功定义
+以下内容已经完成，不再在活动计划中重复维护：
 
-### 1. 输入对象
+- H-I 已由 `Reports/MAIN_H_I_FULL_REPORT.json` 证明通过；
+- H-J 已由 `Reports/MAIN_H_J_FULL_REPORT.json` 证明通过；
+- H-I/H-J 冻结记录：44 个公共 identity、24 个唯一方向、至少 8 个此前没有现成最终路线的 heldout authoring 方向、至少 4 个 authoring family；
+- unified benchmark、capability v2、frontier 边界组、exact-edge 三个 split、归档审计和 24 题转换计划已经存在；
+- 旧文档中按 H-I/H-J case 逐条展开的历史实施表、已经失效的 baseline 数字、重复的 reserve 列表和旧 runner 入口说明全部删除。
 
-1. 正式输入是一个库内已有的决策问题，而不只是数据表示类型：
-   - 首选完整 Lean `PresentedProblem` 声明；
-   - 允许 stable ID、alias 或 wrapper；
-   - 裸 `LawfulEncodedType` 只有在当前模块真实 import closure 中能够唯一解析到一个已有 lawful presentation 时才可接受。
-2. 多个判定谓词可能共享同一个 encoding，因此裸 encoding 无法唯一确定问题时必须返回 `ambiguous_lawful_presentation`，不得猜测用户意图。
-3. 用户给出完整声明时，CLI 应能够自动解析所属模块；仍允许显式 `--module` 覆盖。不存在、越出公共 import closure 或无法形成 lawful presentation 时必须返回稳定失败码。
+H-K publication/reuse 代码路径仍可作为后续独立工作包，但不再占用本活动计划；必须先完成本计划中的真实 exact-edge authoring 闭环。
 
-### 2. 成功对象
+当前权威输入是：
 
-一次正式成功必须同时满足：
+- `Reports/PROBLEM_ARCHIVE_AUDIT.json`；
+- `Planning/ProblemConversionPlan/exact_edge/PLAN.json`；
+- `Planning/ProblemConversionPlan/frontier/PLAN.json`；
+- `Benchmark/Hardness/EXACT_REDUCTION_EDGE_MANIFEST.json`；
+- `Benchmark/Hardness/Suites/exact_reduction_edge_dev_v1.json`；
+- `Benchmark/Hardness/Suites/exact_reduction_edge_validation_v1.json`；
+- `Benchmark/Hardness/Suites/exact_reduction_edge_heldout_v1.json`；
+- `Evaluation/exact_reduction_edge_oracle_v1.json`；
+- `Benchmark/Hardness/BENCHMARK_REGISTRY.json`。
 
-1. 证明目标精确为用户输入的 canonical `PresentedProblem`，最终 Lean 类型为 `NativeTMNPHard input`。
-2. 规约方向必须是从已知 NP-hard seed/hub 到输入问题；反向规约、相似端点、相同 representation 的其他谓词均不得算成功。
-3. 最终 artifact 通过 Lean kernel、独立 replay、standard axiom audit、endpoint equality audit 和依赖删除审计。
-4. 模型只能填写确定性 planner 生成的精确 typed gap，不得决定目标、方向、成功判定、axiom policy 或评测答案。
-5. 已有确定性路线和结构性负例保持零模型调用。
+如果文档与这些机器可读文件冲突，以审计报告、转换计划和冻结 manifest 为准，并在同一个变更中修正文档。
 
-### 3. 目标边界
+## 1. 当前事实与问题定义
 
-1. 当前目标只证明 NP-hard，不证明 NP membership 或 NP-complete。
-2. 不要求、也不允许对所有库内问题一概证明 NP-hard；2-CNF、well-formedness、内部 IR 辅助谓词等可能不属于目标集合。
-3. 必须建立 identity 级的正式目标矩阵，区分：
-   - `in_scope_np_hard`：本轮必须最终验证为精确 `NativeTMNPHard input`；
-   - `auxiliary_or_non_target`：有可审计的库结构或正式策略依据，不进入 NP-hard 成功分母；
-   - `unclassified`：暂时未知，计划完成前必须清零；
-   - `blocked_missing_formal_prerequisite`：已识别准确缺失定理或组件，但仍属于未完成工作，不得冒充目标完成。
-4. “没有找到证明”不得被解释为“该问题不是 NP-hard”；二者必须使用不同状态与失败码。
+### 1.1 已经完成的数据工作
 
-## 二、当前基线与已确认差距
+`problems.7z` 的权威结构化来源包含：
 
-以下数字来自 H-E inventory 和 held-out 报告，只作为新计划基线，后续以重新生成的内容寻址报告为准：
+- 63 道清洗后题目；
+- 60 个唯一 reduction direction；
+- 37 个 solution、16 个 hint；
+- 24 个已冻结 exact-edge case，split 为 dev 6、validation 6、heldout 12；
+- 初始 7 个端点 ready、17 个 `blocked_endpoint_formalization`；已按本计划 2.2 完成全部 17 个端点的形式化，当前 24/24 端点 ready（`Evaluation/exact_reduction_edge_oracle_v1.json` 与 `Planning/ProblemConversionPlan/exact_edge/PLAN.json` 的 status/status_counts 已同步，归档审计 selection 文件保留 7/17 初始状态绑定）。
 
-1. 公共库 inventory 包含 200 个模块、253 个 `PresentedProblem` 声明和 44 个唯一问题 identity。
-2. 44 个 identity 中只有 22 个具有已知正向 hardness route；另外 22 个没有路线，也没有真正执行 authoring 资格化。
-3. 原 inventory 中 79 个声明被标记为 `not_evaluated_outside_initial_np_hard_target_set`，因此“枚举到”不等于“可证明或已正确阻塞”。
-4. H-E 的 8 个正例中，只有 Vertex Cover 与 Exact Cover 直接来自 `ComplexityReduction.*` 公共模块，且均复用已有路线。
-5. H-E 的 4 个 model-authoring 正例全部来自 `Benchmark.Hardness.Inputs.*` 合成 fixture；真实公共库 authoring 验证数为 0。
-6. 当前 authoring planner 只支持 `semantic_proof`、`program_composition`、`program_synthesis` 三类固定 task，并依赖预先存在的 hardness hub、typed gap、poly program、mapping relation 或 primitives。
-7. 正式 `scripts/prove_np_hard.py` 默认仍为 120 秒、4096 tokens、8 次调用预算，而通过真实 V4 Flash 验收的 NP-hard 配置为 300 秒、16000 tokens。
-8. `scripts/run_np_hard_release_stability.py` 的源码默认模型仍是 `deepseek-chat`；此前通过验收依赖显式命令行覆盖。
-9. 生成证明主要保存在 fresh `tmp/...` job 中，尚未形成可稳定 import、可登记、可在下一任务零调用复用的公共证明资产。
-10. 三轮稳定性重复固定 fixture，尚未给出不同真实公共问题上的首次成功率、预算内成功率和跨 family 泛化率。
+归档的 README 中残留 64 题的陈旧描述已经记录为 documentation drift，不得覆盖 `problems_clean.json` 和审计报告中的 63 题权威计数。
 
-因此，旧 `Complete` 只能解释为“安全框架与代表性 benchmark 完成”，不能解释为“初步目标已覆盖真实公共库输入”。
+### 1.2 当前 benchmark 状态
 
-## 三、所有工作包统一强制回归协议
+统一 registry 已包含 50 个 case：
 
-H-G 至 H-K 每个工作包结束时都必须在全新 output/job 目录依次通过以下门禁；任一门禁失败都不得删除当前工作包或进入下一阶段。
+- capability：24；
+- frontier：2；
+- exact-edge：24。
 
-### 1. 代码与 Lean 门禁
+当前 exact-edge 运行虽然能完成调度和评分，但还没有形成“新 reduction 由模型逐阶段写出”的闭环：
 
-1. 运行本工作包全部相关 Python 单元测试、契约测试、mutation 测试与 Lean 编译测试。
-2. 运行完整 `pytest`，不得跳过长测试、mock 生产编排或历史回归。
-3. 对新增成功 artifact 执行独立 Lean process replay、standard axiom audit、endpoint equality audit、fresh-core dependency rediscovery 和逐节点删除审计。
+- 已存在路线的控制题可以被检索并以零模型调用完成，这是预期行为；
+- 要求新 primitive 的题仍可能复用已有路线，随后才被隐藏 scorer 判为 bypass；
+- 端点 ready、但没有现成 planner DAG 的题会以 `exact_edge_authoring_dag_unavailable` 结束；
+- 17 个端点未形式化的题必须在模型调用前 fail closed，不能让 LLM 临时定义 benchmark 端点；
+- 当前 exact-edge lane 主要把 case 交给通用 `reduce_to` agent，尚缺 exact-edge 专用的多阶段 task class、公开 construction policy 和逐节点真实调用协议。
 
-### 2. 真实 DeepSeek V4 Flash 门禁
+本计划实现状态（代码与数据已完成，等待真实 API 里程碑运行）：
 
-所有正式模型门禁必须明确使用：
+- 公开 case schema 已包含 `construction_policy`、`statement_hash`、`endpoint_contract_version`；
+- `typed_exact_edge_construction_dag` task class、planner DAG、单节点 answer-free prompt、逐节点 ledger、checkpoint/resume 与 staged executor 已实现并接入 exact-edge lane；
+- 24/24 端点 ready；scorer 对 public policy 与 oracle policy 做一一对应校验。
 
-```text
-provider             = DeepSeek
-base_url             = https://api.deepseek.com
-model                = deepseek-v4-flash
-reasoning_effort      = low
-temperature           = 0
-max_retries           = 0
-NP-hard max_tokens    = 16000
-NP-hard timeout       = 300 seconds
-main-45 max_tokens    = suite 中已验收的 16384
+### 1.3 本计划的完成定义
+
+最终系统必须区分三种情况：
+
+1. `existing_edge_reconstruction`：允许检索已有 exact edge，预期零模型调用，但仍要重新执行全部 exact-edge 审计；
+2. `direct_new_edge`：禁止通过已有 route 或组合绕过，必须由 LLM 多阶段写出新 primitive、证明和最终证书；
+3. `blocked_endpoint_formalization`：端点未通过独立审计时不调用 LLM，不计入可解分母。
+
+exact-edge 成功必须得到题目指定的精确 `CertifiedReduction source target`。仅证明 target NP-hard、找到其他终点、或通过已有 route 间接到达 target 都不能算成功。
+
+## 2. 加入真实题目前，项目代码必须先写什么
+
+这一部分由项目实现者完成，不是 benchmark 运行时交给 LLM 的内容。
+
+### 2.1 公开 case schema 与答案隔离
+
+升级 exact-edge public suite schema。每个公开 case 至少包含：
+
+```json
+{
+  "case_id": "...",
+  "module": "...",
+  "source": "exact PresentedProblem declaration",
+  "target": "exact PresentedProblem declaration",
+  "statement": "answer-free problem statement",
+  "statement_hash": "sha256:...",
+  "budget_profile": "formal-default",
+  "construction_policy": {
+    "mode": "existing_edge_reconstruction | direct_new_edge",
+    "allow_composition": false,
+    "require_new_primitive": true
+  },
+  "endpoint_contract_version": "..."
+}
 ```
 
-要求：
+公开 `construction_policy` 是任务要求，不是答案泄漏。它必须在 production run 前可见，使 runner 能在生成阶段阻止错误路线；以下内容继续只存在于隐藏 oracle：
 
-1. 禁止使用 `deepseek-chat`、其他模型、fixture client、录制响应、缓存响应或离线响应冒充正式调用。
-2. 使用 `scripts/run_hardness_benchmark.py --agent-phase 7` 完整执行主 45 benchmark：45/45 必须符合预期，所有真实模型 HTTP 调用必须为 200，正例必须通过 kernel/replay/axiom audit。
-3. 使用 `scripts/run_np_hard_release_stability.py` 在全新目录执行 3 轮完整发布套件：最低门禁为 36/36、15/15 authoring、已有路线零模型调用、全部删除审计通过、worker fallback 为零。
-4. 运行本工作包新增的全部 held-out/qualification 案例；必须通过 `scripts/prove_np_hard.py` 或相同生产 `NPHardOrchestratorV2`，不得绕过正式入口直接调用内部 runtime。
-5. 每个模型 gap 节点必须保存 prompt/response 内容哈希、HTTP 状态、模型名、finish reason、token usage、Lean diagnostics 和候选验证结果。
-6. API key、Authorization header 与敏感环境变量不得写入 prompt、日志或公共报告。
+- solution、hint、PDF 证明内容及其可恢复文本；
+- 归档中的 transform plan 和推荐构造；
+- `existing_route` 的 gold 绑定；
+- 精确 `forbidden_route_imports`；
+- scorer mutation、solution hash 和选择注释。
 
-### 3. 报告门禁
+运行隔离要求：
 
-1. 每个工作包生成 `Benchmark/Hardness/MAIN_H_<阶段>_FULL_REPORT.json`。
-2. 报告记录 schema、源码哈希、活动计划测试前/完成后哈希、Lean toolchain、lake manifest、输入 suite 哈希、模型配置、真实调用数、token usage、全部 replay/audit 结果和 fresh output 路径。
-3. `.git` 不可用时必须记录原因，并以逐文件 SHA-256 作为权威 source control 证据。
-4. 只有相关测试、完整测试、主 45、三轮稳定性和阶段 held-out 全部通过时，报告才允许写入 `passed: true`。
+- `problems.7z`、解压目录、`problems_clean.json`、PDF、solution、hint、conversion plan 和隐藏 oracle 均不得进入 agent workspace；
+- prompt 只能包含公开 statement、精确端点、当前节点签名、允许的公共 API、已验收依赖和上一轮编译诊断；
+- 任何 `recommended_first_body`、预填 `response_template`、gold declaration body 或可直接拼装答案的 packet 都不得用于 `direct_new_edge`；
+- statement、source、target、policy、prompt 和最终 artifact 必须通过 hash 链绑定。
 
-## 五、H-G：正式 CLI 输入契约与验收配置统一
+需要修改或重新冻结：
 
-### 目标
+- `agent/hardness/np_hard_exact_edge.py` 的 suite/manifest schema 校验；
+- 三个 exact-edge suite；
+- exact-edge manifest 的 suite hash；
+- benchmark registry 的绑定 hash；
+- exact-edge oracle 与公开 case 的一一对应检查；
+- archive/oracle isolation 和 schema 负例测试。
 
-确保用户执行默认生产命令时，使用的正是已经通过真实 V4 Flash 验收的配置与输入语义，不再依赖人工补充隐藏参数。
+### 2.2 17 个缺失端点必须先形式化
 
-### 实现内容
+每个新问题端点至少需要提交以下静态 Lean 组件：
 
-1. 将 `scripts/prove_np_hard.py` 默认配置统一为 `deepseek-v4-flash`、low reasoning、300 秒、16000 tokens、0 SDK retries；调用预算必须按 DAG 节点数和 attempt budget 安全计算，不得小于完整 DAG 的最小需求。
-2. 修复 `.env`、环境变量和 CLI 参数的优先级：显式 CLI > 环境/`.env` > 已验收默认值；不得用 argparse 的旧默认值静默覆盖 `.env`。
-3. 将 `scripts/run_np_hard_release_stability.py`、H-E/H-F runner、README 和 `.env.example` 的默认模型全部统一为 `deepseek-v4-flash`，删除生产路径中的 `deepseek-chat` 默认值。
-4. 增加启动 preflight：打印并写入脱敏后的实际 provider、model、timeout、tokens、reasoning effort、call budget；非 V4 Flash 正式 qualification 必须 fail closed。
-5. 支持只给完整 `--problem` 时自动发现所属公共模块；显式 `--module` 仍可覆盖并接受一致性校验。
-6. 对裸 encoding 返回 canonical presentation 或稳定的 missing/ambiguous 错误与候选列表，不得猜测谓词。
-7. 统一机器可读输出 schema，清楚区分 `VERIFIED`、`BLOCKED_NOT_TARGET`、`BLOCKED_MISSING_PREREQUISITE`、`FAILED_MODEL`、`FAILED_LEAN` 与输入错误。
+- `Instance`/carrier 类型；
+- `accepts`、`isYes` 或等价判定谓词；
+- 输入 well-formedness 和非法输入语义；
+- `LawfulEncodedType`/codec，且大小度量与二进制编码一致；
+- 精确的 `PresentedProblem` 或 `StructuredProblem` declaration；
+- identity reduction、membership/endpoint probe 或等价的独立可用性证明；
+- declaration hash、依赖闭包、axiom、kernel replay 和 endpoint audit；
+- 与归档 statement 的语义对齐说明，但不得把 solution 放入 public module。
 
-### 完成标准
+端点状态只能在上述组件全部通过后由 `blocked_endpoint_formalization` 改为 `ready`。缺少任一端点时，runner 必须在创建 model client/request 之前停止该 case。
 
-1. README 中最短默认命令无需额外 timeout/token 参数即可复现已验收配置。
-2. 契约测试证明所有生产 runner 的默认模型均为 `deepseek-v4-flash`，仓库生产路径不存在 `deepseek-chat` 默认值。
-3. 至少一个真实公共库 authoring 案例通过用户可见 CLI 默认配置产生真实 V4 Flash 调用并最终 `VERIFIED`。
-4. 输入模块自动发现、显式覆盖、missing presentation 和 ambiguous presentation 均通过正式入口测试。
-5. 主 45、三轮稳定性和 H-G CLI held-out 全部通过真实 V4 Flash 门禁。
+端点形式化状态（已完成）：E1 的 `HalfClique`、`DoubleThreeSAT`、`NAEThreeSAT`（codec 审计）、`SubsetSum`、`IndependentSet`，E2 的复用 wrapper（`IndependentSet`/`NAEThreeSAT`/`SubsetSum` + `Partition` 数值编码核对），E3 的 `DominatingSet`、`DenseSubgraph`、`TSP`、`HamiltonianPath`，E4 的 `SetSplitting`、`OneInThreeSAT`、`ExactCoverBy3`、`ExactCoverBy4` 均已提交 `Lean/Reference/ComplexityReduction/Presentation/`，通过 `lake env lean` 编译、`assert_standard_axioms` 与两个 Endpoints 导入模块编译；`_prepare_case_wrapper` 对 24/24 case 的公开 wrapper 编译通过。
 
-## 六、H-H：公共库已有路线的逐 identity 生产验证
+按依赖顺序实施：
 
-### 目标
+| 波次 | Case | 需要新增或冻结的端点工作 |
+|---|---|---|
+| E1 validation 基础 | `edge-val-02-clique-to-half-clique` | `HalfClique` 的实例、阈值语义、well-formedness、codec、PresentedProblem |
+| E1 validation 基础 | `edge-val-03-three-sat-to-double-sat` | `DoubleThreeSAT`，特别是声明变量集合上的赋值计数语义 |
+| E1 validation 基础 | `edge-val-04-three-sat-to-nae-three-sat` | `NAEThreeSAT` 的精确三元 relation presentation 与 codec |
+| E1 validation 基础 | `edge-val-05-subset-sum-to-knapsack` | `SubsetSum` presentation、数值编码和目标值合法性 |
+| E1 validation 基础 | `edge-val-06-clique-to-independent-set` | `IndependentSet` presentation、至少 k 个点的语义和边界输入 |
+| E2 复用 E1 | `edge-held-03-independent-set-to-vertex-cover` | 复用 `IndependentSet`，新增本 case 的 exact wrapper 和 statement binding |
+| E2 复用 E1 | `edge-held-08-nae-three-sat-to-chromatic` | 复用 `NAEThreeSAT`，新增本 case 的 exact wrapper 和 statement binding |
+| E2 复用 E1 | `edge-held-10-subset-sum-to-partition` | 复用 `SubsetSum`，核对 `Partition` 的数值编码契约并冻结 wrapper |
+| E3 图与优化端点 | `edge-held-01-vertex-cover-to-dominating-set` | `DominatingSet` presentation 和退化图语义 |
+| E3 图与优化端点 | `edge-held-02-clique-to-dense-subgraph` | `DenseSubgraph (G,a,b)`、参数合法性和无溢出 Nat 语义 |
+| E3 图与优化端点 | `edge-held-04-independent-set-to-set-packing` | `SetPacking` presentation、集合去重与元素身份语义 |
+| E3 图与优化端点 | `edge-held-11-hamiltonian-cycle-to-tsp` | `TSP`/`WeightedGraphInput`、complete tour、cost bound 和 directed flag |
+| E3 图与优化端点 | `edge-held-12-hamiltonian-cycle-to-path` | `HamiltonianPath` presentation，空图和单点图语义 |
+| E4 CSP/集合族端点 | `edge-held-05-nae-three-sat-to-set-splitting` | `SetSplitting` presentation 和二分 witness 语义 |
+| E4 CSP/集合族端点 | `edge-held-06-three-sat-to-one-in-three-sat` | `OneInThreeSAT` 的 exact-three relation presentation |
+| E4 CSP/集合族端点 | `edge-held-07-one-in-three-to-exact-cover` | `ExactCover` 的元素身份、无重复集合和 witness 语义 |
+| E4 CSP/集合族端点 | `edge-held-09-exact-cover-three-to-four` | `ExactCoverBy3`/`ExactCoverBy4` restricted presentations 和 size promise |
 
-把 inventory 中“图可达”升级为真实生产入口逐 identity 的 kernel-verified 结果，验证所有已有路线目标，而不把 catalog reachability 当作成功证明。
+`Planning/ProblemConversionPlan/exact_edge/PLAN.json` 继续作为 24 个 direction、split、role 和 endpoint readiness 的权威矩阵，不在本文复制归档 solution 或完整构造方案。
 
-### 实现内容
+## 3. Runner 必须如何修改
 
-1. 对 H-F 矩阵中所有具有正向路线的公共 identity 逐一调用生产 orchestrator；definitionally equal alias 只验证一次 canonical identity，并另测 alias normalization。
-2. 为每个 identity 生成精确 `NativeTMNPHard input` artifact、独立 replay、axiom 和 endpoint audit。
-3. 验证 shortest route、组合 route 与 representation adapter 的方向和端点；发现 catalog edge 与实际 Lean artifact 不一致时 fail closed。
-4. 已有路线全程模型调用必须为零；任何非零调用都视为 deterministic reuse 回归。
-5. 生成 identity 级 `PUBLIC_EXISTING_ROUTE_QUALIFICATION_REPORT.json`，不得按 174 个重复声明夸大覆盖。
+### 3.1 保留统一入口，改造 exact-edge lane
 
-### 完成标准
+顶层命令继续使用 `scripts/run_hardness_benchmark.py`，不再增加新的并行 benchmark 入口。需要修改的是 exact-edge lane 内部：
 
-1. H-F 矩阵中全部 existing-route canonical identity 均由正式入口验证；预期基线为 22/22，实际数量以 H-F 重算结果为准。
-2. 全部成功 artifact 精确命中 canonical 输入，模型调用为 0，replay/axiom/endpoint audit 通过。
-3. 至少 12 个 answer-free organic held-out 全部来自 `ComplexityReduction.*`，覆盖 route 长度 0 至当前最大长度和至少 5 个 family。
-4. 主 45、三轮稳定性和 H-H 公共路线 held-out 全部通过真实 V4 Flash 门禁；模型调用只允许发生在统一门禁中明确需要 authoring 的案例。
+- `scripts/run_hardness_benchmark.py` 只负责 registry、lane、`--jobs 4`、model client、resume 和输出目录；
+- `agent/hardness/np_hard_exact_edge.py` 负责 endpoint preflight、construction policy、case workspace、逐节点 ledger 和 exact scorer binding；
+- `agent/hardness/np_hard_authoring_planner.py` 增加 exact-edge 专用 task class；
+- `agent/hardness/np_hard_authoring.py` 和 `np_hard_authoring_contract.py` 增加节点类型、prompt/response schema、prefix checkpoint 和 fail-closed 校验；
+- 通用 `HardnessAgent(objective="reduce_to")` 可以继续提供检索和基础 probe，但不能再作为 `direct_new_edge` 的唯一执行逻辑。
 
-## 七、H-I：面向真实公共问题的通用 typed authoring planner
+### 3.2 新 task class
 
-### 目标
+新增 `typed_exact_edge_construction_dag`。planner 根据公开端点类型、公开 construction policy 和 capability catalog 生成 typed DAG，但不得读取 solution/oracle 来生成代码。
 
-将 authoring 从三个合成 fixture 模板扩展为可对真实公共库 NP-hard 目标构造新规约的通用 typed capability planner。
+该 task class 至少支持以下 LLM-written 节点；具体 case 可省略不适用的 optional 节点，但不能跳过最终审计要求：
 
-### 实现内容
+| 节点 | 运行时由 LLM 写什么 | 验收边界 |
+|---|---|---|
+| `parameter-normalization` | 非法、退化或显然 yes/no 输入的正规化 body | 编译、端点类型、分支覆盖 |
+| `reduction-primitive` | 直接 source instance 到 target instance 的构造 | 禁止 route bypass；输出类型精确 |
+| `gadget-definitions` | case 所需 gadget、辅助变量或中间结构 | 只能依赖公开 API 和已验收节点 |
+| `output-wellformed` | 构造保持 target well-formedness 的证明 | 独立 Lean replay |
+| `semantic-forward` | source witness/acceptance 推出 target acceptance | 不允许使用 reverse lemma 循环证明 |
+| `semantic-reverse` | target witness/acceptance 恢复 source acceptance | deletion/dependency audit |
+| `semantic-iff` | 将两个方向封装为精确 iff | source/target statement hash 绑定 |
+| `poly-program` | 可执行 reduction program 或对应 `PolyProgram` body | 程序可运行且输出与 primitive 对齐 |
+| `polynomial-bound` | 时间/输出大小/编码长度的多项式界 | binary-size audit，不接受仅数学值界 |
+| `program-direct-tm-coherence` | program、direct TM 和数学 primitive 的一致性 | coherence audit |
+| `certified-reduction` | 最终精确 `CertifiedReduction source target` body | kernel、replay、axiom、endpoint、dependency 全通过 |
 
-1. 对 H-F 中 `blocked_missing_formal_prerequisite` 的真实目标聚类，按缺失能力而不是问题名设计可复用节点。
-2. 在现有三类 task 基础上增加可组合能力节点，至少覆盖：
-   - representation/instance adapter；
-   - reduction function 或 gadget construction；
-   - parameter transformation；
-   - mapping invariant；
-   - semantic forward/reverse implication；
-   - executable relation coherence；
-   - polynomial-size/time bound；
-   - CertifiedReduction 组装与 NativeTMNPHard 传递。
-3. planner 必须从真实 Lean catalog、公开源码和 exact typed gaps 生成 DAG；禁止按 case ID、目标名称或 benchmark 特判选择模板。
-4. DeepSeek 每次只编辑一个节点的精确 declaration body；已接受节点内容寻址并冻结，后续节点只能引用已发布依赖。
-5. 支持在多个 hardness hub 中按可验证的安全/成本排序选择唯一正向 hub；并列时返回 `ambiguous_authoring_hub`，不得任意选择。
-6. 对缺少库级数学前提的目标生成精确 blocker，例如缺 reduction specification、缺 gadget invariant、缺 polynomial bound；禁止退化成笼统的 `authoring_plan_missing_capability`。
-7. 优先覆盖真实公共候选：Knapsack、Hitting Set、MaxCut、Partition、Feedback Node/Arc Set、3D Matching，以及 H-F 新发现的其他 in-scope 目标。
+runner 生成 imports、namespace、declaration signatures、占位标记和最终 wrapper；LLM 只返回当前节点允许替换的 body，不得一次返回整个文件或修改已验收节点。
 
-### 完成标准
+### 3.3 一个 case 的多阶段调用协议
 
-1. 至少 8 个此前没有现成最终路线的真实 `ComplexityReduction.*` canonical identity 通过模型 authoring 得到精确 `NativeTMNPHard input`。
-2. 覆盖至少 4 个 family、单缺口、多缺口、程序组合、新 gadget/program synthesis 和 polynomial bound。
-3. 8 个成功目标不得来自 `Benchmark.Hardness.Inputs.*`，不得通过 alias 重复计数，且不得包含按目标名称硬编码的 planner 分支。
-4. 每个节点通过 fresh-core、逐节点删除审计；删除任一节点后最终证明必须失效。
-5. 主 45、三轮稳定性和 H-I organic authoring held-out 全部通过真实 V4 Flash 门禁。
+一个 `direct_new_edge` case 必须按 DAG 顺序多次调用模型：
 
-## 八、H-J：证明资产发布、登记与跨任务零调用复用
+1. planner 冻结节点、依赖和每节点允许的 declaration；
+2. runner 为当前节点创建最小 prompt；
+3. 模型返回单节点 body；
+4. runner 写入隔离 workspace，执行 Lean 编译和节点专属 policy audit；
+5. 成功则把节点加入 `accepted_nodes` checkpoint，失败只把压缩后的相关诊断交给同一节点下一次 attempt；
+6. 当前节点 attempt budget 耗尽则停止该 case，不得跳过节点或回退到预写答案；
+7. 全部节点通过后再构建最终 artifact，执行独立 clean replay 和 scorer。
 
-### 目标
+默认每节点最多 4 次真实调用。调用预算按“实际 DAG 节点数 × 每节点 attempt budget”计算，而不是继续沿用“一个 case 最多 4 次、每次尝试整份证明”的语义。
 
-把一次性 `tmp/.../Final.lean` 转换为稳定、可 import、可审计、可作为后续 hardness seed/route 使用的公共证明资产。
+并行规则：
 
-### 实现内容
+- case 之间最多 4 并行，与 `--jobs 4` 一致；
+- 同一个 case 内节点按依赖顺序串行；
+- 每次调用必须记录 request id、case id、node id、attempt、model、HTTP status、token usage、prompt hash、response hash、workspace hash 和最终状态；
+- run 结束时 active model calls 必须为 0；
+- resume 只能复用 hash 完全匹配且已独立验证的节点 checkpoint。
 
-1. 设计 generated hardness package 与 publication manifest，记录 canonical endpoint、source hub、route、源码哈希、toolchain、lake manifest、模型调用证据和全部 audit 哈希。
-2. 发布前在隔离目录重建，不得依赖原 job 的绝对路径、worker 状态、临时 `.olean` 或未声明文件。
-3. 发布成功后将 theorem/CertifiedReduction 登记到公共 hardness/connection catalog，并触发完整 catalog 重建与 identity fingerprint 更新。
-4. 对同一输入再次运行生产入口时，必须自动发现已发布路线并保持零模型调用。
-5. 处理源码或依赖漂移：旧资产标记 stale，禁止静默复用；重新验证成功后生成新内容地址。
-6. 提供非破坏性的候选审阅/发布命令；正式 benchmark 可以在隔离发布区验证，但不得污染手写公共库源码。
+### 3.4 Prompt 内容
 
-### 完成标准
+`direct_new_edge` prompt 只能包含：
 
-1. 至少 4 个 H-I 真实公共 authoring 证明发布为稳定 Lean 模块并被 catalog 发现。
-2. clean dependency checkout 风格 replay 全部通过，artifact 不引用原 fresh output 绝对路径。
-3. 对已发布的 4 个目标二次运行全部零模型调用，结论与第一次 canonical endpoint 完全一致。
-4. 删除或篡改发布节点、manifest 或依赖哈希时必须 fail closed。
-5. 主 45、三轮稳定性和 H-J publication/reuse held-out 全部通过真实 V4 Flash 门禁。
+- answer-free statement；
+- source/target 的精确 declaration 名称和可见类型；
+- 当前节点签名、允许返回的 JSON/body schema；
+- construction policy，例如“必须直接构造、禁止组合 route”；
+- public API allowlist；
+- 已通过节点的 declaration signatures，必要时包含其公开 body；
+- 上一次 attempt 的最小 Lean/policy diagnostics；
+- 剩余 token、attempt 和 timeout budget。
 
-## 九、H-K：真实公共库泛化、可靠性门禁与初步目标最终封板
+禁止包含：
 
-### 目标
+- `recommended_first_body`；
+- 已填好的 replacement body；
+- solution、hint、PDF proof、conversion `transform_plan`；
+- hidden oracle、gold route、gold theorem body；
+- 其他 case，尤其 validation/heldout case 的答案或中间产物。
 
-用完全 organic、answer-free、未参与 planner 开发的公共库输入证明系统达成初步目标，并以 identity 级目标矩阵而不是 fixture 成绩作为完成依据。
+### 3.5 Production 与 scorer 的 policy 对齐
 
-### 实现内容
+当前 `allow_composition`、`require_new_primitive` 等关键约束只在隐藏 scorer 中出现，会导致 production 先走错误路线、评分时才拒绝。改造后：
 
-1. 建立最终 answer-free held-out suite：
-   - 全部输入来自公共 `ComplexityReduction.*`；
-   - 至少 16 个不同 canonical identity；
-   - 至少 5 个 family；
-   - 同时覆盖 existing route、已发布 authored route、首次 authoring、missing/ambiguous presentation、wrong direction 和非目标输入；
-   - 至少一半正例不得参与 H-F 至 H-J 的 planner/template 开发。
-2. 评测 oracle 单独保存，生产 suite 只含 module/problem/family，不含 expected、task class、gap nodes、gold、route 或 authoring policy。
-3. 对首次 authoring 节点记录 first-attempt pass rate、budgeted pass rate、每问题调用数、token、Lean 失败类型和修复次数。
-4. 执行至少 3 轮全新 job 的 organic held-out；每轮重新调用真实 V4 Flash，不得复用模型响应。
-5. 对 H-F 目标矩阵重新全量资格化：所有 `in_scope_np_hard` identity 必须最终 `VERIFIED`；`unclassified` 与 `blocked_missing_formal_prerequisite` 必须为 0，才能宣告初步目标完成。
-6. 生成最终覆盖报告，分别报告 canonical identity 覆盖、declaration/alias 数、existing-route 数、authored 数、发布复用数、正确非目标数、失败数、真实 API 调用和 token；稳定性重复轮次不得冒充不同问题覆盖。
+- 公开 suite 给出抽象 construction policy；
+- production runner 根据抽象 policy 阻止 composition、route import 和非新 primitive；
+- hidden oracle 继续保存精确 forbidden declarations、gold route、审计列表和 mutation；
+- production report 不得写出 oracle 内容；
+- scorer 重新计算 endpoint、dependency、directness、coherence、semantic iff 和 polynomial bound，不能信任 run report 的汇总布尔值。
 
-### 完成标准
+## 4. 24 个冻结 case 的实施顺序
 
-1. 最终 organic held-out 所有正例得到精确 `NativeTMNPHard input`，所有负例/非目标得到正确稳定状态。
-2. 至少 16 个正例 canonical identity 全部验证，其中首次 authoring 与 published reuse 均有覆盖；不得使用 `Benchmark.Hardness.Inputs.*` 作为 organic 成功分子。
-3. 三轮 organic held-out 均 100% 在规定 attempt/call budget 内完成，已有路线与发布复用路线模型调用为 0，worker fallback 为 0。
-4. 全部模型调用为真实 `deepseek-v4-flash` HTTP 200；报告中不存在 `deepseek-chat`、fixture、缓存响应、答案泄漏、hidden/gold import 或敏感信息。
-5. H-F 目标矩阵中全部 `in_scope_np_hard` identity 为 `VERIFIED`，没有未分类或缺 formal prerequisite 的目标。
-6. 主 45、三轮发布稳定性、最终 organic held-out、完整 pytest 与所有 Lean/audit 门禁同时通过。
-7. 只有满足以上全部条件后，才能删除 H-K，将计划状态改为 `Complete`，并将“尚存升级内容”写为“无”。
+### 4.1 第一里程碑：先让 7 个 ready case 行为正确
 
-## 十、执行顺序
+| Case | 预期运行方式 | 当前要补的内容 |
+|---|---|---|
+| `edge-dev-01-three-sat-to-clique` | existing reconstruction，零调用 | 精确 route 重放和完整审计 |
+| `edge-dev-02-three-sat-to-zero-one-ip` | existing program/gadget，零调用 | program/direct-TM coherence 和参数审计 |
+| `edge-dev-03-three-sat-to-chromatic` | existing multi-node edge，零调用 | gadget、固定 k=3 和 endpoint 参数审计 |
+| `edge-dev-04-chromatic-to-clique-cover` | existing graph duality，零调用 | 精确 `(G,k)` endpoint 和 complement coherence |
+| `edge-dev-05-set-cover-to-hitting-set` | existing route，零调用 | 先冻结归档 source metadata correction，再重放 exact edge |
+| `edge-dev-06-undirected-to-directed-hc` | `direct_new_edge`，多阶段真实调用 | 新 primitive、两个语义方向、poly/coherence、最终 certificate |
+| `edge-val-01-vertex-cover-to-set-cover` | `direct_new_edge`，多阶段真实调用 | 禁止复用现有 route；新 cross-representation program 和全部证明 |
 
-```text
-H-G 正式 CLI 与 V4 默认配置统一
-  -> H-H 公共库已有路线逐 identity 生产验证
-  -> H-I 真实公共问题通用 authoring
-  -> H-J 证明发布与跨任务复用
-  -> H-K organic 泛化与最终封板
-```
+第一里程碑不以“有模型请求”笼统计分，而是要求：前 5 个控制题保持零调用，后 2 个新边题均产生非零、逐节点、HTTP 200 的真实调用 ledger，并最终通过 exact-edge scorer。
 
-不得跳过依赖阶段。允许在当前工作包内部并行实现 schema、测试、Lean fixture 和报告工具，但只有当前工作包的相关测试、完整测试、主 45、三轮稳定性、阶段 held-out 与内容寻址报告全部通过后，才能删除当前工作包并推进下一阶段。
+### 4.2 第二里程碑：补齐 validation
+
+E1 五个端点已完成，validation 已从 1 个 ready 扩展到 6 个 ready。每个新晋 ready case 都使用 `typed_exact_edge_construction_dag`，不得把 `Planning/ProblemConversionPlan/exact_edge/PLAN.json` 中的构造说明放进 prompt。
+
+完成条件：dev 6 + validation 6 共 12 个 case 全部具有诚实终态；所有 direct-new case 有真实模型 ledger，所有 existing controls 维持零调用。
+
+### 4.3 第三里程碑：补齐 heldout
+
+E2、E3、E4 端点依赖顺序已完成，heldout 12 个 case 全部 endpoint-ready。heldout 在 endpoint、schema、prompt 和 planner DAG 冻结后不得用于调 prompt 或人工挑选策略。
+
+heldout 运行时：
+
+- 不向模型暴露 split 对应的 archive source、solution 或 transform plan；
+- 不允许从 dev/validation 复制 case-specific theorem body；
+- 允许复用已经正式发布、content-addressed 且不含 case-specific gold 的通用组件；
+- scorer 对 route bypass、unexpected existing route、statement drift 和 dependency stale 做 mutation 检查。
+
+最终目标是 24 个 case 全部 endpoint-ready，并在冻结环境中完成 24/24 的诚实 exact-edge 结果。
+
+## 5. Frontier 组如何处理
+
+当前两个 unary Knapsack/Partition frontier case 是 encoding-aware hardness boundary。它们的零模型调用是预期语义：缺少合法 reverse bridge 时应直接 blocked，不能为了产生调用而让模型猜证明。
+
+真正的“高难真实试题 frontier”应从 `Planning/ProblemConversionPlan/frontier/PLAN.json` 中另行晋升，并满足：
+
+- source/target 两端已独立 endpoint-ready；
+- direction 没有泄漏到 capability/dev 的 case-specific artifact；
+- 需要新 gadget、跨 representation primitive、数值编码证明或多节点 witness 证明；
+- public construction policy 已冻结；
+- hidden oracle 和 mutation 已在运行前冻结；
+- 运行时使用与 exact-edge 相同的多阶段 LLM authoring 协议。
+
+在 24 个 problems exact-edge 没有完成前，不扩充 frontier scored denominator。
+
+## 6. 测试、报告和验收门槛
+
+### 6.1 必须新增或更新的测试
+
+- `tests/test_hardness_np_hard_exact_edge.py`：public policy schema、endpoint preflight、多节点 ledger、directness、resume；
+- `tests/test_hardness_np_hard_authoring_planner_v2.py`：`typed_exact_edge_construction_dag` 的节点和依赖；
+- `tests/test_hardness_np_hard_authoring_v2.py`：单节点 response、accepted-prefix、失败重试和禁止回写旧节点；
+- `tests/test_hardness_benchmark_oracle_isolation.py`：archive、solution、hint、oracle、transform plan 不进入 workspace/prompt/output；
+- `tests/test_hardness_np_hard_archive_audit.py`：63/60/37/16、24、7/17 和 split 计数保持绑定；
+- `tests/test_hardness_np_hard_unified_benchmark.py`：4 并行 case 调度、case 内串行 DAG、真实 ledger 汇总；
+- negative/mutation tests：已有 route bypass、composition bypass、statement drift、endpoint alias、stale checkpoint、伪造 token ledger、binary-size bound 缺失。
+
+测试不得通过把 `recommended_first_body` 直接复制为模型响应来证明 direct-new 路径可用。可以为 parser/协议单测使用最小 synthetic body，但正式 integration 必须使用与 production 相同的无答案 prompt。
+
+### 6.2 分阶段真实 API 运行
+
+每个里程碑都运行：
+
+1. 无模型的 schema、endpoint、oracle-isolation、mutation 和 deterministic tests；
+2. `--lane exact_edge --jobs 4` 的真实 API production run；
+3. 隔离 scorer；
+4. fresh output 的第二次 clean run；
+5. resume/replay run；
+6. 汇总正式 report，并绑定命令、git tree、manifest、suite、oracle、model config、token usage 和所有 case artifact hash。
+
+正式报告建议新增为 `Reports/MAIN_PROBLEMS_EXACT_EDGE_FULL_REPORT.json`，只聚合已有 production/score 证据，不在 report builder 内运行模型或 Lean。
+
+### 6.3 硬门槛
+
+数据与隔离：
+
+- archive hash、63 道题、24 个冻结方向、6/6/12 split、7/17 初始状态全部一致；
+- solution/hint/PDF/conversion plan/oracle 零 prompt 泄漏；
+- public statement 与 artifact statement hash 完全一致。
+
+模型调用：
+
+- `direct_new_edge` 的 verified case 必须 `model_calls > 0`；
+- 每个 model call 必须对应唯一 case/node/attempt；
+- existing controls 和 endpoint-blocked cases 必须 `model_calls == 0`；
+- 不允许 deterministic fallback、预写 body fallback 或 scorer-side 补证明；
+- 真实运行结束时 active calls 为 0，最大 case 并行度为 4。
+
+形式化正确性：
+
+- exact source/target endpoint；
+- Lean kernel compile 与独立 clean replay；
+- axiom audit；
+- dependency/deletion audit；
+- endpoint well-formedness；
+- program/direct-TM coherence；
+- semantic iff；
+- polynomial time、output size 和 binary encoding bound。
+
+策略正确性：
+
+- `require_new_primitive` 不得被已有 route 或组合绕过；
+- hidden forbidden imports 命中时 fail closed；
+- blocked endpoint 不进入可解分母；
+- unexpected existing route、statement drift 或 stale dependency 使总报告失败。
+
+里程碑通过标准：
+
+- M1：7 个初始 ready case 全部通过；5 个 existing controls 零调用，2 个 direct-new case 多阶段真实调用；
+- M2：dev+validation 12/12 通过；
+- M3：24 个 frozen exact-edge case endpoint-ready 且 24/24 通过；
+- M4：在不改变 unary frontier 边界语义的前提下，再冻结新的 endpoint-ready frontier 真实试题。
+
+## 7. 实施顺序
+
+1. 升级 public construction policy、suite schema、manifest/hash 和 isolation tests；
+2. 实现 `typed_exact_edge_construction_dag`、单节点 prompt/response 和逐节点 ledger；
+3. 用 7 个 ready case 完成 M1，先修复 dev06 与 val01 的真实 direct-new authoring；
+4. 完成 E1 端点并运行 M2；
+5. 完成 E2/E3/E4 端点，冻结 heldout 后运行 M3；
+6. 生成 `MAIN_PROBLEMS_EXACT_EDGE_FULL_REPORT`；
+7. 只有 M3 通过后，才恢复 publication/reuse 工作包或扩充 frontier。
+
+在本计划完成前，不再以“runner 返回了 Lean 代码”作为充分证据。必须同时回答：代码来自已有路线还是模型新写、写了哪些节点、每个节点是否真实调用、最终是否为题目指定的精确 reduction，以及全部证明和复杂度审计是否独立通过。

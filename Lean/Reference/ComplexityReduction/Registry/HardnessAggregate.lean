@@ -7,6 +7,7 @@ import ComplexityReduction.Registry.Aggregate
 import ComplexityReduction.Certificate.NativeCookLevin
 import ComplexityReduction.Problems.Karp21.CliqueNativeVerifier
 import ComplexityReduction.Problems.Karp21.KnapsackNativeVerifier
+import ComplexityReduction.Generated.Hardness.Aggregate
 
 /-!
 Hardness-agent registry environment.

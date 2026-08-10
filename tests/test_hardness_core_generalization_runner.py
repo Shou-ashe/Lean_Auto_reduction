@@ -92,7 +92,7 @@ def test_runner_audits_repeated_search_and_ignored_terminal_guidance() -> None:
 
 def test_runner_builds_all_five_objective_request_variants() -> None:
     suite = load_benchmark_suite(
-        ROOT / "Benchmark" / "Hardness" / "Suites" / "core_generalization.json"
+        ROOT / "Gate" / "Suites" / "core_generalization.json"
     )
     requests = {case.objective: request_for_case(case) for case in suite.cases}
     assert requests["reduce_to"].payload_kind == "reduction"

@@ -1,0 +1,21 @@
+{
+  "cases": [
+    {
+      "budget_profile": "frontier-default",
+      "case_id": "frontier-01-feedback-arc-set",
+      "family": "graph",
+      "module": "ComplexityReduction.Presentation.FeedbackArcSet",
+      "problem": "ComplexityReduction.Presentation.FeedbackArcSet.structuredProblem"
+    },
+    {
+      "budget_profile": "frontier-default",
+      "case_id": "frontier-02-three-dimensional-matching",
+      "family": "other",
+      "module": "ComplexityReduction.Presentation.ThreeDimensionalMatching",
+      "problem": "ComplexityReduction.Presentation.ThreeDimensionalMatching.structuredProblem"
+    }
+  ],
+  "schema_version": "hardness_np_hard_capability_suite_v1",
+  "split": "frontier",
+  "suite_id": "np-hard-capability-frontier-v1"
+}

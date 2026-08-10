@@ -274,13 +274,39 @@ def _repository_root(manifest_path: Path) -> Path:
 
 def _relative_file(base: Path, value: str, *, label: str) -> Path:
     path = Path(value)
-    if path.is_absolute() or ".." in path.parts:
+    if path.is_absolute():
         raise BenchmarkManifestError("unsafe_manifest_path", f"{label} escapes benchmark root")
-    resolved = (base / path).resolve()
-    try:
-        resolved.relative_to(base.resolve())
-    except ValueError as error:
-        raise BenchmarkManifestError("unsafe_manifest_path", f"{label} escapes benchmark root") from error
+    if ".." in path.parts:
+        repository = _repository_root(base)
+        resolved = (base / path).resolve()
+        try:
+            resolved.relative_to(repository.resolve())
+        except ValueError as error:
+            raise BenchmarkManifestError(
+                "unsafe_manifest_path", f"{label} escapes benchmark root"
+            ) from error
+        if "Legacy" in resolved.parts:
+            raise BenchmarkManifestError(
+                "legacy_suite_forbidden", f"active suite cannot be loaded from {resolved}"
+            )
+        return resolved
+    if path.parts and path.parts[0] in ("Benchmark", "Lean"):
+        root = _repository_root(base)
+        resolved = (root / path).resolve()
+        try:
+            resolved.relative_to(root.resolve())
+        except ValueError as error:
+            raise BenchmarkManifestError(
+                "unsafe_manifest_path", f"{label} escapes benchmark root"
+            ) from error
+    else:
+        resolved = (base / path).resolve()
+        try:
+            resolved.relative_to(base.resolve())
+        except ValueError as error:
+            raise BenchmarkManifestError(
+                "unsafe_manifest_path", f"{label} escapes benchmark root"
+            ) from error
     if "Legacy" in resolved.parts:
         raise BenchmarkManifestError(
             "legacy_suite_forbidden", f"active suite cannot be loaded from {resolved}"

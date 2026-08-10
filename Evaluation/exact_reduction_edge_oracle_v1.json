@@ -1,0 +1,585 @@
+{
+ "cases": [
+  {
+   "allow_composition": true,
+   "archive_id": "05-007",
+   "canonical_direction": {
+    "source": "ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem",
+    "target": "ComplexityReduction.Problems.Karp21.GraphAtoms.cliqueStructuredProblem"
+   },
+   "case_id": "edge-dev-01-three-sat-to-clique",
+   "existing_route": "ComplexityReduction.Routes.ThreeSATToClique.finalRoute",
+   "forbidden_route_imports": [],
+   "require_new_primitive": false,
+   "required_audits": [
+    "kernel",
+    "replay",
+    "axiom",
+    "endpoint",
+    "dependency",
+    "program_direct_tm_coherence",
+    "semantic_iff",
+    "polynomial_bound"
+   ],
+   "split": "dev",
+   "status": "ready"
+  },
+  {
+   "allow_composition": true,
+   "archive_id": "06-008",
+   "canonical_direction": {
+    "source": "ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem",
+    "target": "ComplexityReduction.Presentation.ZeroOneIP.structuredProblem"
+   },
+   "case_id": "edge-dev-02-three-sat-to-zero-one-ip",
+   "existing_route": "ComplexityReduction.Routes.ThreeSATToZeroOneIP.finalRoute",
+   "forbidden_route_imports": [],
+   "require_new_primitive": false,
+   "required_audits": [
+    "kernel",
+    "replay",
+    "axiom",
+    "endpoint",
+    "dependency",
+    "program_direct_tm_coherence",
+    "semantic_iff",
+    "polynomial_bound"
+   ],
+   "split": "dev",
+   "status": "ready"
+  },
+  {
+   "allow_composition": true,
+   "archive_id": "05-009",
+   "canonical_direction": {
+    "source": "ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem",
+    "target": "ComplexityReduction.Presentation.ChromaticNumber.structuredProblem"
+   },
+   "case_id": "edge-dev-03-three-sat-to-chromatic",
+   "existing_route": "ComplexityReduction.Routes.ThreeSATToChromaticNumber.finalRoute",
+   "forbidden_route_imports": [],
+   "require_new_primitive": false,
+   "required_audits": [
+    "kernel",
+    "replay",
+    "axiom",
+    "endpoint",
+    "dependency",
+    "program_direct_tm_coherence",
+    "semantic_iff",
+    "polynomial_bound"
+   ],
+   "split": "dev",
+   "status": "ready"
+  },
+  {
+   "allow_composition": true,
+   "archive_id": "06-028",
+   "canonical_direction": {
+    "source": "ComplexityReduction.Presentation.ChromaticNumber.structuredProblem",
+    "target": "ComplexityReduction.Presentation.CliqueCover.structuredProblem"
+   },
+   "case_id": "edge-dev-04-chromatic-to-clique-cover",
+   "existing_route": "ComplexityReduction.Routes.ChromaticNumberToCliqueCover.finalRoute",
+   "forbidden_route_imports": [],
+   "require_new_primitive": false,
+   "required_audits": [
+    "kernel",
+    "replay",
+    "axiom",
+    "endpoint",
+    "dependency",
+    "program_direct_tm_coherence",
+    "semantic_iff",
+    "polynomial_bound"
+   ],
+   "split": "dev",
+   "status": "ready"
+  },
+  {
+   "allow_composition": true,
+   "archive_id": "03-004d",
+   "canonical_direction": {
+    "source": "ComplexityReduction.Presentation.SetSystem.setCoveringStructuredProblem",
+    "target": "ComplexityReduction.Presentation.SetSystem.hittingSetStructuredProblem"
+   },
+   "case_id": "edge-dev-05-set-cover-to-hitting-set",
+   "existing_route": "ComplexityReduction.Routes.SetCoveringToHittingSet.certifiedReduction",
+   "forbidden_route_imports": [],
+   "require_new_primitive": false,
+   "required_audits": [
+    "kernel",
+    "replay",
+    "axiom",
+    "endpoint",
+    "dependency",
+    "program_direct_tm_coherence",
+    "semantic_iff",
+    "polynomial_bound"
+   ],
+   "split": "dev",
+   "status": "ready"
+  },
+  {
+   "allow_composition": false,
+   "archive_id": "02-002",
+   "canonical_direction": {
+    "source": "ComplexityReduction.Presentation.UndirectedHamiltonianCircuit.structuredProblem",
+    "target": "ComplexityReduction.Presentation.DirectedHamiltonianCircuit.structuredProblem"
+   },
+   "case_id": "edge-dev-06-undirected-to-directed-hc",
+   "existing_route": null,
+   "forbidden_route_imports": [
+    "ComplexityReduction.Routes.DirectedHamiltonianCircuitToUndirectedHamiltonianCircuit.Unified"
+   ],
+   "require_new_primitive": true,
+   "required_audits": [
+    "kernel",
+    "replay",
+    "axiom",
+    "endpoint",
+    "dependency",
+    "program_direct_tm_coherence",
+    "semantic_iff",
+    "polynomial_bound"
+   ],
+   "split": "dev",
+   "status": "ready"
+  },
+  {
+   "allow_composition": false,
+   "archive_id": "02-007",
+   "canonical_direction": {
+    "source": "ComplexityReduction.Problems.Karp21.GraphAtoms.vertexCoverStructuredProblem",
+    "target": "ComplexityReduction.Presentation.SetSystem.setCoveringStructuredProblem"
+   },
+   "case_id": "edge-val-01-vertex-cover-to-set-cover",
+   "existing_route": null,
+   "forbidden_route_imports": [
+    "ComplexityReduction.Routes.VertexCoverToSetCovering"
+   ],
+   "require_new_primitive": true,
+   "required_audits": [
+    "kernel",
+    "replay",
+    "axiom",
+    "endpoint",
+    "dependency",
+    "program_direct_tm_coherence",
+    "semantic_iff",
+    "polynomial_bound"
+   ],
+   "split": "validation",
+   "status": "ready"
+  },
+  {
+   "allow_composition": false,
+   "archive_id": "01-004",
+   "canonical_direction": {
+    "source": "ComplexityReduction.Problems.Karp21.GraphAtoms.cliqueStructuredProblem",
+    "target": "ComplexityReduction.Presentation.HalfClique.structuredProblem"
+   },
+   "case_id": "edge-val-02-clique-to-half-clique",
+   "existing_route": null,
+   "forbidden_route_imports": [],
+   "require_new_primitive": true,
+   "required_audits": [
+    "kernel",
+    "replay",
+    "axiom",
+    "endpoint",
+    "dependency",
+    "program_direct_tm_coherence",
+    "semantic_iff",
+    "polynomial_bound"
+   ],
+   "split": "validation",
+   "status": "ready"
+  },
+  {
+   "allow_composition": false,
+   "archive_id": "01-001",
+   "canonical_direction": {
+    "source": "ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem",
+    "target": "ComplexityReduction.Presentation.DoubleThreeSAT.structuredProblem"
+   },
+   "case_id": "edge-val-03-three-sat-to-double-sat",
+   "existing_route": null,
+   "forbidden_route_imports": [],
+   "require_new_primitive": true,
+   "required_audits": [
+    "kernel",
+    "replay",
+    "axiom",
+    "endpoint",
+    "dependency",
+    "program_direct_tm_coherence",
+    "semantic_iff",
+    "polynomial_bound"
+   ],
+   "split": "validation",
+   "status": "ready"
+  },
+  {
+   "allow_composition": false,
+   "archive_id": "02-004",
+   "canonical_direction": {
+    "source": "ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem",
+    "target": "ComplexityReduction.Presentation.NAEThreeSAT.structuredProblem"
+   },
+   "case_id": "edge-val-04-three-sat-to-nae-three-sat",
+   "existing_route": null,
+   "forbidden_route_imports": [],
+   "require_new_primitive": true,
+   "required_audits": [
+    "kernel",
+    "replay",
+    "axiom",
+    "endpoint",
+    "dependency",
+    "program_direct_tm_coherence",
+    "semantic_iff",
+    "polynomial_bound"
+   ],
+   "split": "validation",
+   "status": "ready"
+  },
+  {
+   "allow_composition": false,
+   "archive_id": "01-005",
+   "canonical_direction": {
+    "source": "ComplexityReduction.Presentation.SubsetSum.structuredProblem",
+    "target": "ComplexityReduction.Presentation.Knapsack.structuredProblem"
+   },
+   "case_id": "edge-val-05-subset-sum-to-knapsack",
+   "existing_route": null,
+   "forbidden_route_imports": [],
+   "require_new_primitive": true,
+   "required_audits": [
+    "kernel",
+    "replay",
+    "axiom",
+    "endpoint",
+    "dependency",
+    "program_direct_tm_coherence",
+    "semantic_iff",
+    "polynomial_bound"
+   ],
+   "split": "validation",
+   "status": "ready"
+  },
+  {
+   "allow_composition": false,
+   "archive_id": "06-017",
+   "canonical_direction": {
+    "source": "ComplexityReduction.Problems.Karp21.GraphAtoms.cliqueStructuredProblem",
+    "target": "ComplexityReduction.Presentation.IndependentSet.structuredProblem"
+   },
+   "case_id": "edge-val-06-clique-to-independent-set",
+   "existing_route": null,
+   "forbidden_route_imports": [],
+   "require_new_primitive": true,
+   "required_audits": [
+    "kernel",
+    "replay",
+    "axiom",
+    "endpoint",
+    "dependency",
+    "program_direct_tm_coherence",
+    "semantic_iff",
+    "polynomial_bound"
+   ],
+   "split": "validation",
+   "status": "ready"
+  },
+  {
+   "allow_composition": false,
+   "archive_id": "05-008",
+   "canonical_direction": {
+    "source": "ComplexityReduction.Problems.Karp21.GraphAtoms.vertexCoverStructuredProblem",
+    "target": "ComplexityReduction.Presentation.DominatingSet.structuredProblem"
+   },
+   "case_id": "edge-held-01-vertex-cover-to-dominating-set",
+   "existing_route": null,
+   "forbidden_route_imports": [],
+   "require_new_primitive": true,
+   "required_audits": [
+    "kernel",
+    "replay",
+    "axiom",
+    "endpoint",
+    "dependency",
+    "program_direct_tm_coherence",
+    "semantic_iff",
+    "polynomial_bound"
+   ],
+   "split": "heldout",
+   "status": "ready"
+  },
+  {
+   "allow_composition": false,
+   "archive_id": "02-006",
+   "canonical_direction": {
+    "source": "ComplexityReduction.Problems.Karp21.GraphAtoms.cliqueStructuredProblem",
+    "target": "ComplexityReduction.Presentation.DenseSubgraph.structuredProblem"
+   },
+   "case_id": "edge-held-02-clique-to-dense-subgraph",
+   "existing_route": null,
+   "forbidden_route_imports": [],
+   "require_new_primitive": true,
+   "required_audits": [
+    "kernel",
+    "replay",
+    "axiom",
+    "endpoint",
+    "dependency",
+    "program_direct_tm_coherence",
+    "semantic_iff",
+    "polynomial_bound"
+   ],
+   "split": "heldout",
+   "status": "ready"
+  },
+  {
+   "allow_composition": false,
+   "archive_id": "06-018",
+   "canonical_direction": {
+    "source": "ComplexityReduction.Presentation.IndependentSet.structuredProblem",
+    "target": "ComplexityReduction.Problems.Karp21.GraphAtoms.vertexCoverStructuredProblem"
+   },
+   "case_id": "edge-held-03-independent-set-to-vertex-cover",
+   "existing_route": null,
+   "forbidden_route_imports": [],
+   "require_new_primitive": true,
+   "required_audits": [
+    "kernel",
+    "replay",
+    "axiom",
+    "endpoint",
+    "dependency",
+    "program_direct_tm_coherence",
+    "semantic_iff",
+    "polynomial_bound"
+   ],
+   "split": "heldout",
+   "status": "ready"
+  },
+  {
+   "allow_composition": false,
+   "archive_id": "06-020",
+   "canonical_direction": {
+    "source": "ComplexityReduction.Presentation.IndependentSet.structuredProblem",
+    "target": "ComplexityReduction.Presentation.SetSystem.setPackingStructuredProblem"
+   },
+   "case_id": "edge-held-04-independent-set-to-set-packing",
+   "existing_route": null,
+   "forbidden_route_imports": [],
+   "require_new_primitive": true,
+   "required_audits": [
+    "kernel",
+    "replay",
+    "axiom",
+    "endpoint",
+    "dependency",
+    "program_direct_tm_coherence",
+    "semantic_iff",
+    "polynomial_bound"
+   ],
+   "split": "heldout",
+   "status": "ready"
+  },
+  {
+   "allow_composition": false,
+   "archive_id": "02-005",
+   "canonical_direction": {
+    "source": "ComplexityReduction.Presentation.NAEThreeSAT.structuredProblem",
+    "target": "ComplexityReduction.Presentation.SetSplitting.structuredProblem"
+   },
+   "case_id": "edge-held-05-nae-three-sat-to-set-splitting",
+   "existing_route": null,
+   "forbidden_route_imports": [],
+   "require_new_primitive": true,
+   "required_audits": [
+    "kernel",
+    "replay",
+    "axiom",
+    "endpoint",
+    "dependency",
+    "program_direct_tm_coherence",
+    "semantic_iff",
+    "polynomial_bound"
+   ],
+   "split": "heldout",
+   "status": "ready"
+  },
+  {
+   "allow_composition": false,
+   "archive_id": "06-007",
+   "canonical_direction": {
+    "source": "ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem",
+    "target": "ComplexityReduction.Presentation.OneInThreeSAT.structuredProblem"
+   },
+   "case_id": "edge-held-06-three-sat-to-one-in-three-sat",
+   "existing_route": null,
+   "forbidden_route_imports": [],
+   "require_new_primitive": true,
+   "required_audits": [
+    "kernel",
+    "replay",
+    "axiom",
+    "endpoint",
+    "dependency",
+    "program_direct_tm_coherence",
+    "semantic_iff",
+    "polynomial_bound"
+   ],
+   "split": "heldout",
+   "status": "ready"
+  },
+  {
+   "allow_composition": false,
+   "archive_id": "06-013",
+   "canonical_direction": {
+    "source": "ComplexityReduction.Presentation.OneInThreeSAT.structuredProblem",
+    "target": "ComplexityReduction.Presentation.SetSystem.exactCoverStructuredProblem"
+   },
+   "case_id": "edge-held-07-one-in-three-to-exact-cover",
+   "existing_route": null,
+   "forbidden_route_imports": [],
+   "require_new_primitive": true,
+   "required_audits": [
+    "kernel",
+    "replay",
+    "axiom",
+    "endpoint",
+    "dependency",
+    "program_direct_tm_coherence",
+    "semantic_iff",
+    "polynomial_bound"
+   ],
+   "split": "heldout",
+   "status": "ready"
+  },
+  {
+   "allow_composition": false,
+   "archive_id": "06-027",
+   "canonical_direction": {
+    "source": "ComplexityReduction.Presentation.NAEThreeSAT.structuredProblem",
+    "target": "ComplexityReduction.Presentation.ChromaticNumber.structuredProblem"
+   },
+   "case_id": "edge-held-08-nae-three-sat-to-chromatic",
+   "existing_route": null,
+   "forbidden_route_imports": [],
+   "require_new_primitive": true,
+   "required_audits": [
+    "kernel",
+    "replay",
+    "axiom",
+    "endpoint",
+    "dependency",
+    "program_direct_tm_coherence",
+    "semantic_iff",
+    "polynomial_bound"
+   ],
+   "split": "heldout",
+   "status": "ready"
+  },
+  {
+   "allow_composition": false,
+   "archive_id": "03-006",
+   "canonical_direction": {
+    "source": "ComplexityReduction.Presentation.ExactCoverBy3.structuredProblem",
+    "target": "ComplexityReduction.Presentation.ExactCoverBy4.structuredProblem"
+   },
+   "case_id": "edge-held-09-exact-cover-three-to-four",
+   "existing_route": null,
+   "forbidden_route_imports": [],
+   "require_new_primitive": true,
+   "required_audits": [
+    "kernel",
+    "replay",
+    "axiom",
+    "endpoint",
+    "dependency",
+    "program_direct_tm_coherence",
+    "semantic_iff",
+    "polynomial_bound"
+   ],
+   "split": "heldout",
+   "status": "ready"
+  },
+  {
+   "allow_composition": false,
+   "archive_id": "03-015",
+   "canonical_direction": {
+    "source": "ComplexityReduction.Presentation.SubsetSum.structuredProblem",
+    "target": "ComplexityReduction.Presentation.Partition.structuredProblem"
+   },
+   "case_id": "edge-held-10-subset-sum-to-partition",
+   "existing_route": null,
+   "forbidden_route_imports": [],
+   "require_new_primitive": true,
+   "required_audits": [
+    "kernel",
+    "replay",
+    "axiom",
+    "endpoint",
+    "dependency",
+    "program_direct_tm_coherence",
+    "semantic_iff",
+    "polynomial_bound"
+   ],
+   "split": "heldout",
+   "status": "ready"
+  },
+  {
+   "allow_composition": false,
+   "archive_id": "02-008",
+   "canonical_direction": {
+    "source": "ComplexityReduction.Presentation.UndirectedHamiltonianCircuit.structuredProblem",
+    "target": "ComplexityReduction.Presentation.TSP.structuredProblem"
+   },
+   "case_id": "edge-held-11-hamiltonian-cycle-to-tsp",
+   "existing_route": null,
+   "forbidden_route_imports": [],
+   "require_new_primitive": true,
+   "required_audits": [
+    "kernel",
+    "replay",
+    "axiom",
+    "endpoint",
+    "dependency",
+    "program_direct_tm_coherence",
+    "semantic_iff",
+    "polynomial_bound"
+   ],
+   "split": "heldout",
+   "status": "ready"
+  },
+  {
+   "allow_composition": false,
+   "archive_id": "03-013c",
+   "canonical_direction": {
+    "source": "ComplexityReduction.Presentation.UndirectedHamiltonianCircuit.structuredProblem",
+    "target": "ComplexityReduction.Presentation.HamiltonianPath.structuredProblem"
+   },
+   "case_id": "edge-held-12-hamiltonian-cycle-to-path",
+   "existing_route": null,
+   "forbidden_route_imports": [],
+   "require_new_primitive": true,
+   "required_audits": [
+    "kernel",
+    "replay",
+    "axiom",
+    "endpoint",
+    "dependency",
+    "program_direct_tm_coherence",
+    "semantic_iff",
+    "polynomial_bound"
+   ],
+   "split": "heldout",
+   "status": "ready"
+  }
+ ],
+ "schema_version": "hardness_exact_reduction_edge_oracle_v1"
+}

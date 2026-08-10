@@ -35,8 +35,8 @@ from agent.hardness.models import sha256_id
 
 
 ROOT = Path(__file__).resolve().parents[1]
-POSITIVE_SUITE = ROOT / "Benchmark" / "Hardness" / "Suites" / "stage_o_multi_gap.json"
-NEGATIVE_SUITE = ROOT / "Benchmark" / "Hardness" / "Suites" / "stage_o_adversarial.json"
+POSITIVE_SUITE = ROOT / "Gate" / "Suites" / "stage_o_multi_gap.json"
+NEGATIVE_SUITE = ROOT / "Gate" / "Suites" / "stage_o_adversarial.json"
 MICROBENCHMARK = (
     ROOT
     / "Benchmark"

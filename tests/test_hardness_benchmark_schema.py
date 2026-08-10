@@ -12,9 +12,9 @@ from agent.hardness.benchmark import (
 
 
 ROOT = Path(__file__).resolve().parents[1]
-MANIFEST = ROOT / "Benchmark" / "Hardness" / "MANIFEST.json"
+MANIFEST = ROOT / "Gate" / "MANIFEST.json"
 INPUT_GROUNDING_SUITE = (
-    ROOT / "Benchmark" / "Hardness" / "Suites" / "input_grounding_fixed_target.json"
+    ROOT / "Gate" / "Suites" / "input_grounding_fixed_target.json"
 )
 
 
@@ -22,7 +22,7 @@ def test_v2_manifest_and_suites_load_strictly() -> None:
     manifest = load_benchmark_manifest(MANIFEST)
     assert manifest.schema_version == "hardness_benchmark_v2"
     assert manifest.migration_ledger_file == (
-        ROOT / "Benchmark" / "Hardness" / "MIGRATION_LEDGER.json"
+        ROOT / "Archive" / "MIGRATION_LEDGER.json"
     ).resolve()
     assert {suite.id for suite in manifest.suites} == {
         "smoke",

@@ -31,12 +31,12 @@ def main() -> int:
     parser.add_argument(
         "--report",
         type=Path,
-        default=ROOT / "Benchmark/Hardness/NP_HARD_H_F_INVENTORY.json",
+        default=ROOT / "Gate/NP_HARD_H_F_INVENTORY.json",
     )
     parser.add_argument(
         "--matrix",
         type=Path,
-        default=ROOT / "Benchmark/Hardness/NP_HARD_TARGET_MATRIX.json",
+        default=ROOT / "Gate/NP_HARD_TARGET_MATRIX.json",
     )
     parser.add_argument(
         "--output-root", type=Path, default=ROOT / ".reduction-agent" / "h-f-qualification"

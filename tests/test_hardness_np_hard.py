@@ -1,12 +1,16 @@
 from __future__ import annotations
 
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import replace
+import json
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
 from agent.hardness.np_hard import (
     NP_HARD_DIRECTION,
+    NPHardAgentV1,
     NPHardResolutionV1,
     build_np_hard_artifact_source,
     build_np_hard_goal_source,
@@ -169,9 +173,30 @@ def test_goal_and_probe_sources_freeze_the_v1_request() -> None:
     assert PROBLEM in probe
 
 
+def test_shared_seed_catalog_write_is_safe_under_parallel_cases(tmp_path) -> None:
+    agent = NPHardAgentV1(
+        SimpleNamespace(root=tmp_path, deepseek=None)  # type: ignore[arg-type]
+    )
+    store = SimpleNamespace(write_json=lambda *_args, **_kwargs: None)
+    goal = SimpleNamespace(toolchain="lean-test", lake_manifest_sha256="sha256:lake")
+
+    def write(index: int) -> None:
+        probe = SimpleNamespace(registry_fingerprint=f"lean:registry-{index}", seeds=[])
+        agent._write_seed_catalog(store, probe=probe, goal=goal)
+
+    with ThreadPoolExecutor(max_workers=4) as executor:
+        list(executor.map(write, range(12)))
+
+    catalog_path = tmp_path / ".reduction-agent" / "np-hard-seed-catalog.json"
+    catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
+    assert catalog["schema_version"] == "hardness_np_hard_seed_catalog_v1"
+    assert catalog["registry_fingerprint"].startswith("lean:registry-")
+    assert not list(catalog_path.parent.glob(".np-hard-seed-catalog.json.*.tmp"))
+
+
 def test_formal_np_hard_mvp_suite_has_positive_multi_edge_and_typed_negatives() -> None:
     suite = load_np_hard_mvp_suite(
-        Path("Benchmark/Hardness/Suites/np_hard_mvp.json")
+        Path("Gate/Suites/np_hard_mvp.json")
     )
     assert any(case.expected_status == "VERIFIED" for case in suite)
     assert any("multi-edge" in case.tags for case in suite)

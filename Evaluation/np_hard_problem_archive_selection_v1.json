@@ -1,0 +1,554 @@
+{
+  "entries": [
+    {
+      "archive_id": "05-007",
+      "canonical_source": "ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem",
+      "canonical_target": "ComplexityReduction.Problems.Karp21.GraphAtoms.cliqueStructuredProblem",
+      "case_id": "edge-dev-01-three-sat-to-clique",
+      "endpoint_readiness": "ready",
+      "formalization_cost": "existing-edge-reconstruction",
+      "selection_reason": "Both endpoints and a public forward edge are formalized; retained as an exact-edge reconstruction control.",
+      "split": "dev",
+      "status": "ready"
+    },
+    {
+      "archive_id": "06-008",
+      "canonical_source": "ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem",
+      "canonical_target": "ComplexityReduction.Presentation.ZeroOneIP.structuredProblem",
+      "case_id": "edge-dev-02-three-sat-to-zero-one-ip",
+      "endpoint_readiness": "ready",
+      "formalization_cost": "existing-edge-reconstruction",
+      "selection_reason": "Both endpoints and a public forward edge are formalized; retained as an exact-edge reconstruction control.",
+      "split": "dev",
+      "status": "ready"
+    },
+    {
+      "archive_id": "05-009",
+      "canonical_source": "ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem",
+      "canonical_target": "ComplexityReduction.Presentation.ChromaticNumber.structuredProblem",
+      "case_id": "edge-dev-03-three-sat-to-chromatic",
+      "endpoint_readiness": "ready",
+      "formalization_cost": "existing-edge-reconstruction",
+      "selection_reason": "Both endpoints and a public forward edge are formalized; retained as an exact-edge reconstruction control.",
+      "split": "dev",
+      "status": "ready"
+    },
+    {
+      "archive_id": "06-028",
+      "canonical_source": "ComplexityReduction.Presentation.ChromaticNumber.structuredProblem",
+      "canonical_target": "ComplexityReduction.Presentation.CliqueCover.structuredProblem",
+      "case_id": "edge-dev-04-chromatic-to-clique-cover",
+      "endpoint_readiness": "ready",
+      "formalization_cost": "existing-edge-reconstruction",
+      "selection_reason": "Both endpoints and a public forward edge are formalized; retained as an exact-edge reconstruction control. The public benchmark is explicitly a generalized Chromatic Number edge, not the archive's fixed three-colorability identity.",
+      "split": "dev",
+      "status": "ready"
+    },
+    {
+      "archive_id": "03-004d",
+      "canonical_source": "ComplexityReduction.Presentation.SetSystem.setCoveringStructuredProblem",
+      "canonical_target": "ComplexityReduction.Presentation.SetSystem.hittingSetStructuredProblem",
+      "case_id": "edge-dev-05-set-cover-to-hitting-set",
+      "endpoint_readiness": "ready",
+      "formalization_cost": "existing-edge-reconstruction",
+      "selection_reason": "Both endpoints and a public forward edge are formalized; retained as an exact-edge reconstruction control. The archive metadata source label is corrected to Set Covering from the answer-free statement before scoring.",
+      "split": "dev",
+      "status": "ready"
+    },
+    {
+      "archive_id": "02-002",
+      "canonical_source": "ComplexityReduction.Presentation.UndirectedHamiltonianCircuit.structuredProblem",
+      "canonical_target": "ComplexityReduction.Presentation.DirectedHamiltonianCircuit.structuredProblem",
+      "case_id": "edge-dev-06-undirected-to-directed-hc",
+      "endpoint_readiness": "ready",
+      "formalization_cost": "new-primitive-high",
+      "selection_reason": "Both endpoints are formalized; the frozen direction requires a new direct program/gadget and all exact-edge audits.",
+      "split": "dev",
+      "status": "ready"
+    },
+    {
+      "archive_id": "02-007",
+      "canonical_source": "ComplexityReduction.Problems.Karp21.GraphAtoms.vertexCoverStructuredProblem",
+      "canonical_target": "ComplexityReduction.Presentation.SetSystem.setCoveringStructuredProblem",
+      "case_id": "edge-val-01-vertex-cover-to-set-cover",
+      "endpoint_readiness": "ready",
+      "formalization_cost": "new-primitive-high",
+      "selection_reason": "Both endpoints are formalized; the frozen direction requires a new direct program/gadget and all exact-edge audits.",
+      "split": "validation",
+      "status": "ready"
+    },
+    {
+      "archive_id": "01-004",
+      "canonical_source": "ComplexityReduction.Problems.Karp21.GraphAtoms.cliqueStructuredProblem",
+      "canonical_target": "ComplexityReduction.Presentation.HalfClique.structuredProblem",
+      "case_id": "edge-val-02-clique-to-half-clique",
+      "endpoint_readiness": "blocked_endpoint_formalization",
+      "formalization_cost": "endpoint-formalization-required",
+      "selection_reason": "Frozen exact-edge candidate; excluded from the scored denominator until both PresentedProblem endpoints pass independent formalization audits.",
+      "split": "validation",
+      "status": "blocked_endpoint_formalization"
+    },
+    {
+      "archive_id": "01-001",
+      "canonical_source": "ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem",
+      "canonical_target": "ComplexityReduction.Presentation.DoubleThreeSAT.structuredProblem",
+      "case_id": "edge-val-03-three-sat-to-double-sat",
+      "endpoint_readiness": "blocked_endpoint_formalization",
+      "formalization_cost": "endpoint-formalization-required",
+      "selection_reason": "Frozen exact-edge candidate; excluded from the scored denominator until both PresentedProblem endpoints pass independent formalization audits.",
+      "split": "validation",
+      "status": "blocked_endpoint_formalization"
+    },
+    {
+      "archive_id": "02-004",
+      "canonical_source": "ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem",
+      "canonical_target": "ComplexityReduction.Presentation.NAEThreeSAT.structuredProblem",
+      "case_id": "edge-val-04-three-sat-to-nae-three-sat",
+      "endpoint_readiness": "blocked_endpoint_formalization",
+      "formalization_cost": "endpoint-formalization-required",
+      "selection_reason": "Frozen exact-edge candidate; excluded from the scored denominator until both PresentedProblem endpoints pass independent formalization audits.",
+      "split": "validation",
+      "status": "blocked_endpoint_formalization"
+    },
+    {
+      "archive_id": "01-005",
+      "canonical_source": "ComplexityReduction.Presentation.SubsetSum.structuredProblem",
+      "canonical_target": "ComplexityReduction.Presentation.Knapsack.structuredProblem",
+      "case_id": "edge-val-05-subset-sum-to-knapsack",
+      "endpoint_readiness": "blocked_endpoint_formalization",
+      "formalization_cost": "endpoint-formalization-required",
+      "selection_reason": "Frozen exact-edge candidate; excluded from the scored denominator until both PresentedProblem endpoints pass independent formalization audits.",
+      "split": "validation",
+      "status": "blocked_endpoint_formalization"
+    },
+    {
+      "archive_id": "06-017",
+      "canonical_source": "ComplexityReduction.Problems.Karp21.GraphAtoms.cliqueStructuredProblem",
+      "canonical_target": "ComplexityReduction.Presentation.IndependentSet.structuredProblem",
+      "case_id": "edge-val-06-clique-to-independent-set",
+      "endpoint_readiness": "blocked_endpoint_formalization",
+      "formalization_cost": "endpoint-formalization-required",
+      "selection_reason": "Frozen exact-edge candidate; excluded from the scored denominator until both PresentedProblem endpoints pass independent formalization audits.",
+      "split": "validation",
+      "status": "blocked_endpoint_formalization"
+    },
+    {
+      "archive_id": "05-008",
+      "canonical_source": "ComplexityReduction.Problems.Karp21.GraphAtoms.vertexCoverStructuredProblem",
+      "canonical_target": "ComplexityReduction.Presentation.DominatingSet.structuredProblem",
+      "case_id": "edge-held-01-vertex-cover-to-dominating-set",
+      "endpoint_readiness": "blocked_endpoint_formalization",
+      "formalization_cost": "endpoint-formalization-required",
+      "selection_reason": "Frozen exact-edge candidate; excluded from the scored denominator until both PresentedProblem endpoints pass independent formalization audits.",
+      "split": "heldout",
+      "status": "blocked_endpoint_formalization"
+    },
+    {
+      "archive_id": "02-006",
+      "canonical_source": "ComplexityReduction.Problems.Karp21.GraphAtoms.cliqueStructuredProblem",
+      "canonical_target": "ComplexityReduction.Presentation.DenseSubgraph.structuredProblem",
+      "case_id": "edge-held-02-clique-to-dense-subgraph",
+      "endpoint_readiness": "blocked_endpoint_formalization",
+      "formalization_cost": "endpoint-formalization-required",
+      "selection_reason": "Frozen exact-edge candidate; excluded from the scored denominator until both PresentedProblem endpoints pass independent formalization audits.",
+      "split": "heldout",
+      "status": "blocked_endpoint_formalization"
+    },
+    {
+      "archive_id": "06-018",
+      "canonical_source": "ComplexityReduction.Presentation.IndependentSet.structuredProblem",
+      "canonical_target": "ComplexityReduction.Problems.Karp21.GraphAtoms.vertexCoverStructuredProblem",
+      "case_id": "edge-held-03-independent-set-to-vertex-cover",
+      "endpoint_readiness": "blocked_endpoint_formalization",
+      "formalization_cost": "endpoint-formalization-required",
+      "selection_reason": "Frozen exact-edge candidate; excluded from the scored denominator until both PresentedProblem endpoints pass independent formalization audits.",
+      "split": "heldout",
+      "status": "blocked_endpoint_formalization"
+    },
+    {
+      "archive_id": "06-020",
+      "canonical_source": "ComplexityReduction.Presentation.IndependentSet.structuredProblem",
+      "canonical_target": "ComplexityReduction.Presentation.SetSystem.setPackingStructuredProblem",
+      "case_id": "edge-held-04-independent-set-to-set-packing",
+      "endpoint_readiness": "blocked_endpoint_formalization",
+      "formalization_cost": "endpoint-formalization-required",
+      "selection_reason": "Frozen exact-edge candidate; excluded from the scored denominator until both PresentedProblem endpoints pass independent formalization audits.",
+      "split": "heldout",
+      "status": "blocked_endpoint_formalization"
+    },
+    {
+      "archive_id": "02-005",
+      "canonical_source": "ComplexityReduction.Presentation.NAEThreeSAT.structuredProblem",
+      "canonical_target": "ComplexityReduction.Presentation.SetSplitting.structuredProblem",
+      "case_id": "edge-held-05-nae-three-sat-to-set-splitting",
+      "endpoint_readiness": "blocked_endpoint_formalization",
+      "formalization_cost": "endpoint-formalization-required",
+      "selection_reason": "Frozen exact-edge candidate; excluded from the scored denominator until both PresentedProblem endpoints pass independent formalization audits.",
+      "split": "heldout",
+      "status": "blocked_endpoint_formalization"
+    },
+    {
+      "archive_id": "06-007",
+      "canonical_source": "ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem",
+      "canonical_target": "ComplexityReduction.Presentation.OneInThreeSAT.structuredProblem",
+      "case_id": "edge-held-06-three-sat-to-one-in-three-sat",
+      "endpoint_readiness": "blocked_endpoint_formalization",
+      "formalization_cost": "endpoint-formalization-required",
+      "selection_reason": "Frozen exact-edge candidate; excluded from the scored denominator until both PresentedProblem endpoints pass independent formalization audits.",
+      "split": "heldout",
+      "status": "blocked_endpoint_formalization"
+    },
+    {
+      "archive_id": "06-013",
+      "canonical_source": "ComplexityReduction.Presentation.OneInThreeSAT.structuredProblem",
+      "canonical_target": "ComplexityReduction.Presentation.SetSystem.exactCoverStructuredProblem",
+      "case_id": "edge-held-07-one-in-three-to-exact-cover",
+      "endpoint_readiness": "blocked_endpoint_formalization",
+      "formalization_cost": "endpoint-formalization-required",
+      "selection_reason": "Frozen exact-edge candidate; excluded from the scored denominator until both PresentedProblem endpoints pass independent formalization audits.",
+      "split": "heldout",
+      "status": "blocked_endpoint_formalization"
+    },
+    {
+      "archive_id": "06-027",
+      "canonical_source": "ComplexityReduction.Presentation.NAEThreeSAT.structuredProblem",
+      "canonical_target": "ComplexityReduction.Presentation.ChromaticNumber.structuredProblem",
+      "case_id": "edge-held-08-nae-three-sat-to-chromatic",
+      "endpoint_readiness": "blocked_endpoint_formalization",
+      "formalization_cost": "endpoint-formalization-required",
+      "selection_reason": "Frozen exact-edge candidate; excluded from the scored denominator until both PresentedProblem endpoints pass independent formalization audits.",
+      "split": "heldout",
+      "status": "blocked_endpoint_formalization"
+    },
+    {
+      "archive_id": "03-006",
+      "canonical_source": "ComplexityReduction.Presentation.ExactCoverBy3.structuredProblem",
+      "canonical_target": "ComplexityReduction.Presentation.ExactCoverBy4.structuredProblem",
+      "case_id": "edge-held-09-exact-cover-three-to-four",
+      "endpoint_readiness": "blocked_endpoint_formalization",
+      "formalization_cost": "endpoint-formalization-required",
+      "selection_reason": "Frozen exact-edge candidate; excluded from the scored denominator until both PresentedProblem endpoints pass independent formalization audits.",
+      "split": "heldout",
+      "status": "blocked_endpoint_formalization"
+    },
+    {
+      "archive_id": "03-015",
+      "canonical_source": "ComplexityReduction.Presentation.SubsetSum.structuredProblem",
+      "canonical_target": "ComplexityReduction.Presentation.Partition.structuredProblem",
+      "case_id": "edge-held-10-subset-sum-to-partition",
+      "endpoint_readiness": "blocked_endpoint_formalization",
+      "formalization_cost": "endpoint-formalization-required",
+      "selection_reason": "Frozen exact-edge candidate; excluded from the scored denominator until both PresentedProblem endpoints pass independent formalization audits.",
+      "split": "heldout",
+      "status": "blocked_endpoint_formalization"
+    },
+    {
+      "archive_id": "02-008",
+      "canonical_source": "ComplexityReduction.Presentation.UndirectedHamiltonianCircuit.structuredProblem",
+      "canonical_target": "ComplexityReduction.Presentation.TSP.structuredProblem",
+      "case_id": "edge-held-11-hamiltonian-cycle-to-tsp",
+      "endpoint_readiness": "blocked_endpoint_formalization",
+      "formalization_cost": "endpoint-formalization-required",
+      "selection_reason": "Frozen exact-edge candidate; excluded from the scored denominator until both PresentedProblem endpoints pass independent formalization audits.",
+      "split": "heldout",
+      "status": "blocked_endpoint_formalization"
+    },
+    {
+      "archive_id": "03-013c",
+      "canonical_source": "ComplexityReduction.Presentation.UndirectedHamiltonianCircuit.structuredProblem",
+      "canonical_target": "ComplexityReduction.Presentation.HamiltonianPath.structuredProblem",
+      "case_id": "edge-held-12-hamiltonian-cycle-to-path",
+      "endpoint_readiness": "blocked_endpoint_formalization",
+      "formalization_cost": "endpoint-formalization-required",
+      "selection_reason": "Frozen exact-edge candidate; excluded from the scored denominator until both PresentedProblem endpoints pass independent formalization audits.",
+      "split": "heldout",
+      "status": "blocked_endpoint_formalization"
+    }
+  ],
+  "pdf_only_candidates": [
+    {
+      "candidate_id": "pdf08-ex07-three-color-to-twelve-color",
+      "canonical_source_label": "3-COLOR",
+      "canonical_target_label": "12-COLOR",
+      "capability_weight": 0,
+      "endpoint_readiness": "target_endpoint_missing",
+      "formalization_cost": "high",
+      "selection_reason": "Scorer-only PDF candidate; capability weight remains zero until independent answer-free problemization, endpoint/identity audits, and formal construction prerequisites are complete.",
+      "source_members": [
+        "problems/08.pdf"
+      ],
+      "split": "reserve",
+      "status": "blocked_endpoint_formalization"
+    },
+    {
+      "candidate_id": "pdf08-ex09-five-color-to-careful-five-color",
+      "canonical_source_label": "5-COLOR",
+      "canonical_target_label": "CAREFUL-5-COLOR",
+      "capability_weight": 0,
+      "endpoint_readiness": "source_and_target_endpoints_missing",
+      "formalization_cost": "very_high",
+      "selection_reason": "Scorer-only PDF candidate; capability weight remains zero until independent answer-free problemization, endpoint/identity audits, and formal construction prerequisites are complete.",
+      "source_members": [
+        "problems/08.pdf"
+      ],
+      "split": "frontier",
+      "status": "blocked_endpoint_formalization"
+    },
+    {
+      "candidate_id": "pdf08-ex10c-hamiltonian-path-to-leaf-bounded-spanning-tree",
+      "canonical_source_label": "HAMILTONIAN PATH",
+      "canonical_target_label": "SPANNING TREE WITH AT MOST 42 LEAVES",
+      "capability_weight": 0,
+      "endpoint_readiness": "source_and_target_endpoints_missing",
+      "formalization_cost": "very_high",
+      "selection_reason": "Scorer-only PDF candidate; capability weight remains zero until independent answer-free problemization, endpoint/identity audits, and formal construction prerequisites are complete.",
+      "source_members": [
+        "problems/08.pdf"
+      ],
+      "split": "frontier",
+      "status": "blocked_endpoint_formalization"
+    },
+    {
+      "candidate_id": "pdf08-ex15a-hamiltonian-path-to-tonian-path",
+      "canonical_source_label": "HAMILTONIAN PATH",
+      "canonical_target_label": "TONIAN PATH",
+      "capability_weight": 0,
+      "endpoint_readiness": "source_and_target_endpoints_missing",
+      "formalization_cost": "high",
+      "selection_reason": "Scorer-only PDF candidate; capability weight remains zero until independent answer-free problemization, endpoint/identity audits, and formal construction prerequisites are complete.",
+      "source_members": [
+        "problems/08.pdf"
+      ],
+      "split": "reserve",
+      "status": "blocked_endpoint_formalization"
+    },
+    {
+      "candidate_id": "pdf08-ex15b-tonian-path-to-tonian-cycle",
+      "canonical_source_label": "TONIAN PATH",
+      "canonical_target_label": "TONIAN CYCLE",
+      "capability_weight": 0,
+      "endpoint_readiness": "source_and_target_endpoints_missing",
+      "formalization_cost": "high",
+      "selection_reason": "Scorer-only PDF candidate; capability weight remains zero until independent answer-free problemization, endpoint/identity audits, and formal construction prerequisites are complete.",
+      "source_members": [
+        "problems/08.pdf"
+      ],
+      "split": "reserve",
+      "status": "blocked_endpoint_formalization"
+    },
+    {
+      "candidate_id": "pdf08-ex16b-hamiltonian-cycle-to-double-hamiltonian-circuit",
+      "canonical_source_label": "HAMILTONIAN CYCLE",
+      "canonical_target_label": "DOUBLE-HAMILTONIAN CIRCUIT",
+      "capability_weight": 0,
+      "endpoint_readiness": "target_endpoint_missing",
+      "formalization_cost": "very_high",
+      "selection_reason": "Scorer-only PDF candidate; capability weight remains zero until independent answer-free problemization, endpoint/identity audits, and formal construction prerequisites are complete.",
+      "source_members": [
+        "problems/08.pdf"
+      ],
+      "split": "frontier",
+      "status": "blocked_endpoint_formalization"
+    },
+    {
+      "candidate_id": "pdf08-ex17-hamiltonian-cycle-to-heavy-hamiltonian-cycle",
+      "canonical_source_label": "HAMILTONIAN CYCLE",
+      "canonical_target_label": "HEAVY HAMILTONIAN CYCLE",
+      "capability_weight": 0,
+      "endpoint_readiness": "target_endpoint_missing",
+      "formalization_cost": "high",
+      "selection_reason": "Scorer-only PDF candidate; capability weight remains zero until independent answer-free problemization, endpoint/identity audits, and formal construction prerequisites are complete.",
+      "source_members": [
+        "problems/08.pdf"
+      ],
+      "split": "reserve",
+      "status": "blocked_endpoint_formalization"
+    },
+    {
+      "candidate_id": "pdf08-ex20-three-color-to-three-way-mumbletypeg",
+      "canonical_source_label": "3-COLOR",
+      "canonical_target_label": "THREE-WAY MUMBLETYPEG",
+      "capability_weight": 0,
+      "endpoint_readiness": "endpoints_ready_pending_identity_audit",
+      "formalization_cost": "high",
+      "selection_reason": "Scorer-only PDF candidate; capability weight remains zero until independent answer-free problemization, endpoint/identity audits, and formal construction prerequisites are complete.",
+      "source_members": [
+        "problems/08.pdf"
+      ],
+      "split": "reserve",
+      "status": "blocked_answer_free_problemization"
+    },
+    {
+      "candidate_id": "pdf10-thm15-nae-three-sat-to-max-cut",
+      "canonical_source_label": "NAE-3SAT",
+      "canonical_target_label": "MAX CUT",
+      "capability_weight": 0,
+      "endpoint_readiness": "source_endpoint_missing",
+      "formalization_cost": "high",
+      "selection_reason": "Scorer-only PDF candidate; capability weight remains zero until independent answer-free problemization, endpoint/identity audits, and formal construction prerequisites are complete.",
+      "source_members": [
+        "problems/10.pdf",
+        "problems/14.pdf"
+      ],
+      "split": "reserve",
+      "status": "blocked_endpoint_formalization"
+    },
+    {
+      "candidate_id": "pdf10-thm17-vertex-cover-to-undirected-hamiltonian-cycle",
+      "canonical_source_label": "VERTEX COVER",
+      "canonical_target_label": "UNDIRECTED HAMILTONIAN CYCLE",
+      "capability_weight": 0,
+      "endpoint_readiness": "endpoints_ready_pending_identity_audit",
+      "formalization_cost": "very_high",
+      "selection_reason": "Scorer-only PDF candidate; capability weight remains zero until independent answer-free problemization, endpoint/identity audits, and formal construction prerequisites are complete.",
+      "source_members": [
+        "problems/10.pdf"
+      ],
+      "split": "frontier",
+      "status": "blocked_answer_free_problemization"
+    },
+    {
+      "candidate_id": "pdf10-cor22-hamiltonian-cycle-to-longest-circuit",
+      "canonical_source_label": "HAMILTONIAN CYCLE",
+      "canonical_target_label": "LONGEST CIRCUIT",
+      "capability_weight": 0,
+      "endpoint_readiness": "target_endpoint_missing",
+      "formalization_cost": "high",
+      "selection_reason": "Scorer-only PDF candidate; capability weight remains zero until independent answer-free problemization, endpoint/identity audits, and formal construction prerequisites are complete.",
+      "source_members": [
+        "problems/10.pdf"
+      ],
+      "split": "reserve",
+      "status": "blocked_endpoint_formalization"
+    },
+    {
+      "candidate_id": "pdf10-ex08-dominating-set-to-k-center",
+      "canonical_source_label": "DOMINATING SET",
+      "canonical_target_label": "K-CENTER",
+      "capability_weight": 0,
+      "endpoint_readiness": "source_and_target_endpoints_missing",
+      "formalization_cost": "very_high",
+      "selection_reason": "Scorer-only PDF candidate; capability weight remains zero until independent answer-free problemization, endpoint/identity audits, and formal construction prerequisites are complete.",
+      "source_members": [
+        "problems/10.pdf"
+      ],
+      "split": "frontier",
+      "status": "blocked_endpoint_formalization"
+    },
+    {
+      "candidate_id": "pdf11-sat-to-exact-cover",
+      "canonical_source_label": "SAT",
+      "canonical_target_label": "EXACT COVER",
+      "capability_weight": 0,
+      "endpoint_readiness": "endpoints_ready_pending_identity_audit",
+      "formalization_cost": "very_high",
+      "selection_reason": "Scorer-only PDF candidate; capability weight remains zero until independent answer-free problemization, endpoint/identity audits, and formal construction prerequisites are complete.",
+      "source_members": [
+        "problems/11.pdf"
+      ],
+      "split": "frontier",
+      "status": "blocked_answer_free_problemization"
+    },
+    {
+      "candidate_id": "pdf11-exact-cover-to-directed-hamiltonian-cycle",
+      "canonical_source_label": "EXACT COVER",
+      "canonical_target_label": "DIRECTED HAMILTONIAN CYCLE",
+      "capability_weight": 0,
+      "endpoint_readiness": "endpoints_ready_pending_identity_audit",
+      "formalization_cost": "very_high",
+      "selection_reason": "Scorer-only PDF candidate; capability weight remains zero until independent answer-free problemization, endpoint/identity audits, and formal construction prerequisites are complete.",
+      "source_members": [
+        "problems/11.pdf"
+      ],
+      "split": "frontier",
+      "status": "blocked_answer_free_problemization"
+    },
+    {
+      "candidate_id": "pdf11-exact-cover-to-subset-sum",
+      "canonical_source_label": "EXACT COVER",
+      "canonical_target_label": "SUBSET SUM",
+      "capability_weight": 0,
+      "endpoint_readiness": "target_endpoint_missing",
+      "formalization_cost": "high",
+      "selection_reason": "Scorer-only PDF candidate; capability weight remains zero until independent answer-free problemization, endpoint/identity audits, and formal construction prerequisites are complete.",
+      "source_members": [
+        "problems/11.pdf"
+      ],
+      "split": "reserve",
+      "status": "blocked_endpoint_formalization"
+    },
+    {
+      "candidate_id": "pdf12-three-partition-to-minimum-makespan",
+      "canonical_source_label": "3-PARTITION",
+      "canonical_target_label": "MINIMUM MAKESPAN SCHEDULING",
+      "capability_weight": 0,
+      "endpoint_readiness": "source_and_target_endpoints_missing",
+      "formalization_cost": "very_high",
+      "selection_reason": "Scorer-only PDF candidate; capability weight remains zero until independent answer-free problemization, endpoint/identity audits, and formal construction prerequisites are complete.",
+      "source_members": [
+        "problems/12.pdf"
+      ],
+      "split": "frontier",
+      "status": "blocked_endpoint_formalization"
+    }
+  ],
+  "pdf_only_sources": [
+    {
+      "capability_weight": 0,
+      "endpoint_readiness": "unassessed_answer_free_problemization",
+      "formalization_cost": "unknown_until_problemization",
+      "selection_reason": "Scorer-only provenance source; it remains outside every capability denominator until an independently rewritten answer-free case and its endpoints pass formalization audits.",
+      "source_member": "problems/08.pdf",
+      "status": "unstructured_pdf_only"
+    },
+    {
+      "capability_weight": 0,
+      "endpoint_readiness": "unassessed_answer_free_problemization",
+      "formalization_cost": "unknown_until_problemization",
+      "selection_reason": "Scorer-only provenance source; it remains outside every capability denominator until an independently rewritten answer-free case and its endpoints pass formalization audits.",
+      "source_member": "problems/09.pdf",
+      "status": "unstructured_pdf_only"
+    },
+    {
+      "capability_weight": 0,
+      "endpoint_readiness": "unassessed_answer_free_problemization",
+      "formalization_cost": "unknown_until_problemization",
+      "selection_reason": "Scorer-only provenance source; it remains outside every capability denominator until an independently rewritten answer-free case and its endpoints pass formalization audits.",
+      "source_member": "problems/10.pdf",
+      "status": "unstructured_pdf_only"
+    },
+    {
+      "capability_weight": 0,
+      "endpoint_readiness": "unassessed_answer_free_problemization",
+      "formalization_cost": "unknown_until_problemization",
+      "selection_reason": "Scorer-only provenance source; it remains outside every capability denominator until an independently rewritten answer-free case and its endpoints pass formalization audits.",
+      "source_member": "problems/11.pdf",
+      "status": "unstructured_pdf_only"
+    },
+    {
+      "capability_weight": 0,
+      "endpoint_readiness": "unassessed_answer_free_problemization",
+      "formalization_cost": "unknown_until_problemization",
+      "selection_reason": "Scorer-only provenance source; it remains outside every capability denominator until an independently rewritten answer-free case and its endpoints pass formalization audits.",
+      "source_member": "problems/12.pdf",
+      "status": "unstructured_pdf_only"
+    },
+    {
+      "capability_weight": 0,
+      "endpoint_readiness": "unassessed_answer_free_problemization",
+      "formalization_cost": "unknown_until_problemization",
+      "selection_reason": "Scorer-only provenance source; it remains outside every capability denominator until an independently rewritten answer-free case and its endpoints pass formalization audits.",
+      "source_member": "problems/13.pdf",
+      "status": "unstructured_pdf_only"
+    },
+    {
+      "capability_weight": 0,
+      "endpoint_readiness": "unassessed_answer_free_problemization",
+      "formalization_cost": "unknown_until_problemization",
+      "selection_reason": "Scorer-only provenance source; it remains outside every capability denominator until an independently rewritten answer-free case and its endpoints pass formalization audits.",
+      "source_member": "problems/14.pdf",
+      "status": "unstructured_pdf_only"
+    }
+  ],
+  "schema_version": "hardness_np_hard_problem_archive_selection_v1"
+}

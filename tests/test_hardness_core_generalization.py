@@ -49,7 +49,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def test_stage_l_suite_freezes_the_full_16_case_matrix() -> None:
     suite = load_benchmark_suite(
-        ROOT / "Benchmark" / "Hardness" / "Suites" / "core_generalization.json"
+        ROOT / "Gate" / "Suites" / "core_generalization.json"
     )
     cases = validate_core_generalization_suite(suite)
     assert len(cases) == 16

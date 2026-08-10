@@ -1,0 +1,604 @@
+{
+  "activated_at": "2026-08-09T22:53:09.480482+00:00",
+  "asset": {
+    "attributes": [
+      "complexity_reduction_ir_typed_edge",
+      "complexity_reduction_ir_component_final_composition"
+    ],
+    "declaration": "ComplexityReduction.Generated.Hardness.Ce9751f385584594e3ba9.Reduction.authoredForwardReduction",
+    "module": "ComplexityReduction.Generated.Hardness.Assets.C93329a3453cbbc82505aee15.Reduction",
+    "reviewed_module": "ComplexityReduction.Generated.Hardness.Ce9751f385584594e3ba9.Reduction",
+    "reviewed_namespace": "ComplexityReduction.Generated.Hardness.Ce9751f385584594e3ba9.Reduction",
+    "source_file": "Lean/Reference/ComplexityReduction/Generated/Hardness/Assets/C93329a3453cbbc82505aee15/Reduction.lean",
+    "source_sha256": "sha256:43dc44120cc3a1c3c27e47887b2b8b72aef8ea945ea1086cd1ca250886731389"
+  },
+  "audit_evidence": {
+    "axiom": {
+      "authority": "Lean assert_standard_axioms",
+      "commands": [
+        {
+          "exit_code": 0,
+          "stderr_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "timed_out": false
+        },
+        {
+          "exit_code": 0,
+          "stderr_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "timed_out": false
+        }
+      ],
+      "evidence_id": "sha256:84bd78c756d9ae611b9c6dfa3641816c7f654436e6bacc12c2ee45d85d7a1086",
+      "passed": true
+    },
+    "deletion": {
+      "evidence_id": "sha256:13766751722781c0d2bf942bd3c6de73c4fe6ed50aa4c5e109f5daf25b136198",
+      "node_count": 4,
+      "nodes": [
+        {
+          "audit_file_sha256": "sha256:e937b205c6ee3850cea10ea97e2b0df297fc441b6232b374955b9bf4e4435e05",
+          "body_sha256": "sha256:51209386df501a150fed87bbcdbf790e5e5481602c236fa951ba90917733dc67",
+          "command": {
+            "exit_code": 1,
+            "stderr_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout_sha256": "sha256:b235cf3947cc4bbd937b809d156d0eb52835fe4907bc9fe80fc6f93140fa588d",
+            "timed_out": false
+          },
+          "declaration": "Generated.NPHardV2.Ccf15be0f69b13fd3.Authoring.representationAdapter",
+          "diagnostic_matched": true,
+          "node_id": "representation-adapter"
+        },
+        {
+          "audit_file_sha256": "sha256:7b28a9358508afd51c79bbbe989d8cc1a96f8824fa7cd949a1200a6644993fcb",
+          "body_sha256": "sha256:1209eda6cc7aa7b158ac6dc0e750fc246646cab8f59cd64a3724c7a350ebb87b",
+          "command": {
+            "exit_code": 1,
+            "stderr_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout_sha256": "sha256:b7fd8dce97c68ada5b0af9404c529158aab7197d106e23b6f8feb04c4d548b8f",
+            "timed_out": false
+          },
+          "declaration": "Generated.NPHardV2.Ccf15be0f69b13fd3.Authoring.semanticForward",
+          "diagnostic_matched": true,
+          "node_id": "semantic-forward"
+        },
+        {
+          "audit_file_sha256": "sha256:ae4e1d96ed105acb74e6b397d115ca4a6d18a708d08fd17cb3b8c50b42fbaef9",
+          "body_sha256": "sha256:1209eda6cc7aa7b158ac6dc0e750fc246646cab8f59cd64a3724c7a350ebb87b",
+          "command": {
+            "exit_code": 1,
+            "stderr_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout_sha256": "sha256:f3dc3eec42a1f2a069fd099d779ea6f9a11488f4b3e2d0bb524ff97b6f942a04",
+            "timed_out": false
+          },
+          "declaration": "Generated.NPHardV2.Ccf15be0f69b13fd3.Authoring.semanticReverse",
+          "diagnostic_matched": true,
+          "node_id": "semantic-reverse"
+        },
+        {
+          "audit_file_sha256": "sha256:7c9593f85f510debe1d6dc5731310952d0efd2b4f661595c948b1ac1b979a02a",
+          "body_sha256": "sha256:d63de26aa6037507f77cdf35bba5dab89d6fe9c3e2c2f541fb14617fd72ece62",
+          "command": {
+            "exit_code": 1,
+            "stderr_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout_sha256": "sha256:5a690f6d77aaeb8aaf24de2c927c81a1320a02687dd4e77908cc275850ae99a8",
+            "timed_out": false
+          },
+          "declaration": "Generated.NPHardV2.Ccf15be0f69b13fd3.Authoring.semanticCorrect",
+          "diagnostic_matched": true,
+          "node_id": "semantic-iff"
+        }
+      ]
+    },
+    "endpoint": {
+      "artifact_endpoint": "ComplexityReduction.Routes.ThreeSATToClique.IngressAdapters.taggedThreeSATProblem",
+      "direction": "source_to_target",
+      "exact_reduction_type": "ComplexityReduction.Certificate.CertifiedReduction ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem ComplexityReduction.Routes.ThreeSATToClique.IngressAdapters.taggedThreeSATProblem",
+      "selected_hub": "ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem",
+      "source": "ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem",
+      "target": "ComplexityReduction.Routes.ThreeSATToClique.IngressAdapters.taggedThreeSATProblem"
+    },
+    "fresh_core": {
+      "evidence_id": "sha256:efe8e09690f799ac94fccf7fa7785f27a02ef3e7cdde9cfae47f5d62fe5e3ff7",
+      "node_count": 4,
+      "nodes": [
+        {
+          "body_sha256": "sha256:51209386df501a150fed87bbcdbf790e5e5481602c236fa951ba90917733dc67",
+          "cumulative_source_sha256": "sha256:87b780e42295661a5602fa70e3a6207a2004d382acef0d1a019d3580b948f7b3",
+          "declaration": "Generated.NPHardV2.Ccf15be0f69b13fd3.Authoring.representationAdapter",
+          "fresh_core_evidence_sha256": "sha256:97d153b7ebe0c460b08467013eff1238b419939acb482c6807d2d7cea9ecc006",
+          "manifest_sha256": "sha256:7cf0d44261737ea842c9ff88a0eb834efb5ad8d73c31b10ad6b166c4baf7b452",
+          "node_id": "representation-adapter",
+          "worker_evidence_sha256": "sha256:85528056f1640598c7016a7fe80cafd95966c90a1a38957ba4b601b270d12426"
+        },
+        {
+          "body_sha256": "sha256:1209eda6cc7aa7b158ac6dc0e750fc246646cab8f59cd64a3724c7a350ebb87b",
+          "cumulative_source_sha256": "sha256:c3751bc9a5ccfade4752f83b1c9cd664a0f780f2a75c45d6ce90cf3915aad3d0",
+          "declaration": "Generated.NPHardV2.Ccf15be0f69b13fd3.Authoring.semanticForward",
+          "fresh_core_evidence_sha256": "sha256:7c57fe1b6e8975c9ff49dd885a15202e16c55c24465c5095ffe9e75f9be55f38",
+          "manifest_sha256": "sha256:7ee67bd3d16db1b246a0b94bd82c5bdee17a85ed5cf5a2b0ce70be239f5b74f5",
+          "node_id": "semantic-forward",
+          "worker_evidence_sha256": "sha256:0575286226dc5d604395c195d3170a81b0940243b77c8a9f950d2471a7d04b11"
+        },
+        {
+          "body_sha256": "sha256:1209eda6cc7aa7b158ac6dc0e750fc246646cab8f59cd64a3724c7a350ebb87b",
+          "cumulative_source_sha256": "sha256:c2a42617742b81993a48d73e09aee6f6fdf082f2b8faf822eaf5bceddc18ae91",
+          "declaration": "Generated.NPHardV2.Ccf15be0f69b13fd3.Authoring.semanticReverse",
+          "fresh_core_evidence_sha256": "sha256:bd1d2fff7f477f4cf7d18441965829bb1a24e2a7959b226a7e802995d381a608",
+          "manifest_sha256": "sha256:31489d862a9b6306454271ebe91e6aef71d3afc37fdd950f3777be5caa48e999",
+          "node_id": "semantic-reverse",
+          "worker_evidence_sha256": "sha256:0519199adf74c09e82f62d70d1c86f65bae8bfc1efddd10d1e4b7da3f30c580c"
+        },
+        {
+          "body_sha256": "sha256:d63de26aa6037507f77cdf35bba5dab89d6fe9c3e2c2f541fb14617fd72ece62",
+          "cumulative_source_sha256": "sha256:a24dc4af315d72a41368e9de786429fb8556cc8e05e621c10cb2da33efcb41ba",
+          "declaration": "Generated.NPHardV2.Ccf15be0f69b13fd3.Authoring.semanticCorrect",
+          "fresh_core_evidence_sha256": "sha256:a5bd361fae2b848911acb9a9596575c2d6ee2831795375f559c1548e2394cdcd",
+          "manifest_sha256": "sha256:ab8f081cf9e73168710d62a8f79aae0eb1f38769e61269218ef645b38813f14b",
+          "node_id": "semantic-iff",
+          "worker_evidence_sha256": "sha256:6eb0988e84ad9f8524656c96d0ff8a311bd0795da58e6b4a96db9865fc36ce56"
+        }
+      ]
+    },
+    "shadow": {
+      "axiom_endpoint_attribute": {
+        "audit_source_sha256": "sha256:e750f6099327bd56198c534becff6e85eb923b43c1211693b5731237e92fa16e",
+        "command": [
+          "lake",
+          "env",
+          "lean",
+          "PublicationAudits/Ce9751f385584594e3ba9.lean"
+        ],
+        "exit_code": 0,
+        "passed": true,
+        "stderr_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "timed_out": false
+      },
+      "clean_shadow_build": {
+        "command": [
+          "lake",
+          "build",
+          "ComplexityReduction.Generated.Hardness.Ce9751f385584594e3ba9.Reduction",
+          "ComplexityReduction.Generated.Hardness.C878ab5c0f5232e514499.Reduction",
+          "ComplexityReduction.Generated.Hardness.C15c953ce5e20344bf87b.Reduction",
+          "ComplexityReduction.Generated.Hardness.C4ddadc69d69dcce12634.Reduction"
+        ],
+        "declared_package_cache_reused": true,
+        "exit_code": 0,
+        "old_project_build_cache_absent_before_build": true,
+        "old_project_olean_absent_before_build": true,
+        "passed": true,
+        "stderr_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout_sha256": "sha256:8034e96cfaee4f18e2718e56fea17d9720e67fa7f4e47123fc95247a2b5bddbc",
+        "timed_out": false
+      },
+      "import_cycle": {
+        "candidate_cycle_absent": true,
+        "graph_sha256": "sha256:8c3711521e76b038b828cc8c0434a197b7c721b4649781da0a5f2e4abf06d31d",
+        "passed": true,
+        "runtime_or_hardness_aggregate_import_absent": true
+      }
+    }
+  },
+  "candidate_id": "sha256:93329a3453cbbc82505aee1562ea107954c412e5350e419f6f2f2bef76cc8016",
+  "candidate_manifest_id": "sha256:c935d28d2169d72377f1b412931f6fde863b9131b82fac171a4f6637f9046017",
+  "candidate_manifest_sha256": "sha256:78e3d4b5d53c45a1e62ef196de8ee16755bff00d099b83c18d6b7e596007ee1f",
+  "canonical_endpoint": "ComplexityReduction.Routes.ThreeSATToClique.IngressAdapters.taggedThreeSATProblem",
+  "canonical_identity_id": "sha256:97994ca373693d9c1ca40602e8c4240801b5263185205c9a79aa83620003a102",
+  "case_id": "cdev-au-01-tagged-three-sat-adapter",
+  "dependency_snapshot": {
+    "closure": {
+      "candidate_cycle_absent": true,
+      "closure_sha256": "sha256:9b04cf1e0096100c9f76215d2c43b850cc9d93f8a02ae7b6b92ec976ff67e65b",
+      "external_import_roots": [
+        "Lean.Attributes",
+        "Lean.Elab.Command",
+        "Mathlib.Algebra.Polynomial.Eval.Degree",
+        "Mathlib.Computability.TuringMachine.Computable",
+        "Mathlib.Data.Finset.BooleanAlgebra",
+        "Mathlib.Data.Finset.Card",
+        "Mathlib.Data.Finset.Dedup",
+        "Mathlib.Data.Fintype.Basic",
+        "Mathlib.Data.Fintype.Card",
+        "Mathlib.Data.Fintype.Option",
+        "Mathlib.Data.Fintype.Pi",
+        "Mathlib.Data.Fintype.Sum",
+        "Mathlib.Data.List.Basic",
+        "Mathlib.Data.List.Dedup",
+        "Mathlib.Data.List.FinRange",
+        "Mathlib.Data.List.OfFn",
+        "Mathlib.Data.List.ProdSigma",
+        "Mathlib.Data.List.Range",
+        "Mathlib.Data.Nat.Digits.Defs",
+        "Mathlib.Data.Nat.Pairing",
+        "Mathlib.Logic.Equiv.Defs",
+        "Mathlib.Order.Interval.Finset.Defs",
+        "Mathlib.Tactic"
+      ],
+      "graph_sha256": "sha256:8c3711521e76b038b828cc8c0434a197b7c721b4649781da0a5f2e4abf06d31d",
+      "project_source_file_count": 164,
+      "project_source_files": {
+        "Lean/Reference/ComplexityReduction/Annotations/Attributes.lean": "sha256:a9f68d74facd86ea20d729ef53671e8192a7a021eea5fb4aa7ea59f56c6dc664",
+        "Lean/Reference/ComplexityReduction/AxiomGate.lean": "sha256:05fba56a17df8dee5ea1585747eade9260b9e0e9bf1243b454964480c5cb20fa",
+        "Lean/Reference/ComplexityReduction/Certificate/Provenance.lean": "sha256:a636b7717a5e3cfcfc5e0de542b6b44f7b871f8e7607bb16a7be7a1b878b990a",
+        "Lean/Reference/ComplexityReduction/Certificate/Reduction.lean": "sha256:720a423ac24704be4e238bf701bbccf79ba9e2894896981bac836437660d78e0",
+        "Lean/Reference/ComplexityReduction/Core/ComponentRole.lean": "sha256:660df9bed8d2777959d78cdb4eac4e4b6271e9f6a7777791926551dc8f898585",
+        "Lean/Reference/ComplexityReduction/Encoding/CodecLayoutIso.lean": "sha256:05955a1fb84f8e95670cad460fcc900725014b7960e9de8da92d5527a2982e89",
+        "Lean/Reference/ComplexityReduction/Encoding/CodecShape.lean": "sha256:f14a3ad757fd59b506b590866d16f90554c4af60558d080615549684eab9d030",
+        "Lean/Reference/ComplexityReduction/Encoding/EncoderCoherentView.lean": "sha256:301c0eb8f0d4c7159b39263c2eeef18a943fd1af736b7d8e40490cc746d31657",
+        "Lean/Reference/ComplexityReduction/Encoding/LawfulEncodedType.lean": "sha256:0661fba472f4763fa505e254a06681da7e3df77f19efce9c21fde95ee7e6b1bb",
+        "Lean/Reference/ComplexityReduction/Encoding/PresentedProblem.lean": "sha256:91fd47d64dd52cb766a2e9a51d173d40b546d2ed76fb112569733dc53529fd45",
+        "Lean/Reference/ComplexityReduction/Encoding/StandardInstances.lean": "sha256:d2fb2732c29266a7e336f3635485eb1c1e3c617b61e504cd1a4343bf73d99f49",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/CostedTMSound.lean": "sha256:3264b8e584503e8eb61fd721411b0f0fd3416f8d71dcc605751cc46087654dad",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/CostedToTM.lean": "sha256:edc14bfbaaa1ed554ba694727c1898ea4333688bf7c40b8c2d4a1fcdea71e94c",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/CostedToTM/Maps.lean": "sha256:6cffcd325e4e4d9be43f5256d79e93435f48a776e52eec11f3d505e0da84c746",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/CostedToTM/Maps/Part1.lean": "sha256:ecfabbf388caed22502fa56b2e412fb662a7de4283bc5cc632f2a74069b4cc81",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/CostedToTM/Maps/Part2.lean": "sha256:f154aba72622f22bf8f5fc63df3af6ac4a08de541eb1152e0ded43551f31456f",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/CostedToTM/Maps/Sum.lean": "sha256:37778d9b179e32c47527e42b60475665b65b5708fb3ffbf3fe0e6931d8b44231",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/CostedToTM/Programs.lean": "sha256:9205e473583ea8484fbfdebe787bf5ea9de8b180cd79028baa62c08a903c4ca0",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/CostedToTM/Programs/Base.lean": "sha256:eb8c3decd358469e5c69dd6342813bcbe6cf04238712cc1ed4bc58f35a2b3ae8",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/CostedToTM/Programs/ListFold.lean": "sha256:4bbc7ecfa374c8da4e6d14dc27b2e9f5231fa94dcfc1d7036e6e55db7c791fe7",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/CostedToTM/Programs/ListFold/Part1.lean": "sha256:7717df0a8e76eda8fe4907a8c4b47abbe5a915d6e8bfa3fe94b8af7e59c5bab5",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/CostedToTM/Programs/ListFold/Part2.lean": "sha256:b7fdc05dbb0f4167a152b8f3b36ba62ce1ff9a10350aefc6ff765aee8b97758e",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/CostedToTM/Programs/ListFold/Part3.lean": "sha256:344b50c0f30ff4ada0a2e43da43f355d169e3f8b95a8e387ca683e24a137d317",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/CostedToTM/Programs/ListMap.lean": "sha256:7f59271bcb63eb0194df631bb5d0939613c312f59dc92d68c8acf27789a644d1",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/CostedToTM/Programs/ListMap/Part1.lean": "sha256:cdcbc70cd222a5f3e415cc6121552f3f8ff18af283367c33f5cc5b15d0c61d3d",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/CostedToTM/Programs/ListMap/Part2.lean": "sha256:d032091345cc25c87e7abb6b3435a4a46366cf61405608f92f5bd188927a4eab",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/CostedToTM/Programs/ListMap/Part3.lean": "sha256:8dc00ea1e97bbc13ca766fd149ef71b66b47113ea465756298524525ee21c460",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/CostedToTM/Programs/NatSub.lean": "sha256:f071578f7abaf90104355992e3a4b60e8d56bb00cdc7cf8b1ca33c094a3541d3",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/CostedToTM/Programs/PrefixSuffix.lean": "sha256:65b739a4f76dc063dd40feb2fcca04e5cd1d2249cf855dc13885d1c4b53a60aa",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/CostedToTM/Programs/PrefixSuffix/Part1.lean": "sha256:bc23dd1df232f4760807412131599b2b7e87638ffa9e795fed24f30ab71e5020",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/CostedToTM/Programs/PrefixSuffix/Part2.lean": "sha256:12be1bb65ab1a7988ca0e72419af725f278001d33de85db338ff6ca18589fa5c",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/CostedToTM/Programs/PrefixSuffix/Part3.lean": "sha256:d6556e3193c57ca977580d75fda751b89b8ea70a027248c6e5cb3a1ae8f9f610",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/CostedToTM/Programs/ProductAndListPrimitives.lean": "sha256:840e6bdae3228850cf6e4dc16799487a06d26c752d5bd85b08354507e609ed66",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/CostedToTM/Programs/ProductAndListPrimitives/Part1.lean": "sha256:973c1f8d8b876c55d6313ae11516f349ce070ffad4abb0250a60548ec54423f1",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/CostedToTM/Programs/ProductAndListPrimitives/Part2.lean": "sha256:de2dc252026e174d97823a0838a849e42d01963bc7ef7e217ef5349f1c0f8349",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/CostedToTM/Programs/ProductAndListPrimitives/Part3.lean": "sha256:0d805d8e4dc1707beac50c0a34fedb97cfb7148ba3e0b79e199c986c60ad7d2a",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/CostedToTM/Programs/ProductPairing.lean": "sha256:2a9b33468a5d6b90224e7071cdfe3e1b902e7099df8e9bc1e0731bc4f4157dcf",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/CostedToTM/Programs/ProductPairing/Part1.lean": "sha256:6f395b2b6ff8816a7627e61e5770f73856a7d07b72afc2ad96dc6e7c03c741d8",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/CostedToTM/Programs/ProductPairing/Part2.lean": "sha256:89d7ac1305c1d8a221f89f1d06e34096ccd867ef2c544a7ec034449b5a77ca23",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/CostedToTM/Programs/ProductSupport.lean": "sha256:752def9e1fdcb4186305513aadf54b12afb0f640df1d6fd0326154efd18b5408",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/CostedToTM/Programs/ProductSupport/Part1.lean": "sha256:f829843aa4df6851841ca9789a867693252cb0d21ae8ff7d08e26966c494cd61",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/CostedToTM/Programs/ProductSupport/Part2.lean": "sha256:c5162befce4ed0ed0756b068d748d4b552f9edfe0be55162ae8c3ffeef983c90",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/CostedToTM/Programs/SeqComp.lean": "sha256:90aae72eb3f2c456c8437e3348594491c08c87ca25f084c00a76c2f432fde12f",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/CostedToTM/Programs/SeqComp/Part1.lean": "sha256:1edcd15abfb5d1a6489aaf358d6492fbb90f2cb4ea456ee785a32e61d2c4bf21",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/CostedToTM/Programs/SeqComp/Part2.lean": "sha256:a6cc706967109fcd7f081889e33c805dc0982c4cf1af20740a001adba5887221",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/CostedToTM/Programs/TaggedDispatch/Part1.lean": "sha256:4559a2c48f6e919cb4bef494b2f22a100072ccad2d9925ae831f91876603456c",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/CostedToTM/Programs/TaggedDispatch/Part2.lean": "sha256:88ac5aa91f4114b15038f0ee21762e31a7820b23f3f9170e94ba7598e6d77752",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/CostedToTM/Programs/TaggedDispatch/Part3.lean": "sha256:8041f59729e6e2d26f9d2c2169abaec958b7e4347cd0cf31e1ba3c4ec6682ec9",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/CostedToTM/Programs/TaggedDispatch/Part4.lean": "sha256:1d580829a47cdd565697be2aab2115221558332ede7b4c82f9d48db8fa358052",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/CostedToTM/Status.lean": "sha256:74361eb0646bedcd6d275f8cbad099770d7af557e0d5411a430775b76ace4c86",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/TMComplexityClasses.lean": "sha256:8f4d59cf6f2decf42326dc698ca5beaeaa4d5c0a1889f79cbba575793c871bc9",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/TMComplexityTransport.lean": "sha256:05acf0a85cd0520376315f9785b23b460cdf480368fed42fefd746f56448ec44",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/TMPolyTime.lean": "sha256:a60d192f33e28176dd723f8a9d71e580390c57a1adc99b9bab7e4ad4701e1fa3",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/CSP/FiniteDomain/Basic.lean": "sha256:307eb22e0d3ec40b8b7ed2bafc8ea88175929e0dfcfd71b3ec07213ca21c5b8e",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/CSP/FiniteDomain/FiniteSupport.lean": "sha256:245d5134563107208696f0429682988a4a0b72c13f09c6565e198d827681fcf9",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/CSP/FiniteDomain/LanguageBounds.lean": "sha256:28f5758959fa8e9df89ff31e68d30537dac1b73ed90275eaf4a0dd396d670213",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Certificates/CostedMap.lean": "sha256:fc4070ac563a73381f5e894a2f49c206da880d2658619202a1a3919365c6dad6",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Combinatorics/Graph/Basic.lean": "sha256:ae38c9c185e03f43ef8fcb3c38a9fb7dfa6769bee87209a6ebf889a79c7bcf9d",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Combinatorics/Graph/Digraph.lean": "sha256:78033a8c2a73daddebc2aa3cd2b42d7d1d3fea9f87d763dd3a65ccc0d81e8ea7",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Combinatorics/SetSystem.lean": "sha256:ecd40901a5a65bcae396b1fa379a08332e37c3c2cbeb8d84ba6a07b6b34818a5",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Core.lean": "sha256:2c6ad449724e82e9eb266167d9acb0d6e1325ea930a9121d3a361ad53998d7f6",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Core/Completeness.lean": "sha256:91e7a60f138f9703b5bd9268db46933fb5e7b8c4400b96ee30004bcbf1053856",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Core/EncodedDecisionProblem.lean": "sha256:86bc1b652cc5b2bd217555e5c2032277b28b101857a37020e519e3a2170e59c4",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Core/EncodedType.lean": "sha256:182d1d7390d64c8593ddfc47adf3f54f7a9c4869de51d10f22bb730af6c296ad",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Core/NPClass.lean": "sha256:f8052639c3ce9952895c4b6087e74d8e1ced318f43dc70841f9b085ad1e99ad4",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Core/PolyTimeModel.lean": "sha256:0fbe342dc12ab5df0e4dca4c113ef8257dfd969c6e629ce510e34345e1814523",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Core/ProblemEquiv.lean": "sha256:2db6df316301c2160e375e848532068c6f6705ed0c7a7480f697ebe1f33b39a3",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Core/Reduction.lean": "sha256:3ba9199b0dedded640ebe291f3212dc89aa1e5a05054ddbecb6d1fed2b6864b5",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Core/ReductionComposition.lean": "sha256:af2ee3da26a634d332d699e7b979c23079ae71e53528acec21ebb3ddfe5b7226",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Core/SatLike.lean": "sha256:a4070b8f75fed139efbd290d44184761182d9569b0770cecb69c473cc567414f",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Core/SizeBound.lean": "sha256:c2937b79eaa3cfaeec4bed8447fe511d37c2e68b15d0cb5ed91be1fafde686e2",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/Basic.lean": "sha256:5993759ee647b0d958a82784a8d431e03e846c8a8ad5004cc6faa39114717a87",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/Clique.lean": "sha256:8ba115b47ae53bacb9485411b16e247b7089fcbb8e252058cd364f1ad4290a98",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/Clique/Part1.lean": "sha256:5dc45f72562324fde4a82bad48e25970dfe4a9089fa3f2b7c75d2f362bbf679b",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/Clique/Part10.lean": "sha256:1b60e02bda59b144d28ea9385c73c5c27bc86d79b91aac43fc136725f24693b0",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/Clique/Part2.lean": "sha256:7277860a1f66a38eed49e10e6123f22b05bb3be2a6b2290760ef382d04b769f4",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/Clique/Part3.lean": "sha256:c1ca6169859efa1c77d82a3d8a678fc371583492b5b26bb4c5241d9cfb51a03c",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/Clique/Part4.lean": "sha256:4b56ca8abe5da2bf5cbd3d0402805fb1add0ec9d6d184d3ec0e64334508322e2",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/Clique/Part5.lean": "sha256:13821cf55c6aa06d4241fb961b5bd9ea6519287a81855cc9d4f0fddd4375657f",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/Clique/Part6.lean": "sha256:85abebf8ecb2a9bf900e8b63d7d60229d1af0b2f8b11160884357e7ef6e73a3e",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/Clique/Part7.lean": "sha256:ceeb66b143b6ce4896b92c6299453e4775b1808f941a2aea951df64c979d1522",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/Clique/Part8.lean": "sha256:8363a6e1ebb39039736f2f5c38f8dce436b47f27c4d328014a328d55c43312d5",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/Clique/Part9.lean": "sha256:68bd278c72663175b2991ab59489c62a36372f8cc63a0ba590e12fb9568cfb1d",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/FeedbackNodeSet.lean": "sha256:0d16d8be6c8430c9e0dcbcf62ab25b7190573e6d8420cd09f2c7190dfad767fb",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/GraphStructuredTM.lean": "sha256:f3bcf19fd0899ee3ebe20967d1384431a9016b33de5e3428e5e344c7bfd1c0b4",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/GraphStructuredTM/ComplementEdges.lean": "sha256:84c703f846aa55940ec26495cc87237a8f4d76f5d7a2dfa19bdcdb1cb7f8c80f",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/GraphStructuredTM/EdgeScan.lean": "sha256:ce1ced455673299a46d0c82cc2ad4e4dd3fd5e5b124aa8aa2035df3d762c656c",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/GraphStructuredTM/PairCandidates.lean": "sha256:ef12a7b6322fe8070ac4bf2fd6dcc76d7a46e69cb437cdae48971a685eb00274",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/GraphStructuredTM/Projections.lean": "sha256:0ed43946b2d63d30b64c0e39987c7b8f2b0603d219ad9e0db4f2a5c99856b96f",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/GraphStructuredTM/Range.lean": "sha256:605df4bba1653dc7d7bec8e0a3e29a0e72b8bd7fcba1d10b32f95d5e7d43c55c",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/GraphStructuredTM/StrictPairs.lean": "sha256:66def7fcd06e491f2c8e8e38c30ad927377d798285b2e99a03f2856b8935f051",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/HittingSet.lean": "sha256:0ff14cbe05050bad4b9938d6aec78b0ec8d24b34cef9296e699b9d6726381544",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/HittingSet/Base.lean": "sha256:32c3c9f220030284324c0a3f2ac24543e98ce63d86b1b426f8060d881926f891",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/HittingSet/FamilyRunner.lean": "sha256:15ce30fb992adb2cd674f70394ebde101bac32267ec458f9435467018de10851",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/HittingSet/IndexRunner.lean": "sha256:89ae43ef655ed8df96b63b41f66449e50b83f0272119a41d1cc7dca9c6779e42",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/HittingSet/MembershipRunner.lean": "sha256:4c3a78c820842709e00fb8d4e3465b3cf35503e73b7ebd4d3345a13ec99e0a71",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/HittingSet/StructuredRoute.lean": "sha256:e7440ea33d786a386d2be7004d1195d31447d8b43d11fcd022bd4e259ddacda1",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/Satisfiability.lean": "sha256:992f9665db1bf7231991cc5fb8663a5b3fbfaff684df59dfb4a16011fc7ffddb",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/Satisfiability/CNFSplit.lean": "sha256:c8aa139ae61a8ced8c797b866fb4be8d123af03aaadd93ec98d3a0619aef8938",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/Satisfiability/CNFSplit/Part1.lean": "sha256:9aa37c3564a76baf4573f03d4d97fa45521f7f1bd1f368a5fabd816c312aae02",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/Satisfiability/CNFSplit/Part2.lean": "sha256:98746bb52347b71f0faa81f0b9af08088877c3cb3c47fee5088eaccf5e3bd10d",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/Satisfiability/CNFSplit/Part3.lean": "sha256:1a306a5d5b16e14e0a0de26c78e2e1ebb6e0504b083e45814f99e6b0595508e3",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/Satisfiability/CNFSplit/Part4.lean": "sha256:276fb5aa4849f0584943a41c10eeaa862485002525153eb7fbe6cedb87a357be",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/Satisfiability/Encoding.lean": "sha256:8a4b69952141056b27671397150e2d5dc1c51cc252bd1eafeca6753676591dbd",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/Satisfiability/Reductions.lean": "sha256:61e0d6a9a14d2b66161662043535ba31e6d5d5c4da00f48c9a96d75dcfa7c377",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/Satisfiability/SplitWith.lean": "sha256:5624a25199056a8d860043d67e4d66cbebea2f88b87d5fcb4348d706b6aa5405",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/Satisfiability/SplitWith/BranchInputChoice.lean": "sha256:43d571b8b4656dfe3dc7048574f1da9f09b2926e5b5a127f408c0cb031333e02",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/Satisfiability/SplitWith/BranchTraceStep.lean": "sha256:5e0279c4e90c826cecd8ea16610b07ecd53f818f6e1169fe3e3a2eb7f3a45b68",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/Satisfiability/SplitWith/Core.lean": "sha256:e3065e6159852e12332a5a422277ce05f1e88817d028e8b93171c0c061dad324",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/Satisfiability/SplitWith/ListUncons.lean": "sha256:c9383c328cd6198e5cee410a81382d8bd21311f5d65a09621d235f8c3741cc1b",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/Satisfiability/SplitWith/LongTrace.lean": "sha256:aa1a06fdd24350ed2a9f7503426c6e378505b6f466eea180f07bb00d5894d9df",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/Satisfiability/SplitWith/LongTrace/Part1.lean": "sha256:ea617ae9163b6a9794357d23171b2a75267dafe7d0f7bde4c9e1f22149e9dfdc",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/Satisfiability/SplitWith/LongTrace/Part2.lean": "sha256:eabfc000a4d614cb8687aa445feeba3b3dbfa50d056fbdfacba0070e8ab5446e",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/Satisfiability/SplitWith/RunnerFold.lean": "sha256:fc339074c24bfc4c18f86a4d2870598289499b2732a5eb3ac5fd3b6e4aacbc5b",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/Satisfiability/SplitWith/RunnerStepChoice.lean": "sha256:79fd4da83c4c8879a8c99238703dd0fff1813f9f35c0168450acf8230fc8aef4",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/Satisfiability/SplitWith/RunnerStepChoice/Part1.lean": "sha256:c981e0344e650c7341dd4dab4aff9b87b7963b291fa69203086eb01addf6e7c3",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/Satisfiability/SplitWith/RunnerStepChoice/Part2.lean": "sha256:c894b5267f5dc5b92c4b8a7e043f2e4755275f8f67ac4d6115c95b25a0243a26",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/Satisfiability/SplitWith/SizeAndFinalMaps.lean": "sha256:76fba672dd4adfc2b9c846bc8ae52a3bc33102085cc88b2489e32ce4480a816a",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/Satisfiability/SplitWith/TaggedDispatch.lean": "sha256:234f9277ab3f29e85dd2941d9617a5e7cfdbd9d4d106817a9a4cac90834b262d",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/Satisfiability/SplitWith/TaggedDispatch/Part1.lean": "sha256:f757c7d6e3090d6c81c3537f7027cebbcbd04cea340f8efff2cc011f1a18ffba",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/Satisfiability/SplitWith/TaggedDispatch/Part2.lean": "sha256:4aca8bbd76d373d9f366b63c58254694646a4460d323786147dbe32b44c75b7b",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/Satisfiability/SplitWith/TaggedDispatch/Part3.lean": "sha256:4973f1b52b28261f20968294679d968012e42117e5c608b09793db77121ae8ff",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/Satisfiability/SplitWith/TaggedDispatch/Part4.lean": "sha256:8c25e6a67ea86e688016e21e04b0ec942c7344adad53d3a6a581e1d54254fc72",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/Satisfiability/SplitWith/TraceInstructions.lean": "sha256:5f81af17ee4158c70c18658fbee1ae03ee5935e3801e86442a13c1a6f4ede891",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/Satisfiability/SplitWith/TraceLoop.lean": "sha256:14642a96e417810181db9c046a1977c4a6d27620d5b3865bf8fec36a3821389d",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/SetCovering.lean": "sha256:a3ad31305c52a654ed8e21b85b8e1aab9b34c37d072dc2cf6607f2edafc38ddb",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/SetCovering/Base.lean": "sha256:e309ec39260cad38420c00c16ab6eba2ace3aeff263835ed15cacc770c65d676",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/SetCovering/FamilyRunner.lean": "sha256:61afa6017071277f7312e4ef6b32c3e52e7489a862ec1b07c2db7733b0d6d946",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/SetCovering/IncidentRunner.lean": "sha256:396f2a0115a88db1afdd89af32184f2fd693861ec6de972c191af814bb0f73ba",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/SetCovering/StructuredRoute.lean": "sha256:6363f1c4b82c3f033820860f834723dc307ecc5ff0393005676860d8424d9b38",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/SetPacking.lean": "sha256:9221359f18a1e53bd429203c945ebe55f1ea74ba23c0220d8b765e1bce6bc3f4",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/SetPacking/Base.lean": "sha256:a7ecdb77703f04e4401f602413dafa6627ee20f7eb014b49349372ae0f9c0fb1",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/SetPacking/FamilyRunner.lean": "sha256:70d56750cd91e5e8d15e9c04b8140f66fa11f9b78f35ae1c4a9997c69134c704",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/SetPacking/IncidentRunner.lean": "sha256:85020106295e89a6a86c3a961813edfc28c28bc48ad030d580f7ee7f39ed652c",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/SetPacking/StructuredRoute.lean": "sha256:32870470a528479cc36dd5c8f95192d4cb4b69c15a603ef7d0dd12ade29d468c",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/SetPacking/StructuredTMRoute.lean": "sha256:395028062c6605e3c960a50085715169cc7d220e37b5789f356b245f5e14aa72",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/SetPacking/TMRoute.lean": "sha256:9fda0565e0492477bd97cdc7d8cb56a3ae3f17e097e47bcd54bdb62915a6c1b7",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/StructuredChains.lean": "sha256:05d17e996c646cadfa6c9de86685c98d1755f17c26d6001117d15ce4df74de4f",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/VertexCover.lean": "sha256:4c10d262643308601b97db0f8ff7a29b377f8f5f5c2e4099d961b1943d838dc3",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CNF.lean": "sha256:56a98dda13d3007a2ca68a96f9a5925a3cf533c364d07da745d7ad74b94c62b9",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CNFTo3SAT.lean": "sha256:0dc44827d2b8a0e1aa44f869c57d03438252af73b4119409ee68e8b2c500ae99",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CNFTo3SATCosted.lean": "sha256:160a4ce473080d13092ab645a80fb3a24a24d3e5836c28f486b89ad5d3dbf2f0",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin.lean": "sha256:c08d21d37eb68e630355683776216da7f4dbe851ee05483615e96fd08b74afab",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/FiniteAlphabet.lean": "sha256:6e6a91626ab3feb4e8d0755f0a1376a90e1815f097f3b86c9b663db743d20d05",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/LocalPredicateFamilyCSP.lean": "sha256:87aee491bca172f3162956283186bf2468b23edd229820eaecfaa944484f6d83",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/Tableau.lean": "sha256:4a1163e703507d9e8a51ce5d22f7dada454a1bd4c1ab8dc272c6b5aaa68707dc",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/TableauCSP.lean": "sha256:d75e8b63ada006318c018cbcc1d338106a18795b6ea6bb7034fd525b3e27c5dc",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/CookLevin/WindowGrid.lean": "sha256:53517da86936ce0f439c40af3cec021e73b25b43146dc5e0296a732225550652",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/Literal.lean": "sha256:6689ee57a7ced8dd96067785fbf4cdf5e2e0e25cfcdf0c77b734b953a52a66c1",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/ThreeSAT.lean": "sha256:b1eaac7a673d64dd2ff912dbf435d03babd4173b8ebcd5f8104f79f683aa472e",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/SAT/ThreeSATInNP.lean": "sha256:2b4465b386aa999df4eac9d9db9906294fcb7c530624784c026230515c55a9b5",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Targets/NPCTransfer.lean": "sha256:1d5f984cff3afb772a2f9136852b08b6cfabcc810e0373ba30198d52b56b5535",
+        "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Targets/ThreeSATCompleteBoundary.lean": "sha256:33b3f810fb8d2896522f66b7bae0118a7d77d73d4d030d5c2917f1b9153d06cf",
+        "Lean/Reference/ComplexityReduction/Problems/Karp21/GraphAtoms.lean": "sha256:e0367d654ee112022baa2f14856be41aaa545c6f3e85b2cbb1ede562ab2071c4",
+        "Lean/Reference/ComplexityReduction/Problems/Karp21/Satisfiability.lean": "sha256:3de970fa06fc36275da02173026c75df3cf6f13adbf12f0732718af8a40e33de",
+        "Lean/Reference/ComplexityReduction/Program/CompileTM.lean": "sha256:fde9377aec367e5205720f2724a41411ee6a49181d3e6e32d66a10fda181d6bb",
+        "Lean/Reference/ComplexityReduction/Program/Primitive.lean": "sha256:0b7e7221260d2857168bd4cebca5f2abf2558ec6a1c7c450600d3275bf567093",
+        "Lean/Reference/ComplexityReduction/Program/Semantics.lean": "sha256:ef01c5b7bb4bbc349459092c0601a37a3a8f6be3acfda663620470ec9a245d32",
+        "Lean/Reference/ComplexityReduction/Program/Syntax.lean": "sha256:255679787032ec9d61537c9d8d4885920038add0fd331da46d453f5bdb379b9c",
+        "Lean/Reference/ComplexityReduction/Protocol/ComponentRequest.lean": "sha256:b6f7445675a4ad29a0edc64f0c4dac21f424ef423518829450f1ad8a86b42e0a",
+        "Lean/Reference/ComplexityReduction/Protocol/ComponentResolver.lean": "sha256:09d38c367237425a36dae499238ff021bf43b02d5d418d56f4478a09c5d2c5ef",
+        "Lean/Reference/ComplexityReduction/Protocol/MissingCapability.lean": "sha256:139db270aa2d2b9e74f4f2f59dddf549d93ee73525f77bf5cda8b73c343ef766",
+        "Lean/Reference/ComplexityReduction/Routes/ThreeSATToClique/IngressAdapters.lean": "sha256:bf9a69e80d19f05cbb19d8fc2bc3bbde59844e12aac90146f2fcbaa1904ae272",
+        "Lean/Reference/ComplexityReduction/Routes/ThreeSATToClique/Unified.lean": "sha256:da8470dd8476b3e8098b50987b7a9b47c0ec03309fa676f6745839e57ce46b03"
+      },
+      "runtime_or_hardness_aggregate_import_absent": true
+    },
+    "task_dependency_snapshot_sha256": "sha256:d1a597e87a6c988f63f1d1f29cdb481935585fd1c6d83f70ab9c97f805957abd",
+    "task_public_source_files": {
+      "Lean/Reference/ComplexityReduction/Encoding/StandardInstances.lean": "sha256:d2fb2732c29266a7e336f3635485eb1c1e3c617b61e504cd1a4343bf73d99f49",
+      "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Karp21/Satisfiability/Encoding.lean": "sha256:8a4b69952141056b27671397150e2d5dc1c51cc252bd1eafeca6753676591dbd",
+      "Lean/Reference/ComplexityReduction/Problems/Karp21/Satisfiability.lean": "sha256:3de970fa06fc36275da02173026c75df3cf6f13adbf12f0732718af8a40e33de",
+      "Lean/Reference/ComplexityReduction/Routes/ThreeSATToClique/IngressAdapters.lean": "sha256:bf9a69e80d19f05cbb19d8fc2bc3bbde59844e12aac90146f2fcbaa1904ae272"
+    },
+    "toolchain": {
+      "lake_manifest_sha256": "sha256:7b9ebbed765572606d98ef3e13b2a3036325a9d5bd860a111bdd73db1104aec7",
+      "lakefile_sha256": "sha256:d0ef4eb0c6bcf42015af812166b3a832c52570a440fefd12eb7ff7974ead2963",
+      "lean_toolchain": "leanprover/lean4:v4.29.0",
+      "lean_toolchain_sha256": "sha256:651c8accb402b0c071cd336e9d3dc0a55516b1bfb434ddc4801f14936785b1d2"
+    }
+  },
+  "direction": "source_to_target",
+  "label": "Tagged3SAT",
+  "model_evidence": {
+    "call_count": 4,
+    "calls": [
+      {
+        "attempt": 1,
+        "finish_reason": "stop",
+        "node_id": "representation-adapter",
+        "prompt_file_sha256": "sha256:55575ccb3b7c7771ef3081888bb85e08c758d4a38eaa28faf3ea3626f83766f0",
+        "prompt_sha256": "sha256:e04cc60a3496604d2bebf9515a71d85efea0d80c4c1fab53c67f6352d88041e4",
+        "request_id": "sha256:8a340820ed25e2986d23b11bb430d5b5f40a8f5a74fd19a4e94af6286245980c",
+        "response_file_sha256": "sha256:35c68c532577377df3d46ddf47bea6f15853da67bc96230ba6e214e771ef0ce7",
+        "response_sha256": "sha256:d8ba63e59c93250fd0efcc88a8535277b21b9a2f706877d20c47827c51ad64ac",
+        "status_code": 200,
+        "usage": {
+          "completion_tokens": 698,
+          "completion_tokens_details": {
+            "reasoning_tokens": 432
+          },
+          "prompt_cache_hit_tokens": 1408,
+          "prompt_cache_miss_tokens": 18148,
+          "prompt_tokens": 19556,
+          "prompt_tokens_details": {
+            "cached_tokens": 1408
+          },
+          "total_tokens": 20254
+        }
+      },
+      {
+        "attempt": 1,
+        "finish_reason": "stop",
+        "node_id": "semantic-forward",
+        "prompt_file_sha256": "sha256:b860ae1ec3f69217dcb2205af05d220df156c0855218e01f31bd4eca6c9053bf",
+        "prompt_sha256": "sha256:34121430aa83e7316fcd9e306f046bd7b49c91998f8b0b15dbfa5c868d22ef13",
+        "request_id": "sha256:c00f2b05d8ce5d3e671332d5c49b2ffffddfb7117372b67b23a1ca6011cf456c",
+        "response_file_sha256": "sha256:b8c84938b955154cdad3701af6a2af87c6a3ecfb8129f858ab8e437bb85855de",
+        "response_sha256": "sha256:f0698b367712baa7ee6ebfdb3a29eba9957bc81f37c9dbb244f5b23b77e021e9",
+        "status_code": 200,
+        "usage": {
+          "completion_tokens": 1383,
+          "completion_tokens_details": {
+            "reasoning_tokens": 1188
+          },
+          "prompt_cache_hit_tokens": 768,
+          "prompt_cache_miss_tokens": 18808,
+          "prompt_tokens": 19576,
+          "prompt_tokens_details": {
+            "cached_tokens": 768
+          },
+          "total_tokens": 20959
+        }
+      },
+      {
+        "attempt": 1,
+        "finish_reason": "stop",
+        "node_id": "semantic-reverse",
+        "prompt_file_sha256": "sha256:4012332ecd33a6457c30f29e68bb856490a30cb8ecee4dcb9e1d5433d0aa5dfb",
+        "prompt_sha256": "sha256:f1f887a6602158bd5a516d2c38afaafc1e1561d596f9ccd993a2d046ee66d4a1",
+        "request_id": "sha256:12104a35f94f80dab535422a4bfe59386e8a9c9aa5d7894a5389532a40b9f7a1",
+        "response_file_sha256": "sha256:8c29bb26415db3dffc317d0654b7b7c3c3069725fdc7571350591db8c6999207",
+        "response_sha256": "sha256:3ecaa3b83762b5db6de901713a8b201ae39cf5e577319f71a0ad87ef65b68474",
+        "status_code": 200,
+        "usage": {
+          "completion_tokens": 971,
+          "completion_tokens_details": {
+            "reasoning_tokens": 778
+          },
+          "prompt_cache_hit_tokens": 768,
+          "prompt_cache_miss_tokens": 19004,
+          "prompt_tokens": 19772,
+          "prompt_tokens_details": {
+            "cached_tokens": 768
+          },
+          "total_tokens": 20743
+        }
+      },
+      {
+        "attempt": 1,
+        "finish_reason": "stop",
+        "node_id": "semantic-iff",
+        "prompt_file_sha256": "sha256:0fe5e0ac482f7442804f98271ff566fa387549a3e8a5f82443c4d129511b7822",
+        "prompt_sha256": "sha256:bbb3421f043f380e21da051b4591cd931fc222b82d9ed58984f051a1d891a01d",
+        "request_id": "sha256:e4209878c50fc5314f93a89044b719f0842b82c46ccabcb5d5d8b93d912f96f2",
+        "response_file_sha256": "sha256:fee9a3cdaa036c74729a71a857d35a178606cac8db44fade3a4d5e3a9d05b270",
+        "response_sha256": "sha256:98e54c6b08455bcaa052406981d35a409d11b2fac30364d465f6526074bfb1d7",
+        "status_code": 200,
+        "usage": {
+          "completion_tokens": 279,
+          "completion_tokens_details": {
+            "reasoning_tokens": 32
+          },
+          "prompt_cache_hit_tokens": 896,
+          "prompt_cache_miss_tokens": 19220,
+          "prompt_tokens": 20116,
+          "prompt_tokens_details": {
+            "cached_tokens": 896
+          },
+          "total_tokens": 20395
+        }
+      }
+    ],
+    "evidence_id": "sha256:138daaa50953ce79dde0828365679b05ab2b4e8256d91f7d918f45830dc1c487",
+    "model": "deepseek-v4-flash",
+    "node_count": 4,
+    "provider": "DeepSeek"
+  },
+  "publication_id": "sha256:4163a339668a2776c79d449ee31ea9d370f741edb0b120ec2a30d7ae3069e017",
+  "review_id": "sha256:bca500d838c3b28d19a7a1b66320b13278ed8bf518727d6a17845326dc152cd4",
+  "route": {
+    "direction": "source_to_target",
+    "final_program_node_id": "representation-adapter",
+    "model_nodes": [
+      {
+        "accepted_body_sha256": "sha256:51209386df501a150fed87bbcdbf790e5e5481602c236fa951ba90917733dc67",
+        "capability": "representation_adapter",
+        "depends_on": [],
+        "exact_type_sha256": "sha256:a2e42cc27a121a44704d95bf4d7c0c51b6fce21deb6a7af4d18a9c6449565781",
+        "node_id": "representation-adapter",
+        "original_declaration": "Generated.NPHardV2.Ccf15be0f69b13fd3.Authoring.representationAdapter",
+        "published_declaration": "ComplexityReduction.Generated.Hardness.Ce9751f385584594e3ba9.Reduction.representationAdapter",
+        "rendered_body_sha256": "sha256:51209386df501a150fed87bbcdbf790e5e5481602c236fa951ba90917733dc67"
+      },
+      {
+        "accepted_body_sha256": "sha256:1209eda6cc7aa7b158ac6dc0e750fc246646cab8f59cd64a3724c7a350ebb87b",
+        "capability": "semantic_forward",
+        "depends_on": [
+          "representation-adapter"
+        ],
+        "exact_type_sha256": "sha256:dac85b512aecf89ca594a720becd8e0a61d1d4e3f54cb0cb4f85c905a1a1e4e9",
+        "node_id": "semantic-forward",
+        "original_declaration": "Generated.NPHardV2.Ccf15be0f69b13fd3.Authoring.semanticForward",
+        "published_declaration": "ComplexityReduction.Generated.Hardness.Ce9751f385584594e3ba9.Reduction.semanticForward",
+        "rendered_body_sha256": "sha256:1209eda6cc7aa7b158ac6dc0e750fc246646cab8f59cd64a3724c7a350ebb87b"
+      },
+      {
+        "accepted_body_sha256": "sha256:1209eda6cc7aa7b158ac6dc0e750fc246646cab8f59cd64a3724c7a350ebb87b",
+        "capability": "semantic_reverse",
+        "depends_on": [
+          "representation-adapter"
+        ],
+        "exact_type_sha256": "sha256:c82410b940547b8acf9eafe7a1546f1f2fcdfcff22b74633c4b17fb8f6e08332",
+        "node_id": "semantic-reverse",
+        "original_declaration": "Generated.NPHardV2.Ccf15be0f69b13fd3.Authoring.semanticReverse",
+        "published_declaration": "ComplexityReduction.Generated.Hardness.Ce9751f385584594e3ba9.Reduction.semanticReverse",
+        "rendered_body_sha256": "sha256:1209eda6cc7aa7b158ac6dc0e750fc246646cab8f59cd64a3724c7a350ebb87b"
+      },
+      {
+        "accepted_body_sha256": "sha256:d63de26aa6037507f77cdf35bba5dab89d6fe9c3e2c2f541fb14617fd72ece62",
+        "capability": "semantic_iff",
+        "depends_on": [
+          "semantic-forward",
+          "semantic-reverse"
+        ],
+        "exact_type_sha256": "sha256:771fe3eb10cd954bad4d5aff80883f27957a292eb7d05701918c35589160022d",
+        "node_id": "semantic-iff",
+        "original_declaration": "Generated.NPHardV2.Ccf15be0f69b13fd3.Authoring.semanticCorrect",
+        "published_declaration": "ComplexityReduction.Generated.Hardness.Ce9751f385584594e3ba9.Reduction.semanticCorrect",
+        "rendered_body_sha256": "sha256:6243251b6a6ab8ffeab5e4a51fdc24eb9b6eff78060bff9f513f8d95628183b5"
+      }
+    ],
+    "original_planner_dag_sha256": "sha256:adef1a19f85a00ebfdf34c56eac33af6d248c6b97ac48d59268c8ae4431cffb7",
+    "runner_owned_reduction": {
+      "attributes": [
+        "complexity_reduction_ir_typed_edge",
+        "complexity_reduction_ir_component_final_composition"
+      ],
+      "exact_type": "ComplexityReduction.Certificate.CertifiedReduction ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem ComplexityReduction.Routes.ThreeSATToClique.IngressAdapters.taggedThreeSATProblem",
+      "exact_type_sha256": "sha256:c3603feb1f212542193941a53c356f878cc432245aec71076ce682812a8fab73",
+      "original_declaration": "Generated.NPHardV2.Ccf15be0f69b13fd3.Authoring.authoredForwardReduction",
+      "published_declaration": "ComplexityReduction.Generated.Hardness.Ce9751f385584594e3ba9.Reduction.authoredForwardReduction"
+    },
+    "selected_hub": "ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem",
+    "source": "ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem",
+    "target": "ComplexityReduction.Routes.ThreeSATToClique.IngressAdapters.taggedThreeSATProblem",
+    "task_class": "typed_capability_dag",
+    "terminal_node_id": "semantic-iff"
+  },
+  "schema_version": "hardness_np_hard_publication_manifest_v1",
+  "source_hub": "ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem",
+  "source_provenance": {
+    "h_j": {
+      "case_evidence_sha256": "sha256:af724e4b5e9ee7ba252b84ee64f9978a6bd4953f256fe5761a62b62a69bcf2ee",
+      "checkpoint_sha256": "sha256:8bc96ae0528807b75155b4e66be19ee2094bc47b0f7424e9f71423606679d0f2",
+      "final_sha256": "sha256:1aa01946a13815ce3f666ce05850cb470adb7cf57418a3012bb195f365a4a6d2",
+      "formal_h_j_complete": true,
+      "h_j_report_id": "sha256:2390c8bf1d34c55d80631fecaef260cb7e3143f1f1b9d36f0048034b1e0ad13d",
+      "mode": "main_h_j_full_report",
+      "plan_id": "sha256:d3af88d2e5722745a980fe8568dd6418ae9e82e40aa11e0109fdeee61a3335a3",
+      "plan_sha256": "sha256:14d1f8ec08c40d8ffe02211f860d0af03edd7671f689107d93fc41c9942e4819",
+      "replay_sha256": "sha256:1aa01946a13815ce3f666ce05850cb470adb7cf57418a3012bb195f365a4a6d2",
+      "run_id": "sha256:a04a0b56393783664372f57ff8a365470d118dd4e9db4d1468cf1b370ecbd8f1",
+      "run_report_sha256": "sha256:9de08c36c3498a372173623fb4316b19aa99de0cafee0cad28d66dc121adb259",
+      "score_id": "sha256:2d6c27ec7a40e2aece2dda3267596c2bf757c79765e2e26996adae1dd39da0b4",
+      "score_report_sha256": "sha256:9a3a432140b3e1bb76c8406c7771a0a4f0114d1eb7c571318397163069f2659b",
+      "task_request_id": "sha256:31f587734717b29e9d624e3a1a026fc560bf42420b050057108fb3acd25b0c85",
+      "task_sha256": "sha256:ad039f9bae0cd30447314f0c2ce9e254b9858ba288b1515bdbd46ea21ec2c08f"
+    },
+    "review_report_sha256": "sha256:9cccb06557395a87ba144580296aaaeea10644ec5d152a90c0c6b64e60910193"
+  },
+  "state": "active"
+}

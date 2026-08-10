@@ -1,0 +1,561 @@
+{
+  "schema_version": "hardness_benchmark_registry_v1",
+  "benchmark_id": "np-hard-real-reduction-v1",
+  "description": "Unified benchmark entry: only real complexity-reduction problems. C0 capability er/au (v2) + exact reduction edges (v1) are scored by their isolated oracles; F0 frontier is unscored. C0-safety negatives and all fixture/protocol regressions live in Gate/GATE_REGISTRY.json.",
+  "sources": {
+    "capability": {
+      "manifest": "Benchmark/Hardness/CAPABILITY_MANIFEST_V2.json",
+      "suite_split_counts": {
+        "dev": 6,
+        "validation": 6,
+        "heldout": 12
+      },
+      "excluded_case_ids": {
+        "reason": "C0-safety negatives moved to the gate lane",
+        "dev": [
+          "cdev-sf-01-graph-ir-wellformed-internal",
+          "cdev-sf-02-modified-exact-cover-internal"
+        ],
+        "validation": [
+          "cval-sf-01-role-graph-ir-internal",
+          "cval-sf-02-graph-wellformed-policy"
+        ],
+        "heldout": [
+          "chld-sf-01-role-graph-wellformed",
+          "chld-sf-02-set-system-wellformed",
+          "chld-sf-03-graph-atoms-wellformed",
+          "chld-sf-04-two-cnf-tractable"
+        ]
+      }
+    },
+    "exact_edge": {
+      "manifest": "Benchmark/Hardness/EXACT_REDUCTION_EDGE_MANIFEST.json",
+      "suite_split_counts": {
+        "dev": 6,
+        "heldout": 12,
+        "validation": 6
+      }
+    },
+    "frontier": {
+      "manifest": "Benchmark/Hardness/CAPABILITY_MANIFEST_V2.json",
+      "split": "frontier",
+      "unscored": true
+    }
+  },
+  "capability_case_count": 24,
+  "exact_edge_case_count": 24,
+  "frontier_case_count": 2,
+  "scored_case_count": 48,
+  "oracles": {
+    "capability": {
+      "file": "Evaluation/np_hard_capability_oracle_v2.json",
+      "runner_access": "forbidden"
+    },
+    "exact_edge": {
+      "file": "Evaluation/exact_reduction_edge_oracle_v1.json",
+      "runner_access": "forbidden"
+    }
+  },
+  "cases": [
+    {
+      "case_id": "cdev-er-01-three-sat-seed",
+      "kind": "capability",
+      "split": "dev",
+      "tier": "C0",
+      "family": "sat-csp",
+      "module": "ComplexityReduction.Problems.Karp21.Satisfiability",
+      "problem": "ComplexityReduction.Problems.Karp21.Satisfiability.threeSATStructuredProblem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "cdev-er-02-clique-direct",
+      "kind": "capability",
+      "split": "dev",
+      "tier": "C0",
+      "family": "graph",
+      "module": "ComplexityReduction.Problems.Karp21.GraphAtoms",
+      "problem": "ComplexityReduction.Problems.Karp21.GraphAtoms.cliqueStructuredProblem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "cdev-er-03-vertex-cover-two-hop",
+      "kind": "capability",
+      "split": "dev",
+      "tier": "C0",
+      "family": "graph",
+      "module": "ComplexityReduction.Problems.Karp21.GraphAtoms",
+      "problem": "ComplexityReduction.Problems.Karp21.GraphAtoms.vertexCoverStructuredProblem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "cdev-er-04-directed-hamiltonian-three-hop",
+      "kind": "capability",
+      "split": "dev",
+      "tier": "C0",
+      "family": "graph",
+      "module": "ComplexityReduction.Presentation.DirectedHamiltonianCircuit",
+      "problem": "ComplexityReduction.Presentation.DirectedHamiltonianCircuit.structuredProblem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "cdev-au-01-tagged-three-sat-adapter",
+      "kind": "capability",
+      "split": "dev",
+      "tier": "C0",
+      "family": "sat-csp",
+      "module": "ComplexityReduction.Routes.ThreeSATToClique.IngressAdapters",
+      "problem": "ComplexityReduction.Routes.ThreeSATToClique.IngressAdapters.taggedThreeSATProblem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "cdev-au-02-role-graph-eon-adapter",
+      "kind": "capability",
+      "split": "dev",
+      "tier": "C0",
+      "family": "graph",
+      "module": "ComplexityReduction.Presentation.RoleGraph",
+      "problem": "ComplexityReduction.Presentation.RoleGraph.exactlyOneNeighborPresentedProblem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "cval-er-01-zero-one-ip-direct",
+      "kind": "capability",
+      "split": "validation",
+      "tier": "C0",
+      "family": "numeric",
+      "module": "ComplexityReduction.Presentation.ZeroOneIP",
+      "problem": "ComplexityReduction.Presentation.ZeroOneIP.structuredProblem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "cval-er-02-exact-cover-two-hop",
+      "kind": "capability",
+      "split": "validation",
+      "tier": "C0",
+      "family": "set-system",
+      "module": "ComplexityReduction.Presentation.SetSystem",
+      "problem": "ComplexityReduction.Presentation.SetSystem.exactCoverStructuredProblem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "cval-er-03-knapsack-binary-three-hop",
+      "kind": "capability",
+      "split": "validation",
+      "tier": "C0",
+      "family": "numeric",
+      "module": "ComplexityReduction.Presentation.KnapsackBinary",
+      "problem": "ComplexityReduction.Presentation.KnapsackBinary.structuredProblem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "cval-er-04-job-sequencing-binary-four-hop",
+      "kind": "capability",
+      "split": "validation",
+      "tier": "C0",
+      "family": "numeric",
+      "module": "ComplexityReduction.Presentation.JobSequencingBinary",
+      "problem": "ComplexityReduction.Presentation.JobSequencingBinary.binaryStructuredProblem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "cval-er-05-zero-one-ip-binary",
+      "kind": "capability",
+      "split": "validation",
+      "tier": "C0",
+      "family": "numeric",
+      "module": "ComplexityReduction.Presentation.ZeroOneIPBinary",
+      "problem": "ComplexityReduction.Presentation.ZeroOneIPBinary.binaryStructuredProblem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "cval-au-03-seeing-set",
+      "kind": "capability",
+      "split": "validation",
+      "tier": "C0",
+      "family": "set-system",
+      "module": "ComplexityReduction.Presentation.SeeingSet",
+      "problem": "ComplexityReduction.Presentation.SeeingSet.presentedProblem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "chld-er-01-chromatic-number",
+      "kind": "capability",
+      "split": "heldout",
+      "tier": "C0",
+      "family": "other",
+      "module": "ComplexityReduction.Presentation.ChromaticNumber",
+      "problem": "ComplexityReduction.Presentation.ChromaticNumber.structuredProblem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "chld-er-02-node-deletion-bipartite",
+      "kind": "capability",
+      "split": "heldout",
+      "tier": "C0",
+      "family": "other",
+      "module": "ComplexityReduction.Presentation.NodeDeletionBipartite",
+      "problem": "ComplexityReduction.Presentation.NodeDeletionBipartite.presentedProblem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "chld-er-03-partition-binary-long",
+      "kind": "capability",
+      "split": "heldout",
+      "tier": "C0",
+      "family": "numeric",
+      "module": "ComplexityReduction.Presentation.PartitionBinary",
+      "problem": "ComplexityReduction.Presentation.PartitionBinary.structuredProblem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "chld-er-04-two-disjoint-paths-max-route",
+      "kind": "capability",
+      "split": "heldout",
+      "tier": "C0",
+      "family": "graph",
+      "module": "ComplexityReduction.Presentation.TwoDisjointBoundedPaths",
+      "problem": "ComplexityReduction.Presentation.TwoDisjointBoundedPaths.presentedProblem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "chld-au-01-feedback-node-set",
+      "kind": "capability",
+      "split": "heldout",
+      "tier": "C0",
+      "family": "graph",
+      "module": "ComplexityReduction.Presentation.FeedbackNodeSet",
+      "problem": "ComplexityReduction.Presentation.FeedbackNodeSet.structuredProblem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "chld-au-03-max-cut-structured",
+      "kind": "capability",
+      "split": "heldout",
+      "tier": "C0",
+      "family": "graph",
+      "module": "ComplexityReduction.Presentation.MaxCut",
+      "problem": "ComplexityReduction.Presentation.MaxCut.structuredProblem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "chld-au-04-max-cut-binary",
+      "kind": "capability",
+      "split": "heldout",
+      "tier": "C0",
+      "family": "graph",
+      "module": "ComplexityReduction.Presentation.MaxCutBinary",
+      "problem": "ComplexityReduction.Presentation.MaxCutBinary.binaryStructuredProblem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "chld-au-06-hitting-set",
+      "kind": "capability",
+      "split": "heldout",
+      "tier": "C0",
+      "family": "set-system",
+      "module": "ComplexityReduction.Presentation.SetSystem",
+      "problem": "ComplexityReduction.Presentation.SetSystem.hittingSetStructuredProblem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "chld-au-07-set-covering",
+      "kind": "capability",
+      "split": "heldout",
+      "tier": "C0",
+      "family": "set-system",
+      "module": "ComplexityReduction.Presentation.SetSystem",
+      "problem": "ComplexityReduction.Presentation.SetSystem.setCoveringStructuredProblem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "chld-au-08-set-packing",
+      "kind": "capability",
+      "split": "heldout",
+      "tier": "C0",
+      "family": "set-system",
+      "module": "ComplexityReduction.Presentation.SetSystem",
+      "problem": "ComplexityReduction.Presentation.SetSystem.setPackingStructuredProblem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "chld-au-09-feedback-arc-set",
+      "kind": "capability",
+      "split": "heldout",
+      "tier": "C0",
+      "family": "graph",
+      "module": "ComplexityReduction.Presentation.FeedbackArcSet",
+      "problem": "ComplexityReduction.Presentation.FeedbackArcSet.structuredProblem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "chld-au-10-three-dimensional-matching",
+      "kind": "capability",
+      "split": "heldout",
+      "tier": "C0",
+      "family": "other",
+      "module": "ComplexityReduction.Presentation.ThreeDimensionalMatching",
+      "problem": "ComplexityReduction.Presentation.ThreeDimensionalMatching.structuredProblem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "frontier-01-knapsack-unary-boundary",
+      "kind": "frontier",
+      "split": "frontier",
+      "tier": "F0",
+      "family": "numeric",
+      "module": "ComplexityReduction.Presentation.Knapsack",
+      "problem": "ComplexityReduction.Presentation.Knapsack.structuredProblem",
+      "budget_profile": "frontier-default"
+    },
+    {
+      "case_id": "frontier-02-partition-unary-boundary",
+      "kind": "frontier",
+      "split": "frontier",
+      "tier": "F0",
+      "family": "numeric",
+      "module": "ComplexityReduction.Presentation.Partition",
+      "problem": "ComplexityReduction.Presentation.Partition.structuredProblem",
+      "budget_profile": "frontier-default"
+    },
+    {
+      "case_id": "edge-dev-01-three-sat-to-clique",
+      "kind": "exact_edge",
+      "split": "dev",
+      "tier": "C0",
+      "family": null,
+      "module": "Benchmark.Hardness.Inputs.ExactReductionEdgeV1.DevEndpoints",
+      "problem": null,
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "edge-dev-02-three-sat-to-zero-one-ip",
+      "kind": "exact_edge",
+      "split": "dev",
+      "tier": "C0",
+      "family": null,
+      "module": "Benchmark.Hardness.Inputs.ExactReductionEdgeV1.DevEndpoints",
+      "problem": null,
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "edge-dev-03-three-sat-to-chromatic",
+      "kind": "exact_edge",
+      "split": "dev",
+      "tier": "C0",
+      "family": null,
+      "module": "Benchmark.Hardness.Inputs.ExactReductionEdgeV1.DevEndpoints",
+      "problem": null,
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "edge-dev-04-chromatic-to-clique-cover",
+      "kind": "exact_edge",
+      "split": "dev",
+      "tier": "C0",
+      "family": null,
+      "module": "Benchmark.Hardness.Inputs.ExactReductionEdgeV1.DevEndpoints",
+      "problem": null,
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "edge-dev-05-set-cover-to-hitting-set",
+      "kind": "exact_edge",
+      "split": "dev",
+      "tier": "C0",
+      "family": null,
+      "module": "Benchmark.Hardness.Inputs.ExactReductionEdgeV1.DevEndpoints",
+      "problem": null,
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "edge-dev-06-undirected-to-directed-hc",
+      "kind": "exact_edge",
+      "split": "dev",
+      "tier": "C0",
+      "family": null,
+      "module": "Benchmark.Hardness.Inputs.ExactReductionEdgeV1.DevEndpoints",
+      "problem": null,
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "edge-held-01-vertex-cover-to-dominating-set",
+      "kind": "exact_edge",
+      "split": "heldout",
+      "tier": "C0",
+      "family": null,
+      "module": "Benchmark.Hardness.Inputs.ExactReductionEdgeV1.HeldoutEndpoints",
+      "problem": null,
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "edge-held-02-clique-to-dense-subgraph",
+      "kind": "exact_edge",
+      "split": "heldout",
+      "tier": "C0",
+      "family": null,
+      "module": "Benchmark.Hardness.Inputs.ExactReductionEdgeV1.HeldoutEndpoints",
+      "problem": null,
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "edge-held-03-independent-set-to-vertex-cover",
+      "kind": "exact_edge",
+      "split": "heldout",
+      "tier": "C0",
+      "family": null,
+      "module": "Benchmark.Hardness.Inputs.ExactReductionEdgeV1.HeldoutEndpoints",
+      "problem": null,
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "edge-held-04-independent-set-to-set-packing",
+      "kind": "exact_edge",
+      "split": "heldout",
+      "tier": "C0",
+      "family": null,
+      "module": "Benchmark.Hardness.Inputs.ExactReductionEdgeV1.HeldoutEndpoints",
+      "problem": null,
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "edge-held-05-nae-three-sat-to-set-splitting",
+      "kind": "exact_edge",
+      "split": "heldout",
+      "tier": "C0",
+      "family": null,
+      "module": "Benchmark.Hardness.Inputs.ExactReductionEdgeV1.HeldoutEndpoints",
+      "problem": null,
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "edge-held-06-three-sat-to-one-in-three-sat",
+      "kind": "exact_edge",
+      "split": "heldout",
+      "tier": "C0",
+      "family": null,
+      "module": "Benchmark.Hardness.Inputs.ExactReductionEdgeV1.HeldoutEndpoints",
+      "problem": null,
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "edge-held-07-one-in-three-to-exact-cover",
+      "kind": "exact_edge",
+      "split": "heldout",
+      "tier": "C0",
+      "family": null,
+      "module": "Benchmark.Hardness.Inputs.ExactReductionEdgeV1.HeldoutEndpoints",
+      "problem": null,
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "edge-held-08-nae-three-sat-to-chromatic",
+      "kind": "exact_edge",
+      "split": "heldout",
+      "tier": "C0",
+      "family": null,
+      "module": "Benchmark.Hardness.Inputs.ExactReductionEdgeV1.HeldoutEndpoints",
+      "problem": null,
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "edge-held-09-exact-cover-three-to-four",
+      "kind": "exact_edge",
+      "split": "heldout",
+      "tier": "C0",
+      "family": null,
+      "module": "Benchmark.Hardness.Inputs.ExactReductionEdgeV1.HeldoutEndpoints",
+      "problem": null,
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "edge-held-10-subset-sum-to-partition",
+      "kind": "exact_edge",
+      "split": "heldout",
+      "tier": "C0",
+      "family": null,
+      "module": "Benchmark.Hardness.Inputs.ExactReductionEdgeV1.HeldoutEndpoints",
+      "problem": null,
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "edge-held-11-hamiltonian-cycle-to-tsp",
+      "kind": "exact_edge",
+      "split": "heldout",
+      "tier": "C0",
+      "family": null,
+      "module": "Benchmark.Hardness.Inputs.ExactReductionEdgeV1.HeldoutEndpoints",
+      "problem": null,
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "edge-held-12-hamiltonian-cycle-to-path",
+      "kind": "exact_edge",
+      "split": "heldout",
+      "tier": "C0",
+      "family": null,
+      "module": "Benchmark.Hardness.Inputs.ExactReductionEdgeV1.HeldoutEndpoints",
+      "problem": null,
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "edge-val-01-vertex-cover-to-set-cover",
+      "kind": "exact_edge",
+      "split": "validation",
+      "tier": "C0",
+      "family": null,
+      "module": "Benchmark.Hardness.Inputs.ExactReductionEdgeV1.ValidationEndpoints",
+      "problem": null,
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "edge-val-02-clique-to-half-clique",
+      "kind": "exact_edge",
+      "split": "validation",
+      "tier": "C0",
+      "family": null,
+      "module": "Benchmark.Hardness.Inputs.ExactReductionEdgeV1.ValidationEndpoints",
+      "problem": null,
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "edge-val-03-three-sat-to-double-sat",
+      "kind": "exact_edge",
+      "split": "validation",
+      "tier": "C0",
+      "family": null,
+      "module": "Benchmark.Hardness.Inputs.ExactReductionEdgeV1.ValidationEndpoints",
+      "problem": null,
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "edge-val-04-three-sat-to-nae-three-sat",
+      "kind": "exact_edge",
+      "split": "validation",
+      "tier": "C0",
+      "family": null,
+      "module": "Benchmark.Hardness.Inputs.ExactReductionEdgeV1.ValidationEndpoints",
+      "problem": null,
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "edge-val-05-subset-sum-to-knapsack",
+      "kind": "exact_edge",
+      "split": "validation",
+      "tier": "C0",
+      "family": null,
+      "module": "Benchmark.Hardness.Inputs.ExactReductionEdgeV1.ValidationEndpoints",
+      "problem": null,
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "edge-val-06-clique-to-independent-set",
+      "kind": "exact_edge",
+      "split": "validation",
+      "tier": "C0",
+      "family": null,
+      "module": "Benchmark.Hardness.Inputs.ExactReductionEdgeV1.ValidationEndpoints",
+      "problem": null,
+      "budget_profile": "formal-default"
+    }
+  ]
+}

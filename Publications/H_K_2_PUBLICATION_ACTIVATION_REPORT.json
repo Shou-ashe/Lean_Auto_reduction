@@ -1,0 +1,144 @@
+{
+  "audits": {
+    "content_addressed_append_only": true,
+    "production_resolver_discovery": true,
+    "reviewed_candidate_ids_exact": true,
+    "shadow_activation": {
+      "asset_count": 4,
+      "asset_modules": [
+        "ComplexityReduction.Generated.Hardness.Assets.C93329a3453cbbc82505aee15.Reduction",
+        "ComplexityReduction.Generated.Hardness.Assets.C3c85bb64a024770d87e194ca.Reduction",
+        "ComplexityReduction.Generated.Hardness.Assets.C1a9f5872e7801d03bf297a7d.Reduction",
+        "ComplexityReduction.Generated.Hardness.Assets.Cb8bdcb980c2d25956c5b503c.Reduction"
+      ],
+      "build": {
+        "command": [
+          "lake",
+          "build",
+          "ComplexityReduction.Registry.HardnessAggregate",
+          "ComplexityReduction.Agent.Hardness.ProblemCatalog",
+          "ComplexityReduction.Generated.Hardness.Assets.C93329a3453cbbc82505aee15.Reduction",
+          "ComplexityReduction.Generated.Hardness.Assets.C3c85bb64a024770d87e194ca.Reduction",
+          "ComplexityReduction.Generated.Hardness.Assets.C1a9f5872e7801d03bf297a7d.Reduction",
+          "ComplexityReduction.Generated.Hardness.Assets.Cb8bdcb980c2d25956c5b503c.Reduction"
+        ],
+        "exit_code": 0,
+        "stderr_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout_sha256": "sha256:67cf4258abf896c7840646b5c647575a61f2ccda09133e98df770a9d9def9cca",
+        "timed_out": false
+      },
+      "clean_workspace": true,
+      "declarations": [
+        "ComplexityReduction.Generated.Hardness.Ce9751f385584594e3ba9.Reduction.authoredForwardReduction",
+        "ComplexityReduction.Generated.Hardness.C878ab5c0f5232e514499.Reduction.authoredForwardReduction",
+        "ComplexityReduction.Generated.Hardness.C15c953ce5e20344bf87b.Reduction.authoredForwardReduction",
+        "ComplexityReduction.Generated.Hardness.C4ddadc69d69dcce12634.Reduction.authoredForwardReduction"
+      ],
+      "old_project_olean_absent_before_build": true,
+      "passed": true,
+      "registry_discovery": {
+        "command": [
+          "lake",
+          "env",
+          "lean",
+          "PublicationActivationAudit.lean"
+        ],
+        "exit_code": 0,
+        "passed": true,
+        "source_sha256": "sha256:5852e46ca7d2b74ec5488ff70327f2f99f8a666e9ef1203ee93586a89d2c957b",
+        "stderr_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "timed_out": false
+      },
+      "schema_version": "hardness_np_hard_publication_audit_v1"
+    }
+  },
+  "explicit_candidate_ids": [
+    "sha256:93329a3453cbbc82505aee1562ea107954c412e5350e419f6f2f2bef76cc8016",
+    "sha256:3c85bb64a024770d87e194ca08615423bcdf3de59a7cd35e086ffd1007c53567",
+    "sha256:1a9f5872e7801d03bf297a7d984030b4c6956089f47683e447005dc971ddf3e5",
+    "sha256:b8bdcb980c2d25956c5b503c4255d06c7ea28864200b816bac0e2737a09d00a2"
+  ],
+  "generated_aggregate": {
+    "file": "Lean/Reference/ComplexityReduction/Generated/Hardness/Aggregate.lean",
+    "sha256": "sha256:eb8406e48db48d2253775cb86523a3881f9f3c317d8ef8021229958ca9ba4ddd"
+  },
+  "generated_at": "2026-08-09T23:01:00.035760+00:00",
+  "passed": true,
+  "production_catalog_rebuild": {
+    "command": [
+      "/Users/chenyuan/Project/Auto_Reduction_Agent/.venv/bin/python3",
+      "/Users/chenyuan/Project/Auto_Reduction_Agent/scripts/build_problem_catalog_snapshot.py",
+      "--output",
+      "/Users/chenyuan/Project/Auto_Reduction_Agent/.reduction-agent/problem-catalog.json",
+      "--connection-output",
+      "/Users/chenyuan/Project/Auto_Reduction_Agent/.reduction-agent/connection-catalog.json",
+      "--target-output",
+      "/Users/chenyuan/Project/Auto_Reduction_Agent/.reduction-agent/hardness-target-catalog.json",
+      "--lean-timeout",
+      "1200"
+    ],
+    "exit_code": 0,
+    "stderr_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "sha256:b6bd7052c4fc9b5baaff58ba38946d7cbb888533e6f15b69378e02ed09ae49ac",
+    "timed_out": false
+  },
+  "publication_activation_performed": true,
+  "publication_catalog": {
+    "active_publication_count": 4,
+    "catalog_id": "sha256:c7079b94e30d135b7fd74dca6bcc30b9e801da058228e15fccc0b46d47695acc",
+    "file": "Publications/NP_HARD_PUBLICATION_CATALOG.json",
+    "sha256": "sha256:abba490106d66934b3d7d2ff4d61861844123e3ce41fc1dc91f4523558057822"
+  },
+  "publications": [
+    {
+      "asset_declaration": "ComplexityReduction.Generated.Hardness.Ce9751f385584594e3ba9.Reduction.authoredForwardReduction",
+      "asset_module": "ComplexityReduction.Generated.Hardness.Assets.C93329a3453cbbc82505aee15.Reduction",
+      "candidate_id": "sha256:93329a3453cbbc82505aee1562ea107954c412e5350e419f6f2f2bef76cc8016",
+      "canonical_endpoint": "ComplexityReduction.Routes.ThreeSATToClique.IngressAdapters.taggedThreeSATProblem",
+      "canonical_identity_id": "sha256:97994ca373693d9c1ca40602e8c4240801b5263185205c9a79aa83620003a102",
+      "case_id": "cdev-au-01-tagged-three-sat-adapter",
+      "manifest_file": "Publications/4163a339668a2776c79d449ee31ea9d370f741edb0b120ec2a30d7ae3069e017.json",
+      "publication_id": "sha256:4163a339668a2776c79d449ee31ea9d370f741edb0b120ec2a30d7ae3069e017"
+    },
+    {
+      "asset_declaration": "ComplexityReduction.Generated.Hardness.C878ab5c0f5232e514499.Reduction.authoredForwardReduction",
+      "asset_module": "ComplexityReduction.Generated.Hardness.Assets.C3c85bb64a024770d87e194ca.Reduction",
+      "candidate_id": "sha256:3c85bb64a024770d87e194ca08615423bcdf3de59a7cd35e086ffd1007c53567",
+      "canonical_endpoint": "ComplexityReduction.Presentation.SetSystem.setCoveringStructuredProblem",
+      "canonical_identity_id": "sha256:fa2dbd61a9bf19b4800d3813cfc16ddbf08e75d8e4e2e8e5946b1dd4366deac7",
+      "case_id": "chld-au-07-set-covering",
+      "manifest_file": "Publications/948a3027270f369e0c56b52c38649c608d2ba3f811c3e8f5ac481cc9e548a99a.json",
+      "publication_id": "sha256:948a3027270f369e0c56b52c38649c608d2ba3f811c3e8f5ac481cc9e548a99a"
+    },
+    {
+      "asset_declaration": "ComplexityReduction.Generated.Hardness.C15c953ce5e20344bf87b.Reduction.authoredForwardReduction",
+      "asset_module": "ComplexityReduction.Generated.Hardness.Assets.C1a9f5872e7801d03bf297a7d.Reduction",
+      "candidate_id": "sha256:1a9f5872e7801d03bf297a7d984030b4c6956089f47683e447005dc971ddf3e5",
+      "canonical_endpoint": "ComplexityReduction.Presentation.FeedbackArcSet.structuredProblem",
+      "canonical_identity_id": "sha256:7d29f5088357095226b22fd8781baf1bc9bd0c10750085e5b1bc98f2ee234564",
+      "case_id": "chld-au-09-feedback-arc-set",
+      "manifest_file": "Publications/a64be4b105fd3d5f750bf0988587b2ecb1a630c21f4dd34f10739f0f87ea4e00.json",
+      "publication_id": "sha256:a64be4b105fd3d5f750bf0988587b2ecb1a630c21f4dd34f10739f0f87ea4e00"
+    },
+    {
+      "asset_declaration": "ComplexityReduction.Generated.Hardness.C4ddadc69d69dcce12634.Reduction.authoredForwardReduction",
+      "asset_module": "ComplexityReduction.Generated.Hardness.Assets.Cb8bdcb980c2d25956c5b503c.Reduction",
+      "candidate_id": "sha256:b8bdcb980c2d25956c5b503c4255d06c7ea28864200b816bac0e2737a09d00a2",
+      "canonical_endpoint": "ComplexityReduction.Presentation.ThreeDimensionalMatching.structuredProblem",
+      "canonical_identity_id": "sha256:872cc330dbe4b94612d28b3f382815711bd02a583c107620174d89a9dc70808f",
+      "case_id": "chld-au-10-three-dimensional-matching",
+      "manifest_file": "Publications/0432f71e58caf40d18ef2723c64ad9db6812b136065b3cbf605e0bb7faf9cf0a.json",
+      "publication_id": "sha256:0432f71e58caf40d18ef2723c64ad9db6812b136065b3cbf605e0bb7faf9cf0a"
+    }
+  ],
+  "published_count": 4,
+  "report_id": "sha256:92e4a0665a2bca7650c95ca1763b94e22f5ee63bf430aee917c90574306b4bf4",
+  "review": {
+    "file": "tmp/h-k-1-publication-candidates-v1/review-report.json",
+    "review_id": "sha256:bca500d838c3b28d19a7a1b66320b13278ed8bf518727d6a17845326dc152cd4",
+    "sha256": "sha256:9cccb06557395a87ba144580296aaaeea10644ec5d152a90c0c6b64e60910193"
+  },
+  "schema_version": "hardness_np_hard_publication_activation_report_v1",
+  "stage": "h-k.2-publication-activation"
+}

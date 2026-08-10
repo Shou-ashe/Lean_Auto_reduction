@@ -1,0 +1,726 @@
+{
+  "active_plan": {
+    "file": "/Users/chenyuan/Project/Auto_Reduction_Agent/ACTIVE_AGENT_IMPROVEMENT_PLAN.md",
+    "h_i_contract_present": true,
+    "sha256": "86cf64124f88941c21d519b3e877ce7ac310d3c28c0d428eb7ac30728f5f446e"
+  },
+  "capability_baseline": {
+    "all_concurrency_drained": true,
+    "all_r0_mutations_passed": true,
+    "case_count": 34,
+    "model_calls": 0,
+    "outcome_matrix": {
+      "C0-authoring": {
+        "BLOCKED_MISSING_PREREQUISITE": 12
+      },
+      "C0-existing": {
+        "VERIFIED": 12
+      },
+      "C0-safety": {
+        "BLOCKED_NOT_TARGET": 8
+      },
+      "F0-frontier": {
+        "BLOCKED_MISSING_PREREQUISITE": 2
+      }
+    },
+    "regression_scores_used": false,
+    "run_valid": true,
+    "score_valid": true,
+    "scoring_source": "independent C0/F0 scorer only",
+    "security_guardrails": {
+      "nonstandard_axiom_acceptance_count": 0,
+      "oracle_leakage_count": 0,
+      "wrong_direction_acceptance_count": 0,
+      "wrong_endpoint_acceptance_count": 0
+    },
+    "split_reports": [
+      {
+        "run": {
+          "case_count": 8,
+          "file": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/h-i-2-capability-dev-real-v2/report.json",
+          "parallel_execution": {
+            "configured_jobs": 4,
+            "final_active_case_tasks": 0,
+            "maximum_concurrent_case_tasks": 4,
+            "observed_parallelism": true,
+            "submitted_case_tasks": 8,
+            "wall_duration_seconds": 131.47167
+          },
+          "public_outcomes": {
+            "blocked_missing_prerequisite_count": 2,
+            "blocked_not_target_count": 2,
+            "case_count": 8,
+            "failed_lean_count": 0,
+            "failed_model_count": 0,
+            "verified_count": 4
+          },
+          "run_id": "sha256:641885fd76a284f6f17a1d1315637618f895a1a57b9c8a728a77bd583c75b03a",
+          "run_valid": true,
+          "sha256": "sha256:40d0de8c7b335597583aa9c24252e3dd134165ac755482af119822571cfe8fe4"
+        },
+        "score": {
+          "boundary": {
+            "failure_code_distribution": {
+              "authoring_plan_missing_capability": 1,
+              "wrong_direction_only": 1
+            },
+            "failure_layer_distribution": {
+              "blocker": 2
+            },
+            "first_significant_failure_level": "L3",
+            "highest_stable_level": "L2",
+            "level_success_rates": {
+              "L1": 1.0,
+              "L2": 1.0,
+              "L3": 0.0,
+              "L4": 0.0
+            },
+            "method": {
+              "level_ranges_use_their_highest_axis": true,
+              "significant_failure_threshold": 0.5,
+              "stable_level_threshold": 0.8
+            }
+          },
+          "file": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/h-i-2-capability-dev-real-v2/score.json",
+          "metrics": {
+            "cost_case_count": 6,
+            "cost_scope": "scored_c0_positive",
+            "existing_route_family_macro": 1.0,
+            "family_macro_verified_at_budget": 0.625,
+            "first_authoring_family_macro": 0.0,
+            "level_macro_verified_at_budget": 0.5,
+            "model_calls": 0,
+            "model_calls_per_verified_positive": 0.0,
+            "positive_case_count": 6,
+            "safety_correct_count": 2,
+            "safety_correct_rate": 1.0,
+            "scored_case_count": 8,
+            "token_usage": {},
+            "verified_at_budget_count": 4,
+            "verified_at_budget_rate": 0.666667,
+            "verified_at_first_attempt_count": 4,
+            "verified_at_first_attempt_rate": 0.666667,
+            "wall_duration_seconds": 433.358879
+          },
+          "safety": {
+            "correct_blocker_count": 2,
+            "erroneous_non_target_count": 0,
+            "nonstandard_axiom_acceptance_count": 0,
+            "oracle_leakage_count": 0,
+            "wrong_direction_acceptance_count": 0,
+            "wrong_endpoint_acceptance_count": 0
+          },
+          "score_id": "sha256:3f0494a642c98c87d753cae2c9da643b00e569c37db622a097878a488bcd1c53",
+          "score_valid": true,
+          "sha256": "sha256:a187e32187194ee47b680ab67ec32b92dc69444ffc1f9dd68eb9e4a1e03900c4"
+        },
+        "split": "dev"
+      },
+      {
+        "run": {
+          "case_count": 8,
+          "file": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/h-i-5-capability-validation-real-v1/report.json",
+          "parallel_execution": {
+            "configured_jobs": 4,
+            "final_active_case_tasks": 0,
+            "maximum_concurrent_case_tasks": 4,
+            "observed_parallelism": true,
+            "submitted_case_tasks": 8,
+            "wall_duration_seconds": 132.495975
+          },
+          "public_outcomes": {
+            "blocked_missing_prerequisite_count": 2,
+            "blocked_not_target_count": 2,
+            "case_count": 8,
+            "failed_lean_count": 0,
+            "failed_model_count": 0,
+            "verified_count": 4
+          },
+          "run_id": "sha256:c395c0453581e7628dc5093b85c3ade424117ea6e60d79ffd6d5d40c900199db",
+          "run_valid": true,
+          "sha256": "sha256:279cdff159c9715256e98441ae2f15960166405c5b2b405f09eb28981b5b18a2"
+        },
+        "score": {
+          "boundary": {
+            "failure_code_distribution": {
+              "authoring_plan_missing_capability": 2
+            },
+            "failure_layer_distribution": {
+              "blocker": 2
+            },
+            "first_significant_failure_level": "L4",
+            "highest_stable_level": "L2",
+            "level_success_rates": {
+              "L1": 1.0,
+              "L2": 1.0,
+              "L4": 0.0
+            },
+            "method": {
+              "level_ranges_use_their_highest_axis": true,
+              "significant_failure_threshold": 0.5,
+              "stable_level_threshold": 0.8
+            }
+          },
+          "file": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/h-i-5-capability-validation-real-v1/score.json",
+          "metrics": {
+            "cost_case_count": 6,
+            "cost_scope": "scored_c0_positive",
+            "existing_route_family_macro": 1.0,
+            "family_macro_verified_at_budget": 0.8,
+            "first_authoring_family_macro": 0.0,
+            "level_macro_verified_at_budget": 0.666667,
+            "model_calls": 0,
+            "model_calls_per_verified_positive": 0.0,
+            "positive_case_count": 6,
+            "safety_correct_count": 2,
+            "safety_correct_rate": 1.0,
+            "scored_case_count": 8,
+            "token_usage": {},
+            "verified_at_budget_count": 4,
+            "verified_at_budget_rate": 0.666667,
+            "verified_at_first_attempt_count": 4,
+            "verified_at_first_attempt_rate": 0.666667,
+            "wall_duration_seconds": 426.911034
+          },
+          "safety": {
+            "correct_blocker_count": 2,
+            "erroneous_non_target_count": 0,
+            "nonstandard_axiom_acceptance_count": 0,
+            "oracle_leakage_count": 0,
+            "wrong_direction_acceptance_count": 0,
+            "wrong_endpoint_acceptance_count": 0
+          },
+          "score_id": "sha256:6e6b2593554e82743e260d0b7bb827b55a44307a7d0adb505dda1bcf3b340e9a",
+          "score_valid": true,
+          "sha256": "sha256:03a077931ebd5d455d1f52475b594683c177b9ad6959b37d296b28273d925572"
+        },
+        "split": "validation"
+      },
+      {
+        "run": {
+          "case_count": 16,
+          "file": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/h-i-5-capability-heldout-real-v1/report.json",
+          "parallel_execution": {
+            "configured_jobs": 4,
+            "final_active_case_tasks": 0,
+            "maximum_concurrent_case_tasks": 4,
+            "observed_parallelism": true,
+            "submitted_case_tasks": 16,
+            "wall_duration_seconds": 211.166713
+          },
+          "public_outcomes": {
+            "blocked_missing_prerequisite_count": 8,
+            "blocked_not_target_count": 4,
+            "case_count": 16,
+            "failed_lean_count": 0,
+            "failed_model_count": 0,
+            "verified_count": 4
+          },
+          "run_id": "sha256:2d1892b59ba8f96a3e6f3428c25b9ea74c422e6dd527b8a88519bda23d5e0cf9",
+          "run_valid": true,
+          "sha256": "sha256:57eab27f02d1047824c0c41686267f151fa0f0071105695bd251f18d0ceef990"
+        },
+        "score": {
+          "boundary": {
+            "failure_code_distribution": {
+              "authoring_plan_missing_capability": 7,
+              "wrong_direction_only": 1
+            },
+            "failure_layer_distribution": {
+              "blocker": 8
+            },
+            "first_significant_failure_level": "L4",
+            "highest_stable_level": "L2",
+            "level_success_rates": {
+              "L1": 1.0,
+              "L2": 1.0,
+              "L4": 0.0,
+              "L5": 0.0
+            },
+            "method": {
+              "level_ranges_use_their_highest_axis": true,
+              "significant_failure_threshold": 0.5,
+              "stable_level_threshold": 0.8
+            }
+          },
+          "file": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/h-i-5-capability-heldout-real-v1/score.json",
+          "metrics": {
+            "cost_case_count": 12,
+            "cost_scope": "scored_c0_positive",
+            "existing_route_family_macro": 1.0,
+            "family_macro_verified_at_budget": 0.4375,
+            "first_authoring_family_macro": 0.0,
+            "level_macro_verified_at_budget": 0.4,
+            "model_calls": 0,
+            "model_calls_per_verified_positive": 0.0,
+            "positive_case_count": 12,
+            "safety_correct_count": 4,
+            "safety_correct_rate": 1.0,
+            "scored_case_count": 16,
+            "token_usage": {},
+            "verified_at_budget_count": 4,
+            "verified_at_budget_rate": 0.333333,
+            "verified_at_first_attempt_count": 4,
+            "verified_at_first_attempt_rate": 0.333333,
+            "wall_duration_seconds": 675.390616
+          },
+          "safety": {
+            "correct_blocker_count": 4,
+            "erroneous_non_target_count": 0,
+            "nonstandard_axiom_acceptance_count": 0,
+            "oracle_leakage_count": 0,
+            "wrong_direction_acceptance_count": 0,
+            "wrong_endpoint_acceptance_count": 0
+          },
+          "score_id": "sha256:230d80c76434d323d7555166e8206f0c452b998ee178743f25cae1edf27e5caa",
+          "score_valid": true,
+          "sha256": "sha256:9d6f00b6f2cb62a3487030b1f3468ee392263341a10ebddfd3c8ce532002a1e6"
+        },
+        "split": "heldout"
+      },
+      {
+        "run": {
+          "case_count": 2,
+          "file": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/h-i-3-capability-frontier-real-v1/report.json",
+          "parallel_execution": {
+            "configured_jobs": 4,
+            "final_active_case_tasks": 0,
+            "maximum_concurrent_case_tasks": 2,
+            "observed_parallelism": true,
+            "submitted_case_tasks": 2,
+            "wall_duration_seconds": 46.945516
+          },
+          "public_outcomes": {
+            "blocked_missing_prerequisite_count": 2,
+            "blocked_not_target_count": 0,
+            "case_count": 2,
+            "failed_lean_count": 0,
+            "failed_model_count": 0,
+            "verified_count": 0
+          },
+          "run_id": "sha256:a60e865873a5d4039a9136634afe333dfcccb97175de0508275823e88a910de1",
+          "run_valid": true,
+          "sha256": "sha256:821bcac9ad289801f9984278b594e5e750afb71684c44e5d47e8457e5ebd47ae"
+        },
+        "score": {
+          "boundary": {
+            "failure_code_distribution": {
+              "authoring_plan_missing_capability": 2
+            },
+            "failure_layer_distribution": {
+              "blocker": 2
+            },
+            "first_significant_failure_level": null,
+            "highest_stable_level": null,
+            "level_success_rates": {},
+            "method": {
+              "level_ranges_use_their_highest_axis": true,
+              "significant_failure_threshold": 0.5,
+              "stable_level_threshold": 0.8
+            }
+          },
+          "file": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/h-i-3-capability-frontier-real-v1/score.json",
+          "metrics": {
+            "cost_case_count": 0,
+            "cost_scope": "scored_c0_positive",
+            "existing_route_family_macro": null,
+            "family_macro_verified_at_budget": null,
+            "first_authoring_family_macro": null,
+            "level_macro_verified_at_budget": null,
+            "model_calls": 0,
+            "model_calls_per_verified_positive": null,
+            "positive_case_count": 0,
+            "safety_correct_count": 0,
+            "safety_correct_rate": null,
+            "scored_case_count": 0,
+            "token_usage": {},
+            "verified_at_budget_count": 0,
+            "verified_at_budget_rate": null,
+            "verified_at_first_attempt_count": 0,
+            "verified_at_first_attempt_rate": null,
+            "wall_duration_seconds": 0
+          },
+          "safety": {
+            "correct_blocker_count": 0,
+            "erroneous_non_target_count": 0,
+            "nonstandard_axiom_acceptance_count": 0,
+            "oracle_leakage_count": 0,
+            "wrong_direction_acceptance_count": 0,
+            "wrong_endpoint_acceptance_count": 0
+          },
+          "score_id": "sha256:aea5675efb34d5c26a6230b3efd491763d9958f8e3b62e18af1a01cac5d9e274",
+          "score_valid": true,
+          "sha256": "sha256:42e9f4b416c10d56879a90f203b24f62c911196dc7a7baadf03eeaa047619c61"
+        },
+        "split": "frontier"
+      }
+    ],
+    "token_usage": {}
+  },
+  "capability_contract": {
+    "formal_model_profile": {
+      "base_url": "https://api.deepseek.com",
+      "max_retries": 0,
+      "max_tokens": 16000,
+      "model": "deepseek-v4-flash",
+      "provider": "DeepSeek",
+      "reasoning_effort": "low",
+      "temperature": 0.0,
+      "timeout_seconds": 300
+    },
+    "manifest": {
+      "file": "/Users/chenyuan/Project/Auto_Reduction_Agent/Benchmark/Hardness/CAPABILITY_MANIFEST.json",
+      "sha256": "sha256:e7dce4e0ddbaf444a4c7b85ccaf37945ed3df44e79efb66c25f39683468d80a1"
+    },
+    "oracle": {
+      "file": "/Users/chenyuan/Project/Auto_Reduction_Agent/Benchmark/Hardness/Evaluation/np_hard_capability_oracle_v1.json",
+      "runner_access": "forbidden",
+      "sha256": "sha256:9ac812c13e1085afe543859c1873724fac11ad0dfa3832c17ec94555fdd53cd4"
+    },
+    "split_counts": {
+      "dev": 8,
+      "frontier": 2,
+      "heldout": 16,
+      "validation": 8
+    }
+  },
+  "exact_edge_archive": {
+    "archive_audit": {
+      "audit_id": "sha256:fdd51f7e827660a14a7ab41a615a5c10d6bb89d74f53bc4d73d01c60521b1c2a",
+      "file": "/Users/chenyuan/Project/Auto_Reduction_Agent/Benchmark/Hardness/PROBLEM_ARCHIVE_AUDIT.json",
+      "sha256": "sha256:f96b3157fd1761b9f01e007e08a9458951c8be400de4b9c785f48ae7b640e50c"
+    },
+    "archive_selection": {
+      "file": "/Users/chenyuan/Project/Auto_Reduction_Agent/Benchmark/Hardness/Evaluation/np_hard_problem_archive_selection_v1.json",
+      "sha256": "sha256:887f37e9332c44708a18ab2eb52790935500d9bab32e6bc37d5ff212fe1a5aef"
+    },
+    "duplicate_direction_count": 3,
+    "duplicate_statement_variant_count": 3,
+    "manifest": {
+      "file": "/Users/chenyuan/Project/Auto_Reduction_Agent/Benchmark/Hardness/EXACT_REDUCTION_EDGE_MANIFEST.json",
+      "sha256": "sha256:82533f2f75410a457c23c4de08c34e46c94d0e072bbd1c4bfcd1a01916f5d836"
+    },
+    "oracle": {
+      "file": "/Users/chenyuan/Project/Auto_Reduction_Agent/Benchmark/Hardness/Evaluation/exact_reduction_edge_oracle_v1.json",
+      "sha256": "sha256:aee88016642b344d10b7a87b2fca55f402d320f79fbca1d952c80db73069f767"
+    },
+    "pdf_only_capability_weight": 0,
+    "pdf_only_source_count": 7,
+    "problem_archive": {
+      "file": "/Users/chenyuan/Project/Auto_Reduction_Agent/problems.7z",
+      "sha256": "sha256:6ae4004cef16bf332fec74eb952e21262bc590604acddc7172a4838007986f79"
+    },
+    "split_counts": {
+      "dev": 6,
+      "heldout": 12,
+      "validation": 6
+    },
+    "status_counts": {
+      "blocked_endpoint_formalization": 17,
+      "ready": 7
+    },
+    "unique_directions": 24
+  },
+  "exact_edge_dev_baseline": {
+    "all_concurrency_drained": true,
+    "endpoint_ready": 6,
+    "http_200_model_calls": 0,
+    "model_calls": 0,
+    "run": {
+      "file": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/h-i-4-exact-dev-real-v3/report.json",
+      "metrics": {
+        "blocked_count": 1,
+        "case_count": 6,
+        "exact_edge_authoring_dag_unavailable": 1,
+        "existing_edge_reconstructed": 5,
+        "failed_count": 0,
+        "http_ok_model_calls": 0,
+        "model_calls": 0,
+        "new_edge_verified": 0,
+        "token_usage": {},
+        "unique_directions": 6,
+        "verified_count": 5
+      },
+      "parallel_execution": {
+        "configured_jobs": 4,
+        "final_active_case_tasks": 0,
+        "maximum_concurrent_case_tasks": 4,
+        "observed_parallelism": true,
+        "submitted_case_tasks": 6,
+        "wall_duration_seconds": 104.559669
+      },
+      "run_id": "sha256:83e8e3166cafa4e92f33bf7a8e4f752627beb65263b52c60dc1fe7deda5b14b4",
+      "run_valid": true,
+      "sha256": "sha256:dd241c052bfd458c012b8740da0d7cbb103232cc86b2fa0f2f6580a2f0aea69b"
+    },
+    "score": {
+      "file": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/h-i-4-exact-dev-real-v3/score.json",
+      "run_valid": true,
+      "scorecard": {
+        "edge_verified_at_budget": 0.8333333333333334,
+        "endpoint_ready": 6,
+        "existing_edge_reconstructed": 5,
+        "first_attempt_verified_count": 0,
+        "model_calls": 0,
+        "mutation_rejection_counts": {},
+        "new_edge_verified": 0,
+        "token_usage": {},
+        "unique_directions": 6,
+        "verified_count": 5
+      },
+      "sha256": "sha256:ed47b7dac8eceb57378a8120e829e2dfc8cb43957b54f91e92e9215b997c679a"
+    },
+    "secret_absent": true,
+    "unique_directions": 6
+  },
+  "gates": {
+    "active_h_i_plan_bound": true,
+    "all_concurrency_counters_returned_to_zero": true,
+    "archive_24_exact_edges_status_bound": true,
+    "archive_63_problems_60_unique_directions": true,
+    "archive_three_duplicate_variants_zero_weight": true,
+    "capability_all_four_scores_valid": true,
+    "capability_all_four_splits_run_valid": true,
+    "capability_manifest_oracle_hashes_valid": true,
+    "capability_r0_mutations_fail_closed": true,
+    "capability_security_guardrails_clean": true,
+    "exact_edge_six_dev_run_valid": true,
+    "exact_edge_six_dev_score_valid": true,
+    "five_stage_deepseek_http_200_evidence": true,
+    "five_stage_full_benchmarks_distinct": true,
+    "legacy_and_r1_capability_weight_zero": true,
+    "no_api_key_authorization_or_secret_in_evidence": true,
+    "pdf_only_capability_weight_zero": true,
+    "regression_not_used_as_capability_score": true,
+    "target_identity_partition_32_c0_2_f0_10_r1": true,
+    "target_identity_partition_disjoint_and_exhaustive_44": true,
+    "taxonomy_covers_all_suites_and_cases": true
+  },
+  "generated_at": "2026-08-09T12:37:57.003719+00:00",
+  "identity_partition": {
+    "c0": 32,
+    "canonical_identity_disjoint": true,
+    "f0": 2,
+    "matrix_exhaustive": true,
+    "r1_public": 10,
+    "target_matrix": {
+      "file": "/Users/chenyuan/Project/Auto_Reduction_Agent/Benchmark/Hardness/NP_HARD_TARGET_MATRIX.json",
+      "matrix_id": "sha256:3a3c500d6fab9834624497d3f1e821b9f21065e8f78ef986d7d49f87ebfde54a",
+      "sha256": "036b71e550513b1949cfef539d5c3390476b3fb44b7c53b84080941bd5d83cf6"
+    },
+    "total": 44
+  },
+  "passed": true,
+  "registry_taxonomy": {
+    "registry": {
+      "capability_weight": 0,
+      "default_jobs": 4,
+      "file": "/Users/chenyuan/Project/Auto_Reduction_Agent/Benchmark/Hardness/NP_HARD_UNIFIED_BENCHMARK_REGISTRY.json",
+      "logical_cases": 59,
+      "sha256": "b6d66b97e8830323a38bd4af232c94cdccecaff96e81d9950275418e561f2a02"
+    },
+    "taxonomy": {
+      "file": "/Users/chenyuan/Project/Auto_Reduction_Agent/Benchmark/Hardness/BENCHMARK_TAXONOMY.json",
+      "legacy_assets_capability_weight": 0,
+      "owned_public_identities": 44,
+      "sha256": "83930c265d839ff89db12e398ff0e97497b12238f7c1eee1c3fc8cfe840e5709",
+      "suite_count": 44
+    }
+  },
+  "report_id": "sha256:29ee47469e8502bb9b2406073bd19192683680ecf35fcad5d67b56d2c6d855b7",
+  "schema_version": "hardness_main_h_i_full_report_v1",
+  "source_control": {
+    "combined_sha256": "179ab14a0895356d74c60c11ba8bef1bf030c43a075ffc1bd1e98ae6533f311c",
+    "files": {
+      "ACTIVE_AGENT_IMPROVEMENT_PLAN.md": "86cf64124f88941c21d519b3e877ce7ac310d3c28c0d428eb7ac30728f5f446e",
+      "Benchmark/Hardness/BENCHMARK_TAXONOMY.json": "83930c265d839ff89db12e398ff0e97497b12238f7c1eee1c3fc8cfe840e5709",
+      "Benchmark/Hardness/CAPABILITY_MANIFEST.json": "e7dce4e0ddbaf444a4c7b85ccaf37945ed3df44e79efb66c25f39683468d80a1",
+      "Benchmark/Hardness/EXACT_REDUCTION_EDGE_MANIFEST.json": "82533f2f75410a457c23c4de08c34e46c94d0e072bbd1c4bfcd1a01916f5d836",
+      "Benchmark/Hardness/Evaluation/exact_reduction_edge_oracle_v1.json": "aee88016642b344d10b7a87b2fca55f402d320f79fbca1d952c80db73069f767",
+      "Benchmark/Hardness/Evaluation/np_hard_capability_oracle_v1.json": "9ac812c13e1085afe543859c1873724fac11ad0dfa3832c17ec94555fdd53cd4",
+      "Benchmark/Hardness/Evaluation/np_hard_problem_archive_selection_v1.json": "887f37e9332c44708a18ab2eb52790935500d9bab32e6bc37d5ff212fe1a5aef",
+      "Benchmark/Hardness/NP_HARD_TARGET_MATRIX.json": "036b71e550513b1949cfef539d5c3390476b3fb44b7c53b84080941bd5d83cf6",
+      "Benchmark/Hardness/NP_HARD_UNIFIED_BENCHMARK_REGISTRY.json": "b6d66b97e8830323a38bd4af232c94cdccecaff96e81d9950275418e561f2a02",
+      "Benchmark/Hardness/PROBLEM_ARCHIVE_AUDIT.json": "f96b3157fd1761b9f01e007e08a9458951c8be400de4b9c785f48ae7b640e50c",
+      "Benchmark/Hardness/Suites/np_hard_public_r1_coverage_v1.json": "2fb39a3c092f0cd2d107566f0f2243f7559e0dfa5fa10ffe82ef1a673fa1fd11",
+      "problems.7z": "6ae4004cef16bf332fec74eb952e21262bc590604acddc7172a4838007986f79",
+      "scripts/build_np_hard_h_i_full_report.py": "8e3f9522b8176debbde919eea973d13ed01ddc6261aeabd36165fd76e55d9eff",
+      "tests/test_hardness_np_hard_h_i_full_report.py": "ed66b847a8a504335c6961d70b999e85f5d3319da046517bc5fc53f6ee17ab54",
+      "tmp/h-i-1-unified-real-v1-report.json": "74fb7f89905fbe66199dca05e62da6f4c920998866865359d317aadf752b33f8",
+      "tmp/h-i-2-capability-dev-real-v2/report.json": "40d0de8c7b335597583aa9c24252e3dd134165ac755482af119822571cfe8fe4",
+      "tmp/h-i-2-capability-dev-real-v2/score.json": "a187e32187194ee47b680ab67ec32b92dc69444ffc1f9dd68eb9e4a1e03900c4",
+      "tmp/h-i-2-unified-real-v1-report.json": "aa54683d922164ba70c1f1b1b7fd495f36382dc4209c57c4257bb8a209c935f9",
+      "tmp/h-i-3-capability-frontier-real-v1/report.json": "821bcac9ad289801f9984278b594e5e750afb71684c44e5d47e8457e5ebd47ae",
+      "tmp/h-i-3-capability-frontier-real-v1/score.json": "42e9f4b416c10d56879a90f203b24f62c911196dc7a7baadf03eeaa047619c61",
+      "tmp/h-i-3-unified-real-v1-report.json": "66c7f7e75431e388342979957dc7a8daf47ddb0f34f9b03b5f76529b89774942",
+      "tmp/h-i-4-exact-dev-real-v3/report.json": "dd241c052bfd458c012b8740da0d7cbb103232cc86b2fa0f2f6580a2f0aea69b",
+      "tmp/h-i-4-exact-dev-real-v3/score.json": "ed47b7dac8eceb57378a8120e829e2dfc8cb43957b54f91e92e9215b997c679a",
+      "tmp/h-i-4-unified-real-v1-report.json": "1345aec060d5d4b8db29174ff691b2cc906099e07de95b2c7597d391821f12ed",
+      "tmp/h-i-5-capability-heldout-real-v1/report.json": "57eab27f02d1047824c0c41686267f151fa0f0071105695bd251f18d0ceef990",
+      "tmp/h-i-5-capability-heldout-real-v1/score.json": "9d6f00b6f2cb62a3487030b1f3468ee392263341a10ebddfd3c8ce532002a1e6",
+      "tmp/h-i-5-capability-validation-real-v1/report.json": "279cdff159c9715256e98441ae2f15960166405c5b2b405f09eb28981b5b18a2",
+      "tmp/h-i-5-capability-validation-real-v1/score.json": "03a077931ebd5d455d1f52475b594683c177b9ad6959b37d296b28273d925572",
+      "tmp/h-i-5-unified-real-v2-report.json": "52990492cc178c1abb986732fbd225589ad094a27c89efcec2befdbc71419d71"
+    },
+    "lake_manifest_sha256": "7b9ebbed765572606d98ef3e13b2a3036325a9d5bd860a111bdd73db1104aec7",
+    "lean_toolchain": "leanprover/lean4:v4.29.0",
+    "lean_toolchain_sha256": "651c8accb402b0c071cd336e9d3dc0a55516b1bfb434ddc4801f14936785b1d2"
+  },
+  "stage": "H-I-benchmark-capability-boundary-and-regression-downgrade",
+  "stage_benchmarks": {
+    "all_concurrency_drained": true,
+    "capability_weight": 0,
+    "http_200_count": 60,
+    "http_evidence_record_count": 60,
+    "logical_case_executions": 295,
+    "real_deepseek_http_calls": 60,
+    "reports": [
+      {
+        "capability_weight": 0,
+        "case_executions": 59,
+        "component_hashes": {
+          "legacy": "sha256:c80e79f0942ebe4b105a920375c88531e905ba20214f1259858597a4fd511cca",
+          "production": "sha256:f3147307d83309f2ee5ec75f0e787dc15e7774a9e1cc5c3c6f02c6c0e6b9ffc0",
+          "public_r1": "sha256:5b6be502df496c4bab15daa23b686fa095344b9b3a07cf077dc4fed5c4e6fe13"
+        },
+        "file": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/h-i-1-unified-real-v1-report.json",
+        "final_active_case_tasks": 0,
+        "generated_at": "2026-08-09T09:58:43.602900+00:00",
+        "http_200_count": 12,
+        "logical_cases": 59,
+        "matched_executions": 59,
+        "maximum_concurrent_case_tasks": 4,
+        "real_deepseek_http_calls": 12,
+        "sha256": "sha256:74fb7f89905fbe66199dca05e62da6f4c920998866865359d317aadf752b33f8",
+        "stage": "h-i.1-registry",
+        "token_usage": {
+          "completion_tokens": 12076,
+          "prompt_cache_hit_tokens": 116480,
+          "prompt_cache_miss_tokens": 789,
+          "prompt_tokens": 117269,
+          "total_tokens": 129345
+        }
+      },
+      {
+        "capability_weight": 0,
+        "case_executions": 59,
+        "component_hashes": {
+          "legacy": "sha256:1898fb9e9e3997293d4bac6c78f77d609daa4df8404a81d2b81592d6eb89de88",
+          "production": "sha256:5ec0dbe510a44e8c38e18613c4654c162896e1a4928795abc05ac384657991f8",
+          "public_r1": "sha256:e60193cf6c74363995632cf67d07db3d40222c44861c1ae5ca35a2f715156733"
+        },
+        "file": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/h-i-2-unified-real-v1-report.json",
+        "final_active_case_tasks": 0,
+        "generated_at": "2026-08-09T10:56:40.538688+00:00",
+        "http_200_count": 12,
+        "logical_cases": 59,
+        "matched_executions": 59,
+        "maximum_concurrent_case_tasks": 4,
+        "real_deepseek_http_calls": 12,
+        "sha256": "sha256:aa54683d922164ba70c1f1b1b7fd495f36382dc4209c57c4257bb8a209c935f9",
+        "stage": "h-i.2-capability",
+        "token_usage": {
+          "completion_tokens": 9010,
+          "prompt_cache_hit_tokens": 116480,
+          "prompt_cache_miss_tokens": 789,
+          "prompt_tokens": 117269,
+          "total_tokens": 126279
+        }
+      },
+      {
+        "capability_weight": 0,
+        "case_executions": 59,
+        "component_hashes": {
+          "legacy": "sha256:cf97db25bd8d2dc59f31825f3b1ba63856941c72619b2e3ddb387d9ae9613187",
+          "production": "sha256:9e61ebacfd46f1351626429dc0a1d4dd5b7c4ee903c6a42a60d677b4ef4e9ad7",
+          "public_r1": "sha256:df5247aa13e627d5b5d7031062ab83a0caeac064ed379e740e0fa53f9c45794f"
+        },
+        "file": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/h-i-3-unified-real-v1-report.json",
+        "final_active_case_tasks": 0,
+        "generated_at": "2026-08-09T11:18:57.374667+00:00",
+        "http_200_count": 12,
+        "logical_cases": 59,
+        "matched_executions": 59,
+        "maximum_concurrent_case_tasks": 4,
+        "real_deepseek_http_calls": 12,
+        "sha256": "sha256:66c7f7e75431e388342979957dc7a8daf47ddb0f34f9b03b5f76529b89774942",
+        "stage": "h-i.3-scoring",
+        "token_usage": {
+          "completion_tokens": 10325,
+          "prompt_cache_hit_tokens": 116480,
+          "prompt_cache_miss_tokens": 789,
+          "prompt_tokens": 117269,
+          "total_tokens": 127594
+        }
+      },
+      {
+        "capability_weight": 0,
+        "case_executions": 59,
+        "component_hashes": {
+          "legacy": "sha256:ae0a104b988d8556b972078d50efcc925859181574a833365a1c598ad049989e",
+          "production": "sha256:d1ed8f803e88e5d590018ce0f83158799dad8069bdca1f2f918b4f3fa5370dd9",
+          "public_r1": "sha256:8bb40b273bbbb10c9a250fd87c10d5a7b47bcc0c3da1b84a11733b4b3da15e86"
+        },
+        "file": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/h-i-4-unified-real-v1-report.json",
+        "final_active_case_tasks": 0,
+        "generated_at": "2026-08-09T11:44:56.403157+00:00",
+        "http_200_count": 12,
+        "logical_cases": 59,
+        "matched_executions": 59,
+        "maximum_concurrent_case_tasks": 4,
+        "real_deepseek_http_calls": 12,
+        "sha256": "sha256:1345aec060d5d4b8db29174ff691b2cc906099e07de95b2c7597d391821f12ed",
+        "stage": "h-i.4-exact-edge",
+        "token_usage": {
+          "completion_tokens": 10570,
+          "prompt_cache_hit_tokens": 116480,
+          "prompt_cache_miss_tokens": 789,
+          "prompt_tokens": 117269,
+          "total_tokens": 127839
+        }
+      },
+      {
+        "capability_weight": 0,
+        "case_executions": 59,
+        "component_hashes": {
+          "legacy": "sha256:433fd4049949cd3c3a0baf54c13e3f7a55df8e9d80610e1c962a7148491c9ed7",
+          "production": "sha256:329d397577d424252bd00be4b367ef975ad082c92f675dde8ac8d88aafdb2070",
+          "public_r1": "sha256:5ca88b0d4d1fa97c0e971497b7f35b92cf374df4faeb89d7f2a573203f1f134d"
+        },
+        "file": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/h-i-5-unified-real-v2-report.json",
+        "final_active_case_tasks": 0,
+        "generated_at": "2026-08-09T12:37:34.248729+00:00",
+        "http_200_count": 12,
+        "logical_cases": 59,
+        "matched_executions": 59,
+        "maximum_concurrent_case_tasks": 4,
+        "real_deepseek_http_calls": 12,
+        "sha256": "sha256:52990492cc178c1abb986732fbd225589ad094a27c89efcec2befdbc71419d71",
+        "stage": "h-i.5-freeze",
+        "token_usage": {
+          "completion_tokens": 8679,
+          "prompt_cache_hit_tokens": 116480,
+          "prompt_cache_miss_tokens": 789,
+          "prompt_tokens": 117269,
+          "total_tokens": 125948
+        }
+      }
+    ],
+    "request_identity_count_per_stage": 12,
+    "required_stages": [
+      "h-i.1-registry",
+      "h-i.2-capability",
+      "h-i.3-scoring",
+      "h-i.4-exact-edge",
+      "h-i.5-freeze"
+    ],
+    "stage_count": 5,
+    "token_usage": {
+      "completion_tokens": 50660,
+      "prompt_cache_hit_tokens": 582400,
+      "prompt_cache_miss_tokens": 3945,
+      "prompt_tokens": 586345,
+      "total_tokens": 637005
+    }
+  }
+}

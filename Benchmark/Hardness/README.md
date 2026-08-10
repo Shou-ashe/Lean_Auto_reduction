@@ -1,14 +1,36 @@
 # Hardness Agent Benchmark
 
-这是 `HARDNESS_AGENT_IMPLEMENTATION_PLAN.md` 对应的当前正式 benchmark。正式入口只有：
+这是 `HARDNESS_AGENT_IMPLEMENTATION_PLAN.md` 对应的当前正式 benchmark。正式入口只有两个统一
+runner，其余旧分组 runner 已归档到 `scripts/Legacy/`（不再作为入口）：
 
-- `MANIFEST.json`：`hardness_benchmark_v2` 顶层清单；
-- `Suites/*.json`：`hardness_benchmark_suite_v1` case 清单；
+- `scripts/run_hardness_benchmark.py`：唯一 benchmark 入口。只跑真实复杂度归约题目（计分）:
+  24 个 C0 capability er/au（v2）+ 24 个 exact reduction edge（v1）由各自 isolation oracle
+  评分，另有 2 个 F0 frontier 题目不评分。清单冻结在 `BENCHMARK_REGISTRY.json`
+  （50 题，48 计分）。`--list` 校验 registry 与冻结 manifest 的一致性。
+- `scripts/run_hardness_gate.py`：唯一 gate/稳定性入口。跑所有不进 benchmark 的题目
+  （不计入 benchmark 得分，与 benchmark 完全分离）。gate 是一个统一清单
+  `Gate/GATE_REGISTRY.json`（唯一 332 题），内部按执行来源分为四组：
+  `fixture_protocol`（26 个 v1 suite，212 题）、`capability_safety`（8 个 C0-safety 负例）、
+  `unified_registry`（59 个去重逻辑题）、`archived_drivers`（53 题经原 driver 复跑）。
+  所有输出集中在唯一 gate 根目录：每次运行一个 `<output-root>/trial-<n>/` 目录
+  （含逐题合并的 `gate_report.json`），跨 trial 稳定性收敛在 `<output-root>/summary.json`；
+  不再按组拆分多个顶层输出目录。`--stability-trials N` 重复执行并报告逐例状态漂移。
+
+数据源保持不变：
+
+- `CAPABILITY_MANIFEST_V2.json`、`EXACT_REDUCTION_EDGE_MANIFEST.json`：benchmark 题目来源；
+- `Gate/GATE_MANIFEST.json`：gate `fixture_protocol` 组的 26 个 suite 聚合清单
+  （替代退役的 `MANIFEST.json` 入口；`MANIFEST.json` 不再作为可执行入口，
+  gate 清单及 registry 统一放在仓库根目录的 `Gate/` 下，与 benchmark 数据分离）；
+- `NP_HARD_UNIFIED_BENCHMARK_REGISTRY.json` + `BENCHMARK_TAXONOMY.json`：unified 组来源；
+- `Suites/*.json`：`hardness_benchmark_suite_v1` case 清单（数据文件，全部保留）；
 - `Lean/Reference/Benchmark/Hardness/Inputs/`：可由当前 Lake source root 导入的 Lean 题面。
 
-`Expected/`、tag、route 数量和迁移 provenance 都是非权威评分元数据。case 是否成功仍只由
-`HardnessAgent` 生成的 `Artifact.lean` 在当前环境中经 `by_hardness_resolver`、kernel、exact request
-type、standard axiom gate 和 deterministic replay 决定。
+评分语义不变：`Expected/`、tag、route 数量和迁移 provenance 都是非权威评分元数据。case 是否
+成功仍只由 `HardnessAgent` 生成的 `Artifact.lean` 在当前环境中经 `by_hardness_resolver`、
+kernel、exact request type、standard axiom gate 和 deterministic replay 决定。oracle 仅供
+运行结束后的独立评分，绝不传给 production orchestrator 或模型；gate 结果永不并入 benchmark
+得分。
 
 ## NP-hard 正式入口与 H-E 覆盖
 
@@ -116,51 +138,74 @@ Lean 数学库，也没有创建 benchmark-local reduction facade。
 ## 运行
 
 ```bash
-python3 scripts/run_hardness_benchmark.py --list --agent-phase 6
+# benchmark：校验冻结 registry（50 题 = 24 capability + 2 frontier + 24 edge）
+python3 scripts/run_hardness_benchmark.py --list
 
+# benchmark：全量运行并评分（oracle 只在所有 production case 结束后打开）
 python3 scripts/run_hardness_benchmark.py \
-  --suite ir-feasibility \
-  --planner deterministic
-
-python3 scripts/run_hardness_benchmark.py \
-  --manifest Benchmark/Hardness/MANIFEST.json \
-  --agent-phase 6 \
-  --planner deterministic \
+  --output-root .reduction-agent/benchmark \
   --jobs 4 \
-  --lean-timeout 600
+  --env-file .env
+# 可选 --lane capability|frontier|exact_edge 只跑单 lane；--no-score 仅供开发
 
+# benchmark：Archon 整题黑盒对照实验
+# - 每个 case 只给 Archon 公开题面、形式化目标和证明类型要求
+# - 不给 ComplexityReduction 源码、推荐 proof、oracle/gold、typed DAG、route、依赖证明体或诊断
+# - worker 只保留一个可读写的目标 Lean 文件；web/Lean 搜索与 suggestion/probe tactic 禁用
+# - 4 个 worker 物理隔离并行；Archon 完成后才由可信根仓库做 kernel/axiom/replay 和 scorer policy
 python3 scripts/run_hardness_benchmark.py \
-  --suite membership \
-  --agent-phase 6 \
-  --planner deterministic \
-  --jobs 2 \
-  --lean-timeout 1200
-
-python3 scripts/run_hardness_benchmark.py \
-  --suite completeness \
-  --agent-phase 6 \
-  --planner deterministic \
-  --jobs 2 \
-  --lean-timeout 600
-
-python3 scripts/run_hardness_benchmark.py \
-  --suite model-authoring \
-  --agent-phase 7 \
-  --planner deterministic \
-  --authoring model-required \
+  --agent archon \
+  --archon-cli compare/Archon/.venv/bin/archon \
+  --archon-iterations 1 \
+  --archon-tool-rounds 16 \
+  --jobs 4 \
+  --output-root .reduction-agent/benchmark-archon \
   --env-file .env
 
-python3 scripts/run_hardness_model_trials.py \
-  --repetitions 3 \
+# benchmark：单次 Prompt 的直接 LLM 对照实验
+# - 与 Archon 使用同一个公开材料 renderer，逐题 public-input hash 必须一致
+# - 同一个 deepseek-v4-flash 正式配置；每个可调用 case 严格一次 API request
+# - 没有工具、Lean 反馈、follow-up、planner、prover loop 或 reviewer
+python3 scripts/run_hardness_benchmark.py \
+  --agent oneshot-llm \
+  --jobs 4 \
+  --output-root .reduction-agent/benchmark-oneshot-llm \
+  --env-file .env
+
+# gate：校验冻结 registry（332 题）
+python3 scripts/run_hardness_gate.py --list
+
+# gate：全量复跑（全部四组输出进统一 gate 根，可按 --lane 只跑一组）
+python3 scripts/run_hardness_gate.py \
+  --output-root .reduction-agent/gate \
+  --jobs 4 \
+  --env-file .env
+
+# gate：稳定性通道 —— 同一清单重复 3 次并报告逐例状态漂移
+python3 scripts/run_hardness_gate.py \
+  --output-root .reduction-agent/gate \
+  --stability-trials 3 \
   --env-file .env
 ```
 
-`--suite` 与 `--case` 可重复。`--agent-phase` 控制 phase gate，但显式 disabled 的未实现 case 不会因为
-增大该参数而被错误启用。`--list` 会进行完整 schema、路径、重复 ID、public-module 和 oracle-reference
-校验，但不调用 Lean 或模型。正式执行只做一次统一 preflight：先构建 Runtime 与全部选中 input
-modules，防止 generated Lean 文件读到陈旧 `.olean`，随后才启动并行 case。`--jobs` 只并行彼此隔离
-的 case，不会省略任何 case 内的 input gate、probe、registry revalidation、artifact、axiom gate 或
-replay。
+gate 输出结构（集中在唯一根目录）：
+```
+.reduction-agent/gate/
+  trial-1/          # 单次运行：四组产物 + 合并逐题报告
+    fixture_protocol/
+    capability_safety/
+    unified_registry/
+    archived_drivers/
+    gate_report.json
+  summary.json      # 跨 trial 稳定性结论（--stability-trials>1 时）
+```
+
+旧 `--suite`/`--case`/`--agent-phase`/`--authoring` 分组选择器已移除：分组入口被两个 registry
+取代。需要选择器或旧 manifest runner 时，用归档的 `scripts/Legacy/run_hardness_benchmark_manifest.py`
+（唯一保留的旧 manifest 通道，供 gate `fixture_protocol` 组内部调用）。<br>
+正式执行只做一次统一 preflight：先构建 Runtime 与全部选中 input modules，防止 generated Lean 文件
+读到陈旧 `.olean`，随后才启动并行 case。`--jobs` 只并行彼此隔离的 case，不会省略任何 case 内的
+input gate、probe、registry revalidation、artifact、axiom gate 或 replay。
 
 汇总报告区分：
 
@@ -174,9 +219,16 @@ replay。
 - `deterministic_replay_rate`；
 - disabled/phase-gated skipped cases。
 
-`full_reduction_authored_rate` 的分母只包含“预期最终 `VERIFIED` 且要求新 reduction authoring”的
+`full_reduction_authored_rate` 的分母只包含"预期最终 `VERIFIED` 且要求新 reduction authoring"的
 case；预期保持 typed blocker 的 Phase 5 负例由 `negative_block_accuracy` 计分，不会错误拉低
 authoring 成功率。
+
+`--agent deepseek`（缺省）运行生产 hardness agent；`--agent archon` 改走
+`agent/hardness/archon_blackbox_benchmark.py` 的整题黑盒通道；`--agent oneshot-llm` 运行
+`compare/OneShotLLM/` 的单请求对照。Archon 和 one-shot LLM 不会调用生产编排器的 node/authoring
+接口，因此看不到生产 agent 生成的中间结构或 proof 推荐。两者共享同一个公开材料 renderer 和冻结
+registry；one-shot 报告还逐题核对与 Archon 的 public-input hash 以及模型配置。所有对照报告分别列出
+kernel verified、post-run policy verified、真实 API usage 与并行证据。
 
 Phase 7 的模型生成 case 只进入 `model_synthesis` lane。route search 始终 deterministic；已有闭合
 路线在任何 authoring policy 下都必须保持 `model_called = false`。DeepSeek 只能返回当前 task 的单个

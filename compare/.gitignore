@@ -1,0 +1,11 @@
+# Per-run material is intentionally local. Commit only frozen manifests,
+# prompts, schemas, aggregate reports, and source/configuration snapshots.
+runs/
+workspaces/
+cache/
+external/
+.env
+*.log
+__pycache__/
+*.py[cod]
+.pytest_cache/

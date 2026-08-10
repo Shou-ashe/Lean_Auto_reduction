@@ -48,6 +48,10 @@ the Lean artifact or JSON report:
 DEEPSEEK_BASE_URL=https://api.deepseek.com
 DEEPSEEK_API_KEY=your-key
 DEEPSEEK_MODEL=deepseek-v4-flash
+DEEPSEEK_TIMEOUT_SECONDS=300
+DEEPSEEK_MAX_TOKENS=16000
+DEEPSEEK_MAX_RETRIES=0
+DEEPSEEK_REASONING_EFFORT=low
 ```
 
 Copy `.env.example` to `.env` and fill in `DEEPSEEK_API_KEY`. The repository intentionally does not
@@ -61,19 +65,37 @@ be an existing Lean `PresentedProblem`, a registered stable ID/alias, or a bare
 `LawfulEncodedType` that Lean can resolve to exactly one existing lawful presentation.
 
 ```bash
-DEEPSEEK_MODEL=deepseek-v4-flash \
-DEEPSEEK_REASONING_EFFORT=low \
-DEEPSEEK_MAX_TOKENS=16000 \
 python3 scripts/prove_np_hard.py \
-  --module ComplexityReduction.Problems.Karp21.GraphAtoms \
-  --problem ComplexityReduction.Problems.Karp21.GraphAtoms.vertexCoverStructuredProblem \
-  --authoring model-auto
+  --problem ComplexityReduction.Problems.Karp21.GraphAtoms.vertexCoverStructuredProblem
 ```
+
+The shortest command auto-discovers the owning public module. An explicit
+`--module` remains available as an import-closure override and is checked against the requested
+declaration. Production precedence is explicit CLI option, then process environment/`.env`, then
+the accepted defaults: `deepseek-v4-flash`, low reasoning, 300 seconds, 16000 output tokens, zero
+SDK retries, and temperature zero. The model-call budget is derived from the typed DAG as
+`gap nodes × per-node attempt budget`; an undersized explicit budget fails closed.
 
 The CLI reports the requested term, resolved encoding, canonical `PresentedProblem`, and the
 Lean-checked normalization certificate. Existing routes make zero model calls. Model authoring is
 allowed only after deterministic analysis produces a typed gap DAG, and every accepted artifact is
 checked at the exact canonical endpoint by Lean, independent replay, and the standard-axiom gate.
+It also writes a redacted `preflight.json` and emits one of the stable machine statuses
+`VERIFIED`, `BLOCKED_NOT_TARGET`, `BLOCKED_MISSING_PREREQUISITE`, `FAILED_MODEL`, `FAILED_LEAN`,
+or `INPUT_ERROR`.
+
+Formal qualification can explicitly exercise authoring on a public `ComplexityReduction.*`
+problem even when a deterministic route already exists. This does not change the default fast
+path: without the qualification-only flag, existing routes still make zero model calls.
+
+```bash
+python3 scripts/prove_np_hard.py \
+  --problem ComplexityReduction.Problems.Karp21.GraphAtoms.vertexCoverStructuredProblem \
+  --qualification-authoring
+```
+
+`--qualification-authoring` implies the accepted formal profile and `model-required`; it is
+rejected outside formal qualification and records the override in the redacted preflight.
 
 Stable input-boundary failures include:
 
@@ -95,6 +117,34 @@ python3 scripts/run_np_hard_h_e_heldout.py \
   --model deepseek-v4-flash \
   --model-max-tokens 16000
 ```
+
+Qualify every existing-route public identity (one production proof per canonical identity, with
+separate alias normalization checks) using:
+
+```bash
+python3 scripts/run_np_hard_h_h_existing_routes.py \
+  --output-root tmp/np-hard-h-h-existing-routes
+```
+
+The qualification report is identity-level and requires all 22 current forward-route identities,
+zero model calls, exact endpoint equality, shortest forward route agreement, independent replay,
+and the standard-axiom audit. Its answer-free organic held-out subset contains 12 public inputs,
+five families, and route lengths zero through five.
+
+Run the formal three-round release stability gate with four isolated cases in parallel inside each
+round:
+
+```bash
+python3 scripts/run_np_hard_release_stability.py \
+  --output-root tmp/np-hard-release-stability \
+  --jobs 4
+```
+
+The three rounds remain sequential so they are independent stability repetitions. Each round runs
+its 12 cases with bounded case-level parallelism, preserves one fresh output directory per case,
+and records configured jobs, observed maximum concurrency, and final active-task count in the
+round and aggregate reports. Formal qualification requires at least two case workers; `--jobs 1`
+is available only for debugging and cannot produce a passing formal aggregate.
 
 The legacy resolver and model-authoring lanes remain deterministic about route selection: their
 DeepSeek use starts only after Lean reports an exact typed gap and fixes a single editable proof

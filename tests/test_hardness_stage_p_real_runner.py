@@ -65,7 +65,7 @@ def test_stability_aggregate_accepts_three_independent_verified_runs(tmp_path: P
 
     source = json.loads(
         runner.ROOT.joinpath(
-            "Benchmark/Hardness/STAGE_P_IMPLEMENTATION_REAL_REPORT.json"
+            "Reports/STAGE_P_IMPLEMENTATION_REAL_REPORT.json"
         ).read_text(encoding="utf-8")
     )
     paths = []

@@ -25,9 +25,9 @@ from agent.hardness.predicate_input import (
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SUITE = ROOT / "Benchmark" / "Hardness" / "Suites" / "predicate_input.json"
+SUITE = ROOT / "Gate" / "Suites" / "predicate_input.json"
 OPEN_TARGET_SUITE = (
-    ROOT / "Benchmark" / "Hardness" / "Suites" / "open_target.json"
+    ROOT / "Gate" / "Suites" / "open_target.json"
 )
 CONTRACT = (
     ROOT

@@ -54,7 +54,7 @@ from agent.hardness.typed_packets import (
 
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_SUITE = ROOT / "Benchmark" / "Hardness" / "Suites" / "typed_authoring.json"
+DEFAULT_SUITE = ROOT / "Gate" / "Suites" / "typed_authoring.json"
 MAX_JOBS = 4
 
 
