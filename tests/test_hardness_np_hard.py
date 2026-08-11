@@ -17,7 +17,6 @@ from agent.hardness.np_hard import (
     build_np_hard_probe_source,
     parse_np_hard_probe_output,
 )
-from agent.hardness.np_hard_benchmark import load_np_hard_mvp_suite
 
 
 MARKER = "HARDNESS_NP_HARD"
@@ -192,16 +191,3 @@ def test_shared_seed_catalog_write_is_safe_under_parallel_cases(tmp_path) -> Non
     assert catalog["schema_version"] == "hardness_np_hard_seed_catalog_v1"
     assert catalog["registry_fingerprint"].startswith("lean:registry-")
     assert not list(catalog_path.parent.glob(".np-hard-seed-catalog.json.*.tmp"))
-
-
-def test_formal_np_hard_mvp_suite_has_positive_multi_edge_and_typed_negatives() -> None:
-    suite = load_np_hard_mvp_suite(
-        Path("Gate/Suites/np_hard_mvp.json")
-    )
-    assert any(case.expected_status == "VERIFIED" for case in suite)
-    assert any("multi-edge" in case.tags for case in suite)
-    assert {
-        case.expected_failure_code
-        for case in suite
-        if case.expected_status == "BLOCKED"
-    } == {"wrong_direction_only", "no_forward_path_from_hardness_seed"}

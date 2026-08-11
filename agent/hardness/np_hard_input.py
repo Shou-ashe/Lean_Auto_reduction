@@ -32,6 +32,12 @@ NP_HARD_INPUT_NORMALIZATION_OBSERVATION_SCHEMA_V1 = (
 NP_HARD_INPUT_NORMALIZATION_MODULE = (
     "ComplexityReduction.Agent.Hardness.InputNormalization"
 )
+NP_HARD_INPUT_REGISTRY_PATH = Path(
+    "agent/hardness/data/np_hard_input_registry.json"
+)
+NP_HARD_TARGET_MATRIX_PATH = Path(
+    "Benchmark/Hardness/Catalogs/np_hard_target_matrix_v2.json"
+)
 _NORMALIZATION_MARKER = "HARDNESS_NP_HARD_INPUT"
 _HASH_PREFIX = "sha256:"
 _STABLE_ID_RE = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
@@ -192,7 +198,7 @@ class NPHardInputIdentityV1:
 
 
 def _registry(root: Path) -> tuple[dict[str, Any], ...]:
-    path = root / "Gate" / "np_hard_input_registry.json"
+    path = root / NP_HARD_INPUT_REGISTRY_PATH
     raw = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(raw, dict) or raw.get("schema_version") != NP_HARD_INPUT_REGISTRY_SCHEMA_V1:
         raise ValueError("unsupported NP-hard input registry schema")
@@ -249,7 +255,7 @@ def _target_matrix_canonical(
     closure and definitionally equal to the requested problem.
     """
 
-    path = root / "Gate" / "NP_HARD_TARGET_MATRIX.json"
+    path = root / NP_HARD_TARGET_MATRIX_PATH
     if not path.is_file():
         return None
     try:
@@ -277,28 +283,6 @@ def _target_matrix_canonical(
 
 def _inventory_module_candidates(*, root: Path, declaration: str) -> set[str]:
     candidates: set[str] = set()
-    inventory_path = root / "Gate" / "NP_HARD_H_F_INVENTORY.json"
-    if inventory_path.is_file():
-        try:
-            inventory = json.loads(inventory_path.read_text(encoding="utf-8"))
-        except (OSError, json.JSONDecodeError):
-            inventory = {}
-        for row in inventory.get("entries", []):
-            if row.get("declaration") == declaration and isinstance(
-                row.get("declaration_module"), str
-            ):
-                candidates.add(row["declaration_module"])
-        for identity in inventory.get("identities", []):
-            for member in identity.get("members", []):
-                if member.get("declaration") == declaration and isinstance(
-                    member.get("module"), str
-                ):
-                    candidates.add(member["module"])
-            if identity.get("canonical_declaration") == declaration and isinstance(
-                identity.get("canonical_module"), str
-            ):
-                candidates.add(identity["canonical_module"])
-
     # Most declarations live in a module matching their namespace.
     namespace = declaration.rpartition(".")[0]
     components = namespace.split(".")

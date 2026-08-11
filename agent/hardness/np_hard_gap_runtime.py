@@ -16,6 +16,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Mapping, Protocol
 
+from .authoring_contract import BANNED_BODY_RE, HardnessContractError
 from .lean_runner import (
     RUNTIME_MODULE,
     assert_generated_source_is_safe,
@@ -23,7 +24,7 @@ from .lean_runner import (
     run_command,
     sha256_file,
 )
-from .lean_worker_pool import StagePLeanWorkerKey, StagePLeanWorkerPool
+from .lean_worker_pool import LeanWorkerKey, LeanWorkerPool
 from .model_client import ModelResponse, extract_json_object
 from .models import CommandResult, sha256_id
 from .np_hard_authoring import (
@@ -45,7 +46,6 @@ from .np_hard_authoring import (
     deletion_command_matches_declaration_v2,
 )
 from .np_hard_production import required_model_call_budget
-from .stage_p_contract import BANNED_BODY_RE, StagePContractError
 
 
 NP_HARD_NODE_REQUEST_SCHEMA_V1 = "hardness_np_hard_node_request_v1"
@@ -54,6 +54,44 @@ NP_HARD_GAP_CHECKPOINT_SCHEMA_V1 = "hardness_np_hard_gap_checkpoint_v1"
 NP_HARD_GAP_PUBLICATION_SCHEMA_V1 = "hardness_np_hard_gap_publication_v1"
 NP_HARD_GAP_RUNTIME_REPORT_SCHEMA_V1 = "hardness_np_hard_gap_runtime_result_v1"
 NP_HARD_MAX_INSTANCE_CALL_BUDGET = 64
+NP_HARD_NODE_PROMPT_MAX_SOURCE_FILES = 8
+NP_HARD_NODE_PROMPT_SOURCE_CHAR_BUDGET = 40_000
+NP_HARD_NODE_PROMPT_SOURCE_EXCERPT_CHARS = 16_000
+NP_HARD_NODE_PROMPT_DEPENDENCY_BODY_CHAR_BUDGET = 16_000
+NP_HARD_NODE_PROMPT_DIAGNOSTIC_CHARS = 4_000
+
+_PROMPT_SOURCE_IMPORT_RE = re.compile(
+    r"(?m)^\s*import\s+([A-Z][A-Za-z0-9_']*(?:\.[A-Za-z0-9_']+)*)\s*$"
+)
+_PROMPT_SOURCE_STOP_WORDS = frozenset(
+    {
+        "accepted",
+        "authoring",
+        "benchmark",
+        "capability",
+        "complexity",
+        "declaration",
+        "encoded",
+        "encoding",
+        "exact",
+        "generated",
+        "hardness",
+        "input",
+        "instance",
+        "lean",
+        "node",
+        "problem",
+        "program",
+        "reduction",
+        "reference",
+        "representation",
+        "source",
+        "structured",
+        "synthesized",
+        "target",
+        "type",
+    }
+)
 
 _TMKARP_PRIMITIVE_CAPABILITIES = frozenset({"tmkarp_primitive"})
 _TMKARP_PROGRAM_CAPABILITIES = frozenset({"tmkarp_program"})
@@ -204,6 +242,11 @@ source/target representations and use the explicit constructor signatures in
 the request; in particular, `PolyProg.const` takes both the source and target
 encodings before its value. Prefer these public `PolyProg` constructors over
 opaque code.
+For `whole_reduction_synthesis`, no source-to-target capability is preinstalled:
+author the executable and its exact `TMPolyTimeMap` evidence from the public
+problem definitions. The runner will then bind them into one `Primitive`, one
+`PolyProg.atom`, and separate forward/reverse semantic proofs. Do not search for
+or reuse a hidden route; the point of this task is to construct the missing edge.
 If the request contains a non-null `recommended_first_body`, copy that body
 unchanged into the response template on the first attempt. It was derived only
 from the public exact type, public source semantics, and allowlisted primitive
@@ -213,6 +256,15 @@ the rejected body.
 """
 
 _POLY_PROG_API_REFERENCE = {
+    "primitive_of_tm_polytime": (
+        "Program.Primitive.ofTMPolyTime (run : source.Carrier -> target.Carrier) "
+        "(proof : TMPolyTimeMap source.encodedType target.encodedType run) : "
+        "Program.Primitive source target"
+    ),
+    "atom": (
+        "PolyProg.atom (primitive : Program.Primitive source target) : "
+        "PolyProg source target"
+    ),
     "comp": (
         "PolyProg.comp (after : PolyProg middle target) "
         "(before : PolyProg source middle) : PolyProg source target"
@@ -238,9 +290,19 @@ _POLY_PROG_API_REFERENCE = {
 
 _CAPABILITY_GUIDANCE = {
     "reduction_executable": (
-        "Return an ordinary lambda matching the exact A -> B type. If B is a "
-        "product whose public semantics adds a Boolean tag, construct that product "
-        "directly; do not return or run a PolyProg."
+        "Return an ordinary lambda matching the exact A -> B type. Inspect the "
+        "public source and target instance definitions and implement the actual "
+        "source-to-target transformation; do not return or run a PolyProg."
+    ),
+    "direct_tm": (
+        "Prove TMPolyTimeMap for exactly the accepted reduction_executable. Build "
+        "the proof from public TMPolyTimeMap constructors and library lemmas; the "
+        "function argument and both encoded endpoint types are frozen by the goal."
+    ),
+    "reduction_primitive": (
+        "Bind exactly the accepted executable and direct_tm dependencies with "
+        "Program.Primitive.ofTMPolyTime. Do not substitute a different function "
+        "or an existing route primitive."
     ),
     "poly_program": (
         "Return only a PolyProg term. For a product target, use PolyProg.pair; "
@@ -1702,9 +1764,24 @@ def _recommended_first_body(
                 "(if false = Bool.true then False else hub.accepts input)\n  rfl"
             )
         if "conjunction_identity" in recipes:
+            invariant_dependencies = [
+                node
+                for node in dependency_nodes
+                if node.capability == "mapping_invariant"
+            ]
+            invariant_binding = (
+                f"  have invariant := {invariant_dependencies[0].declaration} input\n"
+                if len(invariant_dependencies) == 1
+                else ""
+            )
+            forward_witness = (
+                "invariant.1" if len(invariant_dependencies) == 1 else "rfl"
+            )
             return (
-                "by\n  intro input\n  change hub.accepts input ↔ false = false ∧ "
-                "hub.accepts input\n  exact ⟨fun accepted => ⟨rfl, accepted⟩, "
+                "by\n  intro input\n"
+                f"{invariant_binding}"
+                "  change hub.accepts input ↔ false = false ∧ "
+                f"hub.accepts input\n  exact ⟨fun accepted => ⟨{forward_witness}, accepted⟩, "
                 "fun accepted => accepted.2⟩"
             )
         public_reuse = _public_semantic_reuse_body(
@@ -1713,6 +1790,12 @@ def _recommended_first_body(
         if public_reuse is not None:
             return public_reuse
         return "by\n  intro input\n  rfl"
+    if (
+        task.task_class == "whole_reduction_synthesis"
+        and capability
+        in _SEMANTIC_FORWARD_CAPABILITIES | _SEMANTIC_REVERSE_CAPABILITIES
+    ):
+        return None
     if capability in _SEMANTIC_FORWARD_CAPABILITIES:
         semantic_dependencies = [
             node
@@ -1745,7 +1828,34 @@ def _recommended_first_body(
     if capability == "program_run_coherence":
         return "by\n  intro input\n  rfl"
     if capability == "reduction_executable":
+        if task.task_class == "whole_reduction_synthesis":
+            return None
         return "fun input => (false, input)"
+    if (
+        capability == "reduction_primitive"
+        and task.task_class == "whole_reduction_synthesis"
+    ):
+        executable = next(
+            (
+                node
+                for node in dependency_nodes
+                if node.capability == "reduction_executable"
+            ),
+            None,
+        )
+        direct_tm = next(
+            (node for node in dependency_nodes if node.capability == "direct_tm"),
+            None,
+        )
+        if executable is None or direct_tm is None:
+            _fail(
+                "candidate_dependency_stale",
+                "whole-reduction primitive is not bound to executable/direct-TM dependencies",
+            )
+        return (
+            "ComplexityReduction.Program.Primitive.ofTMPolyTime "
+            f"{executable.declaration} {direct_tm.declaration}"
+        )
     if capability == "representation_adapter":
         observed_term = _observed_capability_term(task=task, node=request.node)
         if observed_term is not None:
@@ -1762,6 +1872,21 @@ def _recommended_first_body(
             f"(PolyProg.id {source}.representation)"
         )
     if capability == "poly_program":
+        if task.task_class == "whole_reduction_synthesis":
+            primitives = [
+                node
+                for node in dependency_nodes
+                if node.capability == "reduction_primitive"
+            ]
+            if len(primitives) != 1:
+                _fail(
+                    "candidate_dependency_stale",
+                    "whole-reduction program is not bound to one accepted primitive",
+                )
+            return (
+                "ComplexityReduction.Program.PolyProg.atom "
+                f"{primitives[0].declaration}"
+            )
         if task.task_class == "program_composition":
             first, second = task.allowed_primitives
             return f"PolyProg.comp {second} {first}"
@@ -2464,6 +2589,231 @@ def _node_request(
     return request
 
 
+def _prompt_identifier_tokens(value: str) -> frozenset[str]:
+    expanded = re.sub(r"([a-z0-9])([A-Z])", r"\1 \2", value)
+    return frozenset(
+        token
+        for token in re.findall(r"[A-Za-z][A-Za-z0-9]*", expanded.lower())
+        if len(token) >= 3 and token not in _PROMPT_SOURCE_STOP_WORDS
+    )
+
+
+def _public_source_module(relative_name: str) -> str | None:
+    parts = Path(relative_name).parts
+    try:
+        reference_index = parts.index("Reference")
+    except ValueError:
+        return None
+    module_parts = list(parts[reference_index + 1 :])
+    if not module_parts or not module_parts[-1].endswith(".lean"):
+        return None
+    module_parts[-1] = module_parts[-1].removesuffix(".lean")
+    return ".".join(module_parts)
+
+
+def _source_excerpt(
+    source: str, *, query_tokens: frozenset[str], limit: int
+) -> str:
+    """Return bounded, line-preserving source context around relevant declarations."""
+
+    if len(source) <= limit:
+        return source
+    lines = source.splitlines(keepends=True)
+    selected = set(range(min(28, len(lines))))
+    ranked_lines: list[tuple[int, int]] = []
+    declaration_re = re.compile(
+        r"^\s*(?:def|abbrev|theorem|lemma|structure|class|instance|inductive)\b"
+    )
+    for index, line in enumerate(lines):
+        overlap = len(_prompt_identifier_tokens(line) & query_tokens)
+        if overlap:
+            score = overlap * 10 + int(bool(declaration_re.match(line))) * 5
+            ranked_lines.append((score, index))
+    estimated = sum(len(lines[index]) for index in selected)
+    for _, center in sorted(ranked_lines, key=lambda item: (-item[0], item[1])):
+        window = range(max(0, center - 5), min(len(lines), center + 7))
+        additions = [index for index in window if index not in selected]
+        addition_size = sum(len(lines[index]) for index in additions)
+        if estimated + addition_size > limit - 80:
+            continue
+        selected.update(additions)
+        estimated += addition_size
+    groups: list[str] = []
+    previous: int | None = None
+    for index in sorted(selected):
+        if previous is not None and index != previous + 1:
+            groups.append("-- ... unrelated public source omitted ...\n")
+        groups.append(lines[index])
+        previous = index
+    excerpt = "".join(groups)
+    if len(excerpt) <= limit:
+        return excerpt
+    marker = "\n-- ... public source excerpt truncated ...\n"
+    return excerpt[: limit - len(marker)] + marker
+
+
+def _node_prompt_public_sources(
+    *,
+    task: NPHardAuthoringTaskV2,
+    request: NPHardNodeRequestV1,
+    full_sources: Mapping[str, str],
+    accepted_bodies: Mapping[str, str],
+    diagnostic: str | None,
+) -> tuple[dict[str, str], dict[str, Any]]:
+    """Retrieve a bounded source view for one active capability node."""
+
+    module_to_name = {
+        module: name
+        for name in full_sources
+        if (module := _public_source_module(name)) is not None
+    }
+    source_modules = (task.source_problem.module, task.target_problem.module)
+    endpoint_names = tuple(
+        dict.fromkeys(
+            module_to_name[module]
+            for module in source_modules
+            if module in module_to_name
+        )
+    )
+    query_text = "\n".join(
+        (
+            request.node.node_id,
+            request.node.capability,
+            request.node.declaration,
+            request.node.exact_type,
+            task.source_problem.module,
+            task.source_problem.term,
+            task.target_problem.module,
+            task.target_problem.term,
+            *accepted_bodies.values(),
+            diagnostic or "",
+        )
+    )
+    query_tokens = set(_prompt_identifier_tokens(query_text))
+    for name in endpoint_names:
+        endpoint_source = full_sources[name]
+        query_tokens.update(
+            _prompt_identifier_tokens(
+                "\n".join(_PROMPT_SOURCE_IMPORT_RE.findall(endpoint_source))
+            )
+        )
+        if len(endpoint_source) <= 4_000:
+            query_tokens.update(_prompt_identifier_tokens(endpoint_source))
+    frozen_query_tokens = frozenset(query_tokens)
+
+    import_graph: dict[str, tuple[str, ...]] = {}
+    for name, source in full_sources.items():
+        import_graph[name] = tuple(
+            module_to_name[module]
+            for module in _PROMPT_SOURCE_IMPORT_RE.findall(source)
+            if module in module_to_name
+        )
+    distances: dict[str, int] = {name: 0 for name in endpoint_names}
+    frontier = list(endpoint_names)
+    cursor = 0
+    while cursor < len(frontier):
+        current = frontier[cursor]
+        cursor += 1
+        for imported_name in import_graph.get(current, ()):
+            if imported_name in distances:
+                continue
+            distances[imported_name] = distances[current] + 1
+            frontier.append(imported_name)
+
+    ranked: list[tuple[int, str]] = []
+    for name, source in full_sources.items():
+        path_overlap = len(_prompt_identifier_tokens(name) & frozen_query_tokens)
+        signature_text = "\n".join(
+            line
+            for line in source.splitlines()
+            if line.lstrip().startswith(
+                (
+                    "import ",
+                    "def ",
+                    "abbrev ",
+                    "theorem ",
+                    "lemma ",
+                    "structure ",
+                    "class ",
+                    "instance ",
+                )
+            )
+        )
+        signature_overlap = len(
+            _prompt_identifier_tokens(signature_text) & frozen_query_tokens
+        )
+        distance = distances.get(name)
+        score = path_overlap * 1_200 + min(signature_overlap, 30) * 80
+        if name in endpoint_names:
+            score += 100_000
+        elif distance is not None:
+            score += max(200, 1_400 - distance * 250)
+        if "Benchmark/Hardness/Inputs" in name:
+            score += 1_500
+        ranked.append((score, name))
+
+    selected: dict[str, str] = {}
+    source_chars = 0
+    for _, name in sorted(ranked, key=lambda item: (-item[0], item[1])):
+        if len(selected) >= NP_HARD_NODE_PROMPT_MAX_SOURCE_FILES:
+            break
+        remaining = NP_HARD_NODE_PROMPT_SOURCE_CHAR_BUDGET - source_chars
+        if remaining < 256:
+            break
+        excerpt = _source_excerpt(
+            full_sources[name],
+            query_tokens=frozen_query_tokens,
+            limit=min(NP_HARD_NODE_PROMPT_SOURCE_EXCERPT_CHARS, remaining),
+        )
+        if not excerpt.strip():
+            continue
+        selected[name] = excerpt
+        source_chars += len(excerpt)
+
+    context = {
+        "mode": "node_retrieved_source_excerpts_v1",
+        "source_character_budget": NP_HARD_NODE_PROMPT_SOURCE_CHAR_BUDGET,
+        "source_file_limit": NP_HARD_NODE_PROMPT_MAX_SOURCE_FILES,
+        "included_files": list(selected),
+        "included_file_count": len(selected),
+        "omitted_file_count": len(full_sources) - len(selected),
+        "included_source_characters": source_chars,
+        "complete_dependency_hashes_remain_in_node_request": True,
+    }
+    return selected, context
+
+
+def _node_prompt_dependency_bodies(
+    *,
+    task: NPHardAuthoringTaskV2,
+    request: NPHardNodeRequestV1,
+    accepted_bodies: Mapping[str, str],
+) -> dict[str, str]:
+    by_id = {node.node_id: node for node in task.gap_nodes}
+    required_ids: set[str] = set()
+    frontier = list(request.node.depends_on)
+    while frontier:
+        node_id = frontier.pop()
+        if node_id in required_ids:
+            continue
+        required_ids.add(node_id)
+        dependency = by_id.get(node_id)
+        if dependency is not None:
+            frontier.extend(dependency.depends_on)
+    remaining = NP_HARD_NODE_PROMPT_DEPENDENCY_BODY_CHAR_BUDGET
+    selected: dict[str, str] = {}
+    for node in task.gap_nodes:
+        if node.node_id not in required_ids or node.declaration not in accepted_bodies:
+            continue
+        body = accepted_bodies[node.declaration]
+        if remaining <= 0:
+            break
+        clipped = body[:remaining]
+        selected[node.declaration] = clipped
+        remaining -= len(clipped)
+    return selected
+
+
 def build_np_hard_node_prompt_v1(
     *,
     root: Path,
@@ -2473,29 +2823,42 @@ def build_np_hard_node_prompt_v1(
     diagnostic: str | None,
 ) -> str:
     request.validate(task)
-    public_sources = {
-        name: (root / name).read_text(encoding="utf-8")[:40_000]
+    full_public_sources = {
+        name: (root / name).read_text(encoding="utf-8")
         for name in task.public_source_files
     }
     if task.task_class in _PROGRAM_INDEXED_TASK_CLASSES:
-        _assert_program_indexed_prompt_surface(public_sources)
+        _assert_program_indexed_prompt_surface(full_public_sources)
     if task.task_class == _GADGET_INDEXED_TASK_CLASS:
         _assert_gadget_indexed_prompt_surface(
-            public_sources,
+            full_public_sources,
             allowed_imports=task.allowed_imports,
             dependency_names=tuple(name for name, _ in task.dependency_hashes),
         )
+    prompt_dependency_bodies = _node_prompt_dependency_bodies(
+        task=task,
+        request=request,
+        accepted_bodies=accepted_bodies,
+    )
+    public_sources, public_source_context = _node_prompt_public_sources(
+        task=task,
+        request=request,
+        full_sources=full_public_sources,
+        accepted_bodies=prompt_dependency_bodies,
+        diagnostic=diagnostic,
+    )
     observed_term = _observed_capability_term(task=task, node=request.node)
     recommended_body = _recommended_first_body(
-        task=task, request=request, public_sources=public_sources
+        task=task, request=request, public_sources=full_public_sources
     )
     payload = {
         "schema_version": NP_HARD_NODE_REQUEST_SCHEMA_V1,
         "objective": "prove_np_hard",
         "task_class": task.task_class,
         "node_request": request.to_dict(task),
-        "accepted_dependency_bodies": dict(accepted_bodies),
+        "accepted_dependency_bodies": prompt_dependency_bodies,
         "public_sources": public_sources,
+        "public_source_context": public_source_context,
         "observed_capability_term": observed_term,
         "lean_api_reference": _POLY_PROG_API_REFERENCE,
         "active_capability_guidance": _CAPABILITY_GUIDANCE.get(
@@ -2503,10 +2866,15 @@ def build_np_hard_node_prompt_v1(
             "Follow the exact active node type and its accepted dependencies.",
         ),
         "proof_recipes": _selected_proof_recipes(
-            capability=request.node.capability, public_sources=public_sources
+            capability=request.node.capability,
+            public_sources=full_public_sources,
         ),
         "recommended_first_body": recommended_body,
-        "lean_diagnostic": diagnostic,
+        "lean_diagnostic": (
+            diagnostic[:NP_HARD_NODE_PROMPT_DIAGNOSTIC_CHARS]
+            if diagnostic
+            else None
+        ),
         "policy": {
             "only_active_declaration_is_editable": True,
             "compiler_inserted_math_tokens": 0,
@@ -2941,7 +3309,7 @@ class NPHardGapRuntimeV1:
         while (service_parent / f"run-{service_index:03d}").exists():
             service_index += 1
         service_root = service_parent / f"run-{service_index:03d}"
-        pool = StagePLeanWorkerPool(
+        pool = LeanWorkerPool(
             lean_root=self.root / "Lean",
             workspace_root=self.output_root,
             service_root=service_root,
@@ -3079,7 +3447,7 @@ class NPHardGapRuntimeV1:
                             ]
                         )
                     )
-                    key = StagePLeanWorkerKey(
+                    key = LeanWorkerKey(
                         toolchain=(self.root / "Lean" / "lean-toolchain").read_text(
                             encoding="utf-8"
                         ).strip(),
@@ -3103,7 +3471,7 @@ class NPHardGapRuntimeV1:
                             use_cache=False,
                             allow_cold_fallback=False,
                         )
-                    except StagePContractError as error:
+                    except HardnessContractError as error:
                         failure_code = "lean_infrastructure_error"
                         failure_message = f"{error.code}: {error.message}"
                         break

@@ -278,15 +278,22 @@ def _apply_postrun_policy(
     *,
     capability_policy: Mapping[str, Any],
     exact_policy: Mapping[str, Any],
+    boolean_policy: Mapping[str, Any],
 ) -> None:
     """Open scorer-only data only after every direct LLM request has finished."""
 
     for row in rows:
         body_file = Path(str(row["case_dir"])) / "ProofBody.txt"
         body = body_file.read_text(encoding="utf-8") if body_file.is_file() else ""
-        if row["kind"] in {"capability", "frontier"}:
-            policy = capability_policy.get(row["case_id"])
-            scored = bool(isinstance(policy, Mapping) and policy.get("scored") is True)
+        if row["kind"] in {"capability", "frontier", "boolean_csp"}:
+            is_boolean = row["kind"] == "boolean_csp"
+            policy = (boolean_policy if is_boolean else capability_policy).get(
+                row["case_id"]
+            )
+            scored = bool(
+                isinstance(policy, Mapping)
+                and (is_boolean or policy.get("scored") is True)
+            )
             row["postrun_policy"] = {
                 "scored": scored,
                 "eligible": scored,
@@ -500,15 +507,16 @@ def run_oneshot_llm_benchmark(
             rows.append(future.result())
     rows.sort(key=lambda row: int(row["ordinal"]))
 
-    capability_policy, exact_policy = _load_postrun_policy(root)
+    capability_policy, exact_policy, boolean_policy = _load_postrun_policy(root)
     _apply_postrun_policy(
         rows,
         capability_policy=capability_policy,
         exact_policy=exact_policy,
+        boolean_policy=boolean_policy,
     )
     metrics = {
         lane: _lane_metrics(rows, lane)
-        for lane in ("capability", "frontier", "exact_edge")
+        for lane in ("capability", "frontier", "exact_edge", "boolean_csp")
         if any(row["kind"] == lane for row in rows)
     }
     archon_comparison = _archon_comparison(

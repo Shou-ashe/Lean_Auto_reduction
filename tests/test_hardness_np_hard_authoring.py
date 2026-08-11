@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 import json
+from dataclasses import replace
 from pathlib import Path
 
 import pytest
 
+from agent.hardness.authoring_contract import HardnessContractError
 from agent.hardness.model_client import ModelResponse
 from agent.hardness.models import CommandResult
 from agent.hardness.np_hard_authoring import (
@@ -58,6 +60,29 @@ def test_authoring_task_and_candidate_freeze_forward_exact_type() -> None:
     assert authoring_task.exact_type in candidate.fixed_header
     assert "complexity_reduction_ir_typed_edge" in candidate.fixed_header
     assert "assert_standard_axioms" in candidate.fixed_footer
+
+
+def test_candidate_body_replacement_preserves_runner_owned_fences() -> None:
+    candidate = build_np_hard_candidate(task())
+    replacement = candidate.replace_body("by\n  exact authoredReduction\n")
+    assert replacement.fixed_header_sha256 == candidate.fixed_header_sha256
+    assert replacement.fixed_footer_sha256 == candidate.fixed_footer_sha256
+    assert replacement.editable_body == "by\n  exact authoredReduction\n"
+    assert replacement.source_sha256 != candidate.source_sha256
+    assert replacement.compiler_inserted_math_token_count == 0
+
+
+def test_candidate_rejects_import_outside_current_task_allowlist() -> None:
+    candidate = build_np_hard_candidate(task())
+    unlisted = replace(
+        candidate,
+        fixed_header=candidate.fixed_header.replace(
+            "import Example.Target", "import Example.Unlisted"
+        ),
+    )
+    with pytest.raises(HardnessContractError) as captured:
+        unlisted.validate()
+    assert captured.value.code == "import_not_allowlisted"
 
 
 def test_authoring_parser_rejects_direction_and_endpoint_mutation() -> None:

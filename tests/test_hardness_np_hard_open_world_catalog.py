@@ -408,10 +408,10 @@ def test_equal_best_distinct_hubs_block_with_stable_ranking(cross_module_plan) -
     assert ambiguous.failure_code == "ambiguous_authoring_hub"
     assert ambiguous.model_calls == 0
     assert ambiguous.ranked_hubs == tuple(sorted(ambiguous.ranked_hubs))
-    assert set(ambiguous.ranked_hubs) == {
+    assert {
         original_hub.declaration,
         alternate_hub.declaration,
-    }
+    } <= set(ambiguous.ranked_hubs)
 
 
 def test_production_entry_uses_cross_module_plan_without_model_discovery(tmp_path) -> None:

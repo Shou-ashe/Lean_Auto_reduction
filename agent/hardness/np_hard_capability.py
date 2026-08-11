@@ -32,6 +32,10 @@ from .np_hard_authoring import (
     validate_successor_only_authoritative_evidence_v2,
 )
 from .np_hard_input import NPHardInputError
+from .np_hard_input import (
+    NP_HARD_INPUT_REGISTRY_PATH,
+    NP_HARD_TARGET_MATRIX_PATH,
+)
 from .np_hard_orchestrator import (
     NP_HARD_PROOF_RESULT_SCHEMA_V2,
     NPHardOrchestratorConfigV2,
@@ -40,6 +44,7 @@ from .np_hard_orchestrator import (
     NPHardProofResultV2,
 )
 from .np_hard_production import (
+    FORMAL_MAX_TOKENS,
     PUBLIC_STATUSES,
     is_formal_np_hard_qualification_config,
     public_np_hard_status,
@@ -196,9 +201,13 @@ FORMAL_PUBLIC_PROFILE = {
     "model": "deepseek-v4-flash",
     "timeout_seconds": 300,
     "temperature": 0.0,
-    "max_tokens": 16_000,
+    "max_tokens": FORMAL_MAX_TOKENS,
     "max_retries": 0,
     "reasoning_effort": "low",
+}
+LEGACY_FORMAL_PUBLIC_PROFILE = {
+    **FORMAL_PUBLIC_PROFILE,
+    "max_tokens": 16_000,
 }
 MANIFEST_FIELDS_V1 = frozenset(
     {
@@ -716,12 +725,19 @@ def _parse_file_reference(
     )
 
 
-def _validate_required_model_profile(value: Any) -> dict[str, Any]:
+def _validate_required_model_profile(
+    value: Any, *, schema_version: str
+) -> dict[str, Any]:
     if not isinstance(value, Mapping):
         _fail("invalid_capability_schema", "required_model_profile must be an object")
     _exact_keys(value, MODEL_PROFILE_FIELDS, label="required_model_profile")
     normalized = dict(value)
-    if normalized != FORMAL_PUBLIC_PROFILE:
+    expected = (
+        LEGACY_FORMAL_PUBLIC_PROFILE
+        if schema_version == CAPABILITY_MANIFEST_SCHEMA_V1
+        else FORMAL_PUBLIC_PROFILE
+    )
+    if normalized != expected:
         _fail(
             "qualification_model_profile_mismatch",
             "capability manifest does not freeze the accepted DeepSeek V4 Flash profile",
@@ -1015,7 +1031,7 @@ def load_capability_manifest(
         scope_policy=scope_policy,
         target_matrix=target_matrix,
         required_model_profile=_validate_required_model_profile(
-            value["required_model_profile"]
+            value["required_model_profile"], schema_version=schema_version
         ),
         objective=str(value["objective"]),
         final_lean_type=str(value["final_lean_type"]),
@@ -1673,19 +1689,13 @@ def build_capability_isolated_workspace(
         linked_packages = True
 
     _copy_file(
-        root / "Gate" / "np_hard_input_registry.json",
-        destination / "Gate" / "np_hard_input_registry.json",
+        root / NP_HARD_INPUT_REGISTRY_PATH,
+        destination / NP_HARD_INPUT_REGISTRY_PATH,
     )
     _copy_file(
         target_matrix_path.resolve(),
-        destination / "Gate" / "NP_HARD_TARGET_MATRIX.json",
+        destination / NP_HARD_TARGET_MATRIX_PATH,
     )
-    inventory = root / "Gate" / "NP_HARD_H_F_INVENTORY.json"
-    if inventory.is_file():
-        _copy_file(
-            inventory,
-            destination / "Gate" / "NP_HARD_H_F_INVENTORY.json",
-        )
     _copy_file(
         scope_policy_path.resolve(),
         destination / "agent" / "hardness" / "data" / "np_hard_scope_policy.json",
@@ -1736,7 +1746,15 @@ def _validate_formal_profile(
 ) -> None:
     if not deepseek.api_key:
         _fail("model_provider_unavailable", "formal capability run requires an API key")
-    if not is_formal_np_hard_qualification_config(deepseek):
+    expected = dict(required_profile)
+    if expected != FORMAL_PUBLIC_PROFILE and expected != LEGACY_FORMAL_PUBLIC_PROFILE:
+        _fail(
+            "qualification_model_profile_mismatch",
+            "capability manifest requires an unsupported model profile",
+        )
+    if expected == FORMAL_PUBLIC_PROFILE and not is_formal_np_hard_qualification_config(
+        deepseek
+    ):
         _fail(
             "qualification_model_profile_mismatch",
             "capability run requires the accepted DeepSeek V4 Flash profile",
@@ -1746,7 +1764,7 @@ def _validate_formal_profile(
         "provider": "DeepSeek",
         **{key: value for key, value in public.items() if key != "api_key_configured"},
     }
-    if dict(required_profile) != actual:
+    if expected != actual:
         _fail(
             "qualification_model_profile_mismatch",
             "runtime model profile differs from the content-addressed manifest",
@@ -2042,7 +2060,11 @@ def run_np_hard_capability_benchmark(
     )
     normalized_splits = tuple(selected_splits) or CAPABILITY_SPLITS
     cases = _selected_cases(
-        bundle, normalized_splits, selected_case_ids=tuple(selected_case_ids or ())
+        bundle,
+        normalized_splits,
+        selected_case_ids=(
+            None if selected_case_ids is None else tuple(selected_case_ids)
+        ),
     )
     output_root = output_root.resolve()
     _fresh_directory(output_root, label="capability output root")

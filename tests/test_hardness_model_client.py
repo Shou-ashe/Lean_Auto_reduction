@@ -1,4 +1,5 @@
 import io
+import http.client
 import json
 import urllib.error
 from unittest.mock import patch
@@ -147,6 +148,30 @@ def test_http_200_empty_content_is_retried_before_failing_the_model_turn() -> No
     assert response.ok is True
     assert response.attempts == 2
     assert response.content == '{"action":"search_problems"}'
+
+
+def test_incomplete_http_body_becomes_an_auditable_failed_call() -> None:
+    class Response:
+        status = 200
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *args: object) -> None:
+            return None
+
+        def read(self, limit: int) -> bytes:
+            del limit
+            raise http.client.IncompleteRead(b"")
+
+    client = DeepSeekClient(DeepSeekConfig(api_key="test-key", max_retries=0))
+    with patch("urllib.request.urlopen", return_value=Response()):
+        response = client.complete_json(system="system", prompt="prompt")
+    assert response.called is True
+    assert response.ok is False
+    assert response.status_code is None
+    assert response.attempts == 1
+    assert response.error == "request failed: IncompleteRead(0 bytes read)"
 
 
 def test_smoke_requires_nonce_echo_and_usage_without_starting_lean() -> None:

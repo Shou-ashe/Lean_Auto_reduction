@@ -1,4 +1,4 @@
-"""Persistent, session-isolated Lean LSP validation workers for Stage P."""
+"""Persistent, session-isolated Lean LSP validation workers."""
 
 from __future__ import annotations
 
@@ -14,6 +14,11 @@ from dataclasses import asdict, dataclass, field, replace
 from pathlib import Path
 from typing import Any, Callable, Mapping, Protocol
 
+from .authoring_contract import (
+    CONTENT_SHA256_RE,
+    LEAN_WORKER_SESSION_SCHEMA,
+    HardnessContractError,
+)
 from .lean_runner import (
     ORACLE_SOURCE_MARKERS,
     assert_generated_source_is_safe,
@@ -21,21 +26,20 @@ from .lean_runner import (
     validate_module_name,
 )
 from .models import CommandResult, sha256_id
-from .stage_p_contract import SHA256_RE, STAGE_P_WORKER_SCHEMA, StagePContractError
 
 
-STAGE_P_WORKER_KEY_SCHEMA = "hardness_stage_p_lean_worker_key_v1"
-STAGE_P_WORKER_RESULT_SCHEMA = "hardness_stage_p_lean_worker_result_v1"
-STAGE_P_MAX_WORKERS = 4
-STAGE_P_WORKER_PROFILE = "stage_p_isolated_v1"
+LEAN_WORKER_KEY_SCHEMA = "hardness_lean_worker_key_v1"
+LEAN_WORKER_RESULT_SCHEMA = "hardness_lean_worker_result_v1"
+MAX_LEAN_WORKERS = 4
+LEAN_WORKER_PROFILE = "hardness_isolated_v1"
 EXTRA_UNSAFE_SOURCE_RE = re.compile(
     r"\b(?:unsafe|run_tac|include_str|include_bytes|unsafeCast|implemented_by)\b"
 )
 
 
 def _require_hash(value: str, *, label: str) -> None:
-    if not isinstance(value, str) or not SHA256_RE.fullmatch(value):
-        raise StagePContractError("lean_worker_stale_result", f"{label} is not a content hash")
+    if not isinstance(value, str) or not CONTENT_SHA256_RE.fullmatch(value):
+        raise HardnessContractError("lean_worker_stale_result", f"{label} is not a content hash")
 
 
 def _source_sha256(source: str) -> str:
@@ -47,7 +51,7 @@ def _diagnostics_sha256(diagnostics: list[dict[str, Any]]) -> str:
 
 
 @dataclass(frozen=True)
-class StagePLeanWorkerKey:
+class LeanWorkerKey:
     toolchain: str
     lake_manifest_sha256: str
     base_registry_fingerprint: str
@@ -56,14 +60,14 @@ class StagePLeanWorkerKey:
     namespace: str
     session_id: str
     editable_allowlist: tuple[str, ...]
-    validation_profile: str = STAGE_P_WORKER_PROFILE
-    schema_version: str = STAGE_P_WORKER_KEY_SCHEMA
+    validation_profile: str = LEAN_WORKER_PROFILE
+    schema_version: str = LEAN_WORKER_KEY_SCHEMA
 
     def validate(self) -> None:
-        if self.schema_version != STAGE_P_WORKER_KEY_SCHEMA:
-            raise StagePContractError("lean_worker_stale_result", "worker key schema drifted")
+        if self.schema_version != LEAN_WORKER_KEY_SCHEMA:
+            raise HardnessContractError("lean_worker_stale_result", "worker key schema drifted")
         if not self.toolchain.strip():
-            raise StagePContractError("lean_worker_stale_result", "worker key toolchain is empty")
+            raise HardnessContractError("lean_worker_stale_result", "worker key toolchain is empty")
         for label, value in {
             "lake_manifest_sha256": self.lake_manifest_sha256,
             "base_registry_fingerprint": self.base_registry_fingerprint,
@@ -78,22 +82,22 @@ class StagePLeanWorkerKey:
         if not self.dependency_sha256 or len(set(self.dependency_sha256)) != len(
             self.dependency_sha256
         ):
-            raise StagePContractError(
+            raise HardnessContractError(
                 "lean_worker_stale_result", "worker dependencies are empty or duplicated"
             )
         try:
             validate_module_name(self.namespace)
         except ValueError as error:
-            raise StagePContractError("lean_worker_session_leak", str(error)) from error
+            raise HardnessContractError("lean_worker_session_leak", str(error)) from error
         if not self.editable_allowlist or len(set(self.editable_allowlist)) != len(
             self.editable_allowlist
         ):
-            raise StagePContractError(
+            raise HardnessContractError(
                 "lean_worker_stale_result", "worker editable allowlist is empty or duplicated"
             )
-        if self.validation_profile != STAGE_P_WORKER_PROFILE:
-            raise StagePContractError(
-                "lean_worker_stale_result", "worker validation profile is not Stage P strict"
+        if self.validation_profile != LEAN_WORKER_PROFILE:
+            raise HardnessContractError(
+                "lean_worker_stale_result", "worker validation profile is not strict"
             )
 
     @property
@@ -103,7 +107,7 @@ class StagePLeanWorkerKey:
 
 
 @dataclass(frozen=True)
-class StagePLeanWorkerResult:
+class LeanWorkerResult:
     session_id: str
     owner: str
     worker_index: int
@@ -119,7 +123,7 @@ class StagePLeanWorkerResult:
     diagnostics_sha256: str
     wall_duration_seconds: float
     command: CommandResult | None = None
-    schema_version: str = STAGE_P_WORKER_RESULT_SCHEMA
+    schema_version: str = LEAN_WORKER_RESULT_SCHEMA
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -179,7 +183,7 @@ class LeanLSPWorker:
     def _send(self, message: Mapping[str, Any]) -> None:
         process = self._process
         if process is None or process.stdin is None or process.poll() is not None:
-            raise StagePContractError("lean_worker_crashed", "Lean worker is not alive")
+            raise HardnessContractError("lean_worker_crashed", "Lean worker is not alive")
         payload = json.dumps(message, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
         frame = f"Content-Length: {len(payload)}\r\n\r\n".encode("ascii") + payload
         try:
@@ -187,7 +191,7 @@ class LeanLSPWorker:
                 process.stdin.write(frame)
                 process.stdin.flush()
         except (BrokenPipeError, OSError) as error:
-            raise StagePContractError("lean_worker_crashed", "Lean worker pipe closed") from error
+            raise HardnessContractError("lean_worker_crashed", "Lean worker pipe closed") from error
 
     @staticmethod
     def _read_exact(stream: Any, length: int) -> bytes:
@@ -269,7 +273,7 @@ class LeanLSPWorker:
             if remaining <= 0:
                 stderr = "\n".join(self._stderr_lines[-20:])
                 observed = ", ".join(observed_messages[-20:])
-                raise StagePContractError(
+                raise HardnessContractError(
                     "lean_worker_crashed",
                     (
                         "Lean worker response timed out"
@@ -282,7 +286,7 @@ class LeanLSPWorker:
             except queue.Empty as error:
                 stderr = "\n".join(self._stderr_lines[-20:])
                 observed = ", ".join(observed_messages[-20:])
-                raise StagePContractError(
+                raise HardnessContractError(
                     "lean_worker_crashed",
                     (
                         "Lean worker response timed out"
@@ -292,7 +296,7 @@ class LeanLSPWorker:
                 ) from error
             if message.get("__worker_eof__"):
                 stderr = "\n".join(self._stderr_lines[-20:])
-                raise StagePContractError(
+                raise HardnessContractError(
                     "lean_worker_crashed",
                     f"Lean worker exited: {message.get('error', '')}\n{stderr}".strip(),
                 )
@@ -319,7 +323,7 @@ class LeanLSPWorker:
             if message.get("id") != request_id:
                 continue
             if "error" in message:
-                raise StagePContractError(
+                raise HardnessContractError(
                     "lean_worker_crashed", f"Lean worker JSON-RPC error: {message['error']}"
                 )
             return latest_diagnostics
@@ -490,7 +494,7 @@ class LeanLSPWorker:
         self._process = None
 
 
-class StagePLeanWorkerPool:
+class LeanWorkerPool:
     """At most four persistent workers with exact-key successful-result caching."""
 
     def __init__(
@@ -499,12 +503,12 @@ class StagePLeanWorkerPool:
         lean_root: Path,
         workspace_root: Path,
         service_root: Path,
-        maximum_workers: int = STAGE_P_MAX_WORKERS,
+        maximum_workers: int = MAX_LEAN_WORKERS,
         timeout_seconds: int = 300,
         worker_factory: Callable[[int, int], _PersistentWorker] | None = None,
     ):
-        if isinstance(maximum_workers, bool) or not 1 <= maximum_workers <= STAGE_P_MAX_WORKERS:
-            raise ValueError("Stage P worker count must be between one and four")
+        if isinstance(maximum_workers, bool) or not 1 <= maximum_workers <= MAX_LEAN_WORKERS:
+            raise ValueError("Lean worker count must be between one and four")
         self.lean_root = lean_root.resolve()
         self.workspace_root = workspace_root.resolve()
         self.service_root = service_root.resolve()
@@ -521,7 +525,7 @@ class StagePLeanWorkerPool:
         self._workers: list[_PersistentWorker | None] = [None] * maximum_workers
         self._worker_generations: list[int] = [1] * maximum_workers
         self._sessions: dict[str, _WorkerSession] = {}
-        self._cache: dict[str, StagePLeanWorkerResult] = {}
+        self._cache: dict[str, LeanWorkerResult] = {}
         self._cache_worker: dict[str, int] = {}
         self._state_lock = threading.RLock()
         self._next_worker = 0
@@ -545,18 +549,18 @@ class StagePLeanWorkerPool:
 
     def start_session(self, *, owner: str, namespace: str) -> str:
         if not owner.strip():
-            raise StagePContractError("lean_worker_session_leak", "session owner is empty")
+            raise HardnessContractError("lean_worker_session_leak", "session owner is empty")
         try:
             validate_module_name(namespace)
         except ValueError as error:
-            raise StagePContractError("lean_worker_session_leak", str(error)) from error
+            raise HardnessContractError("lean_worker_session_leak", str(error)) from error
         with self._state_lock:
             worker_index = self._next_worker
             self._next_worker = (self._next_worker + 1) % self.maximum_workers
             generation = self._worker_generations[worker_index]
             session_id = sha256_id(
                 {
-                    "schema_version": STAGE_P_WORKER_SCHEMA,
+                    "schema_version": LEAN_WORKER_SESSION_SCHEMA,
                     "owner": owner,
                     "namespace": namespace,
                     "worker_index": worker_index,
@@ -578,7 +582,7 @@ class StagePLeanWorkerPool:
         with self._state_lock:
             session = self._sessions.get(session_id)
         if session is None or session.owner != owner:
-            raise StagePContractError(
+            raise HardnessContractError(
                 "lean_worker_session_leak", "worker session is absent or belongs to another case"
             )
         return session
@@ -593,20 +597,20 @@ class StagePLeanWorkerPool:
         try:
             resolved.relative_to(self.workspace_root)
         except ValueError as error:
-            raise StagePContractError(
+            raise HardnessContractError(
                 "lean_worker_session_leak", "candidate source escaped the workspace root"
             ) from error
         if not resolved.is_file():
-            raise StagePContractError(
+            raise HardnessContractError(
                 "lean_worker_stale_result", "candidate source was deleted before validation"
             )
         source = resolved.read_text(encoding="utf-8")
         if EXTRA_UNSAFE_SOURCE_RE.search(source):
-            raise StagePContractError(
+            raise HardnessContractError(
                 "sorry_axiom_or_unsafe_candidate", "worker source contains an unsafe token"
             )
         if any(marker in source for marker in ORACLE_SOURCE_MARKERS):
-            raise StagePContractError(
+            raise HardnessContractError(
                 "oracle_or_gold_import", "worker source imports quarantined data"
             )
         try:
@@ -618,7 +622,7 @@ class StagePLeanWorkerPool:
                 if "quarantined" in message
                 else "sorry_axiom_or_unsafe_candidate"
             )
-            raise StagePContractError(code, message) from error
+            raise HardnessContractError(code, message) from error
         return resolved, source
 
     @staticmethod
@@ -627,7 +631,7 @@ class StagePLeanWorkerPool:
         if not re.search(rf"(?m)^\s*namespace\s+{escaped}\s*$", source) or not re.search(
             rf"(?m)^\s*end\s+{escaped}\s*$", source
         ):
-            raise StagePContractError(
+            raise HardnessContractError(
                 "lean_worker_session_leak", "candidate source does not own the session namespace"
             )
 
@@ -660,28 +664,28 @@ class StagePLeanWorkerPool:
         *,
         session_id: str,
         owner: str,
-        key: StagePLeanWorkerKey,
+        key: LeanWorkerKey,
         source_path: Path,
         dependency_sha256: tuple[str, ...],
         use_cache: bool = True,
         allow_cold_fallback: bool = True,
-    ) -> StagePLeanWorkerResult:
+    ) -> LeanWorkerResult:
         started = time.monotonic()
         session = self._session(session_id=session_id, owner=owner)
         key.validate()
         if key.session_id != session_id or key.namespace != session.namespace:
-            raise StagePContractError(
+            raise HardnessContractError(
                 "lean_worker_session_leak", "worker key differs from session ownership"
             )
         resolved, source = self._source_text(source_path)
         self._assert_namespace(source, session.namespace)
         source_hash = _source_sha256(source)
         if source_hash != key.complete_source_sha256:
-            raise StagePContractError(
+            raise HardnessContractError(
                 "lean_worker_stale_result", "candidate source differs from worker key"
             )
         if tuple(dependency_sha256) != key.dependency_sha256:
-            raise StagePContractError(
+            raise HardnessContractError(
                 "lean_worker_stale_result", "dependency state differs from worker key"
             )
         cache_key = key.cache_key
@@ -696,7 +700,7 @@ class StagePLeanWorkerPool:
                 or cached.source_path != str(resolved)
                 or cached.dependency_sha256 != dependency_sha256
             ):
-                raise StagePContractError(
+                raise HardnessContractError(
                     "lean_worker_stale_result", "cached worker result is stale"
                 )
             self.cache_hit_count += 1
@@ -715,7 +719,7 @@ class StagePLeanWorkerPool:
                 timeout_seconds=self.timeout_seconds,
             )
             current_session = self._session(session_id=session_id, owner=owner)
-            result = StagePLeanWorkerResult(
+            result = LeanWorkerResult(
                 session_id=session_id,
                 owner=owner,
                 worker_index=current_session.worker_index,
@@ -735,9 +739,9 @@ class StagePLeanWorkerPool:
             self.worker_crash_count += 1
             self._restart_worker(session.worker_index)
             if not allow_cold_fallback:
-                if isinstance(error, StagePContractError):
+                if isinstance(error, HardnessContractError):
                     raise
-                raise StagePContractError("lean_worker_crashed", str(error)) from error
+                raise HardnessContractError("lean_worker_crashed", str(error)) from error
             command = run_command(
                 ["lake", "env", "lean", str(resolved)],
                 cwd=self.lean_root,
@@ -751,7 +755,7 @@ class StagePLeanWorkerPool:
                 else [{"severity": 1, "message": diagnostics_text[-8_000:]}]
             )
             current_session = self._session(session_id=session_id, owner=owner)
-            result = StagePLeanWorkerResult(
+            result = LeanWorkerResult(
                 session_id=session_id,
                 owner=owner,
                 worker_index=current_session.worker_index,
@@ -792,21 +796,21 @@ class StagePLeanWorkerPool:
         *,
         session_id: str,
         owner: str,
-        key: StagePLeanWorkerKey,
+        key: LeanWorkerKey,
         source_path: Path,
         dependency_sha256: tuple[str, ...],
         repeat_count: int = 20,
         cold_parallelism: int | None = None,
     ) -> dict[str, Any]:
         if repeat_count != 20:
-            raise StagePContractError("lean_worker_stale_result", "microbenchmark requires 20 repeats")
+            raise HardnessContractError("lean_worker_stale_result", "microbenchmark requires 20 repeats")
         if cold_parallelism is None:
             cold_parallelism = self.maximum_workers
         if (
             isinstance(cold_parallelism, bool)
             or not 1 <= cold_parallelism <= self.maximum_workers
         ):
-            raise StagePContractError(
+            raise HardnessContractError(
                 "lean_worker_stale_result",
                 "cold benchmark parallelism must be within the configured worker bound",
             )
@@ -824,7 +828,7 @@ class StagePLeanWorkerPool:
             cold_results = list(executor.map(cold, range(repeat_count)))
         cold_wall = time.monotonic() - cold_started
         if any(result.exit_code != 0 or result.timed_out for result in cold_results):
-            raise StagePContractError("final_lean_failed", "forced-cold worker benchmark failed")
+            raise HardnessContractError("final_lean_failed", "forced-cold worker benchmark failed")
         cold_seconds = [result.duration_seconds for result in cold_results]
 
         self.invalidate(key.cache_key)
@@ -838,7 +842,7 @@ class StagePLeanWorkerPool:
             allow_cold_fallback=False,
         )
         if not priming.verified:
-            raise StagePContractError("final_lean_failed", "persistent worker priming failed")
+            raise HardnessContractError("final_lean_failed", "persistent worker priming failed")
         persistent_started = time.monotonic()
         warm_results = [
             self.validate(
@@ -854,7 +858,7 @@ class StagePLeanWorkerPool:
         ]
         persistent_wall = time.monotonic() - persistent_started
         if any(not result.verified or result.fallback_used for result in warm_results):
-            raise StagePContractError(
+            raise HardnessContractError(
                 "lean_worker_stale_result", "persistent warm validation failed"
             )
         warm_seconds = [result.wall_duration_seconds for result in warm_results]

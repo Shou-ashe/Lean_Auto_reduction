@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import hashlib
+import http.client
 import os
 import re
 import secrets
@@ -312,7 +313,12 @@ class DeepSeekClient:
                     break
             except (TimeoutError, socket.timeout) as error:
                 last_error = f"timeout: {error}"
-            except (urllib.error.URLError, json.JSONDecodeError, OSError) as error:
+            except (
+                urllib.error.URLError,
+                json.JSONDecodeError,
+                OSError,
+                http.client.HTTPException,
+            ) as error:
                 last_error = self.config.redact(f"request failed: {error}")
             if last_error:
                 last_error = self.config.redact(last_error)

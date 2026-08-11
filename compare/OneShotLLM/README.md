@@ -5,7 +5,7 @@ control for the hardness benchmark.
 
 For every case it uses the same formal model profile as the production agent
 and Archon (`deepseek-v4-flash`, temperature `0`, reasoning effort `low`,
-16,000 output tokens, 300-second timeout, zero retries). It makes exactly one
+64,000 output tokens, 300-second timeout, zero retries). It makes exactly one
 chat-completions request and offers no tools, Lean feedback, follow-up turn,
 planner, prover loop, or reviewer.
 
@@ -15,10 +15,11 @@ identical: public statement, formal Lean goal, and proof-kind requirement only.
 Library sources, recommended proof bodies, oracles, typed DAGs, routes,
 dependency proof bodies, and diagnostics are absent.
 
-Run the frozen 50-case registry with four parallel requests:
+Run the frozen 78-case registry through the repository's only benchmark runner:
 
 ```bash
-python3 compare/OneShotLLM/run_benchmark.py \
+python3 scripts/run_hardness_benchmark.py \
+  --agent oneshot-llm \
   --jobs 4 \
   --output-root .reduction-agent/benchmark-oneshot-llm \
   --env-file .env

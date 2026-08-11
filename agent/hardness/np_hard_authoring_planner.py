@@ -160,38 +160,75 @@ def _canonical_lean_text(value: str) -> str:
 
 
 def _relevant_direct_public_sources(
-    *, root: Path, source_files: Iterable[Path], query_values: Iterable[str]
+    *,
+    root: Path,
+    source_files: Iterable[Path],
+    query_values: Iterable[str],
+    max_depth: int = 1,
+    max_files: int = 2,
 ) -> tuple[Path, ...]:
-    """Select bounded, content-addressed public context from direct imports."""
+    """Select bounded, content-addressed public context from relevant imports."""
 
     query_tokens = set().union(*(_identifier_tokens(value) for value in query_values))
-    ranked: dict[Path, tuple[int, str]] = {}
-    for source_file in source_files:
-        for line in source_file.read_text(encoding="utf-8").splitlines():
-            stripped = line.strip()
-            if not stripped.startswith("import "):
-                continue
-            imported = stripped.removeprefix("import ").strip()
-            if not imported or any(token in imported.lower() for token in _FORBIDDEN_TEXT):
-                continue
-            score = len(query_tokens & _identifier_tokens(imported))
-            if score <= 0:
-                continue
-            try:
-                imported_file = module_file(root / "Lean", imported).resolve()
-                imported_file.relative_to(root)
-            except (ValueError, OSError):
-                continue
-            if imported_file.is_file() and imported_file not in source_files:
-                ranked[imported_file] = max(
-                    ranked.get(imported_file, (0, imported)), (score, imported)
+    if max_depth < 1 or max_files < 1:
+        return ()
+    known = set(source_files)
+    frontier = tuple(sorted(known, key=str))
+    selected: list[Path] = []
+    per_depth_limit = max(1, (max_files + max_depth - 1) // max_depth)
+    for _ in range(max_depth):
+        ranked: dict[Path, tuple[int, str]] = {}
+        for source_file in frontier:
+            source_lines = source_file.read_text(encoding="utf-8").splitlines()
+            local_tokens = query_tokens | _identifier_tokens(
+                "\n".join(
+                    line
+                    for line in source_lines
+                    if not line.strip().startswith("import ")
                 )
-    return tuple(
-        path
-        for path, _ in sorted(
-            ranked.items(), key=lambda item: (-item[1][0], item[1][1])
-        )[:2]
-    )
+            )
+            for line in source_lines:
+                stripped = line.strip()
+                if not stripped.startswith("import "):
+                    continue
+                imported = stripped.removeprefix("import ").strip()
+                if not imported or any(
+                    token in imported.lower() for token in _FORBIDDEN_TEXT
+                ):
+                    continue
+                score = len(local_tokens & _identifier_tokens(imported))
+                input_owned = (
+                    "Benchmark" in source_file.parts
+                    and "Inputs" in source_file.parts
+                )
+                if score <= 0 and not input_owned:
+                    continue
+                if input_owned:
+                    score += 3
+                try:
+                    imported_file = module_file(root / "Lean", imported).resolve()
+                    imported_file.relative_to(root)
+                except (ValueError, OSError):
+                    continue
+                if imported_file.is_file() and imported_file not in known:
+                    ranked[imported_file] = max(
+                        ranked.get(imported_file, (0, imported)),
+                        (score, imported),
+                    )
+        additions = tuple(
+            path
+            for path, _ in sorted(
+                ranked.items(), key=lambda item: (-item[1][0], item[1][1])
+            )[: min(per_depth_limit, max_files - len(selected))]
+        )
+        if not additions:
+            break
+        selected.extend(additions)
+        known.update(additions)
+        frontier = additions
+        if len(selected) >= max_files:
+            break
+    return tuple(selected)
 
 
 def _ilean_roots(root: Path) -> tuple[Path, ...]:
@@ -1238,6 +1275,49 @@ def _task_gap_nodes(
                 "depends_on": ["mapping-invariant"],
             },
         )
+    if task_class == "whole_reduction_synthesis":
+        return (
+            {
+                "id": "reduction-executable",
+                "reason": "openReductionConstruction",
+                "depends_on": [],
+            },
+            {
+                "id": "direct-tm",
+                "reason": "directTMPolynomialTime",
+                "depends_on": ["reduction-executable"],
+            },
+            {
+                "id": "reduction-primitive",
+                "reason": "directTMPrimitive",
+                "depends_on": ["reduction-executable", "direct-tm"],
+            },
+            {
+                "id": "poly-program",
+                "reason": "directTMProgram",
+                "depends_on": ["reduction-primitive"],
+            },
+            {
+                "id": "program-run-coherence",
+                "reason": "executableRelationContract",
+                "depends_on": ["poly-program", "reduction-executable"],
+            },
+            {
+                "id": "semantic-forward",
+                "reason": "semanticForwardImplication",
+                "depends_on": ["poly-program", "program-run-coherence"],
+            },
+            {
+                "id": "semantic-reverse",
+                "reason": "semanticReverseImplication",
+                "depends_on": ["poly-program", "program-run-coherence"],
+            },
+            {
+                "id": "semantic-iff",
+                "reason": "semanticIff",
+                "depends_on": ["semantic-forward", "semantic-reverse"],
+            },
+        )
     if task_class == "typed_capability_dag":
         return (
             {
@@ -1890,26 +1970,27 @@ def plan_np_hard_authoring_from_observation(
     tmkarp_program_packet_sources = {
         admission.source for admission, _ in tmkarp_program_packet_chains
     }
+    open_synthesis_sources = {
+        seed.problem
+        for seed in observation.hardness_seeds
+        if seed.problem in problems and problem_node(seed.problem) != target_node
+    }
+    open_synthesis_nodes = {
+        problem_node(source) for source in open_synthesis_sources
+    }
     candidate_names = (
         gap_source_names
         | incoming_program_sources
         | direct_typed_capability_sources
         | dependent_capability_sources
         | tmkarp_program_packet_sources
+        | open_synthesis_sources
     )
     if not candidate_names:
         return NPHardAuthoringPlanV2(
             status="BLOCKED",
-            failure_code="authoring_plan_missing_capability",
-            missing_capabilities=(
-                "forward_hardness_hub",
-                "typed_forward_gap",
-                "forward_representation_adapter",
-                "forward_tmkarp_dependent_composition",
-                "forward_successor_only_tmkarp_admission",
-                "forward_program_indexed_admission",
-                "forward_gadget_indexed_admission",
-            ),
+            failure_code="authoring_plan_missing_hardness_seed",
+            missing_capabilities=("trusted_np_hard_source_seed",),
             observation=observation,
             task=None,
             final_program_declaration=None,
@@ -1932,6 +2013,7 @@ def plan_np_hard_authoring_from_observation(
                 name not in tmkarp_program_packet_sources,
                 name not in gap_source_names,
                 name not in incoming_program_sources,
+                name not in open_synthesis_sources,
                 len(name),
                 name,
             ),
@@ -2127,17 +2209,32 @@ def plan_np_hard_authoring_from_observation(
         elif {"primitive", "executableRelationContract", "semanticProof"}.issubset(
             gap_reasons
         ):
-            task_class = "program_synthesis"
             selected_programs = ()
-            risk_rank = 4
-            if relation is None:
-                missing.append("mapping_invariant")
-            if not expected_builtins.issubset(builtin_names):
-                missing.append("poly_program_synthesis_primitives")
+            closed_synthesis_ready = (
+                relation is not None
+                and expected_builtins.issubset(builtin_names)
+            )
+            if closed_synthesis_ready:
+                task_class = "program_synthesis"
+                risk_rank = 4
+            elif hub_problem.endpoint_node in open_synthesis_nodes:
+                task_class = "whole_reduction_synthesis"
+                risk_rank = 5
+            else:
+                task_class = "program_synthesis"
+                risk_rank = 4
+                if relation is None:
+                    missing.append("mapping_invariant")
+                if not expected_builtins.issubset(builtin_names):
+                    missing.append("poly_program_synthesis_primitives")
+        elif hub_problem.endpoint_node in open_synthesis_nodes:
+            task_class = "whole_reduction_synthesis"
+            selected_programs = ()
+            risk_rank = 5
         else:
             task_class = "unsupported"
             selected_programs = ()
-            risk_rank = 5
+            risk_rank = 6
             if path is None:
                 missing.append("poly_program")
             if "semanticProof" not in gap_reasons:
@@ -2182,13 +2279,24 @@ def plan_np_hard_authoring_from_observation(
             }
         )
     ranked.sort(key=lambda item: item["stable_rank"])
-    if any(item["successor_capability"] is not None for item in ranked) and len(
-        ranked
-    ) != 1:
+    ambiguous_rejections = tuple(
+        item
+        for item in rejected
+        if item["code"] == "ambiguous_authoring_capability"
+    )
+    if ambiguous_rejections:
         return NPHardAuthoringPlanV2(
             status="BLOCKED",
-            failure_code="ambiguous_authoring_hub",
-            missing_capabilities=("unique_dependent_composition_chain",),
+            failure_code="ambiguous_authoring_capability",
+            missing_capabilities=tuple(
+                sorted(
+                    {
+                        capability
+                        for item in ambiguous_rejections
+                        for capability in item["missing_capabilities"]
+                    }
+                )
+            ),
             observation=observation,
             task=None,
             final_program_declaration=None,
@@ -2237,7 +2345,10 @@ def plan_np_hard_authoring_from_observation(
         for item in ranked
         if item["safety_rank"] == best_safety_rank
     }
-    if len(equally_best_nodes) > 1:
+    if (
+        len(equally_best_nodes) > 1
+        and ranked[0]["task_class"] != "whole_reduction_synthesis"
+    ):
         return NPHardAuthoringPlanV2(
             status="BLOCKED",
             failure_code="ambiguous_authoring_hub",
@@ -2267,7 +2378,21 @@ def plan_np_hard_authoring_from_observation(
     composition_successor_target: str | None = None
     composition_admission_observation: dict[str, str] | None = None
     composition_successor_observation: dict[str, str] | None = None
-    if task_class == "program_synthesis":
+    if task_class == "whole_reduction_synthesis":
+        allowed_primitives = tuple(
+            dict.fromkeys(
+                (
+                    *sorted(builtin.declaration for builtin in observation.builtins),
+                    "ComplexityReduction.Program.Primitive.ofTMPolyTime",
+                    "ComplexityReduction.Program.PolyProg.atom",
+                )
+            )
+        )
+        program_reference = None
+        observed_capability_terms = {}
+        observed_capability_exact_types = {}
+        representation_adapter_exact_type = None
+    elif task_class == "program_synthesis":
         compatible_primitives = tuple(
             primitive.declaration
             for primitive in observation.primitives
@@ -2508,6 +2633,8 @@ def plan_np_hard_authoring_from_observation(
                     *((typed_capability.capability_id,) if typed_capability else ()),
                     *((typed_capability.witness,) if typed_capability else ()),
                 ),
+                max_depth=(5 if task_class == "whole_reduction_synthesis" else 1),
+                max_files=(25 if task_class == "whole_reduction_synthesis" else 2),
             )
         )
     public_files = tuple(

@@ -52,7 +52,7 @@ class ArchonBenchmarkCase:
     def imports(self) -> tuple[str, ...]:
         abi = (
             "ComplexityReduction.Certificate.NativeCompleteness"
-            if self.kind in {"capability", "frontier"}
+            if self.kind in {"capability", "frontier", "boolean_csp"}
             else "ComplexityReduction.Certificate.Reduction"
         )
         return (abi, self.module)
@@ -127,7 +127,7 @@ def load_archon_benchmark_cases(
                 raise ValueError(f"invalid exact-edge public case in {name}")
             exact_by_id[raw["case_id"]] = raw
 
-    lane_filter = set(lanes or ("capability", "frontier", "exact_edge"))
+    lane_filter = set(lanes or ("capability", "frontier", "exact_edge", "boolean_csp"))
     id_filter = set(selected_case_ids or ())
     cases: list[ArchonBenchmarkCase] = []
     for ordinal, raw in enumerate(registry.get("cases") or []):
@@ -139,7 +139,7 @@ def load_archon_benchmark_cases(
             continue
         split = str(raw.get("split") or "")
         module = str(raw.get("module") or "")
-        if kind in {"capability", "frontier"}:
+        if kind in {"capability", "frontier", "boolean_csp"}:
             problem = str(raw.get("problem") or "")
             statement = f"Prove in Lean 4 that `{problem}` is NP-hard."
             cases.append(
@@ -416,11 +416,14 @@ def _run_case(
     return row
 
 
-def _load_postrun_policy(root: Path) -> tuple[dict[str, Any], dict[str, Any]]:
+def _load_postrun_policy(
+    root: Path,
+) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
     capability = _read_json(
         root / "Evaluation" / "np_hard_capability_oracle_v2.json"
     )
     exact = _read_json(root / "Evaluation" / "exact_reduction_edge_oracle_v1.json")
+    boolean = _read_json(root / "Evaluation" / "boolean_csp_np_hard_oracle_v1.json")
     return (
         {
             str(row["case_id"]): row
@@ -432,6 +435,11 @@ def _load_postrun_policy(root: Path) -> tuple[dict[str, Any], dict[str, Any]]:
             for row in exact.get("cases") or []
             if isinstance(row, dict) and isinstance(row.get("case_id"), str)
         },
+        {
+            str(row["case_id"]): row
+            for row in boolean.get("cases") or []
+            if isinstance(row, dict) and isinstance(row.get("case_id"), str)
+        },
     )
 
 
@@ -440,15 +448,22 @@ def _apply_postrun_policy(
     *,
     capability_policy: Mapping[str, Any],
     exact_policy: Mapping[str, Any],
+    boolean_policy: Mapping[str, Any],
 ) -> None:
     """Score after production without feeding any policy data to Archon."""
 
     for row in rows:
         body_path = Path(str(row["case_dir"])) / "ArchonObjective.lean"
         body_source = body_path.read_text(encoding="utf-8") if body_path.is_file() else ""
-        if row["kind"] in {"capability", "frontier"}:
-            policy = capability_policy.get(row["case_id"])
-            scored = bool(isinstance(policy, Mapping) and policy.get("scored") is True)
+        if row["kind"] in {"capability", "frontier", "boolean_csp"}:
+            is_boolean = row["kind"] == "boolean_csp"
+            policy = (boolean_policy if is_boolean else capability_policy).get(
+                row["case_id"]
+            )
+            scored = bool(
+                isinstance(policy, Mapping)
+                and (is_boolean or policy.get("scored") is True)
+            )
             row["postrun_policy"] = {
                 "scored": scored,
                 "eligible": scored,
@@ -663,16 +678,17 @@ def run_archon_blackbox_benchmark(
     rows.sort(key=lambda row: int(row["ordinal"]))
 
     # This is the first point at which scorer-only material is opened.
-    capability_policy, exact_policy = _load_postrun_policy(root)
+    capability_policy, exact_policy, boolean_policy = _load_postrun_policy(root)
     _apply_postrun_policy(
         rows,
         capability_policy=capability_policy,
         exact_policy=exact_policy,
+        boolean_policy=boolean_policy,
     )
 
     metrics = {
         lane: _lane_metrics(rows, lane)
-        for lane in ("capability", "frontier", "exact_edge")
+        for lane in ("capability", "frontier", "exact_edge", "boolean_csp")
         if any(row["kind"] == lane for row in rows)
     }
     report: dict[str, Any] = {

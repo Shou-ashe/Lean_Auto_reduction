@@ -1,31 +1,14 @@
 {
   "schema_version": "hardness_benchmark_registry_v1",
   "benchmark_id": "np-hard-real-reduction-v1",
-  "description": "Unified benchmark entry: only real complexity-reduction problems. C0 capability er/au (v2) + exact reduction edges (v1) are scored by their isolated oracles; F0 frontier is unscored. C0-safety negatives and all fixture/protocol regressions live in Gate/GATE_REGISTRY.json.",
+  "description": "The single 78-case hardness benchmark registry: 32 capability cases, 2 frontier cases, 24 exact reduction edges, and 20 Boolean CSP cases. All execution is owned by scripts/run_hardness_benchmark.py.",
   "sources": {
     "capability": {
       "manifest": "Benchmark/Hardness/CAPABILITY_MANIFEST_V2.json",
       "suite_split_counts": {
-        "dev": 6,
-        "validation": 6,
-        "heldout": 12
-      },
-      "excluded_case_ids": {
-        "reason": "C0-safety negatives moved to the gate lane",
-        "dev": [
-          "cdev-sf-01-graph-ir-wellformed-internal",
-          "cdev-sf-02-modified-exact-cover-internal"
-        ],
-        "validation": [
-          "cval-sf-01-role-graph-ir-internal",
-          "cval-sf-02-graph-wellformed-policy"
-        ],
-        "heldout": [
-          "chld-sf-01-role-graph-wellformed",
-          "chld-sf-02-set-system-wellformed",
-          "chld-sf-03-graph-atoms-wellformed",
-          "chld-sf-04-two-cnf-tractable"
-        ]
+        "dev": 8,
+        "validation": 8,
+        "heldout": 16
       }
     },
     "exact_edge": {
@@ -40,12 +23,22 @@
       "manifest": "Benchmark/Hardness/CAPABILITY_MANIFEST_V2.json",
       "split": "frontier",
       "unscored": true
+    },
+    "boolean_csp": {
+      "suite": "Benchmark/Hardness/Suites/boolean_csp_np_hard_public_v1.json",
+      "split_counts": {
+        "dev": 4,
+        "validation": 6,
+        "heldout": 10
+      }
     }
   },
-  "capability_case_count": 24,
+  "capability_case_count": 32,
   "exact_edge_case_count": 24,
   "frontier_case_count": 2,
-  "scored_case_count": 48,
+  "boolean_csp_case_count": 20,
+  "total_case_count": 78,
+  "scored_case_count": 76,
   "oracles": {
     "capability": {
       "file": "Evaluation/np_hard_capability_oracle_v2.json",
@@ -53,6 +46,10 @@
     },
     "exact_edge": {
       "file": "Evaluation/exact_reduction_edge_oracle_v1.json",
+      "runner_access": "forbidden"
+    },
+    "boolean_csp": {
+      "file": "Evaluation/boolean_csp_np_hard_oracle_v1.json",
       "runner_access": "forbidden"
     }
   },
@@ -118,6 +115,26 @@
       "budget_profile": "formal-default"
     },
     {
+      "case_id": "cdev-sf-01-graph-ir-wellformed-internal",
+      "kind": "capability",
+      "split": "dev",
+      "tier": "C0",
+      "family": "graph",
+      "module": "ComplexityReduction.Domain.Core.GraphIR",
+      "problem": "ComplexityReduction.Domain.GraphIR.wellFormedProblem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "cdev-sf-02-modified-exact-cover-internal",
+      "kind": "capability",
+      "split": "dev",
+      "tier": "C0",
+      "family": "set-system",
+      "module": "ComplexityReduction.Domain.ModifiedExactCoverInput",
+      "problem": "ComplexityReduction.Domain.ModifiedExactCoverInput.modifiedProblem",
+      "budget_profile": "formal-default"
+    },
+    {
       "case_id": "cval-er-01-zero-one-ip-direct",
       "kind": "capability",
       "split": "validation",
@@ -175,6 +192,26 @@
       "family": "set-system",
       "module": "ComplexityReduction.Presentation.SeeingSet",
       "problem": "ComplexityReduction.Presentation.SeeingSet.presentedProblem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "cval-sf-01-role-graph-ir-internal",
+      "kind": "capability",
+      "split": "validation",
+      "tier": "C0",
+      "family": "graph",
+      "module": "ComplexityReduction.Domain.Core.RoleGraphIR",
+      "problem": "ComplexityReduction.Domain.RoleGraphIR.roleAssignedGraphProblem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "cval-sf-02-graph-wellformed-policy",
+      "kind": "capability",
+      "split": "validation",
+      "tier": "C0",
+      "family": "graph",
+      "module": "ComplexityReduction.Presentation.Graph",
+      "problem": "ComplexityReduction.Presentation.Graph.wellFormedProblem",
       "budget_profile": "formal-default"
     },
     {
@@ -295,6 +332,46 @@
       "family": "other",
       "module": "ComplexityReduction.Presentation.ThreeDimensionalMatching",
       "problem": "ComplexityReduction.Presentation.ThreeDimensionalMatching.structuredProblem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "chld-sf-01-role-graph-wellformed",
+      "kind": "capability",
+      "split": "heldout",
+      "tier": "C0",
+      "family": "graph",
+      "module": "ComplexityReduction.Presentation.RoleGraph",
+      "problem": "ComplexityReduction.Presentation.RoleGraph.wellFormedPresentedProblem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "chld-sf-02-set-system-wellformed",
+      "kind": "capability",
+      "split": "heldout",
+      "tier": "C0",
+      "family": "set-system",
+      "module": "ComplexityReduction.Presentation.SetSystem",
+      "problem": "ComplexityReduction.Presentation.SetSystem.wellFormedProblem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "chld-sf-03-graph-atoms-wellformed",
+      "kind": "capability",
+      "split": "heldout",
+      "tier": "C0",
+      "family": "graph",
+      "module": "ComplexityReduction.Problems.Karp21.GraphAtoms",
+      "problem": "ComplexityReduction.Problems.Karp21.GraphAtoms.graphWellFormedProblem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "chld-sf-04-two-cnf-tractable",
+      "kind": "capability",
+      "split": "heldout",
+      "tier": "C0",
+      "family": "sat-csp",
+      "module": "ComplexityReduction.Problems.Karp21.SATTractable",
+      "problem": "ComplexityReduction.Problems.Karp21.SATTractable.twoCNFStructuredProblem",
       "budget_profile": "formal-default"
     },
     {
@@ -555,6 +632,206 @@
       "family": null,
       "module": "Benchmark.Hardness.Inputs.ExactReductionEdgeV1.ValidationEndpoints",
       "problem": null,
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b01-canonical-three-sat-like",
+      "kind": "boolean_csp",
+      "split": "dev",
+      "tier": "C0",
+      "family": "boolean-csp",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case01Canonical",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case01Canonical.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b02-positive-nae4",
+      "kind": "boolean_csp",
+      "split": "dev",
+      "tier": "C0",
+      "family": "boolean-csp",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case02PositiveNAE4",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case02PositiveNAE4.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b03-positive-nae3",
+      "kind": "boolean_csp",
+      "split": "dev",
+      "tier": "C0",
+      "family": "boolean-csp",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case03PositiveNAE3",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case03PositiveNAE3.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b04-positive-exactly-one3",
+      "kind": "boolean_csp",
+      "split": "dev",
+      "tier": "C0",
+      "family": "boolean-csp",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case04PositiveExactlyOne3",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case04PositiveExactlyOne3.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b05-or2-even-parity3",
+      "kind": "boolean_csp",
+      "split": "validation",
+      "tier": "C0",
+      "family": "boolean-csp",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case05OR2EvenParity3",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case05OR2EvenParity3.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b06-positive-nae5",
+      "kind": "boolean_csp",
+      "split": "validation",
+      "tier": "C0",
+      "family": "boolean-csp",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case06PositiveNAE5",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case06PositiveNAE5.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b07-positive-exactly-two3",
+      "kind": "boolean_csp",
+      "split": "validation",
+      "tier": "C0",
+      "family": "boolean-csp",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case07PositiveExactlyTwo3",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case07PositiveExactlyTwo3.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b08-positive-exactly-one4",
+      "kind": "boolean_csp",
+      "split": "validation",
+      "tier": "C0",
+      "family": "boolean-csp",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case08PositiveExactlyOne4",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case08PositiveExactlyOne4.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b09-positive-exactly-two4",
+      "kind": "boolean_csp",
+      "split": "validation",
+      "tier": "C0",
+      "family": "boolean-csp",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case09PositiveExactlyTwo4",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case09PositiveExactlyTwo4.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b10-positive-exactly-three4",
+      "kind": "boolean_csp",
+      "split": "validation",
+      "tier": "C0",
+      "family": "boolean-csp",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case10PositiveExactlyThree4",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case10PositiveExactlyThree4.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b11-positive-exactly-one5",
+      "kind": "boolean_csp",
+      "split": "heldout",
+      "tier": "C0",
+      "family": "boolean-csp",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case11PositiveExactlyOne5",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case11PositiveExactlyOne5.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b12-positive-exactly-two5",
+      "kind": "boolean_csp",
+      "split": "heldout",
+      "tier": "C0",
+      "family": "boolean-csp",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case12PositiveExactlyTwo5",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case12PositiveExactlyTwo5.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b13-positive-exactly-three5",
+      "kind": "boolean_csp",
+      "split": "heldout",
+      "tier": "C0",
+      "family": "boolean-csp",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case13PositiveExactlyThree5",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case13PositiveExactlyThree5.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b14-positive-exactly-four5",
+      "kind": "boolean_csp",
+      "split": "heldout",
+      "tier": "C0",
+      "family": "boolean-csp",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case14PositiveExactlyFour5",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case14PositiveExactlyFour5.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b15-positive-exactly-one6",
+      "kind": "boolean_csp",
+      "split": "heldout",
+      "tier": "C0",
+      "family": "boolean-csp",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case15PositiveExactlyOne6",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case15PositiveExactlyOne6.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b16-positive-exactly-two6",
+      "kind": "boolean_csp",
+      "split": "heldout",
+      "tier": "C0",
+      "family": "boolean-csp",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case16PositiveExactlyTwo6",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case16PositiveExactlyTwo6.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b17-positive-exactly-three6",
+      "kind": "boolean_csp",
+      "split": "heldout",
+      "tier": "C0",
+      "family": "boolean-csp",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case17PositiveExactlyThree6",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case17PositiveExactlyThree6.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b18-positive-exactly-four6",
+      "kind": "boolean_csp",
+      "split": "heldout",
+      "tier": "C0",
+      "family": "boolean-csp",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case18PositiveExactlyFour6",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case18PositiveExactlyFour6.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b19-positive-exactly-five6",
+      "kind": "boolean_csp",
+      "split": "heldout",
+      "tier": "C0",
+      "family": "boolean-csp",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case19PositiveExactlyFive6",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case19PositiveExactlyFive6.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b20-or3-xor2",
+      "kind": "boolean_csp",
+      "split": "heldout",
+      "tier": "C0",
+      "family": "boolean-csp",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case20OR3XOR2",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case20OR3XOR2.problem",
       "budget_profile": "formal-default"
     }
   ]

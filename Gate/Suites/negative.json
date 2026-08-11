@@ -1,6 +1,0 @@
-{
-  "schema_version": "hardness_benchmark_suite_v1",
-  "suite_id": "negative",
-  "description": "Reserved for trust, stale-cache, candidate, and request-integrity negatives.",
-  "cases": []
-}

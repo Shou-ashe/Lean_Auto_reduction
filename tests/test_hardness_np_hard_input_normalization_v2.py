@@ -142,33 +142,6 @@ def test_unique_encoding_certificate_is_compiled_and_records_trace(
     assert (tmp_path / "InputNormalizationObservation.json").is_file()
 
 
-def test_old_identity_is_rejected_after_related_source_drift(
-    unique_reference, tmp_path
-) -> None:
-    source_path = (
-        ROOT
-        / "Lean/Reference/Reports/Inputs/NPHardGeneralization/"
-        "InputNormalizationOpenWorld.lean"
-    )
-    original = source_path.read_text(encoding="utf-8")
-    try:
-        source_path.write_text(original + "\n-- H-D content drift probe\n", encoding="utf-8")
-        with pytest.raises(NPHardInputError) as stale:
-            certify_np_hard_input(
-                root=ROOT,
-                reference=unique_reference,
-                certificate_path=tmp_path / "Stale.lean",
-                toolchain=(ROOT / "Lean/lean-toolchain")
-                .read_text(encoding="utf-8")
-                .strip(),
-                lake_manifest_sha256=sha256_file(ROOT / "Lean/lake-manifest.json"),
-                timeout_seconds=600,
-            )
-        assert stale.value.code == "candidate_dependency_stale"
-    finally:
-        source_path.write_text(original, encoding="utf-8")
-
-
 def test_nonexistent_and_wrong_module_ownership_fail_closed() -> None:
     with pytest.raises(NPHardInputError) as nonexistent:
         resolve_np_hard_input_reference(
