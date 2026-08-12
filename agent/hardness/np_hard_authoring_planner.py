@@ -13,7 +13,7 @@ from __future__ import annotations
 import json
 import re
 import secrets
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, replace
 from functools import lru_cache
 from pathlib import Path
 from typing import Any, Iterable, Mapping
@@ -47,6 +47,10 @@ NP_HARD_AUTHORING_PLANNER_MODULE = (
     "ComplexityReduction.Agent.Hardness.AuthoringPlanner"
 )
 _MARKER = "HARDNESS_NP_HARD_PLAN"
+_DECLARATION_TYPE_MARKER = "HARDNESS_NP_HARD_DECL_TYPE"
+_DECLARATION_TYPE_SCHEMA_V1 = (
+    "hardness_np_hard_declaration_type_observation_v1"
+)
 _HASH_PREFIX = "sha256:"
 _TYPED_CAPABILITY_ROW_FIELD_COUNT = 11
 _TYPED_CAPABILITY_KINDS = frozenset(
@@ -85,6 +89,187 @@ _PROGRAM_INDEXED_ADMISSION_MODULE = (
 _GADGET_INDEXED_ADMISSION_MODULE = (
     "ComplexityReduction.Agent.Hardness.GadgetAuthoringSources"
 )
+_BOOLEAN_CSP_NAE3_AUTHORING_SCAFFOLD_MODULE = (
+    "ComplexityReduction.Agent.Hardness.BooleanCSPReductionScaffold"
+)
+_BOOLEAN_CSP_NAE3_PUBLIC_SUPPORT_MODULES = (
+    "ComplexityReduction.Presentation.NAEThreeSAT",
+    "ComplexityReduction.Presentation.NAEThreeSATTM",
+    "ComplexityReduction.Presentation.SatisfiabilityTM",
+    "ComplexityReduction.Domain.BooleanCSP.CSPInstance",
+    "ComplexityReduction.Legacy.ComplexityReduction.SAT.Literal",
+    "ComplexityReduction.Legacy.ComplexityReduction.SAT.CNFTo3SAT",
+    "ComplexityReduction.Legacy.ComplexityReduction.CSP.Formula",
+    "ComplexityReduction.Legacy.ComplexityReduction.CSP.FiniteDomain.Basic",
+    "ComplexityReduction.Legacy.ComplexityReduction.CSP.StandardRelations",
+    "ComplexityReduction.Program.List",
+    "ComplexityReduction.Program.EncodingTransport",
+    "ComplexityReduction.Presentation.FiniteDomainCSPTable",
+)
+_BOOLEAN_CSP_NAE3_CONSTRUCTION_PRIMITIVES = (
+    _BOOLEAN_CSP_NAE3_AUTHORING_SCAFFOLD_MODULE
+    + ".threeSATToNAEThreeSATIngress.executable",
+    _BOOLEAN_CSP_NAE3_AUTHORING_SCAFFOLD_MODULE
+    + ".ternaryConstraint",
+    _BOOLEAN_CSP_NAE3_AUTHORING_SCAFFOLD_MODULE
+    + ".literalKey",
+    _BOOLEAN_CSP_NAE3_AUTHORING_SCAFFOLD_MODULE
+    + ".complementLiteral",
+    _BOOLEAN_CSP_NAE3_AUTHORING_SCAFFOLD_MODULE
+    + ".referenceExecutableFromClauseGadget",
+    _BOOLEAN_CSP_NAE3_AUTHORING_SCAFFOLD_MODULE
+    + ".executableFromReference",
+)
+_BOOLEAN_CSP_NAE3_DIRECT_TM_PRIMITIVES = (
+    _BOOLEAN_CSP_NAE3_AUTHORING_SCAFFOLD_MODULE
+    + ".threeSATToNAEThreeSATIngress.executableDirectTM",
+    _BOOLEAN_CSP_NAE3_AUTHORING_SCAFFOLD_MODULE
+    + ".clausePayload_tmPolyTime",
+    _BOOLEAN_CSP_NAE3_AUTHORING_SCAFFOLD_MODULE
+    + ".clauseFirst_tmPolyTime",
+    _BOOLEAN_CSP_NAE3_AUTHORING_SCAFFOLD_MODULE
+    + ".clauseSecond_tmPolyTime",
+    _BOOLEAN_CSP_NAE3_AUTHORING_SCAFFOLD_MODULE
+    + ".clauseThird_tmPolyTime",
+    _BOOLEAN_CSP_NAE3_AUTHORING_SCAFFOLD_MODULE
+    + ".complementLiteral_tmPolyTime",
+    _BOOLEAN_CSP_NAE3_AUTHORING_SCAFFOLD_MODULE
+    + ".literalKey_tmPolyTime",
+    _BOOLEAN_CSP_NAE3_AUTHORING_SCAFFOLD_MODULE
+    + ".literalKeyAfter_tmPolyTime",
+    _BOOLEAN_CSP_NAE3_AUTHORING_SCAFFOLD_MODULE
+    + ".complementLiteralAfter_tmPolyTime",
+    _BOOLEAN_CSP_NAE3_AUTHORING_SCAFFOLD_MODULE
+    + ".complementKeyAfter_tmPolyTime",
+    "ComplexityReduction.TMPolyTimeMap.list_nil",
+    "ComplexityReduction.TMPolyTimeMap.list_singleton_of",
+    "ComplexityReduction.TMPolyTimeMap.list_cons_of",
+    "ComplexityReduction.TMPolyTimeMap.transport_output",
+    "ComplexityReduction.TMPolyTimeMap.comp",
+    "ComplexityReduction.TMPolyTimeMap.prod_mk",
+    "ComplexityReduction.TMPolyTimeMap.fst",
+    "ComplexityReduction.TMPolyTimeMap.snd",
+    "ComplexityReduction.TMPolyTimeMap.list_map",
+    "ComplexityReduction.Program.listFlatten_tmPolyTime",
+    "ComplexityReduction.Presentation.FiniteDomainCSPTable.formula_tmPolyTime_of_code",
+    _BOOLEAN_CSP_NAE3_AUTHORING_SCAFFOLD_MODULE
+    + ".constraintPayload_tmPolyTime",
+    _BOOLEAN_CSP_NAE3_AUTHORING_SCAFFOLD_MODULE
+    + ".ternaryConstraintCode_tmPolyTime",
+    _BOOLEAN_CSP_NAE3_AUTHORING_SCAFFOLD_MODULE
+    + ".referenceExecutableFromClauseGadget_tmPolyTime",
+    _BOOLEAN_CSP_NAE3_AUTHORING_SCAFFOLD_MODULE
+    + ".executableFromReference_tmPolyTime",
+)
+_BOOLEAN_CSP_NAE3_SEMANTIC_PRIMITIVES = (
+    "ComplexityReduction.SAT.Literal.eval",
+    "ComplexityReduction.SAT.Literal.positive",
+    "ComplexityReduction.SAT.Literal.negative",
+    "ComplexityReduction.SAT.Literal.eval_positive",
+    "ComplexityReduction.SAT.Literal.eval_negative",
+    "ComplexityReduction.SAT.Clause.negate",
+    "ComplexityReduction.SAT.Clause.negate_eval_true_iff",
+    _BOOLEAN_CSP_NAE3_AUTHORING_SCAFFOLD_MODULE
+    + ".complementLiteral_eval",
+    _BOOLEAN_CSP_NAE3_AUTHORING_SCAFFOLD_MODULE
+    + ".literalAssignment",
+    _BOOLEAN_CSP_NAE3_AUTHORING_SCAFFOLD_MODULE
+    + ".literalAssignment_literalKey",
+    _BOOLEAN_CSP_NAE3_AUTHORING_SCAFFOLD_MODULE
+    + ".positiveKeyAssignment",
+    _BOOLEAN_CSP_NAE3_AUTHORING_SCAFFOLD_MODULE
+    + ".literal_eval_positiveKeyAssignment",
+    _BOOLEAN_CSP_NAE3_AUTHORING_SCAFFOLD_MODULE
+    + ".literal_eval_positiveKeyAssignment_of_complement",
+    _BOOLEAN_CSP_NAE3_AUTHORING_SCAFFOLD_MODULE
+    + ".tripleTuple",
+    _BOOLEAN_CSP_NAE3_AUTHORING_SCAFFOLD_MODULE
+    + ".notAllEqual3Rel_holds_triple_iff",
+    _BOOLEAN_CSP_NAE3_AUTHORING_SCAFFOLD_MODULE
+    + ".ternaryConstraint_satisfies_iff",
+    _BOOLEAN_CSP_NAE3_AUTHORING_SCAFFOLD_MODULE
+    + ".bool_ne_iff_eq_not",
+    _BOOLEAN_CSP_NAE3_AUTHORING_SCAFFOLD_MODULE
+    + ".ternaryConstraint_repeat_satisfies_iff",
+    _BOOLEAN_CSP_NAE3_AUTHORING_SCAFFOLD_MODULE
+    + ".ternaryConstraint_repeat_first_satisfies_iff",
+    _BOOLEAN_CSP_NAE3_AUTHORING_SCAFFOLD_MODULE
+    + ".ternaryConstraint_repeat_second_satisfies_iff",
+    "ComplexityReduction.NAEThreeSAT.Clause.Satisfies",
+    "ComplexityReduction.NAEThreeSAT.Formula.Satisfies",
+    "ComplexityReduction.NAEThreeSAT.Formula.Satisfiable",
+    "ComplexityReduction.NAEThreeSAT.Formula.satisfies_cons",
+    "ComplexityReduction.NAEThreeSAT.Formula.satisfies_append",
+    "ComplexityReduction.CSP.Constraint.assignmentTuple",
+    "ComplexityReduction.CSP.Constraint.Satisfies",
+    "ComplexityReduction.CSP.Formula.Satisfies",
+    "ComplexityReduction.CSP.Formula.Satisfiable",
+    "ComplexityReduction.CSP.Formula.satisfies_cons",
+    "ComplexityReduction.CSP.Formula.satisfies_append",
+    "ComplexityReduction.CSP.Formula.satisfies_flatMap",
+    "ComplexityReduction.CSP.Formula.satisfies_flatMap_intro",
+    "ComplexityReduction.CSP.Formula.satisfies_flatMap_elim",
+    "ComplexityReduction.CSP.BoolRel.Holds",
+    "ComplexityReduction.CSP.BoolRel.holds_ofPredicate_iff",
+    "ComplexityReduction.Domain.BooleanCSP.cspOf_accepts",
+    "ComplexityReduction.Domain.ThreeSATToNAEThreeSAT.literalKey_injective",
+    "ComplexityReduction.CSP.StandardRelations.notAllEqualRel",
+    "ComplexityReduction.CSP.StandardRelations.notAllEqual3Rel",
+    _BOOLEAN_CSP_NAE3_AUTHORING_SCAFFOLD_MODULE
+    + ".threeSATToNAEThreeSATIngress.executableCorrect",
+)
+_BOOLEAN_CSP_NAE3_SCAFFOLD_PRIMITIVES = (
+    *_BOOLEAN_CSP_NAE3_CONSTRUCTION_PRIMITIVES,
+    *_BOOLEAN_CSP_NAE3_DIRECT_TM_PRIMITIVES,
+    *_BOOLEAN_CSP_NAE3_SEMANTIC_PRIMITIVES,
+)
+
+
+def _primitive_layers(
+    allowed_primitives: tuple[str, ...], *, positive_nae3: bool
+) -> dict[str, tuple[str, ...]]:
+    """Partition the immutable declaration surface into four prompt layers."""
+
+    explicit: dict[str, str] = {}
+    if positive_nae3:
+        explicit.update(
+            (primitive, "construction")
+            for primitive in _BOOLEAN_CSP_NAE3_CONSTRUCTION_PRIMITIVES
+        )
+        explicit.update(
+            (primitive, "direct_tm")
+            for primitive in _BOOLEAN_CSP_NAE3_DIRECT_TM_PRIMITIVES
+        )
+        explicit.update(
+            (primitive, "semantic")
+            for primitive in _BOOLEAN_CSP_NAE3_SEMANTIC_PRIMITIVES
+        )
+    layers: dict[str, list[str]] = {
+        "core": [],
+        "construction": [],
+        "direct_tm": [],
+        "semantic": [],
+    }
+    for primitive in allowed_primitives:
+        layer = explicit.get(primitive)
+        lowered = primitive.lower()
+        if layer is None and any(
+            token in lowered
+            for token in ("semantic", "satisfies", "satisfiable", ".eval", "correct")
+        ):
+            layer = "semantic"
+        if layer is None and any(
+            token in lowered
+            for token in ("tmpolytime", "directtm", "direct_tm", "transport_output")
+        ):
+            layer = "direct_tm"
+        if layer is None and any(
+            token in lowered
+            for token in ("executable", "gadget", "constraint", "literal")
+        ):
+            layer = "construction"
+        layers[layer or "core"].append(primitive)
+    return {name: tuple(items) for name, items in layers.items()}
 _TYPED_CAPABILITY_REQUIRED_WITNESS_TERMS = (
     "PolyProg.const",
     "PolyProg.id",
@@ -159,39 +344,94 @@ def _canonical_lean_text(value: str) -> str:
     return " ".join(value.split())
 
 
+def _whole_reduction_authoring_seed_modules(
+    *, root: Path, input_module: str, task_class: str
+) -> tuple[str, ...]:
+    """Select small public reference stages from the exact input definition."""
+
+    if task_class != "whole_reduction_synthesis":
+        return ()
+    input_source = module_file(root.resolve() / "Lean", input_module).read_text(
+        encoding="utf-8"
+    )
+    if (
+        "Domain.BooleanCSP" in input_source
+        and "StandardRelations.notAllEqual3Rel" in input_source
+    ):
+        return (_BOOLEAN_CSP_NAE3_AUTHORING_SCAFFOLD_MODULE,)
+    return ()
+
+
 def _relevant_direct_public_sources(
-    *, root: Path, source_files: Iterable[Path], query_values: Iterable[str]
+    *,
+    root: Path,
+    source_files: Iterable[Path],
+    query_values: Iterable[str],
+    max_depth: int = 1,
+    max_files: int = 2,
 ) -> tuple[Path, ...]:
-    """Select bounded, content-addressed public context from direct imports."""
+    """Select bounded, content-addressed public context from relevant imports."""
 
     query_tokens = set().union(*(_identifier_tokens(value) for value in query_values))
-    ranked: dict[Path, tuple[int, str]] = {}
-    for source_file in source_files:
-        for line in source_file.read_text(encoding="utf-8").splitlines():
-            stripped = line.strip()
-            if not stripped.startswith("import "):
-                continue
-            imported = stripped.removeprefix("import ").strip()
-            if not imported or any(token in imported.lower() for token in _FORBIDDEN_TEXT):
-                continue
-            score = len(query_tokens & _identifier_tokens(imported))
-            if score <= 0:
-                continue
-            try:
-                imported_file = module_file(root / "Lean", imported).resolve()
-                imported_file.relative_to(root)
-            except (ValueError, OSError):
-                continue
-            if imported_file.is_file() and imported_file not in source_files:
-                ranked[imported_file] = max(
-                    ranked.get(imported_file, (0, imported)), (score, imported)
+    if max_depth < 1 or max_files < 1:
+        return ()
+    known = set(source_files)
+    frontier = tuple(sorted(known, key=str))
+    selected: list[Path] = []
+    per_depth_limit = max(1, (max_files + max_depth - 1) // max_depth)
+    for _ in range(max_depth):
+        ranked: dict[Path, tuple[int, str]] = {}
+        for source_file in frontier:
+            source_lines = source_file.read_text(encoding="utf-8").splitlines()
+            local_tokens = query_tokens | _identifier_tokens(
+                "\n".join(
+                    line
+                    for line in source_lines
+                    if not line.strip().startswith("import ")
                 )
-    return tuple(
-        path
-        for path, _ in sorted(
-            ranked.items(), key=lambda item: (-item[1][0], item[1][1])
-        )[:2]
-    )
+            )
+            for line in source_lines:
+                stripped = line.strip()
+                if not stripped.startswith("import "):
+                    continue
+                imported = stripped.removeprefix("import ").strip()
+                if not imported or any(
+                    token in imported.lower() for token in _FORBIDDEN_TEXT
+                ):
+                    continue
+                score = len(local_tokens & _identifier_tokens(imported))
+                input_owned = (
+                    "Benchmark" in source_file.parts
+                    and "Inputs" in source_file.parts
+                )
+                if score <= 0 and not input_owned:
+                    continue
+                if input_owned:
+                    score += 3
+                try:
+                    imported_file = module_file(root / "Lean", imported).resolve()
+                    imported_file.relative_to(root)
+                except (ValueError, OSError):
+                    continue
+                if imported_file.is_file() and imported_file not in known:
+                    ranked[imported_file] = max(
+                        ranked.get(imported_file, (0, imported)),
+                        (score, imported),
+                    )
+        additions = tuple(
+            path
+            for path, _ in sorted(
+                ranked.items(), key=lambda item: (-item[1][0], item[1][1])
+            )[: min(per_depth_limit, max_files - len(selected))]
+        )
+        if not additions:
+            break
+        selected.extend(additions)
+        known.update(additions)
+        frontier = additions
+        if len(selected) >= max_files:
+            break
+    return tuple(selected)
 
 
 def _ilean_roots(root: Path) -> tuple[Path, ...]:
@@ -1238,6 +1478,49 @@ def _task_gap_nodes(
                 "depends_on": ["mapping-invariant"],
             },
         )
+    if task_class == "whole_reduction_synthesis":
+        return (
+            {
+                "id": "reduction-executable",
+                "reason": "openReductionConstruction",
+                "depends_on": [],
+            },
+            {
+                "id": "direct-tm",
+                "reason": "directTMPolynomialTime",
+                "depends_on": ["reduction-executable"],
+            },
+            {
+                "id": "reduction-primitive",
+                "reason": "directTMPrimitive",
+                "depends_on": ["reduction-executable", "direct-tm"],
+            },
+            {
+                "id": "poly-program",
+                "reason": "directTMProgram",
+                "depends_on": ["reduction-primitive"],
+            },
+            {
+                "id": "program-run-coherence",
+                "reason": "executableRelationContract",
+                "depends_on": ["poly-program", "reduction-executable"],
+            },
+            {
+                "id": "semantic-forward",
+                "reason": "semanticForwardImplication",
+                "depends_on": ["poly-program", "program-run-coherence"],
+            },
+            {
+                "id": "semantic-reverse",
+                "reason": "semanticReverseImplication",
+                "depends_on": ["poly-program", "program-run-coherence"],
+            },
+            {
+                "id": "semantic-iff",
+                "reason": "semanticIff",
+                "depends_on": ["semantic-forward", "semantic-reverse"],
+            },
+        )
     if task_class == "typed_capability_dag":
         return (
             {
@@ -1538,6 +1821,101 @@ def _task_gap_nodes(
             },
         )
     _fail("authoring_plan_unsupported", f"unsupported task class: {task_class}")
+
+
+def _positive_nae3_whole_reduction_gap_nodes() -> tuple[Mapping[str, Any], ...]:
+    """Stage a new NAE3-to-CSP bridge without exposing a final bridge theorem."""
+
+    return (
+        {
+            "id": "clause-constraint",
+            "reason": "newClauseConstraintConstruction",
+            "depends_on": [],
+        },
+        {
+            "id": "complement-constraint",
+            "reason": "newComplementConstraintConstruction",
+            "depends_on": [],
+        },
+        {
+            "id": "clause-gadget",
+            "reason": "newClauseGadgetAssembly",
+            "depends_on": ["clause-constraint", "complement-constraint"],
+        },
+        {
+            "id": "reference-executable",
+            "reason": "referenceExecutableConstruction",
+            "depends_on": ["clause-gadget"],
+        },
+        {
+            "id": "reduction-executable",
+            "reason": "openReductionConstruction",
+            "depends_on": ["reference-executable"],
+        },
+        {
+            "id": "clause-gadget-direct-tm",
+            "reason": "clauseGadgetDirectTM",
+            "depends_on": ["clause-gadget"],
+        },
+        {
+            "id": "reference-direct-tm",
+            "reason": "referenceBridgeDirectTM",
+            "depends_on": ["reference-executable", "clause-gadget-direct-tm"],
+        },
+        {
+            "id": "direct-tm",
+            "reason": "directTMPolynomialTime",
+            "depends_on": ["reduction-executable", "reference-direct-tm"],
+        },
+        {
+            "id": "reduction-primitive",
+            "reason": "directTMPrimitive",
+            "depends_on": ["reduction-executable", "direct-tm"],
+        },
+        {
+            "id": "poly-program",
+            "reason": "directTMProgram",
+            "depends_on": ["reduction-primitive"],
+        },
+        {
+            "id": "program-run-coherence",
+            "reason": "executableRelationContract",
+            "depends_on": ["poly-program", "reduction-executable"],
+        },
+        {
+            "id": "reference-semantic-forward",
+            "reason": "referenceSemanticForwardImplication",
+            "depends_on": ["clause-gadget", "reference-executable"],
+        },
+        {
+            "id": "reference-semantic-reverse",
+            "reason": "referenceSemanticReverseImplication",
+            "depends_on": ["clause-gadget", "reference-executable"],
+        },
+        {
+            "id": "semantic-forward",
+            "reason": "semanticForwardImplication",
+            "depends_on": [
+                "reduction-executable",
+                "program-run-coherence",
+                "reference-semantic-forward",
+            ],
+        },
+        {
+            "id": "semantic-reverse",
+            "reason": "semanticReverseImplication",
+            "depends_on": [
+                "reduction-executable",
+                "program-run-coherence",
+                "reference-semantic-reverse",
+            ],
+        },
+        {
+            "id": "semantic-iff",
+            "reason": "semanticIff",
+            "depends_on": ["semantic-forward", "semantic-reverse"],
+        },
+    )
 
 
 def _gadget_reference_problem(
@@ -1890,26 +2268,27 @@ def plan_np_hard_authoring_from_observation(
     tmkarp_program_packet_sources = {
         admission.source for admission, _ in tmkarp_program_packet_chains
     }
+    open_synthesis_sources = {
+        seed.problem
+        for seed in observation.hardness_seeds
+        if seed.problem in problems and problem_node(seed.problem) != target_node
+    }
+    open_synthesis_nodes = {
+        problem_node(source) for source in open_synthesis_sources
+    }
     candidate_names = (
         gap_source_names
         | incoming_program_sources
         | direct_typed_capability_sources
         | dependent_capability_sources
         | tmkarp_program_packet_sources
+        | open_synthesis_sources
     )
     if not candidate_names:
         return NPHardAuthoringPlanV2(
             status="BLOCKED",
-            failure_code="authoring_plan_missing_capability",
-            missing_capabilities=(
-                "forward_hardness_hub",
-                "typed_forward_gap",
-                "forward_representation_adapter",
-                "forward_tmkarp_dependent_composition",
-                "forward_successor_only_tmkarp_admission",
-                "forward_program_indexed_admission",
-                "forward_gadget_indexed_admission",
-            ),
+            failure_code="authoring_plan_missing_hardness_seed",
+            missing_capabilities=("trusted_np_hard_source_seed",),
             observation=observation,
             task=None,
             final_program_declaration=None,
@@ -1932,6 +2311,7 @@ def plan_np_hard_authoring_from_observation(
                 name not in tmkarp_program_packet_sources,
                 name not in gap_source_names,
                 name not in incoming_program_sources,
+                name not in open_synthesis_sources,
                 len(name),
                 name,
             ),
@@ -2127,17 +2507,32 @@ def plan_np_hard_authoring_from_observation(
         elif {"primitive", "executableRelationContract", "semanticProof"}.issubset(
             gap_reasons
         ):
-            task_class = "program_synthesis"
             selected_programs = ()
-            risk_rank = 4
-            if relation is None:
-                missing.append("mapping_invariant")
-            if not expected_builtins.issubset(builtin_names):
-                missing.append("poly_program_synthesis_primitives")
+            closed_synthesis_ready = (
+                relation is not None
+                and expected_builtins.issubset(builtin_names)
+            )
+            if closed_synthesis_ready:
+                task_class = "program_synthesis"
+                risk_rank = 4
+            elif hub_problem.endpoint_node in open_synthesis_nodes:
+                task_class = "whole_reduction_synthesis"
+                risk_rank = 5
+            else:
+                task_class = "program_synthesis"
+                risk_rank = 4
+                if relation is None:
+                    missing.append("mapping_invariant")
+                if not expected_builtins.issubset(builtin_names):
+                    missing.append("poly_program_synthesis_primitives")
+        elif hub_problem.endpoint_node in open_synthesis_nodes:
+            task_class = "whole_reduction_synthesis"
+            selected_programs = ()
+            risk_rank = 5
         else:
             task_class = "unsupported"
             selected_programs = ()
-            risk_rank = 5
+            risk_rank = 6
             if path is None:
                 missing.append("poly_program")
             if "semanticProof" not in gap_reasons:
@@ -2182,13 +2577,24 @@ def plan_np_hard_authoring_from_observation(
             }
         )
     ranked.sort(key=lambda item: item["stable_rank"])
-    if any(item["successor_capability"] is not None for item in ranked) and len(
-        ranked
-    ) != 1:
+    ambiguous_rejections = tuple(
+        item
+        for item in rejected
+        if item["code"] == "ambiguous_authoring_capability"
+    )
+    if ambiguous_rejections:
         return NPHardAuthoringPlanV2(
             status="BLOCKED",
-            failure_code="ambiguous_authoring_hub",
-            missing_capabilities=("unique_dependent_composition_chain",),
+            failure_code="ambiguous_authoring_capability",
+            missing_capabilities=tuple(
+                sorted(
+                    {
+                        capability
+                        for item in ambiguous_rejections
+                        for capability in item["missing_capabilities"]
+                    }
+                )
+            ),
             observation=observation,
             task=None,
             final_program_declaration=None,
@@ -2237,7 +2643,10 @@ def plan_np_hard_authoring_from_observation(
         for item in ranked
         if item["safety_rank"] == best_safety_rank
     }
-    if len(equally_best_nodes) > 1:
+    if (
+        len(equally_best_nodes) > 1
+        and ranked[0]["task_class"] != "whole_reduction_synthesis"
+    ):
         return NPHardAuthoringPlanV2(
             status="BLOCKED",
             failure_code="ambiguous_authoring_hub",
@@ -2267,7 +2676,21 @@ def plan_np_hard_authoring_from_observation(
     composition_successor_target: str | None = None
     composition_admission_observation: dict[str, str] | None = None
     composition_successor_observation: dict[str, str] | None = None
-    if task_class == "program_synthesis":
+    if task_class == "whole_reduction_synthesis":
+        allowed_primitives = tuple(
+            dict.fromkeys(
+                (
+                    *sorted(builtin.declaration for builtin in observation.builtins),
+                    "ComplexityReduction.Program.Primitive.ofTMPolyTime",
+                    "ComplexityReduction.Program.PolyProg.atom",
+                )
+            )
+        )
+        program_reference = None
+        observed_capability_terms = {}
+        observed_capability_exact_types = {}
+        representation_adapter_exact_type = None
+    elif task_class == "program_synthesis":
         compatible_primitives = tuple(
             primitive.declaration
             for primitive in observation.primitives
@@ -2464,10 +2887,49 @@ def plan_np_hard_authoring_from_observation(
         observed_capability_terms = {}
         observed_capability_exact_types = {}
         representation_adapter_exact_type = None
+    authoring_seed_modules = _whole_reduction_authoring_seed_modules(
+        root=root,
+        input_module=input_module,
+        task_class=task_class,
+    )
+    if _BOOLEAN_CSP_NAE3_AUTHORING_SCAFFOLD_MODULE in authoring_seed_modules:
+        allowed_primitives += _BOOLEAN_CSP_NAE3_SCAFFOLD_PRIMITIVES
+    allowed_primitives = tuple(dict.fromkeys(allowed_primitives))
+    allowed_primitive_layers = _primitive_layers(
+        allowed_primitives,
+        positive_nae3=(
+            _BOOLEAN_CSP_NAE3_AUTHORING_SCAFFOLD_MODULE
+            in authoring_seed_modules
+        ),
+    )
+    capability_source_modules = tuple(
+        capability.module
+        for capability in (
+            typed_capability,
+            successor_capability,
+            program_packet_capability,
+        )
+        if capability is not None
+        and capability.capability_kind
+        in {
+            "forward_tmkarp_admission",
+            "forward_successor_only_tmkarp_admission",
+            "forward_certified_successor",
+            "forward_program_indexed_admission",
+            "forward_gadget_indexed_admission",
+        }
+    )
     public_modules = {
         input_module,
         observation.declaration_module,
         hub_problem.module,
+        *authoring_seed_modules,
+        *(
+            _BOOLEAN_CSP_NAE3_PUBLIC_SUPPORT_MODULES
+            if _BOOLEAN_CSP_NAE3_AUTHORING_SCAFFOLD_MODULE
+            in authoring_seed_modules
+            else ()
+        ),
         *(program.module for program in selected_programs),
         *((relation.module,) if relation is not None else ()),
         *((typed_capability.module,) if typed_capability is not None else ()),
@@ -2508,6 +2970,8 @@ def plan_np_hard_authoring_from_observation(
                     *((typed_capability.capability_id,) if typed_capability else ()),
                     *((typed_capability.witness,) if typed_capability else ()),
                 ),
+                max_depth=(5 if task_class == "whole_reduction_synthesis" else 1),
+                max_files=(25 if task_class == "whole_reduction_synthesis" else 2),
             )
         )
     public_files = tuple(
@@ -2520,11 +2984,18 @@ def plan_np_hard_authoring_from_observation(
         hub_module=hub_problem.module,
         hub_declaration=hub,
         task_class=task_class,
-        gap_nodes=_task_gap_nodes(
-            task_class=task_class, has_mapping_relation=relation is not None
+        gap_nodes=(
+            _positive_nae3_whole_reduction_gap_nodes()
+            if _BOOLEAN_CSP_NAE3_AUTHORING_SCAFFOLD_MODULE
+            in authoring_seed_modules
+            else _task_gap_nodes(
+                task_class=task_class,
+                has_mapping_relation=relation is not None,
+            )
         ),
         public_source_files=public_files,
         allowed_primitives=allowed_primitives,
+        allowed_primitive_layers=allowed_primitive_layers,
         program_reference=program_reference,
         program_packet_reference=(
             program_packet_capability.witness
@@ -2566,21 +3037,7 @@ def plan_np_hard_authoring_from_observation(
         composition_successor_observation=composition_successor_observation,
         additional_allowed_imports=tuple(
             dict.fromkeys(
-                capability.module
-                for capability in (
-                    typed_capability,
-                    successor_capability,
-                    program_packet_capability,
-                )
-                if capability is not None
-                and capability.capability_kind
-                in {
-                    "forward_tmkarp_admission",
-                    "forward_successor_only_tmkarp_admission",
-                    "forward_certified_successor",
-                    "forward_program_indexed_admission",
-                    "forward_gadget_indexed_admission",
-                }
+                (*authoring_seed_modules, *capability_source_modules)
             )
         ),
         additional_dependency_hashes={
@@ -2774,6 +3231,89 @@ def build_np_hard_authoring_observation_source(
     )
 
 
+def build_np_hard_declaration_type_observation_source(
+    *,
+    nonce: str,
+    allowed_imports: tuple[str, ...],
+    declarations: tuple[str, ...],
+) -> str:
+    if not nonce or any(character not in "0123456789abcdef" for character in nonce):
+        _fail("invalid_authoring_planner_observation", "type-observer nonce is invalid")
+    imports = tuple(
+        dict.fromkeys(
+            (
+                NP_HARD_AUTHORING_PLANNER_MODULE,
+                *(validate_module_name(module) for module in allowed_imports),
+            )
+        )
+    )
+    checked_declarations = tuple(
+        validate_declaration_name(declaration, label="typed allowed primitive")
+        for declaration in declarations
+    )
+    if not checked_declarations:
+        _fail(
+            "invalid_authoring_planner_observation",
+            "type observer received an empty primitive allowlist",
+        )
+    source = "\n".join(f"import {module}" for module in imports)
+    source += "\n\n" + "\n".join(
+        "#hardness_np_hard_declaration_type "
+        f"{json.dumps(nonce, ensure_ascii=True)} "
+        f"{json.dumps(declaration, ensure_ascii=True)} {declaration}"
+        for declaration in checked_declarations
+    )
+    source += "\n"
+    _assert_public(source, label="allowed primitive type probe")
+    return source
+
+
+def parse_np_hard_declaration_type_observation(
+    *,
+    stdout: str,
+    stderr: str,
+    nonce: str,
+    declarations: tuple[str, ...],
+) -> tuple[tuple[str, str], ...]:
+    observed: dict[str, str] = {}
+    for line in (stdout + "\n" + stderr).splitlines():
+        marker_index = line.find(_DECLARATION_TYPE_MARKER + "\t")
+        if marker_index < 0:
+            continue
+        fields = line[marker_index:].split("\t")
+        if len(fields) != 5:
+            _fail(
+                "invalid_authoring_planner_observation",
+                "malformed allowed primitive type row",
+            )
+        marker, schema, row_nonce, declaration, exact_type = fields
+        if marker != _DECLARATION_TYPE_MARKER or schema != _DECLARATION_TYPE_SCHEMA_V1:
+            _fail(
+                "invalid_authoring_planner_observation",
+                "allowed primitive type marker/schema drifted",
+            )
+        if row_nonce != nonce:
+            continue
+        validate_declaration_name(declaration, label="observed allowed primitive")
+        _assert_public(exact_type, label=f"observed type for {declaration}")
+        if declaration in observed:
+            _fail(
+                "invalid_authoring_planner_observation",
+                f"duplicate observed type for {declaration}",
+            )
+        observed[declaration] = exact_type
+    expected = set(declarations)
+    if set(observed) != expected:
+        missing = sorted(expected - set(observed))
+        unexpected = sorted(set(observed) - expected)
+        _fail(
+            "invalid_authoring_planner_observation",
+            "allowed primitive type coverage mismatch: "
+            f"missing={missing!r}, unexpected={unexpected!r}",
+        )
+    return tuple(sorted(observed.items()))
+
+
 class NPHardAuthoringPlannerV2:
     def __init__(
         self,
@@ -2866,6 +3406,67 @@ class NPHardAuthoringPlannerV2:
             timeout_seconds=self.timeout_seconds,
             max_output_tokens=self.max_output_tokens,
         )
+        if plan.task is not None:
+            type_nonce = secrets.token_hex(16)
+            type_source = build_np_hard_declaration_type_observation_source(
+                nonce=type_nonce,
+                allowed_imports=plan.task.allowed_imports,
+                declarations=plan.task.allowed_primitives,
+            )
+            type_source_path = self.output_dir / "AllowedPrimitiveTypes.lean"
+            type_source_path.write_text(type_source, encoding="utf-8")
+            type_build = run_command(
+                ["lake", "build", *plan.task.allowed_imports],
+                cwd=self.root / "Lean",
+                timeout_seconds=self.lean_timeout_seconds,
+                output_limit=16 * 1024 * 1024,
+            )
+            if not type_build.ok:
+                _fail(
+                    "authoring_planner_probe_failed",
+                    type_build.stderr
+                    or type_build.stdout
+                    or "allowed primitive type prebuild failed",
+                )
+            type_probe = run_command(
+                ["lake", "env", "lean", str(type_source_path)],
+                cwd=self.root / "Lean",
+                timeout_seconds=self.lean_timeout_seconds,
+                output_limit=16 * 1024 * 1024,
+            )
+            if not type_probe.ok:
+                _fail(
+                    "authoring_planner_probe_failed",
+                    type_probe.stderr
+                    or type_probe.stdout
+                    or "allowed primitive type observation failed",
+                )
+            primitive_types = parse_np_hard_declaration_type_observation(
+                stdout=type_probe.stdout,
+                stderr=type_probe.stderr,
+                nonce=type_nonce,
+                declarations=plan.task.allowed_primitives,
+            )
+            dependency_hashes = dict(plan.task.dependency_hashes)
+            dependency_hashes["content:lean-allowed-primitive-exact-types"] = (
+                sha256_id(dict(primitive_types))
+            )
+            provisional_task = replace(
+                plan.task,
+                request_id="sha256:" + "0" * 64,
+                allowed_primitive_exact_types=primitive_types,
+                dependency_hashes=tuple(sorted(dependency_hashes.items())),
+            )
+            enriched_task = replace(
+                provisional_task,
+                request_id=provisional_task.computed_request_id,
+            )
+            enriched_task.validate()
+            plan = replace(
+                plan,
+                task=enriched_task,
+                commands=plan.commands + (type_build, type_probe),
+            )
         (self.output_dir / "observation.json").write_text(
             json.dumps(observation.to_dict(), ensure_ascii=True, indent=2, sort_keys=True)
             + "\n",

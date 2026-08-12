@@ -6,6 +6,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 import ComplexityReduction.Legacy.ComplexityReduction.CSP.SatLike
 import ComplexityReduction.Legacy.ComplexityReduction.CSP.FiniteDomain.Basic
 import ComplexityReduction.Encoding.PresentedProblem
+import ComplexityReduction.Program.EncodingTransport
 
 /-!
 Canonical explicit presentation of CR's concrete finite relation-table CSP fragment.
@@ -172,6 +173,27 @@ theorem encodedType_encode_injective (Γ : TableLanguage) :
   intro left right equality
   apply formulaCode_injective Γ
   exact formulaCodeEncodedType_encode_injective equality
+
+/--
+Convert a direct-TM computation of the canonical numeric formula payload into
+a direct-TM computation of the corresponding table-CSP formula.  The formula
+function and payload function are inferred from the two supplied proofs.
+-/
+theorem formula_tmPolyTime_of_code {X : ComplexityReduction.EncodedType}
+    {Γ : TableLanguage}
+    {formula : X.Carrier → Formula Γ}
+    {code : X.Carrier → formulaCodeEncodedType.Carrier}
+    (hCode : ComplexityReduction.TMPolyTimeMap X formulaCodeEncodedType code)
+    (codeEq : ∀ input, code input = formulaCode Γ (formula input)) :
+    ComplexityReduction.TMPolyTimeMap X (encodedType Γ) formula := by
+  apply ComplexityReduction.TMPolyTimeMap.transport_output
+    (Z := encodedType Γ) (targetOutput := formula) hCode (Equiv.refl _)
+  intro input
+  rw [codeEq input]
+  change formulaCodeEncodedType.encode (formulaCode Γ (formula input)) =
+    List.map (fun symbol => symbol)
+      (formulaCodeEncodedType.encode (formulaCode Γ (formula input)))
+  exact (List.map_id _).symm
 
 /-- The complete identity of the custom table-language formula-code layout. -/
 def representationShape : CodecShape :=

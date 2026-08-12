@@ -41,6 +41,7 @@ from .model_client import DeepSeekClient, DeepSeekConfig
 from .models import AgentResult, sha256_id
 from .np_hard_exact_edge_authoring import (
     EXACT_EDGE_AUTHORING_TASK_CLASS,
+    EXACT_EDGE_RUNTIME_MODULE,
     EXACT_EDGE_STAGED_RESULT_SCHEMA_V1,
     build_typed_exact_edge_task,
     run_exact_edge_staged_construction,
@@ -963,10 +964,10 @@ def isolated_exact_edge_workspace(root: Path, *, enabled: bool = True) -> Iterat
         yield isolated
 
 
-def _fresh_output(path: Path) -> Path:
+def _fresh_output(path: Path, *, resume: bool = False) -> Path:
     resolved = path.resolve()
     if resolved.exists():
-        if not resolved.is_dir() or any(resolved.iterdir()):
+        if not resolved.is_dir() or (not resume and any(resolved.iterdir())):
             _fail("exact_edge_output_not_fresh", f"output directory is not empty: {resolved}")
     resolved.mkdir(parents=True, exist_ok=True)
     return resolved
@@ -1199,6 +1200,7 @@ def _execute_with_hardness_agent(
     deepseek: DeepSeekConfig | None,
     model_client: object | None,
     runtime_prebuilt: bool,
+    resume: bool = False,
 ) -> AgentResult:
     return HardnessAgent(
         HardnessAgentConfig(
@@ -1214,6 +1216,7 @@ def _execute_with_hardness_agent(
             runtime_prebuilt=runtime_prebuilt,
             authoring_mode=profile.authoring_mode,
             authoring_attempt_budget=profile.authoring_attempt_budget,
+            resume=resume,
         )
     ).run()
 
@@ -1253,7 +1256,7 @@ def _execute_exact_edge_staged(
         public_source_files=_endpoint_public_source_files(case),
         attempt_budget=profile.authoring_attempt_budget,
         timeout_seconds=profile.lean_timeout_seconds,
-        max_output_tokens=3_000,
+        max_output_tokens=(deepseek.max_tokens if deepseek is not None else 3_000),
     )
     active_model_client = model_client
     model_name: str | None = None
@@ -1271,6 +1274,7 @@ def _execute_exact_edge_staged(
         model_client=active_model_client,
         model_name=model_name,
         timeout_seconds=profile.lean_timeout_seconds,
+        case_id=case.case_id,
         attempt_budget=profile.authoring_attempt_budget,
         resume_checkpoint=(
             resume_checkpoint if resume_checkpoint.is_file() else None
@@ -1287,6 +1291,7 @@ def _policy_dispatch_executor(
     deepseek: DeepSeekConfig | None,
     model_client: object | None,
     runtime_prebuilt: bool,
+    resume: bool = False,
 ) -> Any:
     if case.construction_policy.mode == CONSTRUCTION_POLICY_MODE_NEW:
         return _execute_exact_edge_staged(
@@ -1306,6 +1311,7 @@ def _policy_dispatch_executor(
         deepseek=deepseek,
         model_client=model_client,
         runtime_prebuilt=runtime_prebuilt,
+        resume=resume,
     )
 
 
@@ -1351,6 +1357,7 @@ def _model_call_ledger(
     rows: Sequence[Any],
     *,
     case_output: Path,
+    case_id: str,
     statement: str,
 ) -> tuple[list[dict[str, Any]], list[str], bool]:
     safe: list[dict[str, Any]] = []
@@ -1363,6 +1370,28 @@ def _model_call_ledger(
         call_number = raw.get("call")
         if call_number != index:
             issues.append(f"model_call_{index}:noncanonical_call_number")
+        raw_case_id = raw.get("case_id")
+        if raw_case_id is not None and raw_case_id != case_id:
+            issues.append(f"model_call_{index}:case_identity_mismatch")
+        attempt = raw.get("attempt")
+        if attempt is not None and (
+            isinstance(attempt, bool) or not isinstance(attempt, int) or attempt <= 0
+        ):
+            issues.append(f"model_call_{index}:attempt_invalid")
+        request_id = raw.get("request_id")
+        task_id = raw.get("task_id")
+        node_id = raw.get("node_id", raw.get("stage"))
+        if raw_case_id is not None:
+            expected_request_id = sha256_id(
+                {
+                    "task_request_id": task_id,
+                    "case_id": case_id,
+                    "node_id": node_id,
+                    "attempt": attempt,
+                }
+            )
+            if request_id != expected_request_id:
+                issues.append(f"model_call_{index}:request_identity_mismatch")
         usage = raw.get("usage")
         safe_usage = (
             {
@@ -1376,7 +1405,10 @@ def _model_call_ledger(
             if isinstance(usage, Mapping)
             else None
         )
-        if isinstance(usage, Mapping) and len(safe_usage or {}) != len(usage):
+        if isinstance(usage, Mapping) and any(
+            not isinstance(value, (int, Mapping)) or isinstance(value, bool)
+            for value in usage.values()
+        ):
             issues.append(f"model_call_{index}:invalid_usage")
 
         prompt_path, prompt_evidence = _evidence_file(
@@ -1411,6 +1443,7 @@ def _model_call_ledger(
             issues.append(f"model_call_{index}:prompt_hash_mismatch")
 
         response_hash_valid = False
+        response_usage_valid = not called
         if (
             response_path is not None
             and response_path.is_file()
@@ -1427,8 +1460,25 @@ def _model_call_ledger(
                     _sha256_text(str(response_payload["content"]))
                     == raw.get("response_sha256")
                 )
+                response_usage = response_payload.get("usage")
+                response_usage_valid = (
+                    response_usage is None and safe_usage is None
+                ) or (
+                    isinstance(response_usage, Mapping)
+                    and {
+                        str(name): value
+                        for name, value in response_usage.items()
+                        if isinstance(name, str)
+                        and isinstance(value, int)
+                        and not isinstance(value, bool)
+                        and value >= 0
+                    }
+                    == safe_usage
+                )
         if called and not response_hash_valid:
             issues.append(f"model_call_{index}:response_hash_mismatch")
+        if called and not response_usage_valid:
+            issues.append(f"model_call_{index}:response_usage_mismatch")
 
         patch_hash_valid: bool | None = None
         if protocol_accepted:
@@ -1438,12 +1488,17 @@ def _model_call_ledger(
                     patch_payload = json.loads(patch_path.read_text(encoding="utf-8"))
                 except (OSError, UnicodeError, json.JSONDecodeError):
                     patch_payload = None
-                if isinstance(patch_payload, Mapping) and isinstance(
-                    patch_payload.get("replacement"), str
-                ):
+                replacement = (
+                    patch_payload.get("replacement_body")
+                    if isinstance(patch_payload, Mapping)
+                    and isinstance(patch_payload.get("replacement_body"), str)
+                    else patch_payload.get("replacement")
+                    if isinstance(patch_payload, Mapping)
+                    else None
+                )
+                if isinstance(replacement, str):
                     patch_hash_valid = (
-                        _sha256_text(str(patch_payload["replacement"]))
-                        == raw.get("patch_sha256")
+                        _sha256_text(replacement) == raw.get("patch_sha256")
                     )
             if not patch_hash_valid:
                 issues.append(f"model_call_{index}:patch_hash_mismatch")
@@ -1451,8 +1506,12 @@ def _model_call_ledger(
         safe.append(
             {
                 "call": call_number,
-                "task_id": raw.get("task_id"),
+                "request_id": request_id,
+                "case_id": raw.get("case_id"),
+                "task_id": task_id,
                 "node": raw.get("stage"),
+                "node_id": node_id,
+                "attempt": attempt,
                 "editable_file": raw.get("editable_file"),
                 "model": raw.get("model"),
                 "base_url": raw.get("base_url"),
@@ -1474,7 +1533,14 @@ def _model_call_ledger(
                     "patch": patch_evidence,
                 },
                 "evidence_valid": (
-                    (not called or (prompt_hash_valid and response_hash_valid))
+                    (
+                        not called
+                        or (
+                            prompt_hash_valid
+                            and response_hash_valid
+                            and response_usage_valid
+                        )
+                    )
                     and (not protocol_accepted or patch_hash_valid is True)
                 ),
             }
@@ -1767,6 +1833,7 @@ def _audit_staged_case_payload(
     safe_model_calls, model_ledger_issues, statement_prompted = _model_call_ledger(
         model_call_rows,
         case_output=case_output,
+        case_id=case.case_id,
         statement=case.statement,
     )
     attempt_ledger, attempt_ledger_issues = _authoring_attempt_ledger(
@@ -1919,6 +1986,10 @@ def _audit_staged_case_payload(
             authored_declaration if status == "VERIFIED" else None
         ),
         "authoring_protocol": EXACT_EDGE_AUTHORING_TASK_CLASS,
+        "resumed": payload.get("resumed") is True,
+        "resumed_node_count": int(payload.get("resumed_node_count") or 0),
+        "new_node_count": int(payload.get("new_node_count") or 0),
+        "accepted_node_ids": accepted_node_ids,
         "exact_artifact_generated": artifact_path is not None,
         "selected_route_id": None,
         "selected_route_atoms": [],
@@ -2036,6 +2107,7 @@ def _audit_case_payload(
     safe_model_calls, model_ledger_issues, statement_prompted = _model_call_ledger(
         model_call_rows,
         case_output=case_output,
+        case_id=case.case_id,
         statement=case.statement,
     )
     attempt_ledger, attempt_ledger_issues = _authoring_attempt_ledger(
@@ -2375,6 +2447,7 @@ def run_exact_reduction_edge_benchmark(
     case_executor: CaseExecutor | None = None,
     manifest_sha256: str | None = None,
     expected_oracle_sha256: str | None = None,
+    resume: bool = False,
 ) -> dict[str, Any]:
     """Run an answer-free exact-edge suite and preserve real failures."""
 
@@ -2385,7 +2458,29 @@ def run_exact_reduction_edge_benchmark(
     )
     if unknown_profiles:
         _fail("exact_edge_manifest_invalid", f"unknown budget profiles: {unknown_profiles!r}")
-    output = _fresh_output(output_root)
+    runtime_build: dict[str, Any] | None = None
+    if case_executor is None and any(
+        case.construction_policy.mode == CONSTRUCTION_POLICY_MODE_NEW
+        for case in suite.cases
+    ):
+        build = run_command(
+            ["lake", "build", EXACT_EDGE_RUNTIME_MODULE],
+            cwd=root.resolve() / "Lean",
+            timeout_seconds=max(
+                budget_profiles[case.budget_profile].lean_timeout_seconds
+                for case in suite.cases
+            ),
+        )
+        runtime_build = {
+            **build.to_dict(),
+            "command": list(build.command),
+        }
+        if not build.ok:
+            _fail(
+                "exact_edge_runtime_build_failed",
+                "the route-free exact-edge runtime did not prebuild",
+            )
+    output = _fresh_output(output_root, resume=resume)
     started_at = datetime.now(timezone.utc).isoformat()
     run_id = sha256_id(
         {
@@ -2396,7 +2491,11 @@ def run_exact_reduction_edge_benchmark(
             "nonce": os.urandom(32).hex(),
         }
     )
-    executor = case_executor or _policy_dispatch_executor
+    if case_executor is None:
+        def executor(**kwargs: Any) -> Any:
+            return _policy_dispatch_executor(**kwargs, resume=resume)
+    else:
+        executor = case_executor
     model_profile_required = any(
         budget_profiles[case.budget_profile].authoring_mode
         in {MODEL_AUTO_MODE, MODEL_REQUIRED_MODE}
@@ -2647,6 +2746,7 @@ def run_exact_reduction_edge_benchmark(
             else {"evaluation_kind": "benchmark"}
         ),
         "run_valid": run_valid,
+        "resume": resume,
         "output_root": str(output),
         "report_file": str((output / "report.json").resolve()),
         "manifest_sha256": manifest_sha256,
@@ -2664,6 +2764,7 @@ def run_exact_reduction_edge_benchmark(
         },
         "model": deepseek.to_public_dict() if deepseek is not None else None,
         "formal_model_configuration": formal_model_configuration,
+        "runtime_build": runtime_build,
         "metrics": {
             "case_count": len(ordered),
             "unique_directions": len({case.edge_id for case in suite.cases}),
@@ -2910,12 +3011,47 @@ def _case_filesystem_issues(row: Mapping[str, Any], *, run_id: str) -> list[str]
         [call for call in call_rows if isinstance(call, Mapping)]
     ):
         issues.append("model_usage_total_mismatch")
+    seen_request_ids: set[str] = set()
+    seen_call_keys: set[tuple[str, str, int]] = set()
     for index, call in enumerate(call_rows, start=1):
         if not isinstance(call, Mapping):
             issues.append(f"model_call_{index}_invalid")
             continue
         if call.get("call") != index or call.get("evidence_valid") is not True:
             issues.append(f"model_call_{index}_evidence_invalid")
+        if row.get("authoring_protocol") == EXACT_EDGE_AUTHORING_TASK_CLASS:
+            request_id = call.get("request_id")
+            task_id = call.get("task_id")
+            call_case_id = call.get("case_id")
+            node_id = call.get("node_id")
+            attempt = call.get("attempt")
+            if (
+                not isinstance(request_id, str)
+                or not isinstance(task_id, str)
+                or call_case_id != row.get("case_id")
+                or not isinstance(node_id, str)
+                or not node_id
+                or isinstance(attempt, bool)
+                or not isinstance(attempt, int)
+                or attempt <= 0
+            ):
+                issues.append(f"model_call_{index}_identity_invalid")
+            else:
+                expected_request_id = sha256_id(
+                    {
+                        "task_request_id": task_id,
+                        "case_id": call_case_id,
+                        "node_id": node_id,
+                        "attempt": attempt,
+                    }
+                )
+                if request_id != expected_request_id:
+                    issues.append(f"model_call_{index}_request_hash_invalid")
+                call_key = (str(call_case_id), node_id, attempt)
+                if request_id in seen_request_ids or call_key in seen_call_keys:
+                    issues.append(f"model_call_{index}_identity_reused")
+                seen_request_ids.add(request_id)
+                seen_call_keys.add(call_key)
         if call.get("called") is True:
             status = call.get("status_code")
             if status is not None and (

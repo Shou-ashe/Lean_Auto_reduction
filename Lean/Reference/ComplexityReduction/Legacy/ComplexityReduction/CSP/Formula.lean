@@ -124,6 +124,31 @@ theorem satisfies_append {Γ : BoolLanguage} (φ ψ : Formula Γ) (a : Assignmen
     · exact h.2 c hc
 
 @[simp]
+theorem satisfies_flatMap {α : Type} {Γ : BoolLanguage}
+    (blocks : α → Formula Γ) (items : List α) (a : Assignment) :
+    Satisfies (items.flatMap blocks) a ↔
+      ∀ item ∈ items, Satisfies (blocks item) a := by
+  induction items with
+  | nil => simp
+  | cons item rest ih =>
+      simp [ih]
+
+/-- Introduce satisfaction of a flattened family without choosing an iff direction. -/
+theorem satisfies_flatMap_intro {α : Type} {Γ : BoolLanguage}
+    {blocks : α → Formula Γ} {items : List α} {a : Assignment}
+    (hBlocks : ∀ item ∈ items, Satisfies (blocks item) a) :
+    Satisfies (items.flatMap blocks) a :=
+  (satisfies_flatMap blocks items a).2 hBlocks
+
+/-- Extract one satisfied block from a satisfied flattened family. -/
+theorem satisfies_flatMap_elim {α : Type} {Γ : BoolLanguage}
+    {blocks : α → Formula Γ} {items : List α} {a : Assignment}
+    (hFormula : Satisfies (items.flatMap blocks) a)
+    (item : α) (hItem : item ∈ items) :
+    Satisfies (blocks item) a :=
+  (satisfies_flatMap blocks items a).1 hFormula item hItem
+
+@[simp]
 theorem satisfiable_nil {Γ : BoolLanguage} :
     Satisfiable ([] : Formula Γ) := by
   exact ⟨fun _ => false, satisfies_nil _⟩

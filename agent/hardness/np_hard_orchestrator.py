@@ -40,6 +40,7 @@ from .np_hard_input import NPHardInputReferenceV1, resolve_np_hard_input_referen
 from .np_hard_production import (
     NPHardProductionPreflightV1,
     is_formal_np_hard_qualification_config,
+    public_node_reasoning_policy,
     required_model_call_budget,
 )
 from .np_hard_scope_policy import (
@@ -56,7 +57,7 @@ NP_HARD_PROOF_REQUEST_SCHEMA_V2 = "hardness_np_hard_proof_request_v2"
 NP_HARD_PROOF_RESULT_SCHEMA_V2 = "hardness_np_hard_proof_result_v2"
 NP_HARD_PROOF_RESULT_STATUSES_V2 = {"VERIFIED", "BLOCKED", "FAILED"}
 NP_HARD_MODEL_POLICIES_V2 = {"disabled", "model-auto", "model-required"}
-NP_HARD_MAX_MODEL_CALL_BUDGET_V2 = 64
+NP_HARD_MAX_MODEL_CALL_BUDGET_V2 = 66
 NP_HARD_AUTHORABLE_DETERMINISTIC_BLOCKERS_V2 = frozenset(
     {"no_forward_path_from_hardness_seed", "wrong_direction_only"}
 )
@@ -113,7 +114,11 @@ def _require_sha256(value: str, *, label: str) -> None:
 
 
 def _public_model_configuration(config: DeepSeekConfig | None) -> dict[str, Any] | None:
-    return config.to_public_dict() if config is not None else None
+    if config is None:
+        return None
+    value = config.to_public_dict()
+    value["node_reasoning_policy"] = public_node_reasoning_policy()
+    return value
 
 
 @dataclass(frozen=True)
@@ -231,6 +236,10 @@ class NPHardProofRequestV2:
             minimum_call_budget = required_model_call_budget(
                 gap_node_count=len(self.authoring_task.gap_nodes),
                 attempt_budget=self.attempt_budget,
+                semantic_planner=any(
+                    node.node_id == "reference-semantic-forward"
+                    for node in self.authoring_task.gap_nodes
+                ),
             )
             if minimum_call_budget > self.call_budget:
                 _fail(
@@ -550,6 +559,13 @@ def build_np_hard_proof_request_v2(config: NPHardOrchestratorConfigV2) -> NPHard
     minimum_call_budget = required_model_call_budget(
         gap_node_count=(len(config.authoring_task.gap_nodes) if config.authoring_task else 0),
         attempt_budget=config.attempt_budget,
+        semantic_planner=bool(
+            config.authoring_task is not None
+            and any(
+                node.node_id == "reference-semantic-forward"
+                for node in config.authoring_task.gap_nodes
+            )
+        ),
     )
     call_budget = (
         minimum_call_budget if config.call_budget is None else config.call_budget
@@ -794,10 +810,9 @@ class NPHardOrchestratorV2:
                 "request_id": request.request_id,
             }
         )
-        model_configuration = (
-            self.config.deepseek.to_public_dict()
-            if self.config.deepseek is not None
-            else {
+        model_configuration = _public_model_configuration(self.config.deepseek)
+        if model_configuration is None:
+            model_configuration = {
                 "base_url": None,
                 "model": None,
                 "timeout_seconds": None,
@@ -806,8 +821,8 @@ class NPHardOrchestratorV2:
                 "max_retries": None,
                 "reasoning_effort": None,
                 "api_key_configured": False,
+                "node_reasoning_policy": public_node_reasoning_policy(),
             }
-        )
         qualification_profile_matched = bool(
             self.config.deepseek is not None
             and is_formal_np_hard_qualification_config(self.config.deepseek)

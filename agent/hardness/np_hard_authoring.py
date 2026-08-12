@@ -14,6 +14,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Mapping, Protocol
 
+from .authoring_contract import BANNED_BODY_RE, CandidateSource
 from .lean_runner import (
     RUNTIME_MODULE,
     assert_generated_source_is_safe,
@@ -24,14 +25,13 @@ from .lean_runner import (
     validate_module_name,
 )
 from .lean_worker_pool import (
-    StagePLeanWorkerKey,
-    StagePLeanWorkerPool,
-    StagePLeanWorkerResult,
+    LeanWorkerKey,
+    LeanWorkerPool,
+    LeanWorkerResult,
 )
 from .model_client import ModelResponse, extract_json_object
 from .models import CommandResult, sha256_id
-from .stage_p_contract import BANNED_BODY_RE
-from .stage_p_model_authoring import StagePCandidateSource
+from .np_hard_production import FORMAL_MAX_TOKENS
 
 
 NP_HARD_AUTHORING_TASK_SCHEMA_V1 = "hardness_np_hard_authoring_task_v1"
@@ -41,12 +41,13 @@ NP_HARD_AUTHORING_PUBLICATION_SCHEMA_V1 = (
     "hardness_np_hard_authoring_publication_v1"
 )
 NP_HARD_AUTHORING_DIRECTION = "hardness_seed_to_problem"
-NP_HARD_AUTHORING_MAX_BODY_CHARS = 12_000
+NP_HARD_AUTHORING_MAX_BODY_CHARS = 32_000
 
 NP_HARD_AUTHORING_TASK_SCHEMA_V2 = "hardness_np_hard_authoring_task_v2"
 NP_HARD_AUTHORING_PATCH_SCHEMA_V2 = "hardness_np_hard_authoring_patch_v2"
 NP_HARD_AUTHORING_RESULT_SCHEMA_V2 = "hardness_np_hard_authoring_result_v2"
 NP_HARD_AUTHORING_REQUIRED_DIRECTION_V2 = "source_to_target"
+NP_HARD_SEMANTIC_PLAN_SCHEMA_V1 = "hardness_np_hard_semantic_plan_v1"
 NP_HARD_SUCCESSOR_CHAIN_PROBE_SCHEMA_V1 = (
     "hardness_np_hard_successor_chain_probe_v1"
 )
@@ -55,6 +56,7 @@ NP_HARD_AUTHORING_TASK_CLASSES_V2 = frozenset(
         "semantic_proof",
         "program_composition",
         "program_synthesis",
+        "whole_reduction_synthesis",
         "typed_capability_dag",
         "typed_tmkarp_admission_dag",
         "typed_tmkarp_dependent_composition_dag",
@@ -64,6 +66,192 @@ NP_HARD_AUTHORING_TASK_CLASSES_V2 = frozenset(
         "typed_exact_edge_construction_dag",
     }
 )
+
+
+@dataclass(frozen=True)
+class NPHardSemanticFormulaStructureV1:
+    reference_constructor: str
+    block_declaration: str
+    introduction_lemma: str
+    elimination_lemma: str
+
+
+@dataclass(frozen=True)
+class NPHardSemanticForwardPlanV1:
+    target_assignment: str
+    literal_value_lemma: str
+    main_constraint_lemma: str
+    complement_constraint_lemma: str
+    block_proof_method: str
+
+
+@dataclass(frozen=True)
+class NPHardSemanticReversePlanV1:
+    source_assignment: str
+    block_extraction_method: str
+    main_constraint_lemma: str
+    complement_constraint_lemma: str
+    literal_recovery_lemma: str
+
+
+@dataclass(frozen=True)
+class NPHardSemanticLanguageConversionV1:
+    method: str
+    definitions: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class NPHardSemanticPlanV1:
+    """Strict shared plan consumed by the two reference-semantic nodes."""
+
+    dependency_fingerprint: str
+    formula_structure: NPHardSemanticFormulaStructureV1
+    forward: NPHardSemanticForwardPlanV1
+    reverse: NPHardSemanticReversePlanV1
+    language_conversion: NPHardSemanticLanguageConversionV1
+    ordered_obligations: tuple[str, ...]
+    schema_version: str = NP_HARD_SEMANTIC_PLAN_SCHEMA_V1
+
+    def validate_shape(self) -> None:
+        if self.schema_version != NP_HARD_SEMANTIC_PLAN_SCHEMA_V1:
+            _v2_fail("invalid_semantic_plan_schema", "unsupported semantic plan schema")
+        _v2_require_hash(
+            self.dependency_fingerprint, label="semantic plan dependency fingerprint"
+        )
+        values = (
+            self.formula_structure.reference_constructor,
+            self.formula_structure.block_declaration,
+            self.formula_structure.introduction_lemma,
+            self.formula_structure.elimination_lemma,
+            self.forward.target_assignment,
+            self.forward.literal_value_lemma,
+            self.forward.main_constraint_lemma,
+            self.forward.complement_constraint_lemma,
+            self.forward.block_proof_method,
+            self.reverse.source_assignment,
+            self.reverse.block_extraction_method,
+            self.reverse.main_constraint_lemma,
+            self.reverse.complement_constraint_lemma,
+            self.reverse.literal_recovery_lemma,
+            self.language_conversion.method,
+            *self.language_conversion.definitions,
+            *self.ordered_obligations,
+        )
+        if not self.language_conversion.definitions:
+            _v2_fail(
+                "invalid_semantic_plan_schema",
+                "semantic plan language conversion has no definitions",
+            )
+        if len(self.ordered_obligations) != 10:
+            _v2_fail(
+                "invalid_semantic_plan_schema",
+                "semantic plan must contain five forward then five reverse obligations",
+            )
+        for value in values:
+            if not isinstance(value, str) or not value.strip():
+                _v2_fail(
+                    "invalid_semantic_plan_schema",
+                    "semantic plan contains an empty string field",
+                )
+            _v2_require_public_text(value, label="semantic plan field")
+
+    def to_dict(self) -> dict[str, Any]:
+        self.validate_shape()
+        return {
+            "schema_version": self.schema_version,
+            "dependency_fingerprint": self.dependency_fingerprint,
+            "formula_structure": asdict(self.formula_structure),
+            "forward": asdict(self.forward),
+            "reverse": asdict(self.reverse),
+            "language_conversion": {
+                "method": self.language_conversion.method,
+                "definitions": list(self.language_conversion.definitions),
+            },
+            "ordered_obligations": list(self.ordered_obligations),
+        }
+
+    @classmethod
+    def from_dict(cls, value: Mapping[str, Any]) -> "NPHardSemanticPlanV1":
+        def exact(mapping: Mapping[str, Any], expected: set[str], label: str) -> None:
+            if set(mapping) != expected:
+                _v2_fail(
+                    "invalid_semantic_plan_schema",
+                    f"{label} fields differ from the fixed schema",
+                )
+
+        if not isinstance(value, Mapping):
+            _v2_fail("invalid_semantic_plan_schema", "semantic plan is not an object")
+        exact(
+            value,
+            {
+                "schema_version",
+                "dependency_fingerprint",
+                "formula_structure",
+                "forward",
+                "reverse",
+                "language_conversion",
+                "ordered_obligations",
+            },
+            "semantic plan",
+        )
+        nested_specs = {
+            "formula_structure": {
+                "reference_constructor",
+                "block_declaration",
+                "introduction_lemma",
+                "elimination_lemma",
+            },
+            "forward": {
+                "target_assignment",
+                "literal_value_lemma",
+                "main_constraint_lemma",
+                "complement_constraint_lemma",
+                "block_proof_method",
+            },
+            "reverse": {
+                "source_assignment",
+                "block_extraction_method",
+                "main_constraint_lemma",
+                "complement_constraint_lemma",
+                "literal_recovery_lemma",
+            },
+            "language_conversion": {"method", "definitions"},
+        }
+        nested: dict[str, Mapping[str, Any]] = {}
+        for name, fields in nested_specs.items():
+            item = value[name]
+            if not isinstance(item, Mapping):
+                _v2_fail("invalid_semantic_plan_schema", f"{name} is not an object")
+            exact(item, fields, name)
+            nested[name] = item
+        definitions = nested["language_conversion"]["definitions"]
+        obligations = value["ordered_obligations"]
+        if (
+            not isinstance(definitions, list)
+            or not all(isinstance(item, str) for item in definitions)
+            or not isinstance(obligations, list)
+            or not all(isinstance(item, str) for item in obligations)
+        ):
+            _v2_fail(
+                "invalid_semantic_plan_schema",
+                "semantic plan list fields are invalid",
+            )
+        plan = cls(
+            schema_version=value["schema_version"],
+            dependency_fingerprint=value["dependency_fingerprint"],
+            formula_structure=NPHardSemanticFormulaStructureV1(
+                **dict(nested["formula_structure"])
+            ),
+            forward=NPHardSemanticForwardPlanV1(**dict(nested["forward"])),
+            reverse=NPHardSemanticReversePlanV1(**dict(nested["reverse"])),
+            language_conversion=NPHardSemanticLanguageConversionV1(
+                method=nested["language_conversion"]["method"],
+                definitions=tuple(definitions),
+            ),
+            ordered_obligations=tuple(obligations),
+        )
+        plan.validate_shape()
+        return plan
 
 
 def deletion_command_matches_declaration_v2(
@@ -121,6 +309,7 @@ def deletion_command_matches_declaration_v2(
 
 _NP_HARD_TYPED_TASK_CLASSES_V2 = frozenset(
     {
+        "whole_reduction_synthesis",
         "typed_capability_dag",
         "typed_tmkarp_admission_dag",
         "typed_tmkarp_dependent_composition_dag",
@@ -131,6 +320,36 @@ _NP_HARD_TYPED_TASK_CLASSES_V2 = frozenset(
     }
 )
 _NP_HARD_EXACT_STAGED_TASK_MOTIFS_V2 = {
+    "whole_reduction_synthesis": (
+        ("reduction-executable", "reduction_executable", ()),
+        ("direct-tm", "direct_tm", ("reduction-executable",)),
+        (
+            "reduction-primitive",
+            "reduction_primitive",
+            ("reduction-executable", "direct-tm"),
+        ),
+        ("poly-program", "poly_program", ("reduction-primitive",)),
+        (
+            "program-run-coherence",
+            "program_run_coherence",
+            ("poly-program", "reduction-executable"),
+        ),
+        (
+            "semantic-forward",
+            "semantic_forward",
+            ("poly-program", "program-run-coherence"),
+        ),
+        (
+            "semantic-reverse",
+            "semantic_reverse",
+            ("poly-program", "program-run-coherence"),
+        ),
+        (
+            "semantic-iff",
+            "semantic_iff",
+            ("semantic-forward", "semantic-reverse"),
+        ),
+    ),
     "typed_tmkarp_dependent_composition_dag": (
         ("tmkarp-primitive", "tmkarp_primitive", ()),
         ("tmkarp-program", "tmkarp_program", ("tmkarp-primitive",)),
@@ -265,7 +484,82 @@ _NP_HARD_EXACT_STAGED_TASK_MOTIFS_V2 = {
         ),
     ),
 }
+_NP_HARD_POSITIVE_NAE3_WHOLE_REDUCTION_MOTIF_V2 = (
+    ("clause-constraint", "clause_constraint", ()),
+    ("complement-constraint", "complement_constraint", ()),
+    (
+        "clause-gadget",
+        "clause_gadget",
+        ("clause-constraint", "complement-constraint"),
+    ),
+    ("reference-executable", "reference_executable", ("clause-gadget",)),
+    (
+        "reduction-executable",
+        "reduction_executable",
+        ("reference-executable",),
+    ),
+    (
+        "clause-gadget-direct-tm",
+        "clause_gadget_direct_tm",
+        ("clause-gadget",),
+    ),
+    (
+        "reference-direct-tm",
+        "reference_direct_tm",
+        ("reference-executable", "clause-gadget-direct-tm"),
+    ),
+    (
+        "direct-tm",
+        "direct_tm",
+        ("reduction-executable", "reference-direct-tm"),
+    ),
+    (
+        "reduction-primitive",
+        "reduction_primitive",
+        ("reduction-executable", "direct-tm"),
+    ),
+    ("poly-program", "poly_program", ("reduction-primitive",)),
+    (
+        "program-run-coherence",
+        "program_run_coherence",
+        ("poly-program", "reduction-executable"),
+    ),
+    (
+        "reference-semantic-forward",
+        "reference_semantic_forward",
+        ("clause-gadget", "reference-executable"),
+    ),
+    (
+        "reference-semantic-reverse",
+        "reference_semantic_reverse",
+        ("clause-gadget", "reference-executable"),
+    ),
+    (
+        "semantic-forward",
+        "semantic_forward",
+        (
+            "reduction-executable",
+            "program-run-coherence",
+            "reference-semantic-forward",
+        ),
+    ),
+    (
+        "semantic-reverse",
+        "semantic_reverse",
+        (
+            "reduction-executable",
+            "program-run-coherence",
+            "reference-semantic-reverse",
+        ),
+    ),
+    (
+        "semantic-iff",
+        "semantic_iff",
+        ("semantic-forward", "semantic-reverse"),
+    ),
+)
 _NP_HARD_EXACT_STAGED_TASK_BOUNDARIES_V2 = {
+    "whole_reduction_synthesis": ("semantic-iff", "poly-program"),
     "typed_tmkarp_dependent_composition_dag": (
         "composed-semantic-iff",
         "composed-program",
@@ -418,7 +712,7 @@ class NPHardAuthoredCandidateV1:
     attempt: int
     model_calls: int
     commands: tuple[CommandResult, ...]
-    worker_results: tuple[StagePLeanWorkerResult, ...]
+    worker_results: tuple[LeanWorkerResult, ...]
     call_records: tuple[dict[str, Any], ...]
 
 
@@ -428,7 +722,7 @@ class NPHardAuthoringFailureV1:
     explanation: str
     model_calls: int
     commands: tuple[CommandResult, ...]
-    worker_results: tuple[StagePLeanWorkerResult, ...]
+    worker_results: tuple[LeanWorkerResult, ...]
     call_records: tuple[dict[str, Any], ...]
 
 
@@ -442,7 +736,7 @@ def _tagged_content_hash(value: str) -> str:
     return sha256_id(value)
 
 
-def _worker_diagnostic(result: StagePLeanWorkerResult) -> str:
+def _worker_diagnostic(result: LeanWorkerResult) -> str:
     messages: list[str] = []
     for item in result.diagnostics:
         message = str(item.get("message", "Lean rejected candidate")).strip()
@@ -491,9 +785,9 @@ def build_np_hard_authoring_task(
 
 def build_np_hard_candidate(
     task: NPHardAuthoringTaskV1, *, body: str = "by\n  contradiction\n"
-) -> StagePCandidateSource:
+) -> CandidateSource:
     task.validate()
-    candidate = StagePCandidateSource(
+    candidate = CandidateSource(
         fixed_header=(
             f"import {task.input_module}\n"
             f"import {RUNTIME_MODULE}\n\n"
@@ -649,7 +943,7 @@ def author_exact_np_hard_reduction(
     lean_root: Path,
     candidate_path: Path,
     timeout_seconds: int,
-    worker_pool: StagePLeanWorkerPool | None = None,
+    worker_pool: LeanWorkerPool | None = None,
     worker_session_id: str | None = None,
     worker_owner: str | None = None,
     toolchain: str | None = None,
@@ -683,7 +977,7 @@ def author_exact_np_hard_reduction(
     seen_diagnostics: set[str] = set()
     last_lean_diagnostic: str | None = None
     commands: list[CommandResult] = []
-    worker_results: list[StagePLeanWorkerResult] = []
+    worker_results: list[LeanWorkerResult] = []
     calls: list[dict[str, Any]] = []
     model_calls = 0
     last_error = "authoring attempts were exhausted"
@@ -767,7 +1061,7 @@ def author_exact_np_hard_reduction(
             worker_result = worker_pool.validate(
                 session_id=worker_session_id,
                 owner=worker_owner,
-                key=StagePLeanWorkerKey(
+                key=LeanWorkerKey(
                     toolchain=toolchain,
                     lake_manifest_sha256=_tagged_content_hash(lake_manifest_sha256),
                     base_registry_fingerprint=sha256_id(task.registry_fingerprint),
@@ -1194,12 +1488,21 @@ class NPHardAuthoringObligationV2:
             _v2_fail("candidate_outside_edit_boundary", str(error))
         if self.capability not in {
             "reduction_executable",
+            "clause_constraint",
+            "complement_constraint",
+            "clause_gadget",
+            "reference_executable",
+            "direct_tm",
+            "clause_gadget_direct_tm",
+            "reference_direct_tm",
             "representation_adapter",
             "poly_program",
             "program_run_coherence",
             "mapping_invariant",
             "semantic_forward",
             "semantic_reverse",
+            "reference_semantic_forward",
+            "reference_semantic_reverse",
             "semantic_iff",
             "semantic_proof",
             "tmkarp_primitive",
@@ -1294,6 +1597,8 @@ class NPHardAuthoringTaskV2:
     editable_declarations: tuple[str, ...]
     allowed_imports: tuple[str, ...]
     allowed_primitives: tuple[str, ...]
+    allowed_primitive_layers: tuple[tuple[str, tuple[str, ...]], ...]
+    allowed_primitive_exact_types: tuple[tuple[str, str], ...]
     forbidden_axioms: tuple[str, ...]
     dependency_hashes: tuple[tuple[str, str], ...]
     public_source_files: tuple[str, ...]
@@ -1331,6 +1636,13 @@ class NPHardAuthoringTaskV2:
             "editable_declarations": list(self.editable_declarations),
             "allowed_imports": list(self.allowed_imports),
             "allowed_primitives": list(self.allowed_primitives),
+            "allowed_primitive_layers": {
+                layer: list(primitives)
+                for layer, primitives in self.allowed_primitive_layers
+            },
+            "allowed_primitive_exact_types": dict(
+                self.allowed_primitive_exact_types
+            ),
             "forbidden_axioms": list(self.forbidden_axioms),
             "dependency_hashes": dict(self.dependency_hashes),
             "public_source_files": list(self.public_source_files),
@@ -1541,7 +1853,15 @@ class NPHardAuthoringTaskV2:
                 (node.node_id, node.capability, node.depends_on)
                 for node in self.gap_nodes
             )
-            if observed_staged_motif != expected_staged_motif:
+            allowed_staged_motifs = (
+                (
+                    expected_staged_motif,
+                    _NP_HARD_POSITIVE_NAE3_WHOLE_REDUCTION_MOTIF_V2,
+                )
+                if self.task_class == "whole_reduction_synthesis"
+                else (expected_staged_motif,)
+            )
+            if observed_staged_motif not in allowed_staged_motifs:
                 _v2_fail(
                     "candidate_dependency_stale",
                     "staged task node order/capability/dependency motif drifted",
@@ -1617,6 +1937,7 @@ class NPHardAuthoringTaskV2:
             "semantic_proof": None,
             "program_composition": "composed-program",
             "program_synthesis": "poly-program",
+            "whole_reduction_synthesis": "poly-program",
             "typed_capability_dag": "representation-adapter",
             "typed_tmkarp_admission_dag": "tmkarp-program",
             "typed_tmkarp_dependent_composition_dag": "composed-program",
@@ -1689,6 +2010,17 @@ class NPHardAuthoringTaskV2:
                 "exact-edge construction DAG lacks its exact certified-reduction terminal, "
                 "its poly-program, or carries observer material from a different task family",
             )
+        if self.task_class == "whole_reduction_synthesis" and (
+            self.final_program_node_id is None
+            or terminal.capability != "semantic_iff"
+            or self.observed_capability_terms
+            or self.observed_capability_exact_types
+        ):
+            _v2_fail(
+                "candidate_dependency_stale",
+                "whole-reduction synthesis lacks its semantic terminal/program or "
+                "carries a preinstalled capability witness",
+            )
         if tuple(node_declarations) != self.editable_declarations:
             _v2_fail(
                 "candidate_outside_edit_boundary",
@@ -1712,6 +2044,52 @@ class NPHardAuthoringTaskV2:
             except ValueError as error:
                 _v2_fail("fabricated_declaration_handle", str(error))
             _v2_require_public_text(primitive, label="allowed primitive")
+        primitive_layers = dict(self.allowed_primitive_layers)
+        expected_layer_names = {"core", "construction", "direct_tm", "semantic"}
+        if set(primitive_layers) != expected_layer_names:
+            _v2_fail(
+                "candidate_exact_type_mismatch",
+                "v2 primitive layers must be exactly core/construction/direct_tm/semantic",
+            )
+        flattened_layers = tuple(
+            primitive
+            for layer in ("core", "construction", "direct_tm", "semantic")
+            for primitive in primitive_layers[layer]
+        )
+        if len(set(flattened_layers)) != len(flattened_layers):
+            _v2_fail(
+                "candidate_exact_type_mismatch",
+                "v2 primitive layers overlap",
+            )
+        if set(flattened_layers) != set(self.allowed_primitives):
+            _v2_fail(
+                "candidate_exact_type_mismatch",
+                "v2 primitive layers do not partition the immutable allowlist",
+            )
+        for layer, primitives in self.allowed_primitive_layers:
+            _v2_require_public_text(layer, label="primitive layer")
+            for primitive in primitives:
+                _v2_require_public_text(
+                    primitive, label=f"allowed primitive in {layer}"
+                )
+        primitive_exact_types = dict(self.allowed_primitive_exact_types)
+        if len(primitive_exact_types) != len(self.allowed_primitive_exact_types):
+            _v2_fail(
+                "candidate_exact_type_mismatch",
+                "v2 allowed primitive exact-type map has duplicates",
+            )
+        if primitive_exact_types and set(primitive_exact_types) != set(
+            self.allowed_primitives
+        ):
+            _v2_fail(
+                "candidate_exact_type_mismatch",
+                "v2 allowed primitive exact types do not cover the immutable allowlist",
+            )
+        for primitive, exact_type in self.allowed_primitive_exact_types:
+            _v2_require_public_text(primitive, label="typed allowed primitive")
+            _v2_require_public_text(
+                exact_type, label=f"allowed primitive exact type {primitive}"
+            )
         if not self.forbidden_axioms or not {"sorryAx", "axiom", "unsafe"}.issubset(
             set(self.forbidden_axioms)
         ):
@@ -2285,7 +2663,7 @@ class NPHardAuthoringTaskV2:
             _v2_fail("authoring_gap_budget_exhausted", "v2 attempt budget is outside 1..4")
         if not 1 <= self.timeout_seconds <= 600:
             _v2_fail("authoring_gap_budget_exhausted", "v2 timeout is outside 1..600 seconds")
-        if not 1 <= self.max_output_tokens <= 16_000:
+        if not 1 <= self.max_output_tokens <= FORMAL_MAX_TOKENS:
             _v2_fail("authoring_gap_budget_exhausted", "v2 output token budget is invalid")
         _v2_require_public_text(self.final_exact_type, label="final exact type")
         if self.request_id != self.computed_request_id:
@@ -2313,6 +2691,8 @@ class NPHardAuthoringTaskV2:
             "editable_declarations",
             "allowed_imports",
             "allowed_primitives",
+            "allowed_primitive_layers",
+            "allowed_primitive_exact_types",
             "forbidden_axioms",
             "dependency_hashes",
             "public_source_files",
@@ -2368,7 +2748,10 @@ class NPHardAuthoringTaskV2:
             "typed_program_indexed_admission_dag",
         }:
             expected = tmkarp_expected
-        elif task_class == "typed_capability_dag":
+        elif task_class in {
+            "whole_reduction_synthesis",
+            "typed_capability_dag",
+        }:
             expected = typed_expected
         else:
             expected = legacy_expected
@@ -2377,6 +2760,8 @@ class NPHardAuthoringTaskV2:
             _v2_fail("invalid_np_hard_authoring_v2_schema", "unsupported v2 task schema")
         gap_values = value["gap_nodes"]
         dependency_values = value["dependency_hashes"]
+        primitive_exact_type_values = value["allowed_primitive_exact_types"]
+        primitive_layer_values = value["allowed_primitive_layers"]
         sequence_fields = {
             "editable_declarations": value["editable_declarations"],
             "allowed_imports": value["allowed_imports"],
@@ -2391,6 +2776,8 @@ class NPHardAuthoringTaskV2:
         if (
             not isinstance(gap_values, list)
             or not isinstance(dependency_values, Mapping)
+            or not isinstance(primitive_exact_type_values, Mapping)
+            or not isinstance(primitive_layer_values, Mapping)
             or not isinstance(observed_term_values, Mapping)
             or not isinstance(observed_exact_type_values, Mapping)
         ):
@@ -2398,6 +2785,16 @@ class NPHardAuthoringTaskV2:
         for label, items in sequence_fields.items():
             if not isinstance(items, list) or not all(isinstance(item, str) for item in items):
                 _v2_fail("invalid_np_hard_authoring_v2_schema", f"v2 field {label} is invalid")
+        if not all(
+            isinstance(layer, str)
+            and isinstance(primitives, list)
+            and all(isinstance(primitive, str) for primitive in primitives)
+            for layer, primitives in primitive_layer_values.items()
+        ):
+            _v2_fail(
+                "invalid_np_hard_authoring_v2_schema",
+                "v2 primitive layer map is invalid",
+            )
         string_fields = (
             "request_id",
             "task_class",
@@ -2508,6 +2905,14 @@ class NPHardAuthoringTaskV2:
                    for name, digest in dependency_values.items()):
             _v2_fail("candidate_dependency_stale", "v2 dependency map is invalid")
         if not all(
+            isinstance(name, str) and isinstance(exact_type, str)
+            for name, exact_type in primitive_exact_type_values.items()
+        ):
+            _v2_fail(
+                "candidate_exact_type_mismatch",
+                "v2 allowed primitive exact-type map is invalid",
+            )
+        if not all(
             isinstance(node_id, str) and isinstance(term, str)
             for node_id, term in observed_term_values.items()
         ):
@@ -2542,6 +2947,7 @@ class NPHardAuthoringTaskV2:
                 "semantic_proof": None,
                 "program_composition": "composed-program",
                 "program_synthesis": "poly-program",
+                "whole_reduction_synthesis": "poly-program",
             }.get(str(task_class))
         task = cls(
             request_id=value["request_id"],
@@ -2555,6 +2961,13 @@ class NPHardAuthoringTaskV2:
             editable_declarations=tuple(sequence_fields["editable_declarations"]),
             allowed_imports=tuple(sequence_fields["allowed_imports"]),
             allowed_primitives=tuple(sequence_fields["allowed_primitives"]),
+            allowed_primitive_layers=tuple(
+                (layer, tuple(primitives))
+                for layer, primitives in sorted(primitive_layer_values.items())
+            ),
+            allowed_primitive_exact_types=tuple(
+                sorted(primitive_exact_type_values.items())
+            ),
             forbidden_axioms=tuple(sequence_fields["forbidden_axioms"]),
             dependency_hashes=tuple(sorted(dependency_values.items())),
             public_source_files=tuple(sequence_fields["public_source_files"]),
@@ -2997,6 +3410,295 @@ def _v2_obligations(
                 node_id="semantic-iff",
                 declaration=f"{candidate_module}.semanticCorrect",
                 capability="semantic_proof",
+                exact_type=(
+                    f"∀ input : {source_term}.Instance, {source_term}.accepts input ↔ "
+                    f"{target_term}.accepts ({program}.run input)"
+                ),
+                depends_on=node_dependencies.get("semantic-iff", ()),
+            ),
+        ]
+    elif task_class == "whole_reduction_synthesis" and tuple(
+        str(node["id"]) for node in manifest_nodes
+    ) == (
+        "clause-constraint",
+        "complement-constraint",
+        "clause-gadget",
+        "reference-executable",
+        "reduction-executable",
+        "clause-gadget-direct-tm",
+        "reference-direct-tm",
+        "direct-tm",
+        "reduction-primitive",
+        "poly-program",
+        "program-run-coherence",
+        "reference-semantic-forward",
+        "reference-semantic-reverse",
+        "semantic-forward",
+        "semantic-reverse",
+        "semantic-iff",
+    ):
+        target_namespace = target_term.rsplit(".", 1)[0]
+        target_gamma = f"{target_namespace}.gamma"
+        clause_constraint = f"{candidate_module}.clauseConstraint"
+        complement_constraint = f"{candidate_module}.complementConstraint"
+        clause_gadget = f"{candidate_module}.clauseGadget"
+        reference_executable = f"{candidate_module}.referenceExecutable"
+        executable = f"{candidate_module}.synthesizedExecutable"
+        clause_gadget_tm = f"{candidate_module}.clauseGadgetDirectTM"
+        reference_tm = f"{candidate_module}.referenceDirectTM"
+        direct_tm = f"{candidate_module}.synthesizedDirectTM"
+        primitive = f"{candidate_module}.synthesizedPrimitive"
+        program = f"{candidate_module}.synthesizedProgram"
+        reference_forward = f"{candidate_module}.referenceSemanticForward"
+        reference_reverse = f"{candidate_module}.referenceSemanticReverse"
+        forward = f"{candidate_module}.semanticForward"
+        reverse = f"{candidate_module}.semanticReverse"
+        obligations = [
+            NPHardAuthoringObligationV2(
+                node_id="clause-constraint",
+                declaration=clause_constraint,
+                capability="clause_constraint",
+                exact_type=(
+                    "ComplexityReduction.NAEThreeSAT.Clause → "
+                    f"ComplexityReduction.CSP.Constraint {target_gamma}"
+                ),
+                depends_on=node_dependencies.get("clause-constraint", ()),
+            ),
+            NPHardAuthoringObligationV2(
+                node_id="complement-constraint",
+                declaration=complement_constraint,
+                capability="complement_constraint",
+                exact_type=(
+                    "ComplexityReduction.SAT.Literal → "
+                    f"ComplexityReduction.CSP.Constraint {target_gamma}"
+                ),
+                depends_on=node_dependencies.get("complement-constraint", ()),
+            ),
+            NPHardAuthoringObligationV2(
+                node_id="clause-gadget",
+                declaration=clause_gadget,
+                capability="clause_gadget",
+                exact_type=(
+                    "ComplexityReduction.NAEThreeSAT.Clause → "
+                    f"{target_term}.Instance"
+                ),
+                depends_on=node_dependencies.get("clause-gadget", ()),
+            ),
+            NPHardAuthoringObligationV2(
+                node_id="reference-executable",
+                declaration=reference_executable,
+                capability="reference_executable",
+                exact_type=(
+                    "ComplexityReduction.NAEThreeSAT.Formula → "
+                    f"{target_term}.Instance"
+                ),
+                depends_on=node_dependencies.get("reference-executable", ()),
+            ),
+            NPHardAuthoringObligationV2(
+                node_id="reduction-executable",
+                declaration=executable,
+                capability="reduction_executable",
+                exact_type=f"{source_term}.Instance → {target_term}.Instance",
+                depends_on=node_dependencies.get("reduction-executable", ()),
+            ),
+            NPHardAuthoringObligationV2(
+                node_id="clause-gadget-direct-tm",
+                declaration=clause_gadget_tm,
+                capability="clause_gadget_direct_tm",
+                exact_type=(
+                    "ComplexityReduction.TMPolyTimeMap "
+                    "ComplexityReduction.Presentation.NAEThreeSAT.clauseEncodedType "
+                    f"{target_term}.representation.encodedType {clause_gadget}"
+                ),
+                depends_on=node_dependencies.get("clause-gadget-direct-tm", ()),
+            ),
+            NPHardAuthoringObligationV2(
+                node_id="reference-direct-tm",
+                declaration=reference_tm,
+                capability="reference_direct_tm",
+                exact_type=(
+                    "ComplexityReduction.TMPolyTimeMap "
+                    "ComplexityReduction.Presentation.NAEThreeSAT.formulaEncodedType "
+                    f"{target_term}.representation.encodedType {reference_executable}"
+                ),
+                depends_on=node_dependencies.get("reference-direct-tm", ()),
+            ),
+            NPHardAuthoringObligationV2(
+                node_id="direct-tm",
+                declaration=direct_tm,
+                capability="direct_tm",
+                exact_type=(
+                    "ComplexityReduction.TMPolyTimeMap "
+                    f"{source_term}.representation.encodedType "
+                    f"{target_term}.representation.encodedType {executable}"
+                ),
+                depends_on=node_dependencies.get("direct-tm", ()),
+            ),
+            NPHardAuthoringObligationV2(
+                node_id="reduction-primitive",
+                declaration=primitive,
+                capability="reduction_primitive",
+                exact_type=(
+                    "ComplexityReduction.Program.Primitive "
+                    f"{source_term}.representation {target_term}.representation"
+                ),
+                depends_on=node_dependencies.get("reduction-primitive", ()),
+            ),
+            NPHardAuthoringObligationV2(
+                node_id="poly-program",
+                declaration=program,
+                capability="poly_program",
+                exact_type=(
+                    "ComplexityReduction.Program.PolyProg "
+                    f"{source_term}.representation {target_term}.representation"
+                ),
+                depends_on=node_dependencies.get("poly-program", ()),
+            ),
+            NPHardAuthoringObligationV2(
+                node_id="program-run-coherence",
+                declaration=f"{candidate_module}.programRunCoherence",
+                capability="program_run_coherence",
+                exact_type=(
+                    f"∀ input : {source_term}.Instance, "
+                    f"{program}.run input = {executable} input"
+                ),
+                depends_on=node_dependencies.get("program-run-coherence", ()),
+            ),
+            NPHardAuthoringObligationV2(
+                node_id="reference-semantic-forward",
+                declaration=reference_forward,
+                capability="reference_semantic_forward",
+                exact_type=(
+                    "∀ formula : ComplexityReduction.NAEThreeSAT.Formula, "
+                    "ComplexityReduction.NAEThreeSAT.Formula.Satisfiable formula → "
+                    f"{target_term}.accepts ({reference_executable} formula)"
+                ),
+                depends_on=node_dependencies.get("reference-semantic-forward", ()),
+            ),
+            NPHardAuthoringObligationV2(
+                node_id="reference-semantic-reverse",
+                declaration=reference_reverse,
+                capability="reference_semantic_reverse",
+                exact_type=(
+                    "∀ formula : ComplexityReduction.NAEThreeSAT.Formula, "
+                    f"{target_term}.accepts ({reference_executable} formula) → "
+                    "ComplexityReduction.NAEThreeSAT.Formula.Satisfiable formula"
+                ),
+                depends_on=node_dependencies.get("reference-semantic-reverse", ()),
+            ),
+            NPHardAuthoringObligationV2(
+                node_id="semantic-forward",
+                declaration=forward,
+                capability="semantic_forward",
+                exact_type=(
+                    f"∀ input : {source_term}.Instance, {source_term}.accepts input → "
+                    f"{target_term}.accepts ({program}.run input)"
+                ),
+                depends_on=node_dependencies.get("semantic-forward", ()),
+            ),
+            NPHardAuthoringObligationV2(
+                node_id="semantic-reverse",
+                declaration=reverse,
+                capability="semantic_reverse",
+                exact_type=(
+                    f"∀ input : {source_term}.Instance, "
+                    f"{target_term}.accepts ({program}.run input) → "
+                    f"{source_term}.accepts input"
+                ),
+                depends_on=node_dependencies.get("semantic-reverse", ()),
+            ),
+            NPHardAuthoringObligationV2(
+                node_id="semantic-iff",
+                declaration=f"{candidate_module}.semanticCorrect",
+                capability="semantic_iff",
+                exact_type=(
+                    f"∀ input : {source_term}.Instance, {source_term}.accepts input ↔ "
+                    f"{target_term}.accepts ({program}.run input)"
+                ),
+                depends_on=node_dependencies.get("semantic-iff", ()),
+            ),
+        ]
+    elif task_class == "whole_reduction_synthesis":
+        executable = f"{candidate_module}.synthesizedExecutable"
+        direct_tm = f"{candidate_module}.synthesizedDirectTM"
+        primitive = f"{candidate_module}.synthesizedPrimitive"
+        program = f"{candidate_module}.synthesizedProgram"
+        forward = f"{candidate_module}.semanticForward"
+        reverse = f"{candidate_module}.semanticReverse"
+        obligations = [
+            NPHardAuthoringObligationV2(
+                node_id="reduction-executable",
+                declaration=executable,
+                capability="reduction_executable",
+                exact_type=f"{source_term}.Instance → {target_term}.Instance",
+                depends_on=node_dependencies.get("reduction-executable", ()),
+            ),
+            NPHardAuthoringObligationV2(
+                node_id="direct-tm",
+                declaration=direct_tm,
+                capability="direct_tm",
+                exact_type=(
+                    "ComplexityReduction.TMPolyTimeMap "
+                    f"{source_term}.representation.encodedType "
+                    f"{target_term}.representation.encodedType {executable}"
+                ),
+                depends_on=node_dependencies.get("direct-tm", ()),
+            ),
+            NPHardAuthoringObligationV2(
+                node_id="reduction-primitive",
+                declaration=primitive,
+                capability="reduction_primitive",
+                exact_type=(
+                    "ComplexityReduction.Program.Primitive "
+                    f"{source_term}.representation {target_term}.representation"
+                ),
+                depends_on=node_dependencies.get("reduction-primitive", ()),
+            ),
+            NPHardAuthoringObligationV2(
+                node_id="poly-program",
+                declaration=program,
+                capability="poly_program",
+                exact_type=(
+                    "ComplexityReduction.Program.PolyProg "
+                    f"{source_term}.representation {target_term}.representation"
+                ),
+                depends_on=node_dependencies.get("poly-program", ()),
+            ),
+            NPHardAuthoringObligationV2(
+                node_id="program-run-coherence",
+                declaration=f"{candidate_module}.programRunCoherence",
+                capability="program_run_coherence",
+                exact_type=(
+                    f"∀ input : {source_term}.Instance, "
+                    f"{program}.run input = {executable} input"
+                ),
+                depends_on=node_dependencies.get("program-run-coherence", ()),
+            ),
+            NPHardAuthoringObligationV2(
+                node_id="semantic-forward",
+                declaration=forward,
+                capability="semantic_forward",
+                exact_type=(
+                    f"∀ input : {source_term}.Instance, {source_term}.accepts input → "
+                    f"{target_term}.accepts ({program}.run input)"
+                ),
+                depends_on=node_dependencies.get("semantic-forward", ()),
+            ),
+            NPHardAuthoringObligationV2(
+                node_id="semantic-reverse",
+                declaration=reverse,
+                capability="semantic_reverse",
+                exact_type=(
+                    f"∀ input : {source_term}.Instance, "
+                    f"{target_term}.accepts ({program}.run input) → "
+                    f"{source_term}.accepts input"
+                ),
+                depends_on=node_dependencies.get("semantic-reverse", ()),
+            ),
+            NPHardAuthoringObligationV2(
+                node_id="semantic-iff",
+                declaration=f"{candidate_module}.semanticCorrect",
+                capability="semantic_iff",
                 exact_type=(
                     f"∀ input : {source_term}.Instance, {source_term}.accepts input ↔ "
                     f"{target_term}.accepts ({program}.run input)"
@@ -3589,6 +4291,8 @@ def build_np_hard_authoring_task_v2(
     gap_nodes: tuple[Mapping[str, Any], ...],
     public_source_files: tuple[str, ...],
     allowed_primitives: tuple[str, ...],
+    allowed_primitive_layers: Mapping[str, tuple[str, ...]] | None = None,
+    allowed_primitive_exact_types: Mapping[str, str] | None = None,
     program_reference: str | None,
     mapping_invariant: str | None,
     program_packet_reference: str | None = None,
@@ -3607,6 +4311,7 @@ def build_np_hard_authoring_task_v2(
     attempt_budget: int = 4,
     timeout_seconds: int = 60,
     max_output_tokens: int = 3_000,
+    runtime_module: str = RUNTIME_MODULE,
 ) -> NPHardAuthoringTaskV2:
     root = root.resolve()
     source = NPHardAuthoringEndpointV2(module=hub_module, term=hub_declaration)
@@ -3689,12 +4394,16 @@ def build_np_hard_authoring_task_v2(
         source_text = path.read_text(encoding="utf-8")
         _v2_require_public_text(source_text, label=f"public source {relative_name}")
         dependency_hashes[f"public:{relative_name}"] = _tagged_content_hash(sha256_file(path))
+    try:
+        validated_runtime_module = validate_module_name(runtime_module)
+    except ValueError as error:
+        _v2_fail("import_not_allowlisted", str(error))
     allowed_imports = tuple(
         dict.fromkeys(
             (
                 input_module,
                 hub_module,
-                RUNTIME_MODULE,
+                validated_runtime_module,
                 *((composition_intermediate.module,) if composition_intermediate else ()),
                 *((composition_successor_module,) if composition_successor_module else ()),
                 *(validate_module_name(module) for module in additional_allowed_imports),
@@ -3845,6 +4554,7 @@ def build_np_hard_authoring_task_v2(
         "semantic_proof": None,
         "program_composition": "composed-program",
         "program_synthesis": "poly-program",
+        "whole_reduction_synthesis": "poly-program",
         "typed_capability_dag": "representation-adapter",
         "typed_tmkarp_admission_dag": "tmkarp-program",
         "typed_tmkarp_dependent_composition_dag": "composed-program",
@@ -3868,6 +4578,22 @@ def build_np_hard_authoring_task_v2(
         "editable_declarations": tuple(node.declaration for node in obligations),
         "allowed_imports": allowed_imports,
         "allowed_primitives": tuple(allowed_primitives),
+        "allowed_primitive_layers": tuple(
+            sorted(
+                (
+                    allowed_primitive_layers
+                    or {
+                        "core": tuple(allowed_primitives),
+                        "construction": (),
+                        "direct_tm": (),
+                        "semantic": (),
+                    }
+                ).items()
+            )
+        ),
+        "allowed_primitive_exact_types": tuple(
+            sorted((allowed_primitive_exact_types or {}).items())
+        ),
         "forbidden_axioms": ("sorryAx", "admit", "axiom", "unsafe"),
         "dependency_hashes": tuple(sorted(dependency_hashes.items())),
         "public_source_files": public_source_files,

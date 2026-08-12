@@ -1,0 +1,148 @@
+{
+  "schema_version": "boolean_csp_np_hard_suite_v1",
+  "suite_id": "boolean-csp-np-hard-v1",
+  "objective": "prove_np_hard",
+  "final_lean_type": "ComplexityReduction.Certificate.NativeTMNPHard input",
+  "cases": [
+    {
+      "case_id": "q-b01-canonical-three-sat-like",
+      "split": "dev",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case01Canonical",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case01Canonical.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b02-positive-nae4",
+      "split": "dev",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case02PositiveNAE4",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case02PositiveNAE4.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b03-positive-nae3",
+      "split": "dev",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case03PositiveNAE3",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case03PositiveNAE3.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b04-positive-exactly-one3",
+      "split": "dev",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case04PositiveExactlyOne3",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case04PositiveExactlyOne3.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b05-or2-even-parity3",
+      "split": "validation",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case05OR2EvenParity3",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case05OR2EvenParity3.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b06-positive-nae5",
+      "split": "validation",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case06PositiveNAE5",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case06PositiveNAE5.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b07-positive-exactly-two3",
+      "split": "validation",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case07PositiveExactlyTwo3",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case07PositiveExactlyTwo3.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b08-positive-exactly-one4",
+      "split": "validation",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case08PositiveExactlyOne4",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case08PositiveExactlyOne4.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b09-positive-exactly-two4",
+      "split": "validation",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case09PositiveExactlyTwo4",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case09PositiveExactlyTwo4.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b10-positive-exactly-three4",
+      "split": "validation",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case10PositiveExactlyThree4",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case10PositiveExactlyThree4.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b11-positive-exactly-one5",
+      "split": "heldout",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case11PositiveExactlyOne5",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case11PositiveExactlyOne5.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b12-positive-exactly-two5",
+      "split": "heldout",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case12PositiveExactlyTwo5",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case12PositiveExactlyTwo5.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b13-positive-exactly-three5",
+      "split": "heldout",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case13PositiveExactlyThree5",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case13PositiveExactlyThree5.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b14-positive-exactly-four5",
+      "split": "heldout",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case14PositiveExactlyFour5",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case14PositiveExactlyFour5.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b15-positive-exactly-one6",
+      "split": "heldout",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case15PositiveExactlyOne6",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case15PositiveExactlyOne6.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b16-positive-exactly-two6",
+      "split": "heldout",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case16PositiveExactlyTwo6",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case16PositiveExactlyTwo6.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b17-positive-exactly-three6",
+      "split": "heldout",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case17PositiveExactlyThree6",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case17PositiveExactlyThree6.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b18-positive-exactly-four6",
+      "split": "heldout",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case18PositiveExactlyFour6",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case18PositiveExactlyFour6.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b19-positive-exactly-five6",
+      "split": "heldout",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case19PositiveExactlyFive6",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case19PositiveExactlyFive6.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b20-or3-xor2",
+      "split": "heldout",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case20OR3XOR2",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case20OR3XOR2.problem",
+      "budget_profile": "formal-default"
+    }
+  ]
+}

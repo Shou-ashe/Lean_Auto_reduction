@@ -494,6 +494,51 @@ def test_runner_preserves_boundary_failures_and_observes_parallelism(tmp_path: P
     )
 
 
+def test_runner_resume_is_explicit_and_reuses_the_same_output(tmp_path: Path) -> None:
+    suite = load_exact_edge_suite(
+        _write_json(tmp_path / "suite.json", _suite_payload())
+    )
+    profile = ExactEdgeBudgetProfile("default", MODEL_AUTO_MODE, 4, 60)
+
+    def execute(**kwargs):
+        return _direct_case_result(kwargs["case"])
+
+    output = tmp_path / "out"
+    first = run_exact_reduction_edge_benchmark(
+        root=ROOT,
+        suite=suite,
+        budget_profiles={"default": profile},
+        output_root=output,
+        jobs=1,
+        isolate_workspace=False,
+        case_executor=execute,
+    )
+    with pytest.raises(ExactEdgeContractError) as raised:
+        run_exact_reduction_edge_benchmark(
+            root=ROOT,
+            suite=suite,
+            budget_profiles={"default": profile},
+            output_root=output,
+            jobs=1,
+            isolate_workspace=False,
+            case_executor=execute,
+        )
+    assert raised.value.code == "exact_edge_output_not_fresh"
+    resumed = run_exact_reduction_edge_benchmark(
+        root=ROOT,
+        suite=suite,
+        budget_profiles={"default": profile},
+        output_root=output,
+        jobs=1,
+        isolate_workspace=False,
+        case_executor=execute,
+        resume=True,
+    )
+    assert resumed["resume"] is True
+    assert resumed["run_valid"] is True
+    assert resumed["run_id"] != first["run_id"]
+
+
 def test_missing_uhc_to_dhc_authoring_dag_blocks_without_fake_model_call(
     tmp_path: Path,
 ) -> None:

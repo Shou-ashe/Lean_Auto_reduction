@@ -16,7 +16,7 @@
 - unified benchmark、capability v2、frontier 边界组、exact-edge 三个 split、归档审计和 24 题转换计划已经存在；
 - 旧文档中按 H-I/H-J case 逐条展开的历史实施表、已经失效的 baseline 数字、重复的 reserve 列表和旧 runner 入口说明全部删除。
 
-H-K publication/reuse 代码路径仍可作为后续独立工作包，但不再占用本活动计划；必须先完成本计划中的真实 exact-edge authoring 闭环。
+历史 H-K publication/reuse、Gate 和 stage-builder 代码路径已经退出当前仓库；若未来重新需要发布流程，应以当前 78 题 runner 和正式库 API 为基础单独设计，不恢复旧入口。
 
 当前权威输入是：
 
@@ -62,11 +62,12 @@ H-K publication/reuse 代码路径仍可作为后续独立工作包，但不再�
 - 17 个端点未形式化的题必须在模型调用前 fail closed，不能让 LLM 临时定义 benchmark 端点；
 - 当前 exact-edge lane 主要把 case 交给通用 `reduce_to` agent，尚缺 exact-edge 专用的多阶段 task class、公开 construction policy 和逐节点真实调用协议。
 
-本计划实现状态（代码与数据已完成，等待真实 API 里程碑运行）：
+本计划实现状态（代码、数据和真实 API 验证路径已完成；M1/M2/M3 的通过率门槛尚未达成）：
 
 - 公开 case schema 已包含 `construction_policy`、`statement_hash`、`endpoint_contract_version`；
 - `typed_exact_edge_construction_dag` task class、planner DAG、单节点 answer-free prompt、逐节点 ledger、checkpoint/resume 与 staged executor 已实现并接入 exact-edge lane；
 - 24/24 端点 ready；scorer 对 public policy 与 oracle policy 做一一对应校验。
+- 2026-08-10 的真实 `deepseek-v4-flash` dev-06 qualification run 已验证 checkpoint replay、逐节点 HTTP ledger、Lean repair 和隔离 scorer；运行诚实地停在 `semantic-reverse`（前 8/11 节点通过，4 次响应均为 `finish_reason=length`），未伪报为通过，也未触发 deterministic fallback。
 
 ### 1.3 本计划的完成定义
 
@@ -315,7 +316,7 @@ heldout 运行时：
 - `tests/test_hardness_np_hard_authoring_v2.py`：单节点 response、accepted-prefix、失败重试和禁止回写旧节点；
 - `tests/test_hardness_benchmark_oracle_isolation.py`：archive、solution、hint、oracle、transform plan 不进入 workspace/prompt/output；
 - `tests/test_hardness_np_hard_archive_audit.py`：63/60/37/16、24、7/17 和 split 计数保持绑定；
-- `tests/test_hardness_np_hard_unified_benchmark.py`：4 并行 case 调度、case 内串行 DAG、真实 ledger 汇总；
+- `tests/test_hardness_single_benchmark_runner.py`：唯一 runner、禁止脚本套娃与严格 78 实例清单；
 - negative/mutation tests：已有 route bypass、composition bypass、statement drift、endpoint alias、stale checkpoint、伪造 token ledger、binary-size bound 缺失。
 
 测试不得通过把 `recommended_first_body` 直接复制为模型响应来证明 direct-new 路径可用。可以为 parser/协议单测使用最小 synthetic body，但正式 integration 必须使用与 production 相同的无答案 prompt。
@@ -382,6 +383,6 @@ heldout 运行时：
 4. 完成 E1 端点并运行 M2；
 5. 完成 E2/E3/E4 端点，冻结 heldout 后运行 M3；
 6. 生成 `MAIN_PROBLEMS_EXACT_EDGE_FULL_REPORT`；
-7. 只有 M3 通过后，才恢复 publication/reuse 工作包或扩充 frontier。
+7. 只有 M3 通过后，才以独立的新设计扩充 publication/reuse 或 frontier，不恢复已删除的 Gate/stage 基础设施。
 
 在本计划完成前，不再以“runner 返回了 Lean 代码”作为充分证据。必须同时回答：代码来自已有路线还是模型新写、写了哪些节点、每个节点是否真实调用、最终是否为题目指定的精确 reduction，以及全部证明和复杂度审计是否独立通过。

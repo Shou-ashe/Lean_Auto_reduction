@@ -28,6 +28,7 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+import threading
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Mapping, Sequence
@@ -48,6 +49,17 @@ EXACT_EDGE_NODE_PATCH_SCHEMA_V1 = "hardness_exact_edge_node_patch_v1"
 EXACT_EDGE_NODE_CHECKPOINT_SCHEMA_V1 = "hardness_exact_edge_node_checkpoint_v1"
 EXACT_EDGE_AUTHORING_TASK_CLASS = "typed_exact_edge_construction_dag"
 EXACT_EDGE_MAX_NODE_ATTEMPTS = 4
+EXACT_EDGE_RUNTIME_MODULE = (
+    "ComplexityReduction.Agent.Hardness.ExactEdgeRuntime"
+)
+_GENERIC_EXACT_EDGE_PUBLIC_SOURCES = (
+    "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/TMPolyTime.lean",
+    "Lean/Reference/ComplexityReduction/Legacy/ComplexityReduction/Bridges/CostedToTM/Maps/Part1.lean",
+    "Lean/Reference/ComplexityReduction/Program/Primitive.lean",
+    "Lean/Reference/ComplexityReduction/Program/Syntax.lean",
+    "Lean/Reference/ComplexityReduction/Certificate/Reduction.lean",
+    "Lean/Reference/ComplexityReduction/Presentation/GraphTM.lean",
+)
 
 _HASH_RE = re.compile(r"sha256:[0-9a-f]{64}\Z")
 _FORBIDDEN_ROUTE_IMPORT_PREFIXES = (
@@ -55,12 +67,11 @@ _FORBIDDEN_ROUTE_IMPORT_PREFIXES = (
     "ComplexityReduction.Agent.Hardness.GeneratedArtifact",
 )
 _FORBIDDEN_PROMPT_TEXT = (
-    "recommended_first_body",
-    "recommended body",
-    "solution",
-    "hint:",
-    "gold",
-    "oracle",
+    '"recommended_first_body":',
+    '"solution":',
+    '"hint":',
+    '"gold":',
+    '"oracle":',
     "problems.7z",
     "problems_clean.json",
     "transform_plan",
@@ -77,7 +88,15 @@ rejected body.  Do not emit imports, namespaces, declarations, commands,
 markdown, sorry, admit, axioms, unsafe code, filesystem operations, or any
 reduction in the opposite direction.  The Lean compiler and the runner's
 independent audits decide acceptance; your response has no proof authority.
+Keep the JSON and Lean body concise and within the prompt's output-token budget.
+For a polynomial-bound node, immediately compose the named public
+`TMPolyTimeMap` and route-free structural witnesses; do not unfold Turing
+machines, encoders, or implementation proofs unless a Lean diagnostic requires
+it.  Spend the response budget on the JSON body, not exploratory prose.
 """
+
+_PUBLIC_SOURCE_INDEX_LOCK = threading.Lock()
+_PUBLIC_SOURCE_INDEX: dict[str, tuple[tuple[Path, tuple[str, ...]], ...]] = {}
 
 
 class ExactEdgeAuthoringError(ValueError):
@@ -133,13 +152,20 @@ class ExactEdgeNodeAttempt:
     response_file: str
     patch_file: str | None
     workspace_sha256: str | None
+    request_id: str | None = None
+    case_id: str | None = None
+    task_id: str | None = None
 
     def to_dict(self) -> dict[str, Any]:
         return {
             "call": self.call,
+            "request_id": self.request_id,
+            "case_id": self.case_id,
+            "node_id": self.node,
+            "attempt": self.attempt,
             "stage": self.node,
             "editable_file": None,
-            "task_id": "exact-edge-construction",
+            "task_id": self.task_id,
             "model": self.model,
             "called": self.called,
             "ok": self.ok,
@@ -197,21 +223,28 @@ def build_typed_exact_edge_task(
             "typed exact-edge construction is restricted to direct-new-edge policy",
         )
     gap_nodes = exact_edge_construction_gap_nodes()
+    target_module = target_declaration.rsplit(".", 1)[0]
     task = build_np_hard_authoring_task_v2(
         root=root,
-        input_module=input_module,
+        input_module=target_module,
         input_problem_declaration=target_declaration,
         hub_module=source_declaration.rsplit(".", 1)[0],
         hub_declaration=source_declaration,
         task_class=EXACT_EDGE_AUTHORING_TASK_CLASS,
         gap_nodes=gap_nodes,
-        public_source_files=public_source_files,
+        public_source_files=tuple(
+            dict.fromkeys((*public_source_files, *_GENERIC_EXACT_EDGE_PUBLIC_SOURCES))
+        ),
         allowed_primitives=(),
         program_reference=None,
         mapping_invariant=None,
         attempt_budget=attempt_budget,
         timeout_seconds=timeout_seconds,
         max_output_tokens=max_output_tokens,
+        runtime_module=EXACT_EDGE_RUNTIME_MODULE,
+        additional_allowed_imports=(
+            (input_module,) if input_module != target_module else ()
+        ),
     )
     task.validate()
     return task
@@ -305,6 +338,8 @@ open ComplexityReduction
 open ComplexityReduction.Certificate
 open ComplexityReduction.Encoding
 open ComplexityReduction.Program
+open ComplexityReduction.Combinatorics.Graph
+open ComplexityReduction.Presentation
 open {task.source_problem.module}
 open {task.target_problem.module}
 
@@ -329,6 +364,8 @@ def build_exact_edge_node_prompt(
     attempt: int,
     remaining_attempts: int,
     timeout_seconds: int,
+    public_endpoint_interfaces: Sequence[Mapping[str, Any]] = (),
+    public_complexity_interfaces: Sequence[Mapping[str, Any]] = (),
 ) -> str:
     """Build the minimal answer-free prompt for exactly one active node."""
 
@@ -337,6 +374,62 @@ def build_exact_edge_node_prompt(
         for accepted in task.gap_nodes
         if accepted.declaration in accepted_bodies
     )
+    transitive_dependency_ids: set[str] = set()
+    pending_dependency_ids = list(node.depends_on)
+    while pending_dependency_ids:
+        dependency_id = pending_dependency_ids.pop()
+        if dependency_id in transitive_dependency_ids:
+            continue
+        transitive_dependency_ids.add(dependency_id)
+        pending_dependency_ids.extend(_node_by_id(task, dependency_id).depends_on)
+    capability = node.capability
+    if capability in {"reduction_primitive", "polynomial_bound"}:
+        relevant_prefixes = (
+            "ComplexityReduction.TMPolyTimeMap",
+            "ComplexityReduction.Presentation.GraphTM",
+        )
+    elif capability in {
+        "poly_program",
+        "program_direct_tm_coherence",
+        "certified_reduction",
+    }:
+        relevant_prefixes = (
+            "ComplexityReduction.Program.",
+            "ComplexityReduction.Certificate.CertifiedReduction",
+            "ComplexityReduction.TMPolyTimeMap",
+        )
+    else:
+        relevant_prefixes = ()
+    relevant_complexity_interfaces = [
+        {
+            **dict(interface),
+            "answer_free_public_signatures": [
+                dict(signature)
+                for signature in interface.get("answer_free_public_signatures", ())
+                if isinstance(signature, Mapping)
+                and isinstance(signature.get("declaration"), str)
+                and str(signature["declaration"]).startswith(relevant_prefixes)
+            ],
+        }
+        for interface in public_complexity_interfaces
+    ]
+    relevant_complexity_interfaces = [
+        interface
+        for interface in relevant_complexity_interfaces
+        if interface["answer_free_public_signatures"]
+    ]
+    semantic_capability = capability in {
+        "semantic_forward",
+        "semantic_reverse",
+        "semantic_iff",
+        "certified_reduction",
+    }
+    relevant_endpoint_interfaces = []
+    for interface in public_endpoint_interfaces:
+        exposed = dict(interface)
+        if not semantic_capability:
+            exposed.pop("semantic_interfaces", None)
+        relevant_endpoint_interfaces.append(exposed)
     payload = {
         "schema_version": EXACT_EDGE_NODE_PROMPT_SCHEMA_V1,
         "objective": "construct_certified_reduction",
@@ -354,11 +447,26 @@ def build_exact_edge_node_prompt(
             for declaration, exact_type in accepted_signatures
         ],
         "public_api_allowlist": list(task.allowed_imports),
+        "public_endpoint_interfaces": relevant_endpoint_interfaces,
+        "public_complexity_interfaces": [
+            dict(item) for item in relevant_complexity_interfaces
+        ],
+        "accepted_dependency_bodies": [
+            {
+                "declaration": dependency.declaration,
+                "exact_type": dependency.exact_type,
+                "body": accepted_bodies[dependency.declaration],
+            }
+            for dependency in task.gap_nodes
+            if dependency.node_id in transitive_dependency_ids
+            and dependency.declaration in accepted_bodies
+        ],
         "lean_diagnostic": diagnostic,
         "budget": {
             "attempt": attempt,
             "remaining_attempts": remaining_attempts,
             "lean_timeout_seconds": timeout_seconds,
+            "max_output_tokens": task.max_output_tokens,
         },
         "policy": {
             "only_active_declaration_is_editable": True,
@@ -366,6 +474,8 @@ def build_exact_edge_node_prompt(
             "composition_forbidden": not bool(policy.get("allow_composition")),
             "require_new_primitive": bool(policy.get("require_new_primitive")),
             "no_answer_material_in_prompt": True,
+            "prefer_named_public_capabilities_over_unfolding": True,
+            "return_json_before_token_limit": True,
         },
         "response_template": {
             "schema_version": EXACT_EDGE_NODE_PATCH_SCHEMA_V1,
@@ -379,6 +489,323 @@ def build_exact_edge_node_prompt(
     }
     _assert_answer_free_prompt(payload)
     return json.dumps(payload, ensure_ascii=True, indent=2, sort_keys=True)
+
+
+def _public_complexity_interfaces(
+    *, workspace_root: Path, task: NPHardAuthoringTaskV2
+) -> tuple[dict[str, Any], ...]:
+    """Return source-bound, route-free signatures for the generic authoring API."""
+
+    specifications = (
+        (
+            _GENERIC_EXACT_EDGE_PUBLIC_SOURCES[0],
+            (
+                ("TMPolyTimeMap", "ComplexityReduction.TMPolyTimeMap"),
+                ("id", "ComplexityReduction.TMPolyTimeMap.id"),
+            ),
+        ),
+        (
+            _GENERIC_EXACT_EDGE_PUBLIC_SOURCES[1],
+            tuple(
+                (name, f"ComplexityReduction.TMPolyTimeMap.{name}")
+                for name in (
+                    "of_encodingEquiv",
+                    "const",
+                    "comp",
+                    "fst",
+                    "snd",
+                    "prod_mk",
+                    "list_append",
+                    "list_singleton",
+                    "list_map",
+                )
+            ),
+        ),
+        (
+            _GENERIC_EXACT_EDGE_PUBLIC_SOURCES[2],
+            (
+                ("Primitive", "ComplexityReduction.Program.Primitive"),
+                (
+                    "ofTMPolyTime",
+                    "ComplexityReduction.Program.Primitive.ofTMPolyTime",
+                ),
+            ),
+        ),
+        (
+            _GENERIC_EXACT_EDGE_PUBLIC_SOURCES[3],
+            (("PolyProg", "ComplexityReduction.Program.PolyProg"),),
+        ),
+        (
+            _GENERIC_EXACT_EDGE_PUBLIC_SOURCES[4],
+            (
+                (
+                    "CertifiedReduction",
+                    "ComplexityReduction.Certificate.CertifiedReduction",
+                ),
+            ),
+        ),
+        (
+            _GENERIC_EXACT_EDGE_PUBLIC_SOURCES[5],
+            tuple(
+                (name, f"ComplexityReduction.Presentation.GraphTM.{name}")
+                for name in (
+                    "toTuple",
+                    "ofTuple",
+                    "vertices",
+                    "edges",
+                    "directed",
+                    "edgeSwap",
+                    "appendMapEdges",
+                    "mk",
+                )
+            ),
+        ),
+    )
+    allowed_files = set(task.public_source_files)
+    interfaces: list[dict[str, Any]] = []
+
+    def signature(lines: Sequence[str], short_name: str) -> str:
+        declaration = re.compile(
+            rf"^(?:noncomputable\s+)?(?:def|theorem|structure|inductive)\s+"
+            rf"{re.escape(short_name)}\b"
+        )
+        matches = [index for index, line in enumerate(lines) if declaration.match(line.strip())]
+        if len(matches) != 1:
+            _fail(
+                "candidate_dependency_stale",
+                f"public complexity declaration {short_name!r} is not unique",
+            )
+        start = matches[0]
+        first = lines[start].strip()
+        structural = first.startswith(("structure ", "inductive "))
+        captured: list[str] = []
+        for line in lines[start : start + 90]:
+            stripped = line.rstrip()
+            if captured and structural and re.match(
+                r"^(?:namespace|end)\b", stripped.strip()
+            ):
+                break
+            captured.append(stripped)
+            if not structural and ":=" in stripped:
+                prefix = "\n".join(captured).split(":=", 1)[0].rstrip()
+                return prefix + " := <implementation omitted>"
+        rendered = "\n".join(captured).strip()
+        if not rendered or len(rendered) > 12_000:
+            _fail(
+                "candidate_dependency_stale",
+                f"public complexity signature {short_name!r} is not bounded",
+            )
+        return rendered
+
+    for relative, declarations in specifications:
+        if relative not in allowed_files:
+            _fail(
+                "candidate_dependency_stale",
+                f"public complexity API is outside the dependency set: {relative}",
+            )
+        path = (workspace_root / relative).resolve()
+        try:
+            path.relative_to(workspace_root.resolve())
+            lines = path.read_text(encoding="utf-8").splitlines()
+        except (ValueError, OSError, UnicodeError) as error:
+            _fail("candidate_dependency_stale", f"complexity API is unreadable: {error}")
+        interfaces.append(
+            {
+                "source_file": relative,
+                "source_sha256": _tagged_file_hash(path),
+                "answer_free_public_signatures": [
+                    {
+                        "declaration": qualified,
+                        "signature": signature(lines, short_name),
+                    }
+                    for short_name, qualified in declarations
+                ],
+            }
+        )
+    return tuple(interfaces)
+
+
+def _public_endpoint_interfaces(
+    *, workspace_root: Path, task: NPHardAuthoringTaskV2
+) -> tuple[dict[str, Any], ...]:
+    """Expose bounded source excerpts around the two public endpoint declarations."""
+
+    allowed_files = set(task.public_source_files)
+    interfaces: list[dict[str, Any]] = []
+
+    index_key = str(workspace_root.resolve())
+    with _PUBLIC_SOURCE_INDEX_LOCK:
+        public_index = _PUBLIC_SOURCE_INDEX.get(index_key)
+        if public_index is None:
+            public_index = tuple(
+                (path, tuple(path.read_text(encoding="utf-8").splitlines()))
+                for path in sorted(
+                    (workspace_root / "Lean/Reference/ComplexityReduction").rglob("*.lean")
+                )
+                if path.is_file()
+            )
+            _PUBLIC_SOURCE_INDEX[index_key] = public_index
+
+    def namespace_at(lines: Sequence[str], stop: int) -> tuple[str, ...]:
+        stack: list[str] = []
+        for line in lines[:stop]:
+            stripped = line.strip()
+            matched = re.fullmatch(r"namespace\s+([A-Za-z0-9_.']+)", stripped)
+            if matched:
+                stack.extend(matched.group(1).split("."))
+            elif re.fullmatch(r"end(?:\s+[A-Za-z0-9_.']+)?", stripped) and stack:
+                stack.pop()
+        return tuple(stack)
+
+    def declaration_block(
+        kind: str, short_name: str
+    ) -> tuple[str, str, str] | None:
+        matched: list[tuple[Path, tuple[str, ...], int]] = []
+        pattern = re.compile(rf"\b{kind}\s+{re.escape(short_name)}\b")
+        for source_path, source_lines in public_index:
+            for ordinal, source_line in enumerate(source_lines):
+                if pattern.search(source_line):
+                    matched.append((source_path, source_lines, ordinal))
+        if len(matched) != 1:
+            return None
+        source_path, source_lines, ordinal = matched[0]
+        namespace = namespace_at(source_lines, ordinal)
+        qualified = ".".join((*namespace, short_name))
+        # Endpoint semantics are needed verbatim, but an arbitrary line window also
+        # leaks many unrelated declarations into the prompt and can dominate the
+        # model's output budget.  Lean's public declarations here are top-level, so
+        # stop at the next top-level declaration/doc block while retaining every
+        # indented continuation line of the selected declaration.
+        stop = min(len(source_lines), ordinal + 90)
+        next_top_level = re.compile(
+            r"^(?:/--|/-!|namespace\b|end\b|"
+            r"(?:@\[[^]]+\]\s*)?(?:noncomputable\s+)?"
+            r"(?:abbrev|class|def|inductive|instance|lemma|structure|theorem)\b)"
+        )
+        for candidate in range(ordinal + 1, stop):
+            line = source_lines[candidate]
+            if line and not line[0].isspace() and next_top_level.match(line):
+                stop = candidate
+                break
+        block = "\n".join(source_lines[ordinal:stop]).rstrip()
+        return qualified, str(source_path.relative_to(workspace_root)), block
+
+    def carrier_interfaces(excerpt: str) -> list[dict[str, str]]:
+        carrier_names = set(re.findall(r"carrier_eq_([A-Za-z0-9_]+)", excerpt))
+        encoded_names = set(
+            name.rsplit(".", 1)[-1]
+            for name in re.findall(
+                r"encodedType\s*:=\s*([A-Za-z0-9_.]+)", excerpt
+            )
+        )
+        for encoded_name in encoded_names:
+            encoded = declaration_block("def", encoded_name)
+            if encoded is None:
+                continue
+            carrier_names.update(
+                name.rsplit(".", 1)[-1]
+                for name in re.findall(r"Carrier\s*:=\s*([A-Za-z0-9_.]+)", encoded[2])
+            )
+        pending = list(sorted(carrier_names))
+        seen: set[str] = set()
+        result: list[dict[str, str]] = []
+        while pending and len(result) < 8:
+            carrier_name = pending.pop(0)
+            if carrier_name in seen:
+                continue
+            seen.add(carrier_name)
+            structure = declaration_block("structure", carrier_name)
+            if structure is None:
+                continue
+            qualified, source_file, block = structure
+            result.append(
+                {
+                    "declaration": qualified,
+                    "source_file": source_file,
+                    "answer_free_public_structure": block,
+                }
+            )
+            pending.extend(
+                name
+                for name in re.findall(r"\b([A-Z][A-Za-z0-9_]*Input)\b", block)
+                if name not in seen
+            )
+        return result
+
+    def semantic_interfaces(excerpt: str) -> list[dict[str, str]]:
+        pending = [
+            name.rsplit(".", 1)[-1]
+            for name in re.findall(
+                r"\bisYes\s*:=\s*([A-Za-z][A-Za-z0-9_.']+)", excerpt
+            )
+        ]
+        seen: set[str] = set()
+        result: list[dict[str, str]] = []
+        while pending and len(result) < 16:
+            name = pending.pop(0)
+            if name in seen:
+                continue
+            seen.add(name)
+            declaration = declaration_block("def", name)
+            if declaration is None:
+                continue
+            qualified, source_file, block = declaration
+            result.append(
+                {
+                    "declaration": qualified,
+                    "source_file": source_file,
+                    "answer_free_public_semantics": block,
+                }
+            )
+            pending.extend(
+                token
+                for token in re.findall(r"\b([A-Z][A-Za-z0-9_']+)\b", block)
+                if token not in seen
+            )
+        return result
+    for declaration in (task.source_problem.term, task.target_problem.term):
+        module = declaration.rsplit(".", 1)[0]
+        relative = f"Lean/Reference/{module.replace('.', '/')}.lean"
+        if relative not in allowed_files:
+            _fail(
+                "candidate_dependency_stale",
+                f"endpoint interface file is outside the public dependency set: {relative}",
+            )
+        path = (workspace_root / relative).resolve()
+        try:
+            path.relative_to(workspace_root.resolve())
+            lines = path.read_text(encoding="utf-8").splitlines()
+        except (ValueError, OSError, UnicodeError) as error:
+            _fail("candidate_dependency_stale", f"endpoint interface is unreadable: {error}")
+        short_name = declaration.rsplit(".", 1)[-1]
+        matches = [
+            index
+            for index, line in enumerate(lines)
+            if re.search(
+                rf"\b(?:def|abbrev)\s+{re.escape(short_name)}\b",
+                line,
+            )
+        ]
+        if len(matches) != 1:
+            _fail(
+                "candidate_dependency_stale",
+                f"endpoint declaration {declaration!r} is not uniquely visible",
+            )
+        index = matches[0]
+        excerpt = "\n".join(lines[max(0, index - 120) : index + 81])
+        if len(excerpt) > 16_000:
+            excerpt = excerpt[-16_000:]
+        interfaces.append(
+            {
+                "declaration": declaration,
+                "source_file": relative,
+                "source_sha256": _tagged_file_hash(path),
+                "answer_free_public_excerpt": excerpt,
+                "carrier_interfaces": carrier_interfaces(excerpt),
+                "semantic_interfaces": semantic_interfaces(excerpt),
+            }
+        )
+    return tuple(interfaces)
 
 
 def parse_exact_edge_node_patch(
@@ -572,11 +999,23 @@ def load_exact_edge_checkpoint(
     for index, item in enumerate(raw.get("model_call_ledger", []), start=1):
         if not isinstance(item, Mapping):
             _fail("checkpoint_tampered", "checkpoint ledger row is invalid")
+        call_usage = item.get("usage")
+        if not isinstance(call_usage, Mapping):
+            response_value = item.get("response_file")
+            if isinstance(response_value, str) and response_value:
+                response_path = Path(response_value).resolve()
+                try:
+                    response_path.relative_to(path.parent.resolve())
+                    response_payload = json.loads(response_path.read_text(encoding="utf-8"))
+                except (ValueError, OSError, UnicodeError, json.JSONDecodeError):
+                    response_payload = None
+                if isinstance(response_payload, Mapping):
+                    call_usage = _usage_safe(response_payload.get("usage"))
         calls.append(
             ExactEdgeNodeAttempt(
-                call=index,
+                call=int(item.get("call", index)),
                 node=str(item["stage"]),
-                attempt=1,
+                attempt=int(item.get("attempt", 1)),
                 model=item.get("model"),
                 called=item.get("called") is True,
                 ok=item.get("ok") is True,
@@ -585,7 +1024,7 @@ def load_exact_edge_checkpoint(
                 http_attempts=item.get("http_attempts"),
                 finish_reason=item.get("finish_reason"),
                 duration_seconds=item.get("duration_seconds"),
-                usage=item.get("usage"),
+                usage=_usage_safe(call_usage),
                 prompt_sha256=str(item.get("prompt_sha256") or ""),
                 response_sha256=str(item.get("response_sha256") or ""),
                 patch_sha256=item.get("patch_sha256"),
@@ -594,9 +1033,86 @@ def load_exact_edge_checkpoint(
                 response_file=str(item.get("response_file") or ""),
                 patch_file=item.get("patch_file"),
                 workspace_sha256=item.get("workspace_sha256"),
+                request_id=(
+                    str(item["request_id"])
+                    if isinstance(item.get("request_id"), str)
+                    else None
+                ),
+                case_id=(
+                    str(item["case_id"])
+                    if isinstance(item.get("case_id"), str)
+                    else None
+                ),
+                task_id=(
+                    str(item["task_id"])
+                    if isinstance(item.get("task_id"), str)
+                    else None
+                ),
             )
         )
     return tuple(accepted), bodies, tuple(calls)
+
+
+def _replay_resumed_prefix(
+    *,
+    workspace_root: Path,
+    case_output: Path,
+    task: NPHardAuthoringTaskV2,
+    accepted: Sequence[ExactEdgeAcceptedNode],
+    bodies: Mapping[str, str],
+    policy: Mapping[str, Any],
+    timeout_seconds: int,
+) -> None:
+    """Independently compile every resumed prefix before trusting it."""
+
+    replay_bodies: dict[str, str] = {}
+    evidence_root = case_output / "commands" / "resume-prefix"
+    evidence_root.mkdir(parents=True, exist_ok=True)
+    for ordinal, record in enumerate(accepted, start=1):
+        node = task.gap_nodes[ordinal - 1]
+        if record.node_id != node.node_id or record.declaration != node.declaration:
+            _fail("checkpoint_tampered", "resumed node identity drifted")
+        body = bodies.get(node.declaration)
+        if body is None or sha256_id(body) != record.body_sha256:
+            _fail("checkpoint_tampered", "resumed node body binding drifted")
+        replay_bodies[node.declaration] = body
+        command, source = _compile_source(
+            workspace_root=workspace_root,
+            task=task,
+            bodies=replay_bodies,
+            include_final=False,
+            filename=f"work/resume-prefix-{ordinal:02d}.lean",
+            timeout_seconds=timeout_seconds,
+        )
+        source_hash = "sha256:" + _hash_text(source)
+        route_violation = _policy_route_violation(source)
+        composition_violation = (
+            _policy_composition_violation(source)
+            if not bool(policy.get("allow_composition"))
+            else False
+        )
+        _write_json(
+            evidence_root / f"{ordinal:02d}-{node.node_id}.json",
+            {
+                "node_id": node.node_id,
+                "source_sha256": source_hash,
+                "command": command.to_dict(),
+                "route_violation": route_violation,
+                "composition_violation": composition_violation,
+            },
+        )
+        if (
+            not command.ok
+            or route_violation is not None
+            or composition_violation
+            or record.command_exit_code != 0
+            or record.cumulative_source_sha256 != source_hash
+            or record.workspace_sha256 != source_hash
+        ):
+            _fail(
+                "candidate_dependency_stale",
+                f"independent replay rejected resumed node {node.node_id!r}",
+            )
 
 
 def _usage_safe(usage: Mapping[str, Any] | None) -> Mapping[str, int] | None:
@@ -610,7 +1126,10 @@ def _usage_safe(usage: Mapping[str, Any] | None) -> Mapping[str, int] | None:
         and not isinstance(value, bool)
         and value >= 0
     }
-    return safe if len(safe) == len(usage) else None
+    # Providers may add nested token-detail objects.  The benchmark freezes the
+    # auditable top-level integer counters and intentionally drops only those
+    # nested explanatory fields.
+    return safe or None
 
 
 def run_exact_edge_staged_construction(
@@ -624,6 +1143,7 @@ def run_exact_edge_staged_construction(
     model_client: Any,
     model_name: str | None,
     timeout_seconds: int,
+    case_id: str | None = None,
     attempt_budget: int = EXACT_EDGE_MAX_NODE_ATTEMPTS,
     resume_checkpoint: Path | None = None,
     max_new_nodes: int | None = None,
@@ -640,6 +1160,12 @@ def run_exact_edge_staged_construction(
     accepted: list[ExactEdgeAcceptedNode] = []
     ledger: list[ExactEdgeNodeAttempt] = []
     call_number = 0
+    endpoint_interfaces = _public_endpoint_interfaces(
+        workspace_root=workspace_root, task=task
+    )
+    complexity_interfaces = _public_complexity_interfaces(
+        workspace_root=workspace_root, task=task
+    )
     if resume_checkpoint is not None:
         resumed_nodes, resumed_bodies, resumed_calls = load_exact_edge_checkpoint(
             path=resume_checkpoint, task=task
@@ -648,17 +1174,40 @@ def run_exact_edge_staged_construction(
         bodies = dict(resumed_bodies)
         ledger = list(resumed_calls)
         call_number = len(ledger)
+        _replay_resumed_prefix(
+            workspace_root=workspace_root,
+            case_output=case_output,
+            task=task,
+            accepted=accepted,
+            bodies=bodies,
+            policy=policy,
+            timeout_seconds=timeout_seconds,
+        )
 
     failure_code: str | None = None
     failure_message: str | None = None
     new_nodes = 0
+
+    def persist_checkpoint() -> None:
+        write_exact_edge_checkpoint(
+            path=case_output / "checkpoint.json",
+            task=task,
+            accepted=accepted,
+            bodies=bodies,
+            calls=ledger,
+        )
+
     for ordinal in range(len(accepted) + 1, len(task.gap_nodes) + 1):
         if max_new_nodes is not None and new_nodes >= max_new_nodes:
             break
         node = task.gap_nodes[ordinal - 1]
         diagnostic: str | None = None
         accepted_this_node = False
-        for attempt in range(1, attempt_budget + 1):
+        prior_attempts = max(
+            (call.attempt for call in ledger if call.node == node.node_id),
+            default=0,
+        )
+        for attempt in range(prior_attempts + 1, attempt_budget + 1):
             if model_client is None:
                 failure_code = "model_provider_unavailable"
                 failure_message = "no model client configured"
@@ -674,6 +1223,16 @@ def run_exact_edge_staged_construction(
                 attempt=attempt,
                 remaining_attempts=attempt_budget - attempt,
                 timeout_seconds=timeout_seconds,
+                public_endpoint_interfaces=endpoint_interfaces,
+                public_complexity_interfaces=complexity_interfaces,
+            )
+            call_request_id = sha256_id(
+                {
+                    "task_request_id": task.request_id,
+                    "case_id": case_id,
+                    "node_id": node.node_id,
+                    "attempt": attempt,
+                }
             )
             response = model_client.complete_json(
                 system=_EXACT_EDGE_SYSTEM_PROMPT, prompt=prompt
@@ -698,8 +1257,8 @@ def run_exact_edge_staged_construction(
                 },
             )
             call_number += 1
-            prompt_hash = "sha256:" + _hash_text(prompt)
-            response_hash = "sha256:" + _hash_text(str(response.content or ""))
+            prompt_hash = _hash_text(prompt)
+            response_hash = _hash_text(str(response.content or ""))
             if not response.called:
                 ledger.append(
                     ExactEdgeNodeAttempt(
@@ -723,8 +1282,12 @@ def run_exact_edge_staged_construction(
                         response_file=str(response_path.resolve()),
                         patch_file=None,
                         workspace_sha256=None,
+                        request_id=call_request_id,
+                        case_id=case_id,
+                        task_id=task.request_id,
                     )
                 )
+                persist_checkpoint()
                 failure_code = "model_provider_unavailable"
                 failure_message = response.error or "model provider did not execute"
                 break
@@ -751,8 +1314,22 @@ def run_exact_edge_staged_construction(
                         response_file=str(response_path.resolve()),
                         patch_file=None,
                         workspace_sha256=None,
+                        request_id=call_request_id,
+                        case_id=case_id,
+                        task_id=task.request_id,
                     )
                 )
+                persist_checkpoint()
+                retryable_provider_failure = (
+                    response.status_code is None
+                    or response.status_code == 429
+                    or response.status_code >= 500
+                )
+                if response.status_code == 200 or retryable_provider_failure:
+                    diagnostic = response.error or (
+                        "model returned no complete JSON body; produce a shorter single-node body"
+                    )
+                    continue
                 failure_code = "model_provider_unavailable"
                 failure_message = response.error or "model request failed"
                 break
@@ -783,11 +1360,16 @@ def run_exact_edge_staged_construction(
                         response_file=str(response_path.resolve()),
                         patch_file=None,
                         workspace_sha256=None,
+                        request_id=call_request_id,
+                        case_id=case_id,
+                        task_id=task.request_id,
                     )
                 )
+                persist_checkpoint()
                 diagnostic = error.message
                 continue
             body_hash = sha256_id(body)
+            patch_hash = _hash_text(body)
             patch_path = model_root / f"{node.node_id}-attempt-{attempt:02d}-patch.json"
             _write_json(
                 patch_path,
@@ -842,15 +1424,19 @@ def run_exact_edge_staged_construction(
                     usage=_usage_safe(response.usage),
                     prompt_sha256=prompt_hash,
                     response_sha256=response_hash,
-                    patch_sha256=body_hash,
+                    patch_sha256=patch_hash,
                     diagnostics_sha256=sha256_id({"diagnostic": diagnostics}),
                     prompt_file=str(prompt_path.resolve()),
                     response_file=str(response_path.resolve()),
                     patch_file=str(patch_path.resolve()),
                     workspace_sha256=workspace_hash,
+                    request_id=call_request_id,
+                    case_id=case_id,
+                    task_id=task.request_id,
                 )
             )
             if not accepted_attempt:
+                persist_checkpoint()
                 if route_violation is not None:
                     failure_code = "exact_edge_route_import_forbidden"
                     failure_message = f"route import blocked: {route_violation}"
@@ -876,14 +1462,7 @@ def run_exact_edge_staged_construction(
             bodies[node.declaration] = body
             accepted_this_node = True
             new_nodes += 1
-            checkpoint_path = case_output / "checkpoint.json"
-            write_exact_edge_checkpoint(
-                path=checkpoint_path,
-                task=task,
-                accepted=accepted,
-                bodies=bodies,
-                calls=ledger,
-            )
+            persist_checkpoint()
             break
         if not accepted_this_node and failure_code is None:
             failure_code = "exact_edge_node_attempt_budget_exhausted"
@@ -998,6 +1577,7 @@ def run_exact_edge_staged_construction(
     return {
         "schema_version": EXACT_EDGE_STAGED_RESULT_SCHEMA_V1,
         "task_class": EXACT_EDGE_AUTHORING_TASK_CLASS,
+        "case_id": case_id,
         "status": status,
         "goal": {
             "objective": "reduce_to",
@@ -1016,6 +1596,9 @@ def run_exact_edge_staged_construction(
             "sha256:" + _hash_text(artifact_source) if artifact_source else None
         ),
         "node_count": len(task.gap_nodes),
+        "resumed": resume_checkpoint is not None,
+        "resumed_node_count": len(accepted) - new_nodes,
+        "new_node_count": new_nodes,
         "accepted_nodes": [record.to_dict() for record in accepted],
         "audits": audits,
         "failure_code": failure_code,

@@ -19,7 +19,7 @@ from .lean_runner import (
     validate_module_name,
 )
 from .models import CommandResult, sha256_id
-from .lean_worker_pool import StagePLeanWorkerPool
+from .lean_worker_pool import LeanWorkerPool
 from .model_client import DeepSeekClient, DeepSeekConfig
 from .np_hard_authoring import (
     NP_HARD_AUTHORING_DIRECTION,
@@ -894,12 +894,12 @@ class NPHardAgentV1:
                     },
                 )
                 store.transition("AUTHORING", details={"stable_gap_id": task.gap_id})
-                worker_pool: StagePLeanWorkerPool | None = None
+                worker_pool: LeanWorkerPool | None = None
                 worker_session_id: str | None = None
                 worker_owner: str | None = None
                 try:
                     if self.config.candidate_validation_mode == "persistent-worker":
-                        worker_pool = StagePLeanWorkerPool(
+                        worker_pool = LeanWorkerPool(
                             lean_root=self.lean_root,
                             workspace_root=output_dir,
                             service_root=store.path("authoring/lean-worker-service"),

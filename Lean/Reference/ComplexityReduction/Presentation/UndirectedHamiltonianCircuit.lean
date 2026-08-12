@@ -6,6 +6,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 import ComplexityReduction.Legacy.ComplexityReduction.Combinatorics.Graph.Digraph
 import ComplexityReduction.Annotations.Attributes
 import ComplexityReduction.Presentation.Graph
+import ComplexityReduction.Presentation.GraphTM
 
 /-!
 Canonical V2 presentation of the structured Karp21 Undirected Hamiltonian Circuit endpoint.
@@ -99,6 +100,30 @@ theorem structuredProblemAt_isYes (input : structuredPresentation.Carrier) :
 theorem structuredProblem_accepts (input : structuredProblem.Instance) :
     structuredProblem.accepts input ↔ UndirectedHamiltonianCircuit input :=
   Iff.rfl
+
+/-- Route-free codec projection from the public wrapper to its graph payload. -/
+theorem graphProjection_tmPolyTime :
+    TMPolyTimeMap structuredProblem.representation.encodedType graphStructuredEncodedType
+      (fun input : structuredProblem.Instance => input.graph) := by
+  exact TMPolyTimeMap.of_encodingEquiv
+    structuredProblem.representation.encodedType graphStructuredEncodedType _
+    (Equiv.refl graphStructuredEncodedType.Symbol) (by
+      intro input
+      change graphStructuredEncodedType.encode input.graph =
+        List.map id (graphStructuredEncodedType.encode input.graph)
+      rw [List.map_id])
+
+/-- Route-free codec wrapper from a graph payload to the public endpoint carrier. -/
+theorem ofGraph_tmPolyTime :
+    TMPolyTimeMap graphStructuredEncodedType structuredProblem.representation.encodedType
+      (fun graph : GraphInput => ({ graph := graph } : UndirectedHamiltonianCircuitInput)) := by
+  exact TMPolyTimeMap.of_encodingEquiv
+    graphStructuredEncodedType structuredProblem.representation.encodedType _
+    (Equiv.refl graphStructuredEncodedType.Symbol) (by
+      intro graph
+      change graphStructuredEncodedType.encode graph =
+        List.map id (graphStructuredEncodedType.encode graph)
+      rw [List.map_id])
 
 end UndirectedHamiltonianCircuit
 end Presentation

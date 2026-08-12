@@ -60,7 +60,6 @@ EVALUATION_LANES = {
     "core_generalization",
     "typed_authoring",
     "stage_o",
-    "stage_p",
     "quals_completeness",
     "quals_adversarial",
     "representation_comparison",
@@ -157,7 +156,6 @@ class BenchmarkCase:
     authoring_policy: Mapping[str, Any] = field(default_factory=dict)
     typed_authoring: Mapping[str, Any] = field(default_factory=dict)
     stage_o: Mapping[str, Any] = field(default_factory=dict)
-    stage_p: Mapping[str, Any] = field(default_factory=dict)
     coverage: Mapping[str, Any] = field(default_factory=dict)
     resources: Mapping[str, Any] = field(default_factory=dict)
     tags: tuple[str, ...] = ()
@@ -607,7 +605,6 @@ def _parse_v2_case(
         value.get("typed_authoring"), label=f"case {case_id}.typed_authoring"
     )
     stage_o = _mapping(value.get("stage_o"), label=f"case {case_id}.stage_o")
-    stage_p = _mapping(value.get("stage_p"), label=f"case {case_id}.stage_p")
     for resource_name in (
         "lean_timeout_seconds",
         "model_timeout_seconds",
@@ -901,37 +898,6 @@ def _parse_v2_case(
             raise BenchmarkManifestError(
                 "invalid_schema", f"case {case_id} Stage O authoring case disables authoring"
             )
-    elif evaluation_lane == "stage_p":
-        if not stage_p:
-            raise BenchmarkManifestError(
-                "invalid_schema", f"case {case_id}.stage_p contract is required"
-            )
-        if typed_authoring or stage_o:
-            raise BenchmarkManifestError(
-                "invalid_schema",
-                f"case {case_id} must use only the versioned Stage P contract",
-            )
-        if (
-            objective_direction != "source_to_target"
-            or catalog_mode != FULL_CATALOG
-            or input_kind
-            not in {"presented_problem", "predicate", "parameterized_predicate"}
-            or verification_profile != "strict-release"
-            or maximum_route_atoms is None
-            or maximum_dependencies is None
-            or not require_simple_path
-        ):
-            raise BenchmarkManifestError(
-                "invalid_schema", f"case {case_id} is outside the stage_p lane ABI"
-            )
-        if execution_layer == "core_reuse" and authoring_enabled:
-            raise BenchmarkManifestError(
-                "invalid_schema", f"case {case_id} core Stage P case enables authoring"
-            )
-        if execution_layer == "optional_authoring" and not authoring_enabled:
-            raise BenchmarkManifestError(
-                "invalid_schema", f"case {case_id} Stage P authoring case disables authoring"
-            )
     elif evaluation_lane in {"typed_authoring", "quals_completeness"}:
         required_request_keys = {
             "schema_version",
@@ -1072,7 +1038,7 @@ def _parse_v2_case(
                 "invalid_schema",
                 f"case {case_id} is outside the {evaluation_lane} lane ABI",
             )
-    elif typed_authoring or stage_o or stage_p:
+    elif typed_authoring or stage_o:
         raise BenchmarkManifestError(
             "invalid_schema",
             f"case {case_id} uses authoring contract fields outside their versioned lane",
@@ -1244,7 +1210,6 @@ def _parse_v2_case(
         authoring_policy=authoring_policy,
         typed_authoring=typed_authoring,
         stage_o=stage_o,
-        stage_p=stage_p,
         expected=expected,
         coverage=coverage,
         resources=resources,

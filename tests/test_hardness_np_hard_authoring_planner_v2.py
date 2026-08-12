@@ -563,7 +563,7 @@ def test_v3_dependent_tmkarp_composition_ambiguity_and_endpoint_tamper_fail_clos
     assert collapsed.value.code == "candidate_wrong_endpoint"
 
 
-def test_typed_capability_ambiguity_and_reverse_direction_fail_closed(
+def test_typed_capability_ambiguity_fails_closed_but_reverse_uses_open_synthesis(
     automatic_plans,
 ) -> None:
     original = automatic_plans[0]
@@ -606,8 +606,8 @@ def test_typed_capability_ambiguity_and_reverse_direction_fail_closed(
         input_problem_declaration=CASES[0][1],
         observation=replace(stripped, typed_capabilities=(reverse,)),
     )
-    assert reversed_plan.status == "BLOCKED"
-    assert reversed_plan.task is None
+    assert reversed_plan.status == "PLANNED"
+    assert reversed_plan.task.task_class == "whole_reduction_synthesis"
 
 
 def test_hub_aliases_are_deduplicated_by_exact_endpoint_node(automatic_plans) -> None:
@@ -665,7 +665,7 @@ def test_planner_is_content_deterministic_and_prompt_has_no_benchmark_answers(
     assert ".oracles." not in prompt
 
 
-def test_planner_blocks_reverse_only_missing_prerequisite_and_disconnected_graph(
+def test_planner_falls_back_to_whole_reduction_when_closed_routes_are_unavailable(
     automatic_plans,
 ) -> None:
     graph = automatic_plans[1]
@@ -688,8 +688,8 @@ def test_planner_blocks_reverse_only_missing_prerequisite_and_disconnected_graph
         input_problem_declaration=CASES[1][1],
         observation=replace(observation, poly_programs=(reverse,)),
     )
-    assert reverse_plan.status == "BLOCKED"
-    assert reverse_plan.failure_code == "wrong_direction_only"
+    assert reverse_plan.status == "PLANNED"
+    assert reverse_plan.task.task_class == "whole_reduction_synthesis"
 
     synthesis = automatic_plans[4]
     missing_relation = plan_np_hard_authoring_from_observation(
@@ -698,9 +698,8 @@ def test_planner_blocks_reverse_only_missing_prerequisite_and_disconnected_graph
         input_problem_declaration=CASES[4][1],
         observation=replace(synthesis.observation, mapping_relations=()),
     )
-    assert missing_relation.status == "BLOCKED"
-    assert missing_relation.failure_code == "authoring_plan_missing_capability"
-    assert missing_relation.missing_capabilities == ("mapping_invariant",)
+    assert missing_relation.status == "PLANNED"
+    assert missing_relation.task.task_class == "whole_reduction_synthesis"
 
     composition = automatic_plans[2]
     disconnected = plan_np_hard_authoring_from_observation(
@@ -709,8 +708,12 @@ def test_planner_blocks_reverse_only_missing_prerequisite_and_disconnected_graph
         input_problem_declaration=CASES[2][1],
         observation=replace(composition.observation, poly_programs=()),
     )
-    assert disconnected.status == "BLOCKED"
-    assert "poly_program" in disconnected.missing_capabilities
+    assert disconnected.status == "PLANNED"
+    assert disconnected.task.task_class == "whole_reduction_synthesis"
+    assert all(
+        plan.model_calls == 0
+        for plan in (reverse_plan, missing_relation, disconnected)
+    )
 
 
 def test_task_validation_rejects_cycle_and_dependency_hash_drift(automatic_plans) -> None:

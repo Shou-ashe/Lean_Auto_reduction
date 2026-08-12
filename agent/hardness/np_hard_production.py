@@ -23,11 +23,117 @@ NP_HARD_CLI_RESULT_SCHEMA_V1 = "hardness_np_hard_cli_result_v1"
 FORMAL_PROVIDER = "DeepSeek"
 FORMAL_BASE_URL = "https://api.deepseek.com"
 FORMAL_MODEL = "deepseek-v4-flash"
-FORMAL_REASONING_EFFORT = "low"
-FORMAL_TIMEOUT_SECONDS = 300
-FORMAL_MAX_TOKENS = 16_000
+FORMAL_REASONING_EFFORT = "max"
+FORMAL_TIMEOUT_SECONDS = 1_800
+FORMAL_MAX_TOKENS = 128_000
 FORMAL_MAX_RETRIES = 0
 FORMAL_TEMPERATURE = 0.0
+
+NP_HARD_NODE_REASONING_POLICY_VERSION = "static_capability_reasoning_v1"
+NP_HARD_NODE_REASONING_PROFILES = {
+    "reduction_invention": {"max_tokens": 128_000, "reasoning_effort": "max"},
+    "direct_tm": {"max_tokens": 128_000, "reasoning_effort": "max"},
+    "global_semantic": {"max_tokens": 128_000, "reasoning_effort": "max"},
+    "local_proof": {"max_tokens": 32_000, "reasoning_effort": "high"},
+    "mechanical": {"max_tokens": 8_000, "reasoning_effort": "low"},
+}
+
+NP_HARD_SEMANTIC_PLANNER_PROFILE = {
+    "profile_id": "semantic_plan",
+    "max_tokens": 128_000,
+    "reasoning_effort": "max",
+}
+
+NP_HARD_REDUCTION_INVENTION_CAPABILITIES = frozenset(
+    {
+        "clause_constraint",
+        "complement_constraint",
+        "clause_gadget",
+        "gadget_definitions",
+        "gadget_executable",
+        "mapping_invariant_specification",
+        "reduction_executable",
+    }
+)
+NP_HARD_MECHANICAL_CAPABILITIES = frozenset(
+    {
+        "certified_reduction",
+        "gadget_composed_program",
+        "gadget_program",
+        "native_tm_np_hard",
+        "poly_program",
+        "program_indexed_primitive",
+        "program_indexed_program",
+        "program_run_coherence",
+        "reduction_primitive",
+        "reference_executable",
+        "tmkarp_primitive",
+        "tmkarp_program",
+    }
+)
+
+
+def node_reasoning_profile(capability: str) -> dict[str, Any]:
+    """Return the deterministic model profile for one typed DAG capability."""
+
+    if capability in NP_HARD_MECHANICAL_CAPABILITIES:
+        profile_id = "mechanical"
+    elif "direct_tm" in capability:
+        profile_id = "direct_tm"
+    elif capability.startswith("gadget_semantic_"):
+        profile_id = "local_proof"
+    elif "semantic" in capability or capability == "mapping_invariant":
+        profile_id = "global_semantic"
+    elif capability in NP_HARD_REDUCTION_INVENTION_CAPABILITIES:
+        profile_id = "reduction_invention"
+    else:
+        profile_id = "local_proof"
+    return {"profile_id": profile_id, **NP_HARD_NODE_REASONING_PROFILES[profile_id]}
+
+
+def semantic_planner_reasoning_profile(*, model: Any) -> dict[str, Any]:
+    """Return the non-adaptive max/128k profile for the shared semantic plan."""
+
+    config = getattr(model, "config", None)
+    configured_ceiling = getattr(config, "max_tokens", None)
+    configured_effort = getattr(config, "reasoning_effort", None)
+    profiled = callable(getattr(model, "complete_json_with_profile", None))
+    effective_max_tokens = NP_HARD_SEMANTIC_PLANNER_PROFILE["max_tokens"]
+    if isinstance(configured_ceiling, int) and configured_ceiling > 0:
+        effective_max_tokens = min(effective_max_tokens, configured_ceiling)
+    return {
+        "policy_version": NP_HARD_NODE_REASONING_POLICY_VERSION,
+        **NP_HARD_SEMANTIC_PLANNER_PROFILE,
+        "configured_max_tokens_ceiling": configured_ceiling,
+        "configured_reasoning_effort": configured_effort,
+        "effective_max_tokens": effective_max_tokens,
+        "effective_reasoning_effort": "max",
+        "static_profile_applied": profiled,
+    }
+
+
+def public_node_reasoning_policy() -> dict[str, Any]:
+    """Describe the deterministic capability policy bound into production runs."""
+
+    return {
+        "version": NP_HARD_NODE_REASONING_POLICY_VERSION,
+        "profiles": {
+            name: dict(profile)
+            for name, profile in NP_HARD_NODE_REASONING_PROFILES.items()
+        },
+        "semantic_planner": dict(NP_HARD_SEMANTIC_PLANNER_PROFILE),
+        "reduction_invention_capabilities": sorted(
+            NP_HARD_REDUCTION_INVENTION_CAPABILITIES
+        ),
+        "mechanical_capabilities": sorted(NP_HARD_MECHANICAL_CAPABILITIES),
+        "direct_tm_match": "capability contains direct_tm",
+        "global_semantic_match": (
+            "capability contains semantic except gadget_semantic_*"
+        ),
+        "adaptive_escalation": False,
+        "retries_preserve_static_profile": True,
+        "configured_max_tokens_is_hard_ceiling": True,
+    }
 
 PUBLIC_STATUSES = {
     "VERIFIED",
@@ -62,6 +168,7 @@ MODEL_FAILURE_CODES = {
     "candidate_nonstandard_axiom",
     "candidate_outside_edit_boundary",
     "invalid_np_hard_gap_runtime_schema",
+    "model_output_exhausted",
     "model_provider_unavailable",
     "qualification_model_profile_mismatch",
 }
@@ -137,14 +244,18 @@ def is_formal_np_hard_qualification_config(config: DeepSeekConfig) -> bool:
     )
 
 
-def required_model_call_budget(*, gap_node_count: int, attempt_budget: int) -> int:
+def required_model_call_budget(
+    *, gap_node_count: int, attempt_budget: int, semantic_planner: bool = False
+) -> int:
     """Reserve every allowed attempt for every node in the typed DAG."""
 
     if gap_node_count < 0:
         raise ValueError("gap node count cannot be negative")
     if not 1 <= attempt_budget <= 4:
         raise ValueError("attempt budget must be in 1..4")
-    return gap_node_count * attempt_budget
+    return gap_node_count * attempt_budget + (
+        2 if semantic_planner and gap_node_count > 0 else 0
+    )
 
 
 def public_np_hard_status(
