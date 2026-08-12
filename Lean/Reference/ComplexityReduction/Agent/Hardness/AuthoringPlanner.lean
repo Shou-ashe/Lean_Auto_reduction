@@ -30,6 +30,9 @@ open Encoding Program Certificate Registry
 
 private def schemaVersion := "hardness_np_hard_authoring_observation_v3"
 private def marker := "HARDNESS_NP_HARD_PLAN"
+private def declarationTypeSchemaVersion :=
+  "hardness_np_hard_declaration_type_observation_v1"
+private def declarationTypeMarker := "HARDNESS_NP_HARD_DECL_TYPE"
 private def maximumRenderedChars := 12000
 private def publicAuthoringSourcesModule : Name :=
   `ComplexityReduction.Agent.Hardness.AuthoringSources
@@ -952,5 +955,27 @@ elab_rules : command
       let environment ← getEnv
       Command.liftTermElabM <|
         run environment nonce.getString sourceName allowedModules.getString
+
+/-!
+Render the kernel-elaborated type of each explicitly requested public
+declaration.  This command does not discover or select primitives; Python must
+already supply the immutable allowlist whose types are being observed.
+-/
+syntax (name := hardnessNPHardDeclarationType)
+  "#hardness_np_hard_declaration_type " str str term : command
+
+elab_rules : command
+  | `(#hardness_np_hard_declaration_type $nonce:str $label:str $term:term) => do
+      let declarationType? ← try
+        let declaration ← resolveGlobalConstNoOverload term
+        pure ((← getEnv).find? declaration |>.map (fun information => information.type))
+      catch _ =>
+        pure none
+      Command.liftTermElabM do
+        let exactType ← match declarationType? with
+          | some exactType => pure exactType
+          | none => inferType (← Term.elabTerm term none)
+        let rendered ← renderExpr exactType
+        logInfo m!"{declarationTypeMarker}\t{declarationTypeSchemaVersion}\t{nonce.getString}\t{label.getString}\t{rendered}"
 
 end ComplexityReduction.Agent.Hardness.AuthoringPlanner

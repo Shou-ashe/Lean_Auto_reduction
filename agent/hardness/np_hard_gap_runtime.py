@@ -45,7 +45,21 @@ from .np_hard_authoring import (
     accepted_np_hard_authoring_result_v2,
     deletion_command_matches_declaration_v2,
 )
-from .np_hard_production import required_model_call_budget
+from .np_hard_production import (
+    NP_HARD_NODE_REASONING_POLICY_VERSION,
+    node_reasoning_profile,
+    required_model_call_budget,
+)
+from .np_hard_semantic_planner import (
+    SEMANTIC_PLAN_CONSTRUCTION_NODE_IDS,
+    SEMANTIC_PLAN_NODE_ID,
+    NPHardSemanticPlanV1,
+    parse_semantic_plan,
+    run_semantic_planner,
+    semantic_plan_dependency_snapshot,
+    semantic_plan_required,
+    split_semantic_plan_for_node,
+)
 
 
 NP_HARD_NODE_REQUEST_SCHEMA_V1 = "hardness_np_hard_node_request_v1"
@@ -53,9 +67,10 @@ NP_HARD_NODE_PATCH_SCHEMA_V1 = "hardness_np_hard_node_patch_v1"
 NP_HARD_GAP_CHECKPOINT_SCHEMA_V1 = "hardness_np_hard_gap_checkpoint_v1"
 NP_HARD_GAP_PUBLICATION_SCHEMA_V1 = "hardness_np_hard_gap_publication_v1"
 NP_HARD_GAP_RUNTIME_REPORT_SCHEMA_V1 = "hardness_np_hard_gap_runtime_result_v1"
-NP_HARD_MAX_INSTANCE_CALL_BUDGET = 64
+NP_HARD_MAX_INSTANCE_CALL_BUDGET = 66
 NP_HARD_NODE_PROMPT_MAX_SOURCE_FILES = 8
 NP_HARD_NODE_PROMPT_SOURCE_CHAR_BUDGET = 40_000
+NP_HARD_REFERENCE_STAGE_PROMPT_SOURCE_CHAR_BUDGET = 20_000
 NP_HARD_NODE_PROMPT_SOURCE_EXCERPT_CHARS = 16_000
 NP_HARD_NODE_PROMPT_DEPENDENCY_BODY_CHAR_BUDGET = 16_000
 NP_HARD_NODE_PROMPT_DIAGNOSTIC_CHARS = 4_000
@@ -156,6 +171,9 @@ _GADGET_INDEXED_ADMISSION_MODULE = (
 _GADGET_INDEXED_PACKET_NAMESPACE = (
     _GADGET_INDEXED_ADMISSION_MODULE + ".GadgetIndexedAdmissionPacket"
 )
+_BOOLEAN_CSP_NAE3_SCAFFOLD_MODULE = (
+    "ComplexityReduction.Agent.Hardness.BooleanCSPReductionScaffold"
+)
 _GADGET_INDEXED_CAPABILITIES = frozenset(
     {
         "gadget_reference_audit",
@@ -187,14 +205,119 @@ _SEMANTIC_FORWARD_CAPABILITIES = frozenset(
 _SEMANTIC_REVERSE_CAPABILITIES = frozenset(
     {"semantic_reverse", "semantic_reverse_implication"}
 )
+_REFERENCE_SEMANTIC_CAPABILITIES = frozenset(
+    {"reference_semantic_forward", "reference_semantic_reverse"}
+)
+_REFERENCE_STAGE_CAPABILITIES = frozenset(
+    {
+        "clause_constraint",
+        "complement_constraint",
+        "clause_gadget",
+        "reference_executable",
+        "clause_gadget_direct_tm",
+        "reference_direct_tm",
+        *_REFERENCE_SEMANTIC_CAPABILITIES,
+    }
+)
 _SEMANTIC_CAPABILITIES = frozenset(
     {
         *_SEMANTIC_IFF_CAPABILITIES,
         *_SEMANTIC_FORWARD_CAPABILITIES,
         *_SEMANTIC_REVERSE_CAPABILITIES,
+        *_REFERENCE_SEMANTIC_CAPABILITIES,
         "mapping_invariant",
     }
 )
+
+_CONSTRUCTION_CAPABILITIES = frozenset(
+    {
+        "clause_constraint",
+        "complement_constraint",
+        "clause_gadget",
+        "reference_executable",
+        "reduction_executable",
+        "gadget_executable",
+        "program_indexed_executable",
+    }
+)
+_DIRECT_TM_CAPABILITIES = frozenset(
+    {
+        "clause_gadget_direct_tm",
+        "reference_direct_tm",
+        "direct_tm",
+        "direct_tm_primitive",
+        "direct_tm_program",
+        "program_run_coherence",
+        "reduction_primitive",
+        "poly_program",
+        "gadget_direct_tm",
+        "gadget_program",
+        "program_indexed_primitive",
+        "program_indexed_program",
+        "program_indexed_coherence_direct_tm",
+        *_TMKARP_PRIMITIVE_CAPABILITIES,
+        *_TMKARP_PROGRAM_CAPABILITIES,
+        *_PROGRAM_INDEXED_ADMISSION_CAPABILITIES,
+    }
+)
+
+
+def _active_primitive_layers(capability: str) -> tuple[str, ...]:
+    """Return the minimal declaration layers needed by one authoring node."""
+
+    if capability in _SEMANTIC_CAPABILITIES:
+        return ("core", "construction", "semantic")
+    if capability in _DIRECT_TM_CAPABILITIES:
+        return ("core", "construction", "direct_tm")
+    if capability in _CONSTRUCTION_CAPABILITIES:
+        return ("core", "construction")
+    return ("core",)
+
+
+def _node_allowed_primitives(
+    *, task: NPHardAuthoringTaskV2, node: NPHardAuthoringObligationV2
+) -> tuple[str, ...]:
+    layers = dict(task.allowed_primitive_layers)
+    primitives = tuple(
+        primitive
+        for layer in _active_primitive_layers(node.capability)
+        for primitive in layers[layer]
+    )
+    if node.capability in _REFERENCE_SEMANTIC_CAPABILITIES:
+        superseded = {
+            "ComplexityReduction.Program.PolyProg.const",
+            "ComplexityReduction.Program.PolyProg.id",
+            "ComplexityReduction.Program.PolyProg.pair",
+            "ComplexityReduction.Program.PolyProg.atom",
+            "ComplexityReduction.CSP.Formula.satisfies_cons",
+            "ComplexityReduction.CSP.Formula.satisfies_append",
+            "ComplexityReduction.CSP.Formula.satisfies_flatMap",
+            "ComplexityReduction.Agent.Hardness.BooleanCSPReductionScaffold.literal_eval_positiveKeyAssignment",
+        }
+        return tuple(item for item in primitives if item not in superseded)
+    return primitives
+
+
+def _reference_semantic_prompt_node_request(
+    *, request: NPHardNodeRequestV1
+) -> dict[str, Any]:
+    """Expose only semantic-relevant metadata, without earlier DAG interfaces."""
+
+    return {
+        "request_id": request.request_id,
+        "schema_version": request.schema_version,
+        "task_request_id": request.task_request_id,
+        "node_ordinal": request.node_ordinal,
+        "node": request.node.to_dict(),
+        "source_problem": dict(request.source_problem),
+        "target_problem": dict(request.target_problem),
+        "required_direction": request.required_direction,
+        "dependency_fingerprint": request.dependency_fingerprint,
+        "allowed_imports": list(request.allowed_imports),
+        "allowed_primitives": list(request.allowed_primitives),
+        "node_attempt_budget": request.node_attempt_budget,
+        "instance_call_budget_remaining": request.instance_call_budget_remaining,
+    }
 
 NP_HARD_NODE_SYSTEM_PROMPT = """\
 You are an untrusted Lean 4 author. Return exactly one JSON object and no
@@ -255,40 +378,46 @@ Every repair must respond to the supplied Lean diagnostic and must not repeat
 the rejected body.
 """
 
-_POLY_PROG_API_REFERENCE = {
-    "primitive_of_tm_polytime": (
-        "Program.Primitive.ofTMPolyTime (run : source.Carrier -> target.Carrier) "
-        "(proof : TMPolyTimeMap source.encodedType target.encodedType run) : "
-        "Program.Primitive source target"
-    ),
-    "atom": (
-        "PolyProg.atom (primitive : Program.Primitive source target) : "
-        "PolyProg source target"
-    ),
-    "comp": (
-        "PolyProg.comp (after : PolyProg middle target) "
-        "(before : PolyProg source middle) : PolyProg source target"
-    ),
-    "id": (
-        "PolyProg.id (presentation : LawfulEncodedType) : "
-        "PolyProg presentation presentation"
-    ),
-    "const": (
-        "PolyProg.const (source target : LawfulEncodedType) "
-        "(value : target.Carrier) : PolyProg source target"
-    ),
-    "pair": (
-        "PolyProg.pair (first : PolyProg source left) "
-        "(second : PolyProg source right) : "
-        "PolyProg source (StandardInstances.prod left right)"
-    ),
-    "run_comp": "(PolyProg.comp after before).run input = after.run (before.run input)",
-    "run_const": "(PolyProg.const source target value).run input = value",
-    "run_id": "(PolyProg.id presentation).run input = input",
-    "run_pair": "(PolyProg.pair first second).run input = (first.run input, second.run input)",
-}
+NP_HARD_REFERENCE_SEMANTIC_SYSTEM_PROMPT = """\
+You are an untrusted Lean 4 proof author. Return exactly one JSON object and
+no markdown. Copy every field from response_template verbatim, changing only
+replacement_body; the response must contain exactly schema_version, action,
+request_id, node_id, declaration, dependency_fingerprint, and replacement_body.
+Prove only the active reference semantic declaration with the
+checked semantic_plan, the five accepted construction bodies, the exact Lean
+type, and the supplied public semantic definitions. The semantic_plan is a
+binding route: use its flatMap wrapper, selected constraint lemmas, assignment,
+language conversion, and ordered obligations. Do not invent or request any
+machine, encoding-code, program, complexity, hidden-correctness, or opposite-
+direction interface. Submit only the replacement term body. Do not emit an
+import, namespace, declaration, command, sorry, admit, axiom, or unsafe code.
+"""
 
 _CAPABILITY_GUIDANCE = {
+    "clause_constraint": (
+        "Construct only the main positive NAE3 constraint for one source clause. "
+        "Return one CSP.Constraint, not a Formula/list. Use fully-qualified public "
+        "literalKey and ternaryConstraint names unless their namespace is opened. "
+        "Do not add complement-consistency constraints in this node."
+    ),
+    "complement_constraint": (
+        "Construct only one reusable polarity-consistency constraint for a signed "
+        "literal. It must force the literal key and its complementLiteral key to "
+        "take opposite Boolean values using the public positive ternary NAE relation. "
+        "Return one CSP.Constraint and use fully-qualified public scaffold names."
+    ),
+    "clause_gadget": (
+        "Assemble the accepted clause_constraint and complement_constraint into "
+        "one CSP Formula for a source clause. A Formula is a list of Constraint "
+        "values, so return a list term rather than structure notation. Include the "
+        "main clause constraint and enough complement-consistency instances for "
+        "all literals used by the clause; do not replace either accepted dependency."
+    ),
+    "reference_executable": (
+        "Lift exactly the accepted clause_gadget over an NAEThreeSAT.Formula. "
+        "Keep the accepted gadget declaration visible in the body so deletion "
+        "audit proves this node genuinely depends on it."
+    ),
     "reduction_executable": (
         "Return an ordinary lambda matching the exact A -> B type. Inspect the "
         "public source and target instance definitions and implement the actual "
@@ -298,6 +427,29 @@ _CAPABILITY_GUIDANCE = {
         "Prove TMPolyTimeMap for exactly the accepted reduction_executable. Build "
         "the proof from public TMPolyTimeMap constructors and library lemmas; the "
         "function argument and both encoded endpoint types are frozen by the goal."
+    ),
+    "clause_gadget_direct_tm": (
+        "Prove direct TM polynomial time for exactly the accepted clause gadget. "
+        "Start from the stable public scaffold lemmas clauseFirst_tmPolyTime, "
+        "clauseSecond_tmPolyTime, clauseThird_tmPolyTime, literalKeyAfter_tmPolyTime, "
+        "complementKeyAfter_tmPolyTime, ternaryConstraintCode_tmPolyTime, and "
+        "the generic list_singleton_of/list_cons_of constructors. First prove the "
+        "list of encoded constraints direct-TM, then use formula_tmPolyTime_of_code "
+        "with the exact encoder equality. ternaryConstraintCode_tmPolyTime already "
+        "returns constraintCode of the selected ternary constraint; do not unfold it "
+        "back into the raw pair payload. The function "
+        "arguments of these helpers are inferred from their proof arguments. "
+        "When formula_tmPolyTime_of_code leaves only the pointwise encoder equality, "
+        "finish that argument with `by intro input; rfl` if both displayed lists are "
+        "syntactically identical. Do not rebuild the list proof. "
+        "TMPolyTimeMap.fst and "
+        "TMPolyTimeMap.snd take two EncodedType arguments; do not pass a proof as "
+        "their second argument."
+    ),
+    "reference_direct_tm": (
+        "Lift the accepted clause-gadget TM to the accepted formula bridge using "
+        "encoded-list map/flatten or the generic public scaffold lemma. Do not "
+        "replace either accepted dependency with a pre-existing final reduction."
     ),
     "reduction_primitive": (
         "Bind exactly the accepted executable and direct_tm dependencies with "
@@ -345,6 +497,47 @@ _CAPABILITY_GUIDANCE = {
         "Prove only target acceptance of the exact accepted program run implies "
         "source acceptance. Keep the input fixed and preserve the hypothesis; "
         "for a definitionally transparent adapter, `exact accepted` may close it."
+    ),
+    "reference_semantic_forward": (
+        "Follow the checked semantic_plan exactly; it is a binding proof route, "
+        "not optional advice. Construct its target_assignment witness, then call "
+        "formula_structure.introduction_lemma directly to reduce the flatMap goal "
+        "to one block per source-clause membership proof. Prove a block as a "
+        "Formula.Satisfies predicate by introducing an arbitrary constraint and "
+        "its membership proof, then dispatch that membership to the authored main "
+        "or complement constraint; do not unfold the gadget into a fixed-length "
+        "list and do not use CSP.Formula.satisfies_cons. Use the exact selected "
+        "literal, main-constraint, and repeat-position lemmas from the plan. Lists "
+        "do not have a `.Satisfies` field: write fully-qualified Formula.Satisfies "
+        "applications. Start with `change CSP.Formula.Satisfiable "
+        "(referenceExecutable formula)`; never `rw` the target `problem` or "
+        "`cspOf_accepts`. For constraint semantics, first `change` to the exact "
+        "ternaryConstraint Satisfies proposition and then use `(selectedLemma "
+        "...).2`; do not `rw` a semantic theorem across target/scaffold gamma "
+        "aliases. Normalize the source clause with `Clause.Satisfies` and "
+        "`not_and_or`; the main proof's `simpa` must explicitly include the "
+        "plan's literal_value_lemma. For a complement constraint, apply the "
+        "selected repeat theorem with `.2` and close its equality using `simpa "
+        "[literal_value_lemma, complementLiteral_eval]`. Perform the planned "
+        "language conversion only after the "
+        "pointwise formula proof is complete."
+    ),
+    "reference_semantic_reverse": (
+        "Follow the checked semantic_plan exactly; it is a binding proof route, "
+        "not optional advice. Recover the planned source_assignment. For each "
+        "source clause membership, call formula_structure.elimination_lemma to "
+        "obtain the whole gadget block. Extract the main and each complement "
+        "constraint by applying that Formula.Satisfies predicate to the constraint "
+        "and a `by simp [clauseGadget]` membership proof; do not unfold a fixed "
+        "list and do not use CSP.Formula.satisfies_cons. Derive each local "
+        "complement equality with the selected repeat-position lemma and call the "
+        "plan's literal_recovery_lemma. Never use the older global recovery lemma "
+        "and never `cases literal`. Lists do not have a `.Satisfies` field: use "
+        "fully-qualified Formula.Satisfies applications. Start with `change "
+        "CSP.Formula.Satisfiable (referenceExecutable formula) at hTarget`; never "
+        "`rw` the target `problem` or `cspOf_accepts`. Apply selected constraint "
+        "semantic iff theorems explicitly with `.1` or `.2` after a local `change`; "
+        "do not rewrite them across target/scaffold gamma aliases."
     ),
     "tmkarp_primitive": (
         "Admit exactly the public observer-bound TMKarpReduction executable as a "
@@ -2160,6 +2353,60 @@ class NPHardNodeModelClient(Protocol):
     def complete_json(self, *, system: str, prompt: str) -> ModelResponse: ...
 
 
+def _node_reasoning_profile(
+    *, model: NPHardNodeModelClient, capability: str
+) -> dict[str, Any]:
+    requested = node_reasoning_profile(capability)
+    profiled_method = getattr(model, "complete_json_with_profile", None)
+    static_profile_applied = callable(profiled_method)
+    config = getattr(model, "config", None)
+    configured_ceiling = getattr(config, "max_tokens", None)
+    configured_effort = getattr(config, "reasoning_effort", None)
+    if static_profile_applied:
+        effective_max_tokens = int(requested["max_tokens"])
+        if isinstance(configured_ceiling, int) and configured_ceiling > 0:
+            effective_max_tokens = min(effective_max_tokens, configured_ceiling)
+        effective_effort = str(requested["reasoning_effort"])
+    else:
+        effective_max_tokens = (
+            configured_ceiling
+            if isinstance(configured_ceiling, int) and configured_ceiling > 0
+            else None
+        )
+        effective_effort = (
+            configured_effort if isinstance(configured_effort, str) else None
+        )
+    return {
+        "policy_version": NP_HARD_NODE_REASONING_POLICY_VERSION,
+        "profile_id": str(requested["profile_id"]),
+        "capability": capability,
+        "requested_max_tokens": int(requested["max_tokens"]),
+        "requested_reasoning_effort": str(requested["reasoning_effort"]),
+        "configured_max_tokens_ceiling": configured_ceiling,
+        "effective_max_tokens": effective_max_tokens,
+        "effective_reasoning_effort": effective_effort,
+        "static_profile_applied": static_profile_applied,
+    }
+
+
+def _complete_node_json(
+    *,
+    model: NPHardNodeModelClient,
+    system: str,
+    prompt: str,
+    profile: Mapping[str, Any],
+) -> ModelResponse:
+    profiled_method = getattr(model, "complete_json_with_profile", None)
+    if callable(profiled_method):
+        return profiled_method(
+            system=system,
+            prompt=prompt,
+            max_tokens=profile["effective_max_tokens"],
+            reasoning_effort=profile["effective_reasoning_effort"],
+        )
+    return model.complete_json(system=system, prompt=prompt)
+
+
 @dataclass(frozen=True)
 class NPHardNodeRequestV1:
     request_id: str
@@ -2227,6 +2474,13 @@ class NPHardNodeRequestV1:
             _fail("authoring_gap_budget_exhausted", "node attempt budget is outside 1..4")
         if not 0 <= self.instance_call_budget_remaining <= NP_HARD_MAX_INSTANCE_CALL_BUDGET:
             _fail("authoring_gap_budget_exhausted", "instance call budget is exhausted")
+        if self.allowed_primitives != _node_allowed_primitives(
+            task=task, node=self.node
+        ):
+            _fail(
+                "candidate_dependency_stale",
+                "node request primitive layers do not match the active capability",
+            )
 
     def to_dict(self, task: NPHardAuthoringTaskV2) -> dict[str, Any]:
         self.validate(task)
@@ -2310,6 +2564,80 @@ def parse_np_hard_node_patch_v1(
     )
 
 
+def _validate_semantic_plan_patch_route(
+    *,
+    request: NPHardNodeRequestV1,
+    patch: NPHardNodePatchV1,
+    semantic_plan: NPHardSemanticPlanV1,
+) -> None:
+    """Reject reference-semantic bodies that ignore their checked plan."""
+
+    capability = request.node.capability
+    if capability not in _REFERENCE_SEMANTIC_CAPABILITIES:
+        return
+    body = patch.replacement_body
+    if "ComplexityReduction.CSP.Formula.satisfies_cons" in body:
+        _fail(
+            "semantic_plan_route_violation",
+            "the checked membership route forbids fixed-list satisfies_cons decomposition",
+        )
+    if re.search(r"\bsatisfies_flatMap(?!_(?:intro|elim))\b", body):
+        _fail(
+            "semantic_plan_route_violation",
+            "call the checked satisfies_flatMap_intro/elim wrapper, not the raw iff",
+        )
+    forbidden_rewrite_terms = (
+        str(request.target_problem["term"]),
+        "ComplexityReduction.Domain.BooleanCSP.cspOf_accepts",
+        semantic_plan.forward.main_constraint_lemma,
+        semantic_plan.forward.complement_constraint_lemma,
+        semantic_plan.reverse.main_constraint_lemma,
+        semantic_plan.reverse.complement_constraint_lemma,
+    )
+    for term in dict.fromkeys(forbidden_rewrite_terms):
+        if re.search(r"\brw\s*\[[^\]]*" + re.escape(term), body, re.DOTALL):
+            _fail(
+                "semantic_plan_route_violation",
+                f"apply checked semantic declaration {term} explicitly; do not rewrite with it",
+            )
+
+    if capability == "reference_semantic_forward":
+        required = (
+            semantic_plan.formula_structure.introduction_lemma,
+            semantic_plan.forward.target_assignment,
+            semantic_plan.forward.literal_value_lemma,
+            semantic_plan.forward.main_constraint_lemma,
+            semantic_plan.forward.complement_constraint_lemma,
+        )
+    else:
+        if re.search(r"\bcases\s+literal\b", body):
+            _fail(
+                "semantic_plan_route_violation",
+                "the checked local literal recovery route forbids `cases literal`",
+            )
+        if re.search(
+            r"\bliteral_eval_positiveKeyAssignment(?!_of_complement)\b", body
+        ):
+            _fail(
+                "semantic_plan_route_violation",
+                "use the checked local literal recovery theorem, not the global theorem",
+            )
+        required = (
+            semantic_plan.formula_structure.elimination_lemma,
+            semantic_plan.reverse.source_assignment,
+            semantic_plan.reverse.main_constraint_lemma,
+            semantic_plan.reverse.complement_constraint_lemma,
+            semantic_plan.reverse.literal_recovery_lemma,
+        )
+    missing = tuple(name for name in required if name not in body)
+    if missing:
+        _fail(
+            "semantic_plan_route_violation",
+            "replacement body omitted checked semantic-plan declarations: "
+            + ", ".join(missing),
+        )
+
+
 @dataclass(frozen=True)
 class AcceptedCapabilityNodeV1:
     node_id: str
@@ -2367,7 +2695,9 @@ class NPHardGapCheckpointV1:
         if tuple(dict(node) for node in self.remaining_gap_graph) != expected_remaining:
             _fail("checkpoint_tampered", "checkpoint remaining graph drifted")
         maximum = required_model_call_budget(
-            gap_node_count=len(task.gap_nodes), attempt_budget=task.attempt_budget
+            gap_node_count=len(task.gap_nodes),
+            attempt_budget=task.attempt_budget,
+            semantic_planner=semantic_plan_required(task),
         )
         if not 0 <= self.total_model_calls <= maximum:
             _fail("checkpoint_tampered", "checkpoint model-call total is invalid")
@@ -2444,6 +2774,7 @@ class NPHardGapRuntimeResultV1:
     worker_results: tuple[Mapping[str, Any], ...]
     resumed: bool
     model_call_ledger: tuple[Mapping[str, Any], ...] = ()
+    rollback_events: tuple[Mapping[str, Any], ...] = ()
     deletion_audits: tuple[Mapping[str, Any], ...] = ()
     authoritative_evidence: tuple[Mapping[str, Any], ...] = ()
     authoritative_dependency_bindings: tuple[tuple[str, str], ...] = ()
@@ -2466,6 +2797,7 @@ class NPHardGapRuntimeResultV1:
             "worker_results": [dict(item) for item in self.worker_results],
             "resumed": self.resumed,
             "model_call_ledger": [dict(item) for item in self.model_call_ledger],
+            "rollback_events": [dict(item) for item in self.rollback_events],
             "deletion_audits": [dict(item) for item in self.deletion_audits],
             "authoritative_evidence": [
                 dict(item) for item in self.authoritative_evidence
@@ -2564,22 +2896,27 @@ def _node_request(
 ) -> NPHardNodeRequestV1:
     effective_call_budget = (
         required_model_call_budget(
-            gap_node_count=len(task.gap_nodes), attempt_budget=task.attempt_budget
+            gap_node_count=len(task.gap_nodes),
+            attempt_budget=task.attempt_budget,
+            semantic_planner=semantic_plan_required(task),
         )
         if instance_call_budget is None
         else instance_call_budget
     )
+    active_node = task.gap_nodes[node_ordinal - 1]
     arguments = {
         "task_request_id": task.request_id,
         "node_ordinal": node_ordinal,
-        "node": task.gap_nodes[node_ordinal - 1],
+        "node": active_node,
         "source_problem": task.source_problem.to_dict(),
         "target_problem": task.target_problem.to_dict(),
         "required_direction": task.required_direction,
         "dependency_snapshot": dependency_snapshot,
         "accepted_nodes": tuple((node.node_id, node.body_sha256) for node in accepted),
         "allowed_imports": task.allowed_imports,
-        "allowed_primitives": task.allowed_primitives,
+        "allowed_primitives": _node_allowed_primitives(
+            task=task, node=active_node
+        ),
         "node_attempt_budget": min(task.attempt_budget, 4),
         "instance_call_budget_remaining": effective_call_budget - total_model_calls,
     }
@@ -2611,12 +2948,104 @@ def _public_source_module(relative_name: str) -> str | None:
     return ".".join(module_parts)
 
 
+_PROMPT_SOURCE_DECLARATION_RE = re.compile(
+    r"^\s*(?:@\[[^\]]+\]\s*)?(?:noncomputable\s+)?"
+    r"(?:private\s+|protected\s+)?"
+    r"(?:def|abbrev|theorem|lemma|structure|class|instance|inductive)\s+"
+    r"([A-Za-z_][A-Za-z0-9_']*)\b"
+)
+
+
+def _prompt_source_declaration_layer(name: str) -> str:
+    """Classify one public Lean declaration for layer-aware source retrieval."""
+
+    lowered = name.lower()
+    if "code" in lowered:
+        # Semantic reference proofs operate on public meanings, never encoded
+        # representations such as formulaCode or constraintCode.
+        return "direct_tm"
+    if any(
+        token in lowered
+        for token in ("semantic", "satisfies", "satisfiable", "correct", "_eval")
+    ) or lowered == "eval":
+        return "semantic"
+    if any(
+        token in lowered
+        for token in ("tmpolytime", "directtm", "direct_tm", "transport_output")
+    ):
+        return "direct_tm"
+    if any(
+        token in lowered
+        for token in ("executable", "gadget", "constraint", "literal")
+    ):
+        return "construction"
+    return "core"
+
+
+def _filter_source_for_primitive_layers(
+    source: str,
+    *,
+    active_layers: frozenset[str],
+    declaration_layers: Mapping[str, str],
+) -> str:
+    """Remove declaration blocks belonging only to inactive prompt layers."""
+
+    lines = source.splitlines(keepends=True)
+    boundaries: list[int] = []
+    for index, line in enumerate(lines):
+        if _PROMPT_SOURCE_DECLARATION_RE.match(line) or line.lstrip().startswith(
+            "assert_standard_axioms"
+        ):
+            boundaries.append(index)
+    if not boundaries:
+        return source
+    boundaries.append(len(lines))
+    output = lines[: boundaries[0]]
+    for offset, start in enumerate(boundaries[:-1]):
+        end = boundaries[offset + 1]
+        block = lines[start:end]
+        match = _PROMPT_SOURCE_DECLARATION_RE.match(lines[start])
+        keep = True
+        if match is not None:
+            declaration_name = match.group(1)
+            declaration_layer = declaration_layers.get(
+                declaration_name,
+                _prompt_source_declaration_layer(declaration_name),
+            )
+            keep = declaration_layer in active_layers
+            block_text = "".join(block)
+            if (
+                "direct_tm" not in active_layers
+                and re.search(r"(?m)^\s*executableDirectTM\s*:=", block_text)
+            ) or (
+                "semantic" not in active_layers
+                and re.search(r"(?m)^\s*executableCorrect\s*:=", block_text)
+            ):
+                # A record-valued declaration can otherwise smuggle multiple
+                # interfaces through one construction-looking declaration.
+                keep = False
+        else:
+            # Axiom-audit commands only repeat declaration names and add no
+            # authoring information.  Omitting them avoids cross-layer name
+            # leakage from a mixed audit list.
+            keep = False
+        if keep:
+            output.extend(block)
+        else:
+            output.append("-- ... inactive primitive layer omitted ...\n")
+    return "".join(output)
+
+
 def _source_excerpt(
     source: str, *, query_tokens: frozenset[str], limit: int
 ) -> str:
     """Return bounded, line-preserving source context around relevant declarations."""
 
-    if len(source) <= limit:
+    # Small endpoint files are useful in full.  Larger support/scaffold files
+    # must still go through declaration retrieval even when they fit below the
+    # per-file cap; otherwise a semantic node receives unrelated direct-TM
+    # declarations merely because both live in the same public module.
+    if len(source) <= min(limit, 4_000):
         return source
     lines = source.splitlines(keepends=True)
     selected = set(range(min(28, len(lines))))
@@ -2662,17 +3091,53 @@ def _node_prompt_public_sources(
 ) -> tuple[dict[str, str], dict[str, Any]]:
     """Retrieve a bounded source view for one active capability node."""
 
+    active_layers = frozenset(_active_primitive_layers(request.node.capability))
+    declaration_layers = {
+        primitive.rsplit(".", 1)[-1]: layer
+        for layer, primitives in task.allowed_primitive_layers
+        for primitive in primitives
+    }
+    layer_sources = {
+        name: _filter_source_for_primitive_layers(
+            source,
+            active_layers=active_layers,
+            declaration_layers=declaration_layers,
+        )
+        for name, source in full_sources.items()
+    }
+
     module_to_name = {
         module: name
-        for name in full_sources
+        for name in layer_sources
         if (module := _public_source_module(name)) is not None
     }
-    source_modules = (task.source_problem.module, task.target_problem.module)
+    reference_stage = request.node.capability in _REFERENCE_STAGE_CAPABILITIES
+    source_modules = (
+        (task.target_problem.module,)
+        if reference_stage
+        else (task.source_problem.module, task.target_problem.module)
+    )
     endpoint_names = tuple(
         dict.fromkeys(
             module_to_name[module]
             for module in source_modules
             if module in module_to_name
+        )
+    )
+    authoring_source_names = frozenset(
+        module_to_name[module]
+        for module in task.allowed_imports
+        if module.endswith(("AuthoringSources", "Scaffold"))
+        and module in module_to_name
+    )
+    endpoint_query = (
+        (task.target_problem.module, task.target_problem.term)
+        if reference_stage
+        else (
+            task.source_problem.module,
+            task.source_problem.term,
+            task.target_problem.module,
+            task.target_problem.term,
         )
     )
     query_text = "\n".join(
@@ -2681,17 +3146,16 @@ def _node_prompt_public_sources(
             request.node.capability,
             request.node.declaration,
             request.node.exact_type,
-            task.source_problem.module,
-            task.source_problem.term,
-            task.target_problem.module,
-            task.target_problem.term,
+            *request.allowed_primitives,
+            _CAPABILITY_GUIDANCE.get(request.node.capability, ""),
+            *endpoint_query,
             *accepted_bodies.values(),
             diagnostic or "",
         )
     )
     query_tokens = set(_prompt_identifier_tokens(query_text))
     for name in endpoint_names:
-        endpoint_source = full_sources[name]
+        endpoint_source = layer_sources[name]
         query_tokens.update(
             _prompt_identifier_tokens(
                 "\n".join(_PROMPT_SOURCE_IMPORT_RE.findall(endpoint_source))
@@ -2702,7 +3166,7 @@ def _node_prompt_public_sources(
     frozen_query_tokens = frozenset(query_tokens)
 
     import_graph: dict[str, tuple[str, ...]] = {}
-    for name, source in full_sources.items():
+    for name, source in layer_sources.items():
         import_graph[name] = tuple(
             module_to_name[module]
             for module in _PROMPT_SOURCE_IMPORT_RE.findall(source)
@@ -2721,7 +3185,7 @@ def _node_prompt_public_sources(
             frontier.append(imported_name)
 
     ranked: list[tuple[int, str]] = []
-    for name, source in full_sources.items():
+    for name, source in layer_sources.items():
         path_overlap = len(_prompt_identifier_tokens(name) & frozen_query_tokens)
         signature_text = "\n".join(
             line
@@ -2746,6 +3210,8 @@ def _node_prompt_public_sources(
         score = path_overlap * 1_200 + min(signature_overlap, 30) * 80
         if name in endpoint_names:
             score += 100_000
+        elif name in authoring_source_names:
+            score += 50_000
         elif distance is not None:
             score += max(200, 1_400 - distance * 250)
         if "Benchmark/Hardness/Inputs" in name:
@@ -2754,14 +3220,19 @@ def _node_prompt_public_sources(
 
     selected: dict[str, str] = {}
     source_chars = 0
+    source_character_budget = (
+        NP_HARD_REFERENCE_STAGE_PROMPT_SOURCE_CHAR_BUDGET
+        if reference_stage
+        else NP_HARD_NODE_PROMPT_SOURCE_CHAR_BUDGET
+    )
     for _, name in sorted(ranked, key=lambda item: (-item[0], item[1])):
         if len(selected) >= NP_HARD_NODE_PROMPT_MAX_SOURCE_FILES:
             break
-        remaining = NP_HARD_NODE_PROMPT_SOURCE_CHAR_BUDGET - source_chars
+        remaining = source_character_budget - source_chars
         if remaining < 256:
             break
         excerpt = _source_excerpt(
-            full_sources[name],
+            layer_sources[name],
             query_tokens=frozen_query_tokens,
             limit=min(NP_HARD_NODE_PROMPT_SOURCE_EXCERPT_CHARS, remaining),
         )
@@ -2772,11 +3243,11 @@ def _node_prompt_public_sources(
 
     context = {
         "mode": "node_retrieved_source_excerpts_v1",
-        "source_character_budget": NP_HARD_NODE_PROMPT_SOURCE_CHAR_BUDGET,
+        "source_character_budget": source_character_budget,
         "source_file_limit": NP_HARD_NODE_PROMPT_MAX_SOURCE_FILES,
         "included_files": list(selected),
         "included_file_count": len(selected),
-        "omitted_file_count": len(full_sources) - len(selected),
+        "omitted_file_count": len(layer_sources) - len(selected),
         "included_source_characters": source_chars,
         "complete_dependency_hashes_remain_in_node_request": True,
     }
@@ -2792,6 +3263,8 @@ def _node_prompt_dependency_bodies(
     by_id = {node.node_id: node for node in task.gap_nodes}
     required_ids: set[str] = set()
     frontier = list(request.node.depends_on)
+    if request.node.capability in _REFERENCE_SEMANTIC_CAPABILITIES:
+        frontier.extend(SEMANTIC_PLAN_CONSTRUCTION_NODE_IDS)
     while frontier:
         node_id = frontier.pop()
         if node_id in required_ids:
@@ -2821,6 +3294,7 @@ def build_np_hard_node_prompt_v1(
     request: NPHardNodeRequestV1,
     accepted_bodies: Mapping[str, str],
     diagnostic: str | None,
+    semantic_plan: NPHardSemanticPlanV1 | None = None,
 ) -> str:
     request.validate(task)
     full_public_sources = {
@@ -2851,23 +3325,44 @@ def build_np_hard_node_prompt_v1(
     recommended_body = _recommended_first_body(
         task=task, request=request, public_sources=full_public_sources
     )
+    reference_semantic = request.node.capability in _REFERENCE_SEMANTIC_CAPABILITIES
+    node_request_payload = (
+        _reference_semantic_prompt_node_request(request=request)
+        if reference_semantic
+        else request.to_dict(task)
+    )
+    if reference_semantic:
+        public_source_context = {
+            **public_source_context,
+            "complete_dependency_hashes_remain_in_node_request": False,
+        }
     payload = {
         "schema_version": NP_HARD_NODE_REQUEST_SCHEMA_V1,
         "objective": "prove_np_hard",
         "task_class": task.task_class,
-        "node_request": request.to_dict(task),
+        "node_request": node_request_payload,
         "accepted_dependency_bodies": prompt_dependency_bodies,
         "public_sources": public_sources,
         "public_source_context": public_source_context,
         "observed_capability_term": observed_term,
-        "lean_api_reference": _POLY_PROG_API_REFERENCE,
+        "active_primitive_layers": list(
+            _active_primitive_layers(request.node.capability)
+        ),
+        "allowed_primitive_exact_types": {
+            primitive: dict(task.allowed_primitive_exact_types)[primitive]
+            for primitive in request.allowed_primitives
+        },
         "active_capability_guidance": _CAPABILITY_GUIDANCE.get(
             request.node.capability,
             "Follow the exact active node type and its accepted dependencies.",
         ),
-        "proof_recipes": _selected_proof_recipes(
-            capability=request.node.capability,
-            public_sources=full_public_sources,
+        "proof_recipes": (
+            {}
+            if reference_semantic
+            else _selected_proof_recipes(
+                capability=request.node.capability,
+                public_sources=full_public_sources,
+            )
         ),
         "recommended_first_body": recommended_body,
         "lean_diagnostic": (
@@ -2890,6 +3385,15 @@ def build_np_hard_node_prompt_v1(
             "replacement_body": recommended_body or "Lean term body only",
         },
     }
+    if request.node.capability in _REFERENCE_SEMANTIC_CAPABILITIES:
+        if semantic_plan is None:
+            _fail(
+                "candidate_dependency_stale",
+                "reference semantic node requires one checked shared semantic plan",
+            )
+        payload["semantic_plan"] = split_semantic_plan_for_node(
+            semantic_plan, capability=request.node.capability
+        )
     if getattr(task, "task_class", None) in _TMKARP_ADMISSION_TASK_CLASSES:
         payload["tmkarp_admission_source"] = _tmkarp_admission_source(task)
     if getattr(task, "task_class", None) == "typed_tmkarp_dependent_composition_dag":
@@ -3050,7 +3554,8 @@ def _candidate_source(
             "noncomputable def authoredHubResult :\n"
             "    ComplexityReduction.Protocol.TypedNPHardResultV1 authoredHubRequest :=\n"
             "  by_np_hard_resolver\n\n"
-            "def authoredTargetRequest : ComplexityReduction.Protocol.TypedNPHardRequestV1 :=\n"
+            "noncomputable def authoredTargetRequest : "
+            "ComplexityReduction.Protocol.TypedNPHardRequestV1 :=\n"
             f"  {{ problem := {task.target_problem.term} }}\n\n"
             "noncomputable def authoredTargetResult :\n"
             "    ComplexityReduction.Protocol.TypedNPHardResultV1 authoredTargetRequest :=\n"
@@ -3118,7 +3623,9 @@ class NPHardGapRuntimeV1:
                     "orchestrator final program disagrees with the explicit DAG node",
                 )
         minimum_call_budget = required_model_call_budget(
-            gap_node_count=len(task.gap_nodes), attempt_budget=task.attempt_budget
+            gap_node_count=len(task.gap_nodes),
+            attempt_budget=task.attempt_budget,
+            semantic_planner=semantic_plan_required(task),
         )
         self.instance_call_budget = (
             minimum_call_budget
@@ -3222,6 +3729,7 @@ class NPHardGapRuntimeV1:
         attempt: int,
         prompt_file: Path,
         response_file: Path,
+        reasoning_profile: Mapping[str, Any],
     ) -> dict[str, Any]:
         return {
             "request_id": request.request_id,
@@ -3239,6 +3747,7 @@ class NPHardGapRuntimeV1:
             "response_sha256": sha256_id(response.content),
             "response_file": str(response_file),
             "error": response.error,
+            "node_reasoning_profile": dict(reasoning_profile),
         }
 
     def run(
@@ -3285,8 +3794,50 @@ class NPHardGapRuntimeV1:
             per_node_calls = {}
             ledger = []
 
+        semantic_plan: NPHardSemanticPlanV1 | None = None
+        semantic_plan_path = self.output_root / "semantic-plan" / "plan.json"
+        if semantic_plan_required(self.task) and semantic_plan_path.is_file():
+            snapshot = semantic_plan_dependency_snapshot(
+                task=self.task, accepted_bodies=bodies
+            )
+            semantic_plan = parse_semantic_plan(
+                content=semantic_plan_path.read_text(encoding="utf-8"),
+                task=self.task,
+                snapshot=snapshot,
+            )
+
         worker_results: list[Mapping[str, Any]] = []
         fresh_rediscoveries = 0
+        rollback_events = [
+            dict(item["rollback_event"])
+            for item in ledger
+            if isinstance(item.get("rollback_event"), Mapping)
+        ]
+        rollback_used = bool(rollback_events)
+        rejected_body_hashes: dict[str, set[str]] = {}
+        for event in rollback_events:
+            for rolled_back in event.get("rolled_back_nodes", ()):
+                if not isinstance(rolled_back, Mapping):
+                    continue
+                node_id = rolled_back.get("node_id")
+                body_sha256 = rolled_back.get("body_sha256")
+                if (
+                    node_id == event.get("rollback_to_node_id")
+                    and isinstance(body_sha256, str)
+                ):
+                    rejected_body_hashes.setdefault(node_id, set()).add(body_sha256)
+            rollback_to_node_id = event.get("rollback_to_node_id")
+            if isinstance(rollback_to_node_id, str):
+                for record in ledger:
+                    body_sha256 = record.get("candidate_body_sha256")
+                    if (
+                        record.get("node_id") == rollback_to_node_id
+                        and isinstance(body_sha256, str)
+                    ):
+                        rejected_body_hashes.setdefault(
+                            rollback_to_node_id, set()
+                        ).add(body_sha256)
+        pending_diagnostics: dict[str, str] = {}
 
         # A resume is not trusted until a fresh process reconstructs every
         # previously accepted cumulative publication.
@@ -3329,10 +3880,132 @@ class NPHardGapRuntimeV1:
         final_result: NPHardAuthoringResultV2 | None = None
         deletion_audits: list[Mapping[str, Any]] = []
         try:
-            for ordinal in range(len(accepted) + 1, len(self.task.gap_nodes) + 1):
+            ordinal = len(accepted) + 1
+            while ordinal <= len(self.task.gap_nodes):
                 if max_new_nodes is not None and new_nodes >= max_new_nodes:
                     break
                 node = self.task.gap_nodes[ordinal - 1]
+                if (
+                    node.capability in _REFERENCE_SEMANTIC_CAPABILITIES
+                    and semantic_plan_required(self.task)
+                    and semantic_plan is None
+                ):
+                    if total_model_calls + 2 > self.instance_call_budget:
+                        failure_code = "authoring_gap_budget_exhausted"
+                        failure_message = "semantic planner has no reserved call budget"
+                        break
+                    planner_result = run_semantic_planner(
+                        root=self.root,
+                        output_dir=self.output_root / "semantic-plan",
+                        task=self.task,
+                        accepted_bodies=bodies,
+                        model=self.model,
+                        timeout_seconds=self.timeout_seconds,
+                    )
+                    commands.extend(planner_result.commands)
+                    total_model_calls += planner_result.model_calls
+                    per_node_calls[SEMANTIC_PLAN_NODE_ID] = (
+                        per_node_calls.get(SEMANTIC_PLAN_NODE_ID, 0)
+                        + planner_result.model_calls
+                    )
+                    ledger.extend(dict(item) for item in planner_result.ledger)
+                    if planner_result.plan is None:
+                        failure_code = (
+                            planner_result.failure_code or "semantic_plan_failed"
+                        )
+                        failure_message = (
+                            planner_result.failure_message
+                            or "semantic planner did not produce a checked plan"
+                        )
+                        rollback_node_id = (
+                            planner_result.construction_mismatch_node_id
+                            if failure_code
+                            == "semantic_plan_construction_mismatch"
+                            else None
+                        )
+                        rollback_index = next(
+                            (
+                                index
+                                for index, item in enumerate(accepted)
+                                if item.node_id == rollback_node_id
+                            ),
+                            None,
+                        )
+                        if rollback_index is not None and not rollback_used:
+                            rolled_back_nodes = [
+                                {
+                                    "node_id": item.node_id,
+                                    "declaration": item.declaration,
+                                    "body_sha256": item.body_sha256,
+                                }
+                                for item in accepted[rollback_index:]
+                            ]
+                            event = {
+                                "triggered_by_node_id": SEMANTIC_PLAN_NODE_ID,
+                                "failure_code": failure_code,
+                                "rollback_to_node_id": rollback_node_id,
+                                "rolled_back_nodes": rolled_back_nodes,
+                                "diagnostic": failure_message[
+                                    :NP_HARD_NODE_PROMPT_DIAGNOSTIC_CHARS
+                                ],
+                            }
+                            rollback_events.append(event)
+                            ledger[-1]["rollback_event"] = event
+                            rejected_roots = rejected_body_hashes.setdefault(
+                                rollback_node_id, set()
+                            )
+                            for record in ledger:
+                                body_sha256 = record.get("candidate_body_sha256")
+                                if (
+                                    record.get("node_id") == rollback_node_id
+                                    and isinstance(body_sha256, str)
+                                ):
+                                    rejected_roots.add(body_sha256)
+                            pending_diagnostics[rollback_node_id] = (
+                                "The checked semantic planner proved that this accepted "
+                                "construction does not match any permitted semantic interface. "
+                                "Return a materially different construction. Planner diagnostic:\n"
+                                f"{failure_message}"
+                            )[:NP_HARD_NODE_PROMPT_DIAGNOSTIC_CHARS]
+                            removed = accepted[rollback_index:]
+                            accepted[:] = accepted[:rollback_index]
+                            for item in removed:
+                                bodies.pop(item.declaration, None)
+                            semantic_plan = None
+                            rollback_used = True
+                            failure_code = None
+                            failure_message = None
+                            checkpoint = self._checkpoint(
+                                accepted=tuple(accepted),
+                                total_model_calls=total_model_calls,
+                                per_node_calls=per_node_calls,
+                                ledger=tuple(ledger),
+                            )
+                            checkpoint_path, checkpoint_file_hash = (
+                                self._write_checkpoint(checkpoint)
+                            )
+                            ordinal = rollback_index + 1
+                            continue
+                        checkpoint = self._checkpoint(
+                            accepted=tuple(accepted),
+                            total_model_calls=total_model_calls,
+                            per_node_calls=per_node_calls,
+                            ledger=tuple(ledger),
+                        )
+                        checkpoint_path, checkpoint_file_hash = self._write_checkpoint(
+                            checkpoint
+                        )
+                        break
+                    semantic_plan = planner_result.plan
+                    checkpoint = self._checkpoint(
+                        accepted=tuple(accepted),
+                        total_model_calls=total_model_calls,
+                        per_node_calls=per_node_calls,
+                        ledger=tuple(ledger),
+                    )
+                    checkpoint_path, checkpoint_file_hash = self._write_checkpoint(
+                        checkpoint
+                    )
                 dependency_snapshot = _current_dependency_snapshot(
                     root=self.root,
                     task=self.task,
@@ -3347,8 +4020,8 @@ class NPHardGapRuntimeV1:
                     total_model_calls=total_model_calls,
                     instance_call_budget=self.instance_call_budget,
                 )
-                diagnostic: str | None = None
-                seen_bodies: set[str] = set()
+                diagnostic = pending_diagnostics.pop(node.node_id, None)
+                seen_bodies = set(rejected_body_hashes.get(node.node_id, ()))
                 accepted_this_node = False
                 for attempt in range(1, request.node_attempt_budget + 1):
                     if total_model_calls >= self.instance_call_budget:
@@ -3364,13 +4037,29 @@ class NPHardGapRuntimeV1:
                         request=request,
                         accepted_bodies=accepted_bodies,
                         diagnostic=diagnostic,
+                        semantic_plan=semantic_plan,
                     )
-                    response = self.model.complete_json(
-                        system=NP_HARD_NODE_SYSTEM_PROMPT, prompt=prompt
+                    reasoning_profile = _node_reasoning_profile(
+                        model=self.model,
+                        capability=node.capability,
+                    )
+                    response = _complete_node_json(
+                        model=self.model,
+                        system=(
+                            NP_HARD_REFERENCE_SEMANTIC_SYSTEM_PROMPT
+                            if node.capability in _REFERENCE_SEMANTIC_CAPABILITIES
+                            else NP_HARD_NODE_SYSTEM_PROMPT
+                        ),
+                        prompt=prompt,
+                        profile=reasoning_profile,
                     )
                     model_root = self.output_root / "model-calls"
-                    prompt_path = model_root / f"{node.node_id}-attempt-{attempt:02d}-prompt.json"
-                    response_path = model_root / f"{node.node_id}-attempt-{attempt:02d}-response.json"
+                    call_number = total_model_calls + 1
+                    call_stem = (
+                        f"call-{call_number:03d}-{node.node_id}-attempt-{attempt:02d}"
+                    )
+                    prompt_path = model_root / f"{call_stem}-prompt.json"
+                    response_path = model_root / f"{call_stem}-response.json"
                     prompt_path.parent.mkdir(parents=True, exist_ok=True)
                     prompt_path.write_text(prompt, encoding="utf-8")
                     _write_json(
@@ -3385,6 +4074,7 @@ class NPHardGapRuntimeV1:
                             "finish_reason": response.finish_reason,
                             "content": response.content,
                             "error": response.error,
+                            "node_reasoning_profile": reasoning_profile,
                         },
                     )
                     if not response.called:
@@ -3401,9 +4091,24 @@ class NPHardGapRuntimeV1:
                             attempt=attempt,
                             prompt_file=prompt_path,
                             response_file=response_path,
+                            reasoning_profile=reasoning_profile,
                         )
                     )
                     if not response.ok:
+                        if response.status_code == 200:
+                            failure_code = "model_output_exhausted"
+                            failure_message = response.error or (
+                                "model returned no complete JSON body"
+                            )
+                            diagnostic = (
+                                f"{failure_message}. Return the exact response_template with a "
+                                "single-node replacement_body and no explanations or markdown. "
+                                "The audited static capability profile remains "
+                                f"max_tokens={reasoning_profile['effective_max_tokens']}, "
+                                "reasoning_effort="
+                                f"{reasoning_profile['effective_reasoning_effort']}."
+                            )
+                            continue
                         failure_code = "model_provider_unavailable"
                         failure_message = response.error or "model request failed"
                         break
@@ -3411,17 +4116,38 @@ class NPHardGapRuntimeV1:
                         patch = parse_np_hard_node_patch_v1(
                             content=response.content, request=request, task=self.task
                         )
+                        if node.capability in _REFERENCE_SEMANTIC_CAPABILITIES:
+                            if semantic_plan is None:
+                                _fail(
+                                    "candidate_dependency_stale",
+                                    "reference semantic node lost its checked semantic plan",
+                                )
+                            _validate_semantic_plan_patch_route(
+                                request=request,
+                                patch=patch,
+                                semantic_plan=semantic_plan,
+                            )
                     except NPHardGapRuntimeError as error:
                         failure_code = error.code
                         failure_message = error.message
-                        if error.code == "invalid_np_hard_gap_runtime_schema":
+                        if error.code in {
+                            "invalid_np_hard_gap_runtime_schema",
+                            "semantic_plan_route_violation",
+                        }:
                             diagnostic = (
-                                "Response envelope was invalid. Return the exact response_template "
-                                f"with every frozen field unchanged: {error.message}"
+                                (
+                                    "Response envelope was invalid. Return the exact response_template "
+                                    "with every frozen field unchanged: "
+                                    if error.code == "invalid_np_hard_gap_runtime_schema"
+                                    else "The replacement body violated the checked semantic plan. "
+                                    "Return a materially different body that follows semantic_plan: "
+                                )
+                                + error.message
                             )
                             continue
                         break
                     body_hash = sha256_id(patch.replacement_body)
+                    ledger[-1]["candidate_body_sha256"] = body_hash
                     if body_hash in seen_bodies:
                         failure_code = "authoring_gap_budget_exhausted"
                         failure_message = "model repeated the same rejected candidate"
@@ -3548,6 +4274,7 @@ class NPHardGapRuntimeV1:
                     failure_code = None
                     failure_message = None
                     new_nodes += 1
+                    ordinal += 1
                     break
                 if not accepted_this_node:
                     break
@@ -3670,6 +4397,7 @@ class NPHardGapRuntimeV1:
                 worker_results=tuple(worker_results),
                 resumed=resumed,
                 model_call_ledger=tuple(ledger),
+                rollback_events=tuple(rollback_events),
                 deletion_audits=tuple(deletion_audits),
                 authoritative_evidence=tuple(authoritative_evidence),
                 authoritative_dependency_bindings=(

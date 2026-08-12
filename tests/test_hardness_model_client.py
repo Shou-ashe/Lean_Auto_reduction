@@ -112,6 +112,57 @@ def test_http_200_length_exhaustion_is_a_called_empty_response() -> None:
     assert response.error == "empty assistant content (finish_reason=length)"
 
 
+def test_profiled_request_respects_token_ceiling_and_overrides_effort() -> None:
+    class Response:
+        status = 200
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *args: object) -> None:
+            return None
+
+        def read(self, limit: int) -> bytes:
+            del limit
+            return json.dumps(
+                {
+                    "choices": [
+                        {
+                            "message": {"content": '{"ok":true}'},
+                            "finish_reason": "stop",
+                        }
+                    ],
+                    "usage": {"completion_tokens": 8},
+                }
+            ).encode()
+
+    captured: dict[str, object] = {}
+
+    def open_request(request, timeout):
+        captured.update(json.loads(request.data.decode()))
+        captured["timeout"] = timeout
+        return Response()
+
+    client = DeepSeekClient(
+        DeepSeekConfig(
+            api_key="test-key",
+            max_tokens=20_000,
+            reasoning_effort="low",
+            max_retries=0,
+        )
+    )
+    with patch("urllib.request.urlopen", side_effect=open_request):
+        response = client.complete_json_with_profile(
+            system="system",
+            prompt="prompt",
+            max_tokens=32_000,
+            reasoning_effort="max",
+        )
+    assert response.ok is True
+    assert captured["max_tokens"] == 20_000
+    assert captured["reasoning_effort"] == "max"
+
+
 def test_http_200_empty_content_is_retried_before_failing_the_model_turn() -> None:
     class Response:
         status = 200

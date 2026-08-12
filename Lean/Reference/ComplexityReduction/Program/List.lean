@@ -15,6 +15,37 @@ remaining direct structural atoms without creating route-local machines.
 -/
 
 namespace ComplexityReduction
+
+namespace TMPolyTimeMap
+
+/-! ### Generic direct-TM list assembly -/
+
+/-- Build the empty encoded list, independently of the input. -/
+theorem list_nil (X Y : EncodedType) :
+    TMPolyTimeMap X (EncodedType.list Y) (fun _ : X.Carrier => []) :=
+  TMPolyTimeMap.const X (EncodedType.list Y) []
+
+/-- Put the output of any direct-TM map into a one-element encoded list. -/
+theorem list_singleton_of {X Y : EncodedType} {value : X.Carrier → Y.Carrier}
+    (hValue : TMPolyTimeMap X Y value) :
+    TMPolyTimeMap X (EncodedType.list Y) (fun input => [value input]) := by
+  have output := TMPolyTimeMap.comp (TMPolyTimeMap.list_singleton Y) hValue
+  simpa [Function.comp] using output
+
+/-- Prepend one direct-TM-produced value to one direct-TM-produced encoded list. -/
+theorem list_cons_of {X Y : EncodedType}
+    {head : X.Carrier → Y.Carrier}
+    {tail : X.Carrier → List Y.Carrier}
+    (hHead : TMPolyTimeMap X Y head)
+    (hTail : TMPolyTimeMap X (EncodedType.list Y) tail) :
+    TMPolyTimeMap X (EncodedType.list Y)
+      (fun input => head input :: tail input) := by
+  have pair := TMPolyTimeMap.prod_mk hHead hTail
+  have output := TMPolyTimeMap.comp (TMPolyTimeMap.list_cons Y) pair
+  simpa [Function.comp] using output
+
+end TMPolyTimeMap
+
 namespace Program
 
 open Encoding

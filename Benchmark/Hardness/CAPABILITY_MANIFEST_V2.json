@@ -122,12 +122,12 @@
   "required_model_profile": {
     "base_url": "https://api.deepseek.com",
     "max_retries": 0,
-    "max_tokens": 64000,
+    "max_tokens": 128000,
     "model": "deepseek-v4-flash",
     "provider": "DeepSeek",
-    "reasoning_effort": "low",
+    "reasoning_effort": "max",
     "temperature": 0.0,
-    "timeout_seconds": 300
+    "timeout_seconds": 1800
   },
   "reserve_policy": {
     "intermediate_case_threshold": 0.1,

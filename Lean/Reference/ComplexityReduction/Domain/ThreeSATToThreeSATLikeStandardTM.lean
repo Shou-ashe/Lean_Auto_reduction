@@ -10,6 +10,7 @@ import ComplexityReduction.Annotations.Attributes
 import ComplexityReduction.Certificate.Reduction
 import ComplexityReduction.Presentation.ThreeSATLike
 import ComplexityReduction.Problems.Karp21.Satisfiability
+import ComplexityReduction.Program.EncodingTransport
 import ComplexityReduction.Program.List
 import ComplexityReduction.Protocol.ComponentResolver
 
@@ -251,19 +252,10 @@ theorem variableCode_tmPolyTime :
   have hFirst := literalVar_tmPolyTime firstLiteral firstLiteral_tmPolyTime
   have hSecond := literalVar_tmPolyTime secondLiteral secondLiteral_tmPolyTime
   have hThird := literalVar_tmPolyTime thirdLiteral thirdLiteral_tmPolyTime
-  have hEmpty : ComplexityReduction.TMPolyTimeMap clauseEncoding natList
-      (fun _ : SAT.Clause => []) :=
-    ComplexityReduction.TMPolyTimeMap.const clauseEncoding natList []
-  have hThirdTail := ComplexityReduction.TMPolyTimeMap.prod_mk hThird hEmpty
-  have hThirdList := ComplexityReduction.TMPolyTimeMap.comp
-    (ComplexityReduction.TMPolyTimeMap.list_cons ComplexityReduction.EncodedType.nat) hThirdTail
-  have hSecondTail := ComplexityReduction.TMPolyTimeMap.prod_mk hSecond hThirdList
-  have hSecondList := ComplexityReduction.TMPolyTimeMap.comp
-    (ComplexityReduction.TMPolyTimeMap.list_cons ComplexityReduction.EncodedType.nat) hSecondTail
-  have hFirstTail := ComplexityReduction.TMPolyTimeMap.prod_mk hFirst hSecondList
-  have hOut := ComplexityReduction.TMPolyTimeMap.comp
-    (ComplexityReduction.TMPolyTimeMap.list_cons ComplexityReduction.EncodedType.nat) hFirstTail
-  simpa [variableCode, Function.comp, natList] using hOut
+  have hOut := ComplexityReduction.TMPolyTimeMap.list_cons_of hFirst
+    (ComplexityReduction.TMPolyTimeMap.list_cons_of hSecond
+      (ComplexityReduction.TMPolyTimeMap.list_singleton_of hThird))
+  simpa [variableCode, natList] using hOut
 
 /-- The raw encoder payload for a nonempty clause's one constraint. -/
 def nonemptyClauseCode (clause : SAT.Clause) : List (Nat × List Nat) :=
@@ -276,9 +268,7 @@ theorem nonemptyClauseCode_tmPolyTime :
       Presentation.ThreeSATLike.formulaCodeEncodedType nonemptyClauseCode := by
   have hConstraint := ComplexityReduction.TMPolyTimeMap.prod_mk
     polarityCode_tmPolyTime variableCode_tmPolyTime
-  have hOut := ComplexityReduction.TMPolyTimeMap.comp
-    (ComplexityReduction.TMPolyTimeMap.list_singleton
-      Presentation.ThreeSATLike.constraintCodeEncodedType) hConstraint
+  have hOut := ComplexityReduction.TMPolyTimeMap.list_singleton_of hConstraint
   simpa [nonemptyClauseCode, Presentation.ThreeSATLike.formulaCodeEncodedType,
     Presentation.ThreeSATLike.constraintCodeEncodedType, Function.comp] using hOut
 
@@ -329,16 +319,14 @@ private theorem clauseCode_tmPolyTime :
 /-- The clause executable's direct-TM witness uses the same selected formula encoder. -/
 theorem clauseExecutable_tmPolyTime :
     ComplexityReduction.TMPolyTimeMap clauseEncoding targetEncoding clauseExecutable := by
-  rcases clauseCode_tmPolyTime with ⟨codeTM⟩
-  refine ⟨
-    { tm := codeTM.tm
-      inputAlphabet := codeTM.inputAlphabet
-      outputAlphabet := codeTM.outputAlphabet
-      time := codeTM.time
-      outputsFun := by
-        intro clause
-        simpa [targetEncoding, Presentation.ThreeSATLike.encodedType, clauseCode] using
-          codeTM.outputsFun clause }⟩
+  apply ComplexityReduction.TMPolyTimeMap.transport_output
+    (Z := targetEncoding) (targetOutput := clauseExecutable)
+    clauseCode_tmPolyTime (Equiv.refl _)
+  intro clause
+  rw [show clauseCode clause =
+    Presentation.ThreeSATLike.formulaCode (clauseExecutable clause) from rfl]
+  change _ = List.map (fun symbol => symbol) _
+  exact (List.map_id _).symm
 
 private theorem sourceClauses_tmPolyTime :
     ComplexityReduction.TMPolyTimeMap sourceEncoding
@@ -385,16 +373,13 @@ payload through the target presentation's explicit encoder.
 -/
 theorem executable_tmPolyTime :
     ComplexityReduction.TMPolyTimeMap sourceEncoding targetEncoding executable := by
-  rcases executableCode_tmPolyTime with ⟨codeTM⟩
-  refine ⟨
-    { tm := codeTM.tm
-      inputAlphabet := codeTM.inputAlphabet
-      outputAlphabet := codeTM.outputAlphabet
-      time := codeTM.time
-      outputsFun := by
-        intro formula
-        simpa [targetEncoding, Presentation.ThreeSATLike.encodedType,
-          executableCode_eq_formulaCode] using codeTM.outputsFun formula }⟩
+  apply ComplexityReduction.TMPolyTimeMap.transport_output
+    (Z := targetEncoding) (targetOutput := executable)
+    executableCode_tmPolyTime (Equiv.refl _)
+  intro formula
+  rw [executableCode_eq_formulaCode formula]
+  change _ = List.map (fun symbol => symbol) _
+  exact (List.map_id _).symm
 
 /-- The canonical structured bundled-3SAT hub. -/
 abbrev sourceProblem : PresentedProblem :=

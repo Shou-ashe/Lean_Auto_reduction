@@ -44,11 +44,11 @@ def _formal_config(**changes: object) -> DeepSeekConfig:
         api_key="test-only-key",
         base_url="https://api.deepseek.com",
         model="deepseek-v4-flash",
-        timeout_seconds=300,
+        timeout_seconds=1_800,
         temperature=0.0,
-        max_tokens=64_000,
+        max_tokens=128_000,
         max_retries=0,
-        reasoning_effort="low",
+        reasoning_effort="max",
     )
     return replace(config, **changes)
 
@@ -118,7 +118,7 @@ def test_case_selection_is_explicit_and_lane_bounded() -> None:
     assert raised.value.code == "invalid_capability_split"
 
 
-def test_formal_profile_requires_the_current_64k_model_contract() -> None:
+def test_formal_profile_requires_the_current_128k_max_model_contract() -> None:
     _validate_formal_profile(
         deepseek=_formal_config(), required_profile=FORMAL_PUBLIC_PROFILE
     )

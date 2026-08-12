@@ -21,7 +21,7 @@ from typing import Any, Mapping
 DEFAULT_BASE_URL = "https://api.deepseek.com"
 DEFAULT_MODEL = "deepseek-v4-flash"
 DEFAULT_MAX_TOKENS = 4096
-MAX_RESPONSE_BYTES = 2_000_000
+MAX_RESPONSE_BYTES = 16_000_000
 JSON_FENCE_RE = re.compile(r"```(?:json)?\s*(.*?)```", re.DOTALL | re.IGNORECASE)
 
 
@@ -217,6 +217,38 @@ class DeepSeekClient:
         self.config = config
 
     def complete_json(self, *, system: str, prompt: str) -> ModelResponse:
+        return self._complete_json(
+            system=system,
+            prompt=prompt,
+            max_tokens=self.config.max_tokens,
+            reasoning_effort=self.config.reasoning_effort,
+        )
+
+    def complete_json_with_profile(
+        self,
+        *,
+        system: str,
+        prompt: str,
+        max_tokens: int,
+        reasoning_effort: str | None,
+    ) -> ModelResponse:
+        """Run one request under a node-local profile within the configured ceiling."""
+
+        return self._complete_json(
+            system=system,
+            prompt=prompt,
+            max_tokens=min(max_tokens, self.config.max_tokens),
+            reasoning_effort=reasoning_effort,
+        )
+
+    def _complete_json(
+        self,
+        *,
+        system: str,
+        prompt: str,
+        max_tokens: int,
+        reasoning_effort: str | None,
+    ) -> ModelResponse:
         started = time.monotonic()
         if not self.config.api_key:
             return ModelResponse(
@@ -251,10 +283,10 @@ class DeepSeekClient:
             "temperature": self.config.temperature,
             "stream": False,
             "response_format": {"type": "json_object"},
-            "max_tokens": self.config.max_tokens,
+            "max_tokens": max_tokens,
         }
-        if self.config.reasoning_effort:
-            payload["reasoning_effort"] = self.config.reasoning_effort
+        if reasoning_effort:
+            payload["reasoning_effort"] = reasoning_effort
         attempts = 0
         last_error: str | None = None
         last_status: int | None = None

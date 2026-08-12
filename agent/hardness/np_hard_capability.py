@@ -44,7 +44,13 @@ from .np_hard_orchestrator import (
     NPHardProofResultV2,
 )
 from .np_hard_production import (
+    FORMAL_BASE_URL,
     FORMAL_MAX_TOKENS,
+    FORMAL_MODEL,
+    FORMAL_PROVIDER,
+    FORMAL_REASONING_EFFORT,
+    FORMAL_TEMPERATURE,
+    FORMAL_TIMEOUT_SECONDS,
     PUBLIC_STATUSES,
     is_formal_np_hard_qualification_config,
     public_np_hard_status,
@@ -196,18 +202,24 @@ MODEL_PROFILE_FIELDS = frozenset(
     }
 )
 FORMAL_PUBLIC_PROFILE = {
+    "provider": FORMAL_PROVIDER,
+    "base_url": FORMAL_BASE_URL,
+    "model": FORMAL_MODEL,
+    "timeout_seconds": FORMAL_TIMEOUT_SECONDS,
+    "temperature": FORMAL_TEMPERATURE,
+    "max_tokens": FORMAL_MAX_TOKENS,
+    "max_retries": 0,
+    "reasoning_effort": FORMAL_REASONING_EFFORT,
+}
+LEGACY_FORMAL_PUBLIC_PROFILE = {
     "provider": "DeepSeek",
     "base_url": "https://api.deepseek.com",
     "model": "deepseek-v4-flash",
     "timeout_seconds": 300,
     "temperature": 0.0,
-    "max_tokens": FORMAL_MAX_TOKENS,
+    "max_tokens": 16_000,
     "max_retries": 0,
     "reasoning_effort": "low",
-}
-LEGACY_FORMAL_PUBLIC_PROFILE = {
-    **FORMAL_PUBLIC_PROFILE,
-    "max_tokens": 16_000,
 }
 MANIFEST_FIELDS_V1 = frozenset(
     {

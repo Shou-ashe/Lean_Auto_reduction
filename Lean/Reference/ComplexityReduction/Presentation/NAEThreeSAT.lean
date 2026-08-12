@@ -75,6 +75,12 @@ def Satisfiable (formula : Formula) : Prop :=
     Satisfies ([] : Formula) assignment := by
   simp [Satisfies]
 
+@[simp] theorem satisfies_cons (clause : Clause) (formula : Formula)
+    (assignment : SAT.Assignment) :
+    Satisfies (clause :: formula) assignment ↔
+      clause.Satisfies assignment ∧ Satisfies formula assignment := by
+  simp [Satisfies]
+
 @[simp] theorem satisfies_append (left right : Formula) (assignment : SAT.Assignment) :
     Satisfies (left ++ right) assignment ↔
       Satisfies left assignment ∧ Satisfies right assignment := by
