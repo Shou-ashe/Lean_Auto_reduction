@@ -4,10 +4,11 @@ from __future__ import annotations
 
 import json
 import re
-from dataclasses import dataclass, replace
+from dataclasses import asdict, dataclass, replace
 from pathlib import Path
 from typing import Any, Mapping, Protocol
 
+from .lean_diagnostic_coach import coach_lean_diagnostic_text
 from .lean_runner import run_command
 from .model_client import ModelResponse, extract_json_object
 from .models import CommandResult, sha256_id
@@ -28,6 +29,116 @@ SEMANTIC_PLAN_CONSTRUCTION_NODE_IDS = (
     "reference-executable",
     "reduction-executable",
 )
+
+_NAE3_SCAFFOLD_MODULE = (
+    "ComplexityReduction.Agent.Hardness.BooleanCSPReductionScaffold"
+)
+_NAE4_SCAFFOLD_MODULE = (
+    "ComplexityReduction.Agent.Hardness.BooleanCSPNAE4ReductionScaffold"
+)
+_NAE5_SCAFFOLD_MODULE = (
+    "ComplexityReduction.Agent.Hardness.BooleanCSPNAE5ReductionScaffold"
+)
+
+
+@dataclass(frozen=True)
+class SemanticPlanFamilyProfileV1:
+    """Family-specific public interface of one Boolean-CSP reference scaffold."""
+
+    scaffold_module: str
+    scaffold_file: str
+    constraint_constructor: str
+    clause_constraint_constructor: str
+    satisfies_lemma: str
+    main_constraint_lemma: str
+    complement_lemmas: tuple[str, ...]
+    default_complement_lemma: str
+    target_assignment: str
+    literal_value_lemma: str
+    source_assignment: str
+    literal_recovery_lemma: str
+    constraint_code_tm: str
+    payload_tm: str
+    ingress_executable: str
+    ingress_correct: str
+    repeat_tm_note: str
+
+
+_BOOLEAN_CSP_FAMILY_PROFILES: tuple[SemanticPlanFamilyProfileV1, ...] = (
+    SemanticPlanFamilyProfileV1(
+        scaffold_module=_NAE3_SCAFFOLD_MODULE,
+        scaffold_file="BooleanCSPReductionScaffold.lean",
+        constraint_constructor="ternaryConstraint",
+        clause_constraint_constructor="ternaryConstraint",
+        satisfies_lemma="ternaryConstraint_satisfies_iff",
+        main_constraint_lemma="ternaryConstraint_satisfies_iff",
+        complement_lemmas=(
+            "ternaryConstraint_repeat_satisfies_iff",
+            "ternaryConstraint_repeat_first_satisfies_iff",
+            "ternaryConstraint_repeat_second_satisfies_iff",
+        ),
+        default_complement_lemma="ternaryConstraint_repeat_satisfies_iff",
+        target_assignment="literalAssignment",
+        literal_value_lemma="literalAssignment_literalKey",
+        source_assignment="positiveKeyAssignment",
+        literal_recovery_lemma="literal_eval_positiveKeyAssignment_of_complement",
+        constraint_code_tm="ternaryConstraintCode_tmPolyTime",
+        payload_tm="constraintPayload_tmPolyTime",
+        ingress_executable="threeSATToNAEThreeSATIngress.executable",
+        ingress_correct="threeSATToNAEThreeSATIngress.executableCorrect",
+        repeat_tm_note="ternaryConstraintCode_tmPolyTime",
+    ),
+    SemanticPlanFamilyProfileV1(
+        scaffold_module=_NAE4_SCAFFOLD_MODULE,
+        scaffold_file="BooleanCSPNAE4ReductionScaffold.lean",
+        constraint_constructor="quaternaryConstraint",
+        clause_constraint_constructor="clauseConstraint",
+        satisfies_lemma="quaternaryConstraint_satisfies_iff",
+        main_constraint_lemma="clauseConstraint_satisfies_iff",
+        complement_lemmas=("quaternaryConstraint_repeat_satisfies_iff",),
+        default_complement_lemma="quaternaryConstraint_repeat_satisfies_iff",
+        target_assignment="literalAssignment",
+        literal_value_lemma="literalAssignment_literalKey",
+        source_assignment="positiveKeyAssignment",
+        literal_recovery_lemma="literal_eval_positiveKeyAssignment_of_complement",
+        constraint_code_tm="quaternaryConstraintCode_tmPolyTime",
+        payload_tm="constraintPayload_tmPolyTime",
+        ingress_executable="threeSATToNAEThreeSATIngress.executable",
+        ingress_correct="threeSATToNAEThreeSATIngress.executableCorrect",
+        repeat_tm_note="quaternaryConstraintCode_tmPolyTime",
+    ),
+    SemanticPlanFamilyProfileV1(
+        scaffold_module=_NAE5_SCAFFOLD_MODULE,
+        scaffold_file="BooleanCSPNAE5ReductionScaffold.lean",
+        constraint_constructor="pentaryConstraint",
+        clause_constraint_constructor="clauseConstraint",
+        satisfies_lemma="pentaryConstraint_satisfies_iff",
+        main_constraint_lemma="clauseConstraint_satisfies_iff",
+        complement_lemmas=("pentaryConstraint_repeat_satisfies_iff",),
+        default_complement_lemma="pentaryConstraint_repeat_satisfies_iff",
+        target_assignment="literalAssignment",
+        literal_value_lemma="literalAssignment_literalKey",
+        source_assignment="positiveKeyAssignment",
+        literal_recovery_lemma="literal_eval_positiveKeyAssignment_of_complement",
+        constraint_code_tm="pentaryConstraintCode_tmPolyTime",
+        payload_tm="constraintPayload_tmPolyTime",
+        ingress_executable="threeSATToNAEThreeSATIngress.executable",
+        ingress_correct="threeSATToNAEThreeSATIngress.executableCorrect",
+        repeat_tm_note="pentaryConstraintCode_tmPolyTime",
+    ),
+)
+
+_BOOLEAN_CSP_FAMILY_PROFILES_BY_MODULE = {
+    profile.scaffold_module: profile for profile in _BOOLEAN_CSP_FAMILY_PROFILES
+}
+
+
+def _family_profile(task: NPHardAuthoringTaskV2) -> SemanticPlanFamilyProfileV1:
+    for module in task.allowed_imports:
+        profile = _BOOLEAN_CSP_FAMILY_PROFILES_BY_MODULE.get(module)
+        if profile is not None:
+            return profile
+    return _BOOLEAN_CSP_FAMILY_PROFILES[0]
 SEMANTIC_PLAN_FORWARD_OBLIGATION_COUNT = 5
 SEMANTIC_PLAN_FORBIDDEN_REFERENCES = (
     "TMPolyTimeMap",
@@ -45,11 +156,13 @@ return a Lean proof or markdown.  Every declaration-valued field must copy one
 exact declaration from the supplied catalog.  The ten ordered obligations are
 Lean proposition types: entries 1-5 are forward, entries 6-10 are reverse.
 Use formula_satisfaction_by_membership for both block methods; do not manually
-decompose a fixed-length constraint list.  Your response's seven top-level
+decompose a fixed-length constraint list.  Your response's eight top-level
 keys must be exactly schema_version, dependency_fingerprint,
-formula_structure, forward, reverse, language_conversion, and
-ordered_obligations.  Never echo planner_context, declaration_catalog,
-accepted_construction_bodies, exact_goals, or the surrounding request.
+formula_structure, forward, reverse, language_conversion,
+ordered_obligations, and final_bridge.  The final_bridge fields are frozen by
+the output template: copy them unchanged.  Never echo planner_context,
+declaration_catalog, accepted_construction_bodies, exact_goals, or the
+surrounding request.
 """
 
 
@@ -154,10 +267,11 @@ def _declaration_catalog(task: NPHardAuthoringTaskV2) -> dict[str, str]:
 
 
 def _source_snippets(root: Path, task: NPHardAuthoringTaskV2) -> dict[str, str]:
+    profile = _family_profile(task)
     wanted = (
         task.target_problem.module.rsplit(".", 1)[-1] + ".lean",
         "Common.lean",
-        "BooleanCSPReductionScaffold.lean",
+        profile.scaffold_file,
         "Formula.lean",
         "NAEThreeSAT.lean",
         "BooleanCSP.lean",
@@ -217,7 +331,8 @@ def build_semantic_planner_prompt(
         for node_id in SEMANTIC_PLAN_CONSTRUCTION_NODE_IDS
     }
     target_gamma = task.target_problem.module + ".gamma"
-    scaffold = "ComplexityReduction.Agent.Hardness.BooleanCSPReductionScaffold"
+    profile = _family_profile(task)
+    scaffold = profile.scaffold_module
     payload = {
         "output_contract": {
             "top_level_keys_exactly": [
@@ -228,6 +343,7 @@ def build_semantic_planner_prompt(
                 "reverse",
                 "language_conversion",
                 "ordered_obligations",
+                "final_bridge",
             ],
             "return_only_output_template_object": True,
             "do_not_echo_planner_context": True,
@@ -242,21 +358,30 @@ def build_semantic_planner_prompt(
                 "elimination_lemma": "ComplexityReduction.CSP.Formula.satisfies_flatMap_elim",
             },
             "forward": {
-                "target_assignment": scaffold + ".literalAssignment",
-                "literal_value_lemma": scaffold + ".literalAssignment_literalKey",
-                "main_constraint_lemma": scaffold + ".ternaryConstraint_satisfies_iff",
+                "target_assignment": scaffold + "." + profile.target_assignment,
+                "literal_value_lemma": scaffold
+                + "."
+                + profile.literal_value_lemma,
+                "main_constraint_lemma": scaffold
+                + "."
+                + profile.main_constraint_lemma,
                 "complement_constraint_lemma": scaffold
-                + ".ternaryConstraint_repeat_satisfies_iff",
+                + "."
+                + profile.default_complement_lemma,
                 "block_proof_method": "formula_satisfaction_by_membership",
             },
             "reverse": {
-                "source_assignment": scaffold + ".positiveKeyAssignment",
+                "source_assignment": scaffold + "." + profile.source_assignment,
                 "block_extraction_method": "formula_satisfaction_by_membership",
-                "main_constraint_lemma": scaffold + ".ternaryConstraint_satisfies_iff",
+                "main_constraint_lemma": scaffold
+                + "."
+                + profile.main_constraint_lemma,
                 "complement_constraint_lemma": scaffold
-                + ".ternaryConstraint_repeat_satisfies_iff",
+                + "."
+                + profile.default_complement_lemma,
                 "literal_recovery_lemma": scaffold
-                + ".literal_eval_positiveKeyAssignment_of_complement",
+                + "."
+                + profile.literal_recovery_lemma,
             },
             "language_conversion": {
                 "method": "unfold_and_simpa",
@@ -278,6 +403,36 @@ def build_semantic_planner_prompt(
                 "exact reverse Lean proposition 4",
                 "exact reverse Lean proposition 5",
             ],
+            "final_bridge": {
+                "source_bridge_theorem": scaffold
+                + "."
+                + profile.ingress_correct,
+                "reference_formula_builder": scaffold
+                + "."
+                + profile.ingress_executable,
+                "application_form": "apply_bridge_at_input_then_project",
+                "program_run_declaration": _node(
+                    task, "program-run-coherence"
+                ).declaration,
+                "synthesized_executable_declaration": _node(
+                    task, "reduction-executable"
+                ).declaration,
+                "reference_executable_declaration": _node(
+                    task, "reference-executable"
+                ).declaration,
+                "reference_forward_declaration": _node(
+                    task, "reference-semantic-forward"
+                ).declaration,
+                "reference_reverse_declaration": _node(
+                    task, "reference-semantic-reverse"
+                ).declaration,
+                "semantic_forward_declaration": _node(
+                    task, "semantic-forward"
+                ).declaration,
+                "semantic_reverse_declaration": _node(
+                    task, "semantic-reverse"
+                ).declaration,
+            },
         },
         "planner_context": {
             "accepted_construction_bodies": accepted,
@@ -304,7 +459,11 @@ def build_semantic_planner_prompt(
                 "reverse_entries": [6, 7, 8, 9, 10],
                 "required_form": "exact Lean proposition types",
             },
-            "lean_diagnostic": diagnostic[:8_000] if diagnostic else None,
+            "lean_diagnostic": (
+                coach_lean_diagnostic_text(diagnostic, max_coached_chars=8_000)
+                if diagnostic
+                else None
+            ),
         },
     }
     serialized = json.dumps(payload, ensure_ascii=True, indent=2, sort_keys=True)
@@ -338,6 +497,8 @@ def validate_semantic_plan(
         plan.reverse.main_constraint_lemma,
         plan.reverse.complement_constraint_lemma,
         plan.reverse.literal_recovery_lemma,
+        plan.final_bridge.source_bridge_theorem,
+        plan.final_bridge.reference_formula_builder,
     )
     missing = [name for name in theorem_names if name not in catalog]
     if missing:
@@ -355,24 +516,72 @@ def validate_semantic_plan(
         raise NPHardAuthoringContractError(
             "candidate_dependency_stale", "semantic plan changed the block declaration"
         )
-    scaffold = "ComplexityReduction.Agent.Hardness.BooleanCSPReductionScaffold"
+    profile = _family_profile(task)
+    scaffold = profile.scaffold_module
     exact_fields = {
-        plan.forward.target_assignment: scaffold + ".literalAssignment",
-        plan.forward.literal_value_lemma: scaffold + ".literalAssignment_literalKey",
-        plan.forward.main_constraint_lemma: scaffold + ".ternaryConstraint_satisfies_iff",
-        plan.reverse.source_assignment: scaffold + ".positiveKeyAssignment",
-        plan.reverse.main_constraint_lemma: scaffold + ".ternaryConstraint_satisfies_iff",
+        plan.forward.target_assignment: scaffold
+        + "."
+        + profile.target_assignment,
+        plan.forward.literal_value_lemma: scaffold
+        + "."
+        + profile.literal_value_lemma,
+        plan.forward.main_constraint_lemma: scaffold
+        + "."
+        + profile.main_constraint_lemma,
+        plan.reverse.source_assignment: scaffold
+        + "."
+        + profile.source_assignment,
+        plan.reverse.main_constraint_lemma: scaffold
+        + "."
+        + profile.main_constraint_lemma,
         plan.reverse.literal_recovery_lemma: scaffold
-        + ".literal_eval_positiveKeyAssignment_of_complement",
+        + "."
+        + profile.literal_recovery_lemma,
+        plan.final_bridge.source_bridge_theorem: scaffold
+        + "."
+        + profile.ingress_correct,
+        plan.final_bridge.reference_formula_builder: scaffold
+        + "."
+        + profile.ingress_executable,
+        plan.final_bridge.application_form: "apply_bridge_at_input_then_project",
     }
     if any(observed != expected for observed, expected in exact_fields.items()):
         raise NPHardAuthoringContractError(
             "invalid_semantic_plan_schema", "semantic plan changed a fixed semantic interface"
         )
+    expected_generated_declarations = {
+        plan.final_bridge.program_run_declaration: _node(
+            task, "program-run-coherence"
+        ).declaration,
+        plan.final_bridge.synthesized_executable_declaration: _node(
+            task, "reduction-executable"
+        ).declaration,
+        plan.final_bridge.reference_executable_declaration: _node(
+            task, "reference-executable"
+        ).declaration,
+        plan.final_bridge.reference_forward_declaration: _node(
+            task, "reference-semantic-forward"
+        ).declaration,
+        plan.final_bridge.reference_reverse_declaration: _node(
+            task, "reference-semantic-reverse"
+        ).declaration,
+        plan.final_bridge.semantic_forward_declaration: _node(
+            task, "semantic-forward"
+        ).declaration,
+        plan.final_bridge.semantic_reverse_declaration: _node(
+            task, "semantic-reverse"
+        ).declaration,
+    }
+    if any(
+        observed != expected
+        for observed, expected in expected_generated_declarations.items()
+    ):
+        raise NPHardAuthoringContractError(
+            "candidate_dependency_stale",
+            "semantic plan final bridge does not bind the exact DAG node declarations",
+        )
     repeat_lemmas = {
-        scaffold + ".ternaryConstraint_repeat_satisfies_iff",
-        scaffold + ".ternaryConstraint_repeat_first_satisfies_iff",
-        scaffold + ".ternaryConstraint_repeat_second_satisfies_iff",
+        scaffold + "." + lemma for lemma in profile.complement_lemmas
     }
     if {
         plan.forward.complement_constraint_lemma,
@@ -466,7 +675,7 @@ def _check_source(
     gadget = _node(task, "clause-gadget").declaration.rsplit(".", 1)[-1]
     reference = _node(task, "reference-executable").declaration.rsplit(".", 1)[-1]
     reduction = _node(task, "reduction-executable").declaration.rsplit(".", 1)[-1]
-    scaffold = "ComplexityReduction.Agent.Hardness.BooleanCSPReductionScaffold"
+    scaffold = _family_profile(task).scaffold_module
     target_gamma = task.target_problem.module + ".gamma"
     source = _construction_source(task=task, accepted_bodies=accepted_bodies)
     obligation_checks = (
@@ -564,6 +773,12 @@ example (formula : ComplexityReduction.CSP.Formula {target_gamma}) :
         (show ComplexityReduction.CSP.Formula {scaffold}.gamma from formula) := by
   simpa [{task.target_problem.term}, {", ".join(plan.language_conversion.definitions)}] using
     (ComplexityReduction.Domain.BooleanCSP.cspOf_accepts {target_gamma} formula)
+
+example (input : {task.source_problem.term}.Instance)
+    (hInput : {task.source_problem.term}.accepts input) :
+    ComplexityReduction.NAEThreeSAT.Formula.Satisfiable
+        ({plan.final_bridge.reference_formula_builder} input) :=
+  ({plan.final_bridge.source_bridge_theorem} input).1 hInput
 
 {obligation_checks}
 
@@ -718,6 +933,18 @@ def split_semantic_plan_for_node(
                     plan.ordered_obligations[SEMANTIC_PLAN_FORWARD_OBLIGATION_COUNT:]
                 ),
             },
+        }
+    if capability in {
+        "semantic_forward",
+        "semantic_forward_implication",
+        "semantic_reverse",
+        "semantic_reverse_implication",
+        "semantic_iff",
+        "semantic_iff_implication",
+    }:
+        return {
+            **shared,
+            "final_bridge": asdict(plan.final_bridge),
         }
     return {}
 

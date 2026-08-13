@@ -17,6 +17,7 @@ from pathlib import Path
 from typing import Any, Mapping, Protocol
 
 from .authoring_contract import BANNED_BODY_RE, HardnessContractError
+from .lean_diagnostic_coach import coach_lean_worker_diagnostics
 from .lean_runner import (
     RUNTIME_MODULE,
     assert_generated_source_is_safe,
@@ -207,6 +208,15 @@ _SEMANTIC_REVERSE_CAPABILITIES = frozenset(
 )
 _REFERENCE_SEMANTIC_CAPABILITIES = frozenset(
     {"reference_semantic_forward", "reference_semantic_reverse"}
+)
+_FINAL_SEMANTIC_CAPABILITIES = frozenset(
+    {
+        "semantic_forward",
+        "semantic_forward_implication",
+        "semantic_reverse",
+        "semantic_reverse_implication",
+        "semantic_iff",
+    }
 )
 _REFERENCE_STAGE_CAPABILITIES = frozenset(
     {
@@ -506,7 +516,11 @@ _CAPABILITY_GUIDANCE = {
         "Formula.Satisfies predicate by introducing an arbitrary constraint and "
         "its membership proof, then dispatch that membership to the authored main "
         "or complement constraint; do not unfold the gadget into a fixed-length "
-        "list and do not use CSP.Formula.satisfies_cons. Use the exact selected "
+        "list and do not use CSP.Formula.satisfies_cons. To dispatch a membership "
+        "of the four-constraint gadget list, first `simp [clauseGadget] at "
+        "<membership>` and then split it with "
+        "`rcases <membership> with rfl | rfl | rfl | rfl`; never `rcases` the "
+        "list term itself. Use the exact selected "
         "literal, main-constraint, and repeat-position lemmas from the plan. Lists "
         "do not have a `.Satisfies` field: write fully-qualified Formula.Satisfies "
         "applications. Start with `change CSP.Formula.Satisfiable "
@@ -633,7 +647,170 @@ _CAPABILITY_GUIDANCE["semantic_reverse_implication"] = _CAPABILITY_GUIDANCE[
     "semantic_reverse"
 ]
 
+_FAMILY_GUIDANCE_OVERRIDES: dict[str, dict[str, str]] = {
+    "ComplexityReduction.Agent.Hardness.BooleanCSPNAE4ReductionScaffold": {
+        "clause_constraint": (
+            "Construct only the main padded NAE4 constraint for one source "
+            "clause: BooleanCSPNAE4ReductionScaffold.clauseConstraint "
+            "(literalKey first) (literalKey second) (literalKey third). "
+            "Return one CSP.Constraint, not a Formula/list. Use "
+            "fully-qualified public literalKey and clauseConstraint names "
+            "unless their namespace is opened. Do not add "
+            "complement-consistency constraints in this node."
+        ),
+        "complement_constraint": (
+            "Construct only one reusable polarity-consistency constraint for "
+            "a signed literal: quaternaryConstraint (literalKey literal) "
+            "(literalKey (complementLiteral literal)) (literalKey literal) "
+            "(literalKey literal) forces the literal key and its "
+            "complementLiteral key to take opposite Boolean values using the "
+            "public four-ary NAE relation. Return one CSP.Constraint and use "
+            "fully-qualified public scaffold names."
+        ),
+        "clause_gadget_direct_tm": (
+            "Prove direct TM polynomial time for exactly the accepted clause "
+            "gadget. Start from the stable public scaffold lemmas "
+            "clauseFirst_tmPolyTime, clauseSecond_tmPolyTime, "
+            "clauseThird_tmPolyTime, literalKeyAfter_tmPolyTime, "
+            "complementKeyAfter_tmPolyTime, quaternaryConstraintCode_tmPolyTime, "
+            "and the generic list_singleton_of/list_cons_of constructors. "
+            "First prove the list of encoded constraints direct-TM, then use "
+            "formula_tmPolyTime_of_code with the exact encoder equality. "
+            "quaternaryConstraintCode_tmPolyTime already returns "
+            "constraintCode of the selected four-ary constraint; do not unfold "
+            "it back into the raw pair payload. The function arguments of "
+            "these helpers are inferred from their proof arguments. When "
+            "formula_tmPolyTime_of_code leaves only the pointwise encoder "
+            "equality, finish that argument with `by intro input; rfl` if both "
+            "displayed lists are syntactically identical. Do not rebuild the "
+            "list proof. TMPolyTimeMap.fst and TMPolyTimeMap.snd take two "
+            "EncodedType arguments; do not pass a proof as their second "
+            "argument."
+        ),
+        "reference_semantic_forward": (
+            "Follow the checked semantic_plan exactly; it is a binding proof "
+            "route, not optional advice. Construct its target_assignment "
+            "witness, then call formula_structure.introduction_lemma directly "
+            "to reduce the flatMap goal to one block per source-clause "
+            "membership proof. Prove a block as a Formula.Satisfies predicate "
+            "by introducing an arbitrary constraint and its membership proof, "
+            "then dispatch that membership to the authored main or complement "
+            "constraint; do not unfold the gadget into a fixed-length list and "
+            "do not use CSP.Formula.satisfies_cons. To dispatch a membership of "
+            "the four-constraint gadget list, first `simp [clauseGadget] at "
+            "<membership>` and then split it with `rcases <membership> with "
+            "rfl | rfl | rfl | rfl`; never `rcases` the list term itself. Use "
+            "the exact selected "
+            "literal, main-constraint, and repeat-position lemmas from the "
+            "plan. Lists do not have a `.Satisfies` field: write "
+            "fully-qualified Formula.Satisfies applications. Start with "
+            "`change CSP.Formula.Satisfiable (referenceExecutable formula)`; "
+            "never `rw` the target `problem` or `cspOf_accepts`. For "
+            "constraint semantics, first `change` to the exact clauseConstraint "
+            "Satisfies proposition and then use `(selectedLemma ...).2`; do "
+            "not `rw` a semantic theorem across target/scaffold gamma aliases. "
+            "Normalize the source clause with `Clause.Satisfies` and "
+            "`not_and_or`; the main proof's `simpa` must explicitly include "
+            "the plan's literal_value_lemma. For a complement constraint, "
+            "apply the selected repeat theorem with `.2` and close its "
+            "equality using `simpa [literal_value_lemma, "
+            "complementLiteral_eval]`. Perform the planned language conversion "
+            "only after the pointwise formula proof is complete."
+        ),
+    },
+    "ComplexityReduction.Agent.Hardness.BooleanCSPNAE5ReductionScaffold": {
+        "clause_constraint": (
+            "Construct only the main padded NAE5 constraint for one source "
+            "clause: BooleanCSPNAE5ReductionScaffold.clauseConstraint "
+            "(literalKey first) (literalKey second) (literalKey third). "
+            "Return one CSP.Constraint, not a Formula/list. Use "
+            "fully-qualified public literalKey and clauseConstraint names "
+            "unless their namespace is opened. Do not add "
+            "complement-consistency constraints in this node."
+        ),
+        "complement_constraint": (
+            "Construct only one reusable polarity-consistency constraint for "
+            "a signed literal: pentaryConstraint (literalKey literal) "
+            "(literalKey (complementLiteral literal)) (literalKey literal) "
+            "(literalKey literal) (literalKey literal) forces the literal key "
+            "and its complementLiteral key to take opposite Boolean values "
+            "using the public five-ary NAE relation. Return one CSP.Constraint "
+            "and use fully-qualified public scaffold names."
+        ),
+        "clause_gadget_direct_tm": (
+            "Prove direct TM polynomial time for exactly the accepted clause "
+            "gadget. Start from the stable public scaffold lemmas "
+            "clauseFirst_tmPolyTime, clauseSecond_tmPolyTime, "
+            "clauseThird_tmPolyTime, literalKeyAfter_tmPolyTime, "
+            "complementKeyAfter_tmPolyTime, pentaryConstraintCode_tmPolyTime, "
+            "and the generic list_singleton_of/list_cons_of constructors. "
+            "First prove the list of encoded constraints direct-TM, then use "
+            "formula_tmPolyTime_of_code with the exact encoder equality. "
+            "pentaryConstraintCode_tmPolyTime already returns constraintCode "
+            "of the selected five-ary constraint; do not unfold it back into "
+            "the raw pair payload. The function arguments of these helpers are "
+            "inferred from their proof arguments. When "
+            "formula_tmPolyTime_of_code leaves only the pointwise encoder "
+            "equality, finish that argument with `by intro input; rfl` if both "
+            "displayed lists are syntactically identical. Do not rebuild the "
+            "list proof. TMPolyTimeMap.fst and TMPolyTimeMap.snd take two "
+            "EncodedType arguments; do not pass a proof as their second "
+            "argument."
+        ),
+        "reference_semantic_forward": (
+            "Follow the checked semantic_plan exactly; it is a binding proof "
+            "route, not optional advice. Construct its target_assignment "
+            "witness, then call formula_structure.introduction_lemma directly "
+            "to reduce the flatMap goal to one block per source-clause "
+            "membership proof. Prove a block as a Formula.Satisfies predicate "
+            "by introducing an arbitrary constraint and its membership proof, "
+            "then dispatch that membership to the authored main or complement "
+            "constraint; do not unfold the gadget into a fixed-length list and "
+            "do not use CSP.Formula.satisfies_cons. To dispatch a membership of "
+            "the four-constraint gadget list, first `simp [clauseGadget] at "
+            "<membership>` and then split it with `rcases <membership> with "
+            "rfl | rfl | rfl | rfl`; never `rcases` the list term itself. Use "
+            "the exact selected "
+            "literal, main-constraint, and repeat-position lemmas from the "
+            "plan. Lists do not have a `.Satisfies` field: write "
+            "fully-qualified Formula.Satisfies applications. Start with "
+            "`change CSP.Formula.Satisfiable (referenceExecutable formula)`; "
+            "never `rw` the target `problem` or `cspOf_accepts`. For "
+            "constraint semantics, first `change` to the exact clauseConstraint "
+            "Satisfies proposition and then use `(selectedLemma ...).2`; do "
+            "not `rw` a semantic theorem across target/scaffold gamma aliases. "
+            "Normalize the source clause with `Clause.Satisfies` and "
+            "`not_and_or`; the main proof's `simpa` must explicitly include "
+            "the plan's literal_value_lemma. For a complement constraint, "
+            "apply the selected repeat theorem with `.2` and close its "
+            "equality using `simpa [literal_value_lemma, "
+            "complementLiteral_eval]`. Perform the planned language conversion "
+            "only after the pointwise formula proof is complete."
+        ),
+    },
+}
+
+
+def _active_capability_guidance(
+    task: NPHardAuthoringTaskV2, capability: str
+) -> str:
+    for module in task.allowed_imports:
+        overrides = _FAMILY_GUIDANCE_OVERRIDES.get(module)
+        if overrides is not None and capability in overrides:
+            return overrides[capability]
+    return _CAPABILITY_GUIDANCE.get(
+        capability,
+        "Follow the exact active node type and its accepted dependencies.",
+    )
+
 _PROOF_RECIPES = {
+    "checked_iff_theorem_usage": (
+        "Checked iff theorems have function type: apply the argument first, then "
+        "select a direction with `(theorem x).mp`/`.1` (forward) or "
+        "`(theorem x).mpr`/`.2` (reverse). Never project a bare theorem "
+        "(`theorem.1`), and never `rw` with a checked semantic declaration "
+        "unless the route validator explicitly allows the rewrite."
+    ),
     "definitionally_equal": "`by\n  intro input\n  rfl`",
     "false_tag": (
         "For the detected public false-tag wrapper, prefer this shape exactly: "
@@ -702,7 +879,10 @@ _PROOF_RECIPES = {
 
 
 def _selected_proof_recipes(
-    *, capability: str, public_sources: Mapping[str, str]
+    *,
+    capability: str,
+    public_sources: Mapping[str, str],
+    allowed_primitive_exact_types: Mapping[str, str] | None = None,
 ) -> dict[str, str]:
     """Select a small public-semantics recipe set without consulting gold data."""
 
@@ -711,11 +891,26 @@ def _selected_proof_recipes(
         "composition_order": _PROOF_RECIPES["composition_order"],
         "namespace_rule": _PROOF_RECIPES["namespace_rule"],
     }
+    iff_recipe: dict[str, str] = {}
+    if (
+        allowed_primitive_exact_types
+        and capability in _SEMANTIC_CAPABILITIES
+        and any(
+            "↔" in exact_type
+            for exact_type in allowed_primitive_exact_types.values()
+        )
+    ):
+        iff_recipe = {
+            "checked_iff_theorem_usage": _PROOF_RECIPES[
+                "checked_iff_theorem_usage"
+            ]
+        }
     if capability in _DEPENDENT_COMPOSED_SEMANTIC_IFF_CAPABILITIES:
         return {
             "dependent_semantic_trans": _PROOF_RECIPES[
                 "dependent_semantic_trans"
             ],
+            **iff_recipe,
             **common,
         }
     if capability in _TMKARP_SEMANTIC_IFF_CAPABILITIES:
@@ -723,6 +918,7 @@ def _selected_proof_recipes(
             "tmkarp_semantic_correct": _PROOF_RECIPES[
                 "tmkarp_semantic_correct"
             ],
+            **iff_recipe,
             **common,
         }
     if capability in _SEMANTIC_IFF_CAPABILITIES:
@@ -737,12 +933,13 @@ def _selected_proof_recipes(
             recipes["semantic_iff_from_implications"] = _PROOF_RECIPES[
                 "semantic_iff_from_implications"
             ]
-        return {**recipes, **common}
+        return {**recipes, **iff_recipe, **common}
     if capability in _SEMANTIC_FORWARD_CAPABILITIES:
         return {
             "semantic_forward_identity": _PROOF_RECIPES[
                 "semantic_forward_identity"
             ],
+            **iff_recipe,
             **common,
         }
     if capability in _SEMANTIC_REVERSE_CAPABILITIES:
@@ -750,6 +947,7 @@ def _selected_proof_recipes(
             "semantic_reverse_identity": _PROOF_RECIPES[
                 "semantic_reverse_identity"
             ],
+            **iff_recipe,
             **common,
         }
     if capability == "representation_adapter":
@@ -1517,10 +1715,42 @@ def _recommended_first_body(
     task: NPHardAuthoringTaskV2,
     request: NPHardNodeRequestV1,
     public_sources: Mapping[str, str],
+    semantic_plan: NPHardSemanticPlanV1 | None = None,
 ) -> str | None:
     """Build a public-shape candidate; the model must still submit the bound patch."""
 
     capability = request.node.capability
+    if semantic_plan is not None and capability in _FINAL_SEMANTIC_CAPABILITIES:
+        bridge = semantic_plan.final_bridge
+        target = task.target_problem.term
+        if capability in _SEMANTIC_FORWARD_CAPABILITIES:
+            return (
+                "fun input hInput => by\n"
+                f"  have hBridge := ({bridge.source_bridge_theorem} input).1 hInput\n"
+                f"  have hCSP := {bridge.reference_forward_declaration} "
+                f"({bridge.reference_formula_builder} input) hBridge\n"
+                f"  rw [{bridge.program_run_declaration} input]\n"
+                f"  change {target}.accepts ({bridge.reference_executable_declaration} "
+                f"({bridge.reference_formula_builder} input))\n"
+                "  exact hCSP\n"
+            )
+        if capability in _SEMANTIC_REVERSE_CAPABILITIES:
+            return (
+                "fun input hTarget => by\n"
+                f"  rw [{bridge.program_run_declaration} input] at hTarget\n"
+                f"  have hRef := {bridge.reference_reverse_declaration} "
+                f"({bridge.reference_formula_builder} input) (by\n"
+                f"    change {target}.accepts ({bridge.reference_executable_declaration} "
+                f"({bridge.reference_formula_builder} input))\n"
+                "    exact hTarget)\n"
+                f"  exact ({bridge.source_bridge_theorem} input).2 hRef\n"
+            )
+        return (
+            "fun input =>\n"
+            "  Iff.intro\n"
+            f"    ({bridge.semantic_forward_declaration} input)\n"
+            f"    ({bridge.semantic_reverse_declaration} input)\n"
+        )
     dependency_nodes = tuple(
         node for node in task.gap_nodes if node.node_id in request.node.depends_on
     )
@@ -2570,21 +2800,79 @@ def _validate_semantic_plan_patch_route(
     patch: NPHardNodePatchV1,
     semantic_plan: NPHardSemanticPlanV1,
 ) -> None:
-    """Reject reference-semantic bodies that ignore their checked plan."""
+    """Reject semantic bodies that ignore their checked plan.
+
+    Every violated rule is collected into one diagnostic so the model can
+    repair the body in a single retry instead of whack-a-moling one rule
+    at a time across the attempt budget.  Final source-to-target nodes are
+    bound to the checked ``final_bridge`` splice recorded by the plan.
+    """
 
     capability = request.node.capability
+    body = patch.replacement_body
+    problems: list[str] = []
+    bridge = semantic_plan.final_bridge
+    if capability in _FINAL_SEMANTIC_CAPABILITIES:
+        bare_projection = re.compile(
+            re.escape(bridge.source_bridge_theorem)
+            + r"\s*\)\s*\.(?:1|2|mp|mpr)\b"
+        )
+        if capability in _SEMANTIC_FORWARD_CAPABILITIES:
+            required = (
+                bridge.source_bridge_theorem,
+                bridge.reference_formula_builder,
+                bridge.program_run_declaration,
+                bridge.reference_forward_declaration,
+            )
+        elif capability in _SEMANTIC_REVERSE_CAPABILITIES:
+            required = (
+                bridge.source_bridge_theorem,
+                bridge.reference_formula_builder,
+                bridge.program_run_declaration,
+                bridge.reference_reverse_declaration,
+            )
+        else:
+            required = (
+                bridge.semantic_forward_declaration,
+                bridge.semantic_reverse_declaration,
+            )
+        if re.search(
+            r"\brw\s*\[[^\]]*" + re.escape(bridge.source_bridge_theorem),
+            body,
+            re.DOTALL,
+        ):
+            problems.append(
+                f"apply checked semantic declaration {bridge.source_bridge_theorem} "
+                "explicitly; do not rewrite with it"
+            )
+        if bare_projection.search(body):
+            problems.append(
+                "the checked bridge theorem has function type: apply it to the "
+                "input first, then project with `.1`/`.2` or `.mp`/`.mpr`. "
+                "Never project the bare theorem."
+            )
+        missing = tuple(name for name in required if name not in body)
+        if missing:
+            problems.append(
+                "replacement body omitted checked semantic-plan declarations: "
+                + ", ".join(missing)
+            )
+        if problems:
+            _fail(
+                "semantic_plan_route_violation",
+                "replacement body violated the checked semantic plan:\n- "
+                + "\n- ".join(problems),
+            )
+        return
     if capability not in _REFERENCE_SEMANTIC_CAPABILITIES:
         return
-    body = patch.replacement_body
     if "ComplexityReduction.CSP.Formula.satisfies_cons" in body:
-        _fail(
-            "semantic_plan_route_violation",
-            "the checked membership route forbids fixed-list satisfies_cons decomposition",
+        problems.append(
+            "the checked membership route forbids fixed-list satisfies_cons decomposition"
         )
     if re.search(r"\bsatisfies_flatMap(?!_(?:intro|elim))\b", body):
-        _fail(
-            "semantic_plan_route_violation",
-            "call the checked satisfies_flatMap_intro/elim wrapper, not the raw iff",
+        problems.append(
+            "call the checked satisfies_flatMap_intro/elim wrapper, not the raw iff"
         )
     forbidden_rewrite_terms = (
         str(request.target_problem["term"]),
@@ -2596,9 +2884,8 @@ def _validate_semantic_plan_patch_route(
     )
     for term in dict.fromkeys(forbidden_rewrite_terms):
         if re.search(r"\brw\s*\[[^\]]*" + re.escape(term), body, re.DOTALL):
-            _fail(
-                "semantic_plan_route_violation",
-                f"apply checked semantic declaration {term} explicitly; do not rewrite with it",
+            problems.append(
+                f"apply checked semantic declaration {term} explicitly; do not rewrite with it"
             )
 
     if capability == "reference_semantic_forward":
@@ -2611,16 +2898,14 @@ def _validate_semantic_plan_patch_route(
         )
     else:
         if re.search(r"\bcases\s+literal\b", body):
-            _fail(
-                "semantic_plan_route_violation",
-                "the checked local literal recovery route forbids `cases literal`",
+            problems.append(
+                "the checked local literal recovery route forbids `cases literal`"
             )
         if re.search(
             r"\bliteral_eval_positiveKeyAssignment(?!_of_complement)\b", body
         ):
-            _fail(
-                "semantic_plan_route_violation",
-                "use the checked local literal recovery theorem, not the global theorem",
+            problems.append(
+                "use the checked local literal recovery theorem, not the global theorem"
             )
         required = (
             semantic_plan.formula_structure.elimination_lemma,
@@ -2631,10 +2916,15 @@ def _validate_semantic_plan_patch_route(
         )
     missing = tuple(name for name in required if name not in body)
     if missing:
+        problems.append(
+            "replacement body omitted checked semantic-plan declarations: "
+            + ", ".join(missing)
+        )
+    if problems:
         _fail(
             "semantic_plan_route_violation",
-            "replacement body omitted checked semantic-plan declarations: "
-            + ", ".join(missing),
+            "replacement body violated the checked semantic plan:\n- "
+            + "\n- ".join(problems),
         )
 
 
@@ -3323,15 +3613,19 @@ def build_np_hard_node_prompt_v1(
     )
     observed_term = _observed_capability_term(task=task, node=request.node)
     recommended_body = _recommended_first_body(
-        task=task, request=request, public_sources=full_public_sources
+        task=task,
+        request=request,
+        public_sources=full_public_sources,
+        semantic_plan=semantic_plan,
     )
     reference_semantic = request.node.capability in _REFERENCE_SEMANTIC_CAPABILITIES
+    final_semantic = request.node.capability in _FINAL_SEMANTIC_CAPABILITIES
     node_request_payload = (
         _reference_semantic_prompt_node_request(request=request)
         if reference_semantic
         else request.to_dict(task)
     )
-    if reference_semantic:
+    if reference_semantic or (final_semantic and semantic_plan is not None):
         public_source_context = {
             **public_source_context,
             "complete_dependency_hashes_remain_in_node_request": False,
@@ -3352,9 +3646,8 @@ def build_np_hard_node_prompt_v1(
             primitive: dict(task.allowed_primitive_exact_types)[primitive]
             for primitive in request.allowed_primitives
         },
-        "active_capability_guidance": _CAPABILITY_GUIDANCE.get(
-            request.node.capability,
-            "Follow the exact active node type and its accepted dependencies.",
+        "active_capability_guidance": _active_capability_guidance(
+            task, request.node.capability
         ),
         "proof_recipes": (
             {}
@@ -3362,6 +3655,9 @@ def build_np_hard_node_prompt_v1(
             else _selected_proof_recipes(
                 capability=request.node.capability,
                 public_sources=full_public_sources,
+                allowed_primitive_exact_types=dict(
+                    task.allowed_primitive_exact_types
+                ),
             )
         ),
         "recommended_first_body": recommended_body,
@@ -3391,6 +3687,10 @@ def build_np_hard_node_prompt_v1(
                 "candidate_dependency_stale",
                 "reference semantic node requires one checked shared semantic plan",
             )
+        payload["semantic_plan"] = split_semantic_plan_for_node(
+            semantic_plan, capability=request.node.capability
+        )
+    elif final_semantic and semantic_plan is not None:
         payload["semantic_plan"] = split_semantic_plan_for_node(
             semantic_plan, capability=request.node.capability
         )
@@ -4127,6 +4427,15 @@ class NPHardGapRuntimeV1:
                                 patch=patch,
                                 semantic_plan=semantic_plan,
                             )
+                        elif (
+                            node.capability in _FINAL_SEMANTIC_CAPABILITIES
+                            and semantic_plan is not None
+                        ):
+                            _validate_semantic_plan_patch_route(
+                                request=request,
+                                patch=patch,
+                                semantic_plan=semantic_plan,
+                            )
                     except NPHardGapRuntimeError as error:
                         failure_code = error.code
                         failure_message = error.message
@@ -4203,10 +4512,9 @@ class NPHardGapRuntimeV1:
                         break
                     worker_results.append(worker.to_dict())
                     if not worker.verified:
-                        diagnostic = "\n".join(
-                            str(item.get("message", "Lean rejected candidate"))
-                            for item in worker.diagnostics
-                        )[:8_000]
+                        diagnostic = coach_lean_worker_diagnostics(
+                            worker.diagnostics, max_coached_chars=8_000
+                        )
                         failure_code = (
                             "semantic_proof_failed"
                             if node.capability in _SEMANTIC_CAPABILITIES

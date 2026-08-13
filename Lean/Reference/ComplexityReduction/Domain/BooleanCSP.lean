@@ -5,4 +5,11 @@ import ComplexityReduction.Domain.BooleanCSP.Classes
 import ComplexityReduction.Domain.BooleanCSP.GammaClassDecider
 import ComplexityReduction.Domain.BooleanCSP.PAlgorithms.ZeroOneValid
 import ComplexityReduction.Domain.BooleanCSP.PAlgorithms.Horn
+import ComplexityReduction.Domain.BooleanCSP.PAlgorithms.DualHorn
+import ComplexityReduction.Domain.BooleanCSP.PAlgorithms.Bijunctive
+import ComplexityReduction.Domain.BooleanCSP.PAlgorithms.Affine
+import ComplexityReduction.Domain.BooleanCSP.PAlgorithms.Tractable
+import ComplexityReduction.Domain.BooleanCSP.Hardness.Cores
+import ComplexityReduction.Domain.BooleanCSP.Hardness.PPDefinability
+import ComplexityReduction.Domain.BooleanCSP.Hardness.ExpressivePower
 import ComplexityReduction.Protocol.InP

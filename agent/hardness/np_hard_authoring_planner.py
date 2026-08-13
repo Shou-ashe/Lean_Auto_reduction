@@ -181,10 +181,8 @@ _BOOLEAN_CSP_NAE3_SEMANTIC_PRIMITIVES = (
     + ".literal_eval_positiveKeyAssignment",
     _BOOLEAN_CSP_NAE3_AUTHORING_SCAFFOLD_MODULE
     + ".literal_eval_positiveKeyAssignment_of_complement",
-    _BOOLEAN_CSP_NAE3_AUTHORING_SCAFFOLD_MODULE
-    + ".tripleTuple",
-    _BOOLEAN_CSP_NAE3_AUTHORING_SCAFFOLD_MODULE
-    + ".notAllEqual3Rel_holds_triple_iff",
+    "ComplexityReduction.CSP.StandardRelations.tripleTuple",
+    "ComplexityReduction.CSP.StandardRelations.notAllEqual3Rel_holds_triple_iff",
     _BOOLEAN_CSP_NAE3_AUTHORING_SCAFFOLD_MODULE
     + ".ternaryConstraint_satisfies_iff",
     _BOOLEAN_CSP_NAE3_AUTHORING_SCAFFOLD_MODULE
@@ -224,26 +222,180 @@ _BOOLEAN_CSP_NAE3_SCAFFOLD_PRIMITIVES = (
     *_BOOLEAN_CSP_NAE3_SEMANTIC_PRIMITIVES,
 )
 
+_BOOLEAN_CSP_NAE4_AUTHORING_SCAFFOLD_MODULE = (
+    "ComplexityReduction.Agent.Hardness.BooleanCSPNAE4ReductionScaffold"
+)
+_BOOLEAN_CSP_NAE5_AUTHORING_SCAFFOLD_MODULE = (
+    "ComplexityReduction.Agent.Hardness.BooleanCSPNAE5ReductionScaffold"
+)
+
+_BOOLEAN_CSP_SHARED_DIRECT_TM_PRIMITIVES = (
+    "ComplexityReduction.TMPolyTimeMap.list_nil",
+    "ComplexityReduction.TMPolyTimeMap.list_singleton_of",
+    "ComplexityReduction.TMPolyTimeMap.list_cons_of",
+    "ComplexityReduction.TMPolyTimeMap.transport_output",
+    "ComplexityReduction.TMPolyTimeMap.comp",
+    "ComplexityReduction.TMPolyTimeMap.prod_mk",
+    "ComplexityReduction.TMPolyTimeMap.fst",
+    "ComplexityReduction.TMPolyTimeMap.snd",
+    "ComplexityReduction.TMPolyTimeMap.list_map",
+    "ComplexityReduction.Program.listFlatten_tmPolyTime",
+    "ComplexityReduction.Presentation.FiniteDomainCSPTable.formula_tmPolyTime_of_code",
+)
+
+_BOOLEAN_CSP_SHARED_SEMANTIC_HEAD_PRIMITIVES = (
+    "ComplexityReduction.SAT.Literal.eval",
+    "ComplexityReduction.SAT.Literal.positive",
+    "ComplexityReduction.SAT.Literal.negative",
+    "ComplexityReduction.SAT.Literal.eval_positive",
+    "ComplexityReduction.SAT.Literal.eval_negative",
+    "ComplexityReduction.SAT.Clause.negate",
+    "ComplexityReduction.SAT.Clause.negate_eval_true_iff",
+)
+
+_BOOLEAN_CSP_SHARED_SEMANTIC_TAIL_PRIMITIVES = (
+    "ComplexityReduction.NAEThreeSAT.Clause.Satisfies",
+    "ComplexityReduction.NAEThreeSAT.Formula.Satisfies",
+    "ComplexityReduction.NAEThreeSAT.Formula.Satisfiable",
+    "ComplexityReduction.NAEThreeSAT.Formula.satisfies_cons",
+    "ComplexityReduction.NAEThreeSAT.Formula.satisfies_append",
+    "ComplexityReduction.CSP.Constraint.assignmentTuple",
+    "ComplexityReduction.CSP.Constraint.Satisfies",
+    "ComplexityReduction.CSP.Formula.Satisfies",
+    "ComplexityReduction.CSP.Formula.Satisfiable",
+    "ComplexityReduction.CSP.Formula.satisfies_cons",
+    "ComplexityReduction.CSP.Formula.satisfies_append",
+    "ComplexityReduction.CSP.Formula.satisfies_flatMap",
+    "ComplexityReduction.CSP.Formula.satisfies_flatMap_intro",
+    "ComplexityReduction.CSP.Formula.satisfies_flatMap_elim",
+    "ComplexityReduction.CSP.BoolRel.Holds",
+    "ComplexityReduction.CSP.BoolRel.holds_ofPredicate_iff",
+    "ComplexityReduction.Domain.BooleanCSP.cspOf_accepts",
+    "ComplexityReduction.Domain.ThreeSATToNAEThreeSAT.literalKey_injective",
+    "ComplexityReduction.CSP.StandardRelations.notAllEqualRel",
+)
+
+
+def _nae_k_scaffold_primitives(
+    scaffold_module: str,
+    *,
+    constraint_constructor: str,
+    constraint_code_tm: str,
+    satisfies_lemma: str,
+    clause_constructor: str,
+    clause_satisfies_lemma: str,
+    repeat_lemma: str,
+    tuple_builder: str,
+    relation_holds_lemma: str,
+    relation_name: str,
+) -> dict[str, tuple[str, ...]]:
+    """Build the three primitive layers for one positive NAE-k scaffold."""
+
+    construction = (
+        f"{scaffold_module}.threeSATToNAEThreeSATIngress.executable",
+        f"{scaffold_module}.{constraint_constructor}",
+        f"{scaffold_module}.{clause_constructor}",
+        f"{scaffold_module}.literalKey",
+        f"{scaffold_module}.complementLiteral",
+        f"{scaffold_module}.referenceExecutableFromClauseGadget",
+        f"{scaffold_module}.executableFromReference",
+    )
+    direct_tm = (
+        f"{scaffold_module}.threeSATToNAEThreeSATIngress.executableDirectTM",
+        f"{scaffold_module}.clausePayload_tmPolyTime",
+        f"{scaffold_module}.clauseFirst_tmPolyTime",
+        f"{scaffold_module}.clauseSecond_tmPolyTime",
+        f"{scaffold_module}.clauseThird_tmPolyTime",
+        f"{scaffold_module}.complementLiteral_tmPolyTime",
+        f"{scaffold_module}.literalKey_tmPolyTime",
+        f"{scaffold_module}.literalKeyAfter_tmPolyTime",
+        f"{scaffold_module}.complementLiteralAfter_tmPolyTime",
+        f"{scaffold_module}.complementKeyAfter_tmPolyTime",
+        *_BOOLEAN_CSP_SHARED_DIRECT_TM_PRIMITIVES,
+        f"{scaffold_module}.constraintPayload_tmPolyTime",
+        f"{scaffold_module}.{constraint_code_tm}",
+        f"{scaffold_module}.referenceExecutableFromClauseGadget_tmPolyTime",
+        f"{scaffold_module}.executableFromReference_tmPolyTime",
+    )
+    semantic = (
+        *_BOOLEAN_CSP_SHARED_SEMANTIC_HEAD_PRIMITIVES,
+        f"{scaffold_module}.complementLiteral_eval",
+        f"{scaffold_module}.literalAssignment",
+        f"{scaffold_module}.literalAssignment_literalKey",
+        f"{scaffold_module}.positiveKeyAssignment",
+        f"{scaffold_module}.literal_eval_positiveKeyAssignment",
+        f"{scaffold_module}.literal_eval_positiveKeyAssignment_of_complement",
+        tuple_builder,
+        relation_holds_lemma,
+        f"{scaffold_module}.{satisfies_lemma}",
+        f"{scaffold_module}.{clause_satisfies_lemma}",
+        f"{scaffold_module}.bool_ne_iff_eq_not",
+        f"{scaffold_module}.{repeat_lemma}",
+        *_BOOLEAN_CSP_SHARED_SEMANTIC_TAIL_PRIMITIVES,
+        relation_name,
+        f"{scaffold_module}.threeSATToNAEThreeSATIngress.executableCorrect",
+    )
+    return {
+        "construction": construction,
+        "direct_tm": direct_tm,
+        "semantic": semantic,
+    }
+
+
+_BOOLEAN_CSP_NAE4_SCAFFOLD_LAYERS = _nae_k_scaffold_primitives(
+    _BOOLEAN_CSP_NAE4_AUTHORING_SCAFFOLD_MODULE,
+    constraint_constructor="quaternaryConstraint",
+    constraint_code_tm="quaternaryConstraintCode_tmPolyTime",
+    satisfies_lemma="quaternaryConstraint_satisfies_iff",
+    clause_constructor="clauseConstraint",
+    clause_satisfies_lemma="clauseConstraint_satisfies_iff",
+    repeat_lemma="quaternaryConstraint_repeat_satisfies_iff",
+    tuple_builder="ComplexityReduction.CSP.StandardRelations.quadTuple",
+    relation_holds_lemma=(
+        "ComplexityReduction.CSP.StandardRelations.notAllEqual4Rel_holds_quad_iff"
+    ),
+    relation_name="ComplexityReduction.CSP.StandardRelations.notAllEqualRel",
+)
+
+_BOOLEAN_CSP_NAE5_SCAFFOLD_LAYERS = _nae_k_scaffold_primitives(
+    _BOOLEAN_CSP_NAE5_AUTHORING_SCAFFOLD_MODULE,
+    constraint_constructor="pentaryConstraint",
+    constraint_code_tm="pentaryConstraintCode_tmPolyTime",
+    satisfies_lemma="pentaryConstraint_satisfies_iff",
+    clause_constructor="clauseConstraint",
+    clause_satisfies_lemma="clauseConstraint_satisfies_iff",
+    repeat_lemma="pentaryConstraint_repeat_satisfies_iff",
+    tuple_builder="ComplexityReduction.CSP.StandardRelations.quintTuple",
+    relation_holds_lemma=(
+        "ComplexityReduction.CSP.StandardRelations.notAllEqual5Rel_holds_quint_iff"
+    ),
+    relation_name="ComplexityReduction.CSP.StandardRelations.notAllEqualRel",
+)
+
+_BOOLEAN_CSP_SCAFFOLD_LAYERS_BY_MODULE: dict[str, dict[str, tuple[str, ...]]] = {
+    _BOOLEAN_CSP_NAE3_AUTHORING_SCAFFOLD_MODULE: {
+        "construction": _BOOLEAN_CSP_NAE3_CONSTRUCTION_PRIMITIVES,
+        "direct_tm": _BOOLEAN_CSP_NAE3_DIRECT_TM_PRIMITIVES,
+        "semantic": _BOOLEAN_CSP_NAE3_SEMANTIC_PRIMITIVES,
+    },
+    _BOOLEAN_CSP_NAE4_AUTHORING_SCAFFOLD_MODULE: _BOOLEAN_CSP_NAE4_SCAFFOLD_LAYERS,
+    _BOOLEAN_CSP_NAE5_AUTHORING_SCAFFOLD_MODULE: _BOOLEAN_CSP_NAE5_SCAFFOLD_LAYERS,
+}
+
 
 def _primitive_layers(
-    allowed_primitives: tuple[str, ...], *, positive_nae3: bool
+    allowed_primitives: tuple[str, ...], *, scaffold_module: str | None
 ) -> dict[str, tuple[str, ...]]:
     """Partition the immutable declaration surface into four prompt layers."""
 
     explicit: dict[str, str] = {}
-    if positive_nae3:
-        explicit.update(
-            (primitive, "construction")
-            for primitive in _BOOLEAN_CSP_NAE3_CONSTRUCTION_PRIMITIVES
-        )
-        explicit.update(
-            (primitive, "direct_tm")
-            for primitive in _BOOLEAN_CSP_NAE3_DIRECT_TM_PRIMITIVES
-        )
-        explicit.update(
-            (primitive, "semantic")
-            for primitive in _BOOLEAN_CSP_NAE3_SEMANTIC_PRIMITIVES
-        )
+    if scaffold_module is not None:
+        layers_by_name = _BOOLEAN_CSP_SCAFFOLD_LAYERS_BY_MODULE[scaffold_module]
+        for layer_name in ("construction", "direct_tm", "semantic"):
+            explicit.update(
+                (primitive, layer_name)
+                for primitive in layers_by_name[layer_name]
+            )
     layers: dict[str, list[str]] = {
         "core": [],
         "construction": [],
@@ -354,11 +506,14 @@ def _whole_reduction_authoring_seed_modules(
     input_source = module_file(root.resolve() / "Lean", input_module).read_text(
         encoding="utf-8"
     )
-    if (
-        "Domain.BooleanCSP" in input_source
-        and "StandardRelations.notAllEqual3Rel" in input_source
-    ):
+    if "Domain.BooleanCSP" not in input_source:
+        return ()
+    if "StandardRelations.notAllEqual3Rel" in input_source:
         return (_BOOLEAN_CSP_NAE3_AUTHORING_SCAFFOLD_MODULE,)
+    if "StandardRelations.notAllEqualRel 4" in input_source:
+        return (_BOOLEAN_CSP_NAE4_AUTHORING_SCAFFOLD_MODULE,)
+    if "StandardRelations.notAllEqualRel 5" in input_source:
+        return (_BOOLEAN_CSP_NAE5_AUTHORING_SCAFFOLD_MODULE,)
     return ()
 
 
@@ -2892,15 +3047,36 @@ def plan_np_hard_authoring_from_observation(
         input_module=input_module,
         task_class=task_class,
     )
-    if _BOOLEAN_CSP_NAE3_AUTHORING_SCAFFOLD_MODULE in authoring_seed_modules:
-        allowed_primitives += _BOOLEAN_CSP_NAE3_SCAFFOLD_PRIMITIVES
+    scaffold_module = next(
+        (
+            module
+            for module in authoring_seed_modules
+            if module in _BOOLEAN_CSP_SCAFFOLD_LAYERS_BY_MODULE
+        ),
+        None,
+    )
+    if scaffold_module is not None:
+        allowed_primitives += tuple(
+            dict.fromkeys(
+                sum(
+                    (
+                        _BOOLEAN_CSP_SCAFFOLD_LAYERS_BY_MODULE[
+                            scaffold_module
+                        ][layer_name]
+                        for layer_name in (
+                            "construction",
+                            "direct_tm",
+                            "semantic",
+                        )
+                    ),
+                    (),
+                )
+            )
+        )
     allowed_primitives = tuple(dict.fromkeys(allowed_primitives))
     allowed_primitive_layers = _primitive_layers(
         allowed_primitives,
-        positive_nae3=(
-            _BOOLEAN_CSP_NAE3_AUTHORING_SCAFFOLD_MODULE
-            in authoring_seed_modules
-        ),
+        scaffold_module=scaffold_module,
     )
     capability_source_modules = tuple(
         capability.module
@@ -2926,8 +3102,7 @@ def plan_np_hard_authoring_from_observation(
         *authoring_seed_modules,
         *(
             _BOOLEAN_CSP_NAE3_PUBLIC_SUPPORT_MODULES
-            if _BOOLEAN_CSP_NAE3_AUTHORING_SCAFFOLD_MODULE
-            in authoring_seed_modules
+            if scaffold_module is not None
             else ()
         ),
         *(program.module for program in selected_programs),
@@ -2986,8 +3161,7 @@ def plan_np_hard_authoring_from_observation(
         task_class=task_class,
         gap_nodes=(
             _positive_nae3_whole_reduction_gap_nodes()
-            if _BOOLEAN_CSP_NAE3_AUTHORING_SCAFFOLD_MODULE
-            in authoring_seed_modules
+            if scaffold_module is not None
             else _task_gap_nodes(
                 task_class=task_class,
                 has_mapping_relation=relation is not None,
