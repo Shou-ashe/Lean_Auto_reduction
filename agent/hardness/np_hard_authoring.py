@@ -101,8 +101,52 @@ class NPHardSemanticLanguageConversionV1:
 
 
 @dataclass(frozen=True)
+class NPHardSemanticFinalBridgeV1:
+    """Checked route binding the final source-to-target semantic nodes.
+
+    The final ``semanticForward``/``semanticReverse``/``semanticIff`` nodes sit
+    outside the reference-semantic stage.  This bridge records how they splice
+    the already-checked reference stage together with the source ingress and
+    the accepted program-run coherence, so the runtime can hand the model an
+    exact template and validate the submitted bodies against it.
+    """
+
+    source_bridge_theorem: str
+    reference_formula_builder: str
+    application_form: str
+    program_run_declaration: str
+    synthesized_executable_declaration: str
+    reference_executable_declaration: str
+    reference_forward_declaration: str
+    reference_reverse_declaration: str
+    semantic_forward_declaration: str
+    semantic_reverse_declaration: str
+
+    def validate_shape(self) -> None:
+        values = (
+            self.source_bridge_theorem,
+            self.reference_formula_builder,
+            self.application_form,
+            self.program_run_declaration,
+            self.synthesized_executable_declaration,
+            self.reference_executable_declaration,
+            self.reference_forward_declaration,
+            self.reference_reverse_declaration,
+            self.semantic_forward_declaration,
+            self.semantic_reverse_declaration,
+        )
+        for value in values:
+            if not isinstance(value, str) or not value.strip():
+                _v2_fail(
+                    "invalid_semantic_plan_schema",
+                    "semantic plan final bridge contains an empty string field",
+                )
+            _v2_require_public_text(value, label="semantic plan final bridge field")
+
+
+@dataclass(frozen=True)
 class NPHardSemanticPlanV1:
-    """Strict shared plan consumed by the two reference-semantic nodes."""
+    """Strict shared plan consumed by the reference-semantic and final nodes."""
 
     dependency_fingerprint: str
     formula_structure: NPHardSemanticFormulaStructureV1
@@ -110,6 +154,7 @@ class NPHardSemanticPlanV1:
     reverse: NPHardSemanticReversePlanV1
     language_conversion: NPHardSemanticLanguageConversionV1
     ordered_obligations: tuple[str, ...]
+    final_bridge: NPHardSemanticFinalBridgeV1
     schema_version: str = NP_HARD_SEMANTIC_PLAN_SCHEMA_V1
 
     def validate_shape(self) -> None:
@@ -118,6 +163,7 @@ class NPHardSemanticPlanV1:
         _v2_require_hash(
             self.dependency_fingerprint, label="semantic plan dependency fingerprint"
         )
+        self.final_bridge.validate_shape()
         values = (
             self.formula_structure.reference_constructor,
             self.formula_structure.block_declaration,
@@ -168,6 +214,7 @@ class NPHardSemanticPlanV1:
                 "definitions": list(self.language_conversion.definitions),
             },
             "ordered_obligations": list(self.ordered_obligations),
+            "final_bridge": asdict(self.final_bridge),
         }
 
     @classmethod
@@ -191,6 +238,7 @@ class NPHardSemanticPlanV1:
                 "reverse",
                 "language_conversion",
                 "ordered_obligations",
+                "final_bridge",
             },
             "semantic plan",
         )
@@ -216,6 +264,18 @@ class NPHardSemanticPlanV1:
                 "literal_recovery_lemma",
             },
             "language_conversion": {"method", "definitions"},
+            "final_bridge": {
+                "source_bridge_theorem",
+                "reference_formula_builder",
+                "application_form",
+                "program_run_declaration",
+                "synthesized_executable_declaration",
+                "reference_executable_declaration",
+                "reference_forward_declaration",
+                "reference_reverse_declaration",
+                "semantic_forward_declaration",
+                "semantic_reverse_declaration",
+            },
         }
         nested: dict[str, Mapping[str, Any]] = {}
         for name, fields in nested_specs.items():
@@ -249,6 +309,7 @@ class NPHardSemanticPlanV1:
                 definitions=tuple(definitions),
             ),
             ordered_obligations=tuple(obligations),
+            final_bridge=NPHardSemanticFinalBridgeV1(**dict(nested["final_bridge"])),
         )
         plan.validate_shape()
         return plan

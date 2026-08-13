@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 -/
 
 import ComplexityReduction.Legacy.ComplexityReduction.CSP.BoolRel
+import Mathlib.Tactic.FinCases
 
 /-!
 Standard Boolean relations for concrete CSP decision problems.
@@ -184,6 +185,101 @@ theorem pinTrueRel_arity :
 theorem pinFalseRel_arity :
     pinFalseRel.arity = 1 :=
   rfl
+
+/-! ### Ordered tuples and truth-table meaning of the not-all-equal relations -/
+
+/-- An explicit ordered ternary Boolean tuple, independent of any reduction. -/
+def tripleTuple (first second third : Bool) : BoolTuple 3 := fun
+  | ⟨0, _⟩ => first
+  | ⟨1, _⟩ => second
+  | ⟨2, _⟩ => third
+
+/-- An explicit ordered four-ary Boolean tuple, independent of any reduction. -/
+def quadTuple (first second third fourth : Bool) : BoolTuple 4 := fun
+  | ⟨0, _⟩ => first
+  | ⟨1, _⟩ => second
+  | ⟨2, _⟩ => third
+  | ⟨3, _⟩ => fourth
+
+/-- An explicit ordered five-ary Boolean tuple, independent of any reduction. -/
+def quintTuple (first second third fourth fifth : Bool) : BoolTuple 5 := fun
+  | ⟨0, _⟩ => first
+  | ⟨1, _⟩ => second
+  | ⟨2, _⟩ => third
+  | ⟨3, _⟩ => fourth
+  | ⟨4, _⟩ => fifth
+
+/-- The truth-table meaning of the standard ternary not-all-equal relation. -/
+theorem notAllEqual3Rel_holds_triple_iff (first second third : Bool) :
+    notAllEqual3Rel.Holds (tripleTuple first second third) ↔
+      ¬ (first = second ∧ second = third) := by
+  classical
+  unfold notAllEqual3Rel notAllEqualRel
+  rw [BoolRel.holds_ofPredicate_iff]
+  constructor
+  · rintro ⟨left, right, different⟩ equalValues
+    fin_cases left <;> fin_cases right <;>
+      simp_all [tripleTuple]
+  · intro notAllEqual
+    by_cases firstSecond : first = second
+    · have secondThird : second ≠ third := by
+        intro secondThird
+        exact notAllEqual ⟨firstSecond, secondThird⟩
+      exact ⟨⟨1, by decide⟩, ⟨2, by decide⟩, by
+        simpa [tripleTuple] using secondThird⟩
+    · exact ⟨⟨0, by decide⟩, ⟨1, by decide⟩, by
+        simpa [tripleTuple] using firstSecond⟩
+
+/-- The truth-table meaning of the standard four-ary not-all-equal relation. -/
+theorem notAllEqual4Rel_holds_quad_iff (first second third fourth : Bool) :
+    (notAllEqualRel 4).Holds (quadTuple first second third fourth) ↔
+      ¬ (first = second ∧ second = third ∧ third = fourth) := by
+  classical
+  unfold notAllEqualRel
+  rw [BoolRel.holds_ofPredicate_iff]
+  constructor
+  · rintro ⟨left, right, different⟩ equalValues
+    fin_cases left <;> fin_cases right <;>
+      simp_all [quadTuple]
+  · intro notAllEqual
+    by_cases firstSecond : first = second
+    · by_cases secondThird : second = third
+      · have thirdFourth : third ≠ fourth := by
+          intro thirdFourth
+          exact notAllEqual ⟨firstSecond, secondThird, thirdFourth⟩
+        exact ⟨⟨2, by decide⟩, ⟨3, by decide⟩, by
+          simpa [quadTuple] using thirdFourth⟩
+      · exact ⟨⟨1, by decide⟩, ⟨2, by decide⟩, by
+          simpa [quadTuple] using secondThird⟩
+    · exact ⟨⟨0, by decide⟩, ⟨1, by decide⟩, by
+        simpa [quadTuple] using firstSecond⟩
+
+/-- The truth-table meaning of the standard five-ary not-all-equal relation. -/
+theorem notAllEqual5Rel_holds_quint_iff (first second third fourth fifth : Bool) :
+    (notAllEqualRel 5).Holds (quintTuple first second third fourth fifth) ↔
+      ¬ (first = second ∧ second = third ∧ third = fourth ∧ fourth = fifth) := by
+  classical
+  unfold notAllEqualRel
+  rw [BoolRel.holds_ofPredicate_iff]
+  constructor
+  · rintro ⟨left, right, different⟩ equalValues
+    fin_cases left <;> fin_cases right <;>
+      simp_all [quintTuple]
+  · intro notAllEqual
+    by_cases firstSecond : first = second
+    · by_cases secondThird : second = third
+      · by_cases thirdFourth : third = fourth
+        · have fourthFifth : fourth ≠ fifth := by
+            intro fourthFifth
+            exact notAllEqual ⟨firstSecond, secondThird, thirdFourth, fourthFifth⟩
+          exact ⟨⟨3, by decide⟩, ⟨4, by decide⟩, by
+            simpa [quintTuple] using fourthFifth⟩
+        · exact ⟨⟨2, by decide⟩, ⟨3, by decide⟩, by
+            simpa [quintTuple] using thirdFourth⟩
+      · exact ⟨⟨1, by decide⟩, ⟨2, by decide⟩, by
+          simpa [quintTuple] using secondThird⟩
+    · exact ⟨⟨0, by decide⟩, ⟨1, by decide⟩, by
+        simpa [quintTuple] using firstSecond⟩
 
 end StandardRelations
 

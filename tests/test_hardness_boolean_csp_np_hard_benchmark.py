@@ -145,11 +145,19 @@ def test_case_without_preinstalled_route_reaches_whole_reduction_generation(
     assert plan.task.final_program_node_id == "poly-program"
     assert plan.task.terminal_node_id == "semantic-iff"
     assert [node.capability for node in plan.task.gap_nodes] == [
+        "clause_constraint",
+        "complement_constraint",
+        "clause_gadget",
+        "reference_executable",
         "reduction_executable",
+        "clause_gadget_direct_tm",
+        "reference_direct_tm",
         "direct_tm",
         "reduction_primitive",
         "poly_program",
         "program_run_coherence",
+        "reference_semantic_forward",
+        "reference_semantic_reverse",
         "semantic_forward",
         "semantic_reverse",
         "semantic_iff",
@@ -163,6 +171,16 @@ def test_case_without_preinstalled_route_reaches_whole_reduction_generation(
         path.endswith("ComplexityReduction/CSP/StandardRelations.lean")
         for path in plan.task.public_source_files
     )
+    nae4_scaffold = (
+        "ComplexityReduction.Agent.Hardness.BooleanCSPNAE4ReductionScaffold"
+    )
+    assert nae4_scaffold in plan.task.allowed_imports
+    assert any(
+        path.endswith("BooleanCSPNAE4ReductionScaffold.lean")
+        for path in plan.task.public_source_files
+    )
+    assert f"{nae4_scaffold}.clauseConstraint" in plan.task.allowed_primitives
+    assert f"{nae4_scaffold}.quaternaryConstraint" in plan.task.allowed_primitives
     assert NPHardAuthoringTaskV2.from_dict(plan.task.to_dict()) == plan.task
 
     request = _node_request(
@@ -192,9 +210,14 @@ def test_case_without_preinstalled_route_reaches_whole_reduction_generation(
     assert context["mode"] == "node_retrieved_source_excerpts_v1"
     assert context["omitted_file_count"] > 0
     assert any(path.endswith("Case02PositiveNAE4.lean") for path in sources)
-    assert any(path.endswith("Satisfiability.lean") for path in sources)
+    assert any(path.endswith("BooleanCSPNAE4ReductionScaffold.lean") for path in sources)
+    assert any(path.endswith("ThreeSATToNAEThreeSAT.lean") for path in sources)
+    assert any("clauseConstraint" in source for source in sources.values())
     assert any("notAllEqualRel 4" in source for source in sources.values())
     assert any("threeSATStructuredProblem" in source for source in sources.values())
+    assert prompt["active_capability_guidance"].startswith(
+        "Construct only the main padded NAE4 constraint"
+    )
 
     repair_prompt = json.loads(
         build_np_hard_node_prompt_v1(

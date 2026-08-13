@@ -12,17 +12,17 @@ import ComplexityReduction.Presentation.SatisfiabilityTM
 import ComplexityReduction.Program.List
 
 /-!
-Public construction scaffold for authoring a new positive-NAE3 Boolean-CSP
+Public construction scaffold for authoring a new positive-NAE5 Boolean-CSP
 reduction.
 
-This module intentionally contains no NAE3-to-CSP clause gadget, no final
+This module intentionally contains no NAE5-to-CSP clause gadget, no final
 source-to-target executable, no target-specific direct-TM theorem, and no
-target-specific semantic correctness theorem.  It exposes only the established
-3SAT-to-NAE3 predecessor and generic encoding/TM assembly operations needed to
-author the missing bridge in independently checked DAG nodes.
+target-specific semantic correctness theorem.  It exposes the established
+3SAT-to-NAE3 predecessor and the five-ary positive NAE constraint machinery
+needed to author the missing bridge in independently checked DAG nodes.
 -/
 
-namespace ComplexityReduction.Agent.Hardness.BooleanCSPReductionScaffold
+namespace ComplexityReduction.Agent.Hardness.BooleanCSPNAE5ReductionScaffold
 
 open ComplexityReduction
 open ComplexityReduction.CSP
@@ -59,11 +59,11 @@ noncomputable def threeSATToNAEThreeSATIngress :
         (Domain.ThreeSATToNAEThreeSAT.executable formula)
     exact Domain.ThreeSATToNAEThreeSAT.executable_correct formula
 
-/-- The one-symbol positive NAE-3 language, definitionally matching Q-B03. -/
+/-- The one-symbol positive NAE-5 language, definitionally matching Q-B06. -/
 noncomputable def gamma : Gamma where
   Symbol := Unit
   finiteSymbol := inferInstance
-  relationOf := fun _ => StandardRelations.notAllEqual3Rel
+  relationOf := fun _ => StandardRelations.notAllEqualRel 5
 
 /-- Collision-free key for one signed literal. -/
 abbrev literalKey : SAT.Literal → Nat :=
@@ -209,88 +209,79 @@ theorem complementKeyAfter_tmPolyTime {X : EncodedType}
   exact literalKeyAfter_tmPolyTime
     (complementLiteralAfter_tmPolyTime hLiteral)
 
-/-- Generic positive ternary constraint constructor over the scaffold language. -/
-noncomputable def ternaryConstraint (first second third : Nat) :
+/-- Generic positive five-ary constraint constructor over the scaffold language. -/
+noncomputable def pentaryConstraint (first second third fourth fifth : Nat) :
     Constraint gamma where
   symbol := ()
   vars := fun
     | ⟨0, _⟩ => first
     | ⟨1, _⟩ => second
     | ⟨2, _⟩ => third
+    | ⟨3, _⟩ => fourth
+    | ⟨4, _⟩ => fifth
 
-/-- Satisfaction of the generic ternary constructor in pointwise form. -/
-theorem ternaryConstraint_satisfies_iff (first second third : Nat)
+/-- Satisfaction of the generic five-ary constructor in pointwise form. -/
+theorem pentaryConstraint_satisfies_iff (first second third fourth fifth : Nat)
     (assignment : SAT.Assignment) :
-    Constraint.Satisfies (ternaryConstraint first second third) assignment ↔
+    Constraint.Satisfies (pentaryConstraint first second third fourth fifth) assignment ↔
       ¬ (assignment first = assignment second ∧
-        assignment second = assignment third) := by
+        assignment second = assignment third ∧
+        assignment third = assignment fourth ∧
+        assignment fourth = assignment fifth) := by
   let tuple := Constraint.assignmentTuple
-    (ternaryConstraint first second third) assignment
+    (pentaryConstraint first second third fourth fifth) assignment
   have tupleEquality : tuple =
-      StandardRelations.tripleTuple (assignment first) (assignment second)
-        (assignment third) := by
+      StandardRelations.quintTuple (assignment first) (assignment second)
+        (assignment third) (assignment fourth) (assignment fifth) := by
     funext index
     fin_cases index <;> rfl
-  change StandardRelations.notAllEqual3Rel.Holds tuple ↔ _
+  change (StandardRelations.notAllEqualRel 5).Holds tuple ↔ _
   rw [tupleEquality]
-  exact StandardRelations.notAllEqual3Rel_holds_triple_iff _ _ _
+  exact StandardRelations.notAllEqual5Rel_holds_quint_iff _ _ _ _ _
+
+/-- A clause constraint: one NAE-3 clause padded into one NAE-5 constraint. -/
+noncomputable def clauseConstraint (first second third : Nat) :
+    Constraint gamma :=
+  pentaryConstraint first second third third third
+
+/-- One padded clause constraint rejects exactly the constant clause tuple. -/
+theorem clauseConstraint_satisfies_iff (first second third : Nat)
+    (assignment : SAT.Assignment) :
+    Constraint.Satisfies (clauseConstraint first second third) assignment ↔
+      ¬ (assignment first = assignment second ∧
+        assignment second = assignment third) := by
+  rw [clauseConstraint, pentaryConstraint_satisfies_iff]
+  constructor
+  · intro notAll ⟨firstSecond, secondThird⟩
+    exact notAll ⟨firstSecond, secondThird, rfl, rfl⟩
+  · intro notAll
+    rintro ⟨firstSecond, secondThird, _, _⟩
+    exact notAll ⟨firstSecond, secondThird⟩
 
 /-- Two Boolean values differ exactly when the second is the negation of the first. -/
 theorem bool_ne_iff_eq_not (first second : Bool) :
     first ≠ second ↔ second = !first := by
   cases first <;> cases second <;> simp
 
-/-- Repeating one endpoint in an NAE constraint enforces Boolean complement. -/
-theorem ternaryConstraint_repeat_satisfies_iff (first second : Nat)
+/-- Repeating one endpoint in an NAE-5 constraint enforces Boolean complement. -/
+theorem pentaryConstraint_repeat_satisfies_iff (first second : Nat)
     (assignment : SAT.Assignment) :
-    Constraint.Satisfies (ternaryConstraint first second first) assignment ↔
+    Constraint.Satisfies (pentaryConstraint first second first first first) assignment ↔
       assignment second = !assignment first := by
-  rw [ternaryConstraint_satisfies_iff]
+  rw [pentaryConstraint_satisfies_iff]
   constructor
   · intro different
     apply (bool_ne_iff_eq_not _ _).1
     intro equal
-    exact different ⟨equal, equal.symm⟩
+    exact different ⟨equal, equal.symm, rfl, rfl⟩
   · intro complement equalities
     have different : assignment first ≠ assignment second :=
       (bool_ne_iff_eq_not _ _).2 complement
     exact different equalities.1
 
-/-- Repeating the first endpoint also enforces Boolean complement. -/
-theorem ternaryConstraint_repeat_first_satisfies_iff (first second : Nat)
-    (assignment : SAT.Assignment) :
-    Constraint.Satisfies (ternaryConstraint first first second) assignment ↔
-      assignment second = !assignment first := by
-  rw [ternaryConstraint_satisfies_iff]
-  constructor
-  · intro different
-    apply (bool_ne_iff_eq_not _ _).1
-    intro equal
-    exact different ⟨rfl, equal⟩
-  · intro complement equalities
-    have different : assignment first ≠ assignment second :=
-      (bool_ne_iff_eq_not _ _).2 complement
-    exact different equalities.2
-
-/-- Repeating the second endpoint also enforces Boolean complement. -/
-theorem ternaryConstraint_repeat_second_satisfies_iff (first second : Nat)
-    (assignment : SAT.Assignment) :
-    Constraint.Satisfies (ternaryConstraint first second second) assignment ↔
-      assignment second = !assignment first := by
-  rw [ternaryConstraint_satisfies_iff]
-  constructor
-  · intro different
-    apply (bool_ne_iff_eq_not _ _).1
-    intro equal
-    exact different ⟨equal, rfl⟩
-  · intro complement equalities
-    have different : assignment first ≠ assignment second :=
-      (bool_ne_iff_eq_not _ _).2 complement
-    exact different equalities.1
-
-/-- Canonical raw encoder payload for one positive ternary constraint. -/
-def constraintPayload (first second third : Nat) : Nat × List Nat :=
-  (0, [first, second, third])
+/-- Canonical raw encoder payload for one positive five-ary constraint. -/
+def constraintPayload (first second third fourth fifth : Nat) : Nat × List Nat :=
+  (0, [first, second, third, fourth, fifth])
 
 /-- The unique relation symbol of the scaffold language has code zero. -/
 theorem relationCode_eq_zero (symbol : gamma.Symbol) :
@@ -302,32 +293,36 @@ theorem relationCode_eq_zero (symbol : gamma.Symbol) :
     simpa [gamma] using bounded
   exact Nat.eq_zero_of_le_zero (Nat.le_of_lt_succ lessThanOne)
 
-/-- The generic ternary constructor uses the canonical finite-table payload. -/
-theorem constraintCode_ternaryConstraint (first second third : Nat) :
+/-- The generic five-ary constructor uses the canonical finite-table payload. -/
+theorem constraintCode_pentaryConstraint (first second third fourth fifth : Nat) :
     Presentation.FiniteDomainCSPTable.constraintCode
-        (ternaryConstraint first second third) =
-      constraintPayload first second third := by
+        (pentaryConstraint first second third fourth fifth) =
+      constraintPayload first second third fourth fifth := by
   apply Prod.ext
   · simpa [Presentation.FiniteDomainCSPTable.constraintCode,
       constraintPayload] using relationCode_eq_zero ()
   · simp [Presentation.FiniteDomainCSPTable.constraintCode,
-      constraintPayload, ternaryConstraint, Constraint.varsList,
-      gamma, StandardRelations.notAllEqual3Rel,
-      StandardRelations.notAllEqualRel, BoolRel.ofPredicate,
-      List.ofFn, Fin.foldr, Fin.foldr.loop]
+      constraintPayload, pentaryConstraint, Constraint.varsList,
+      gamma, StandardRelations.notAllEqualRel,
+      BoolRel.ofPredicate, List.ofFn, Fin.foldr, Fin.foldr.loop]
 
-/-- Direct-TM assembly of one canonical ternary-constraint payload. -/
+/-- Direct-TM assembly of one canonical five-ary-constraint payload. -/
 theorem constraintPayload_tmPolyTime {X : EncodedType}
-    {first second third : X.Carrier → Nat}
+    {first second third fourth fifth : X.Carrier → Nat}
     (hFirst : TMPolyTimeMap X EncodedType.nat first)
     (hSecond : TMPolyTimeMap X EncodedType.nat second)
-    (hThird : TMPolyTimeMap X EncodedType.nat third) :
+    (hThird : TMPolyTimeMap X EncodedType.nat third)
+    (hFourth : TMPolyTimeMap X EncodedType.nat fourth)
+    (hFifth : TMPolyTimeMap X EncodedType.nat fifth) :
     TMPolyTimeMap X
       Presentation.FiniteDomainCSPTable.constraintCodeEncodedType
-      (fun input => constraintPayload (first input) (second input) (third input)) := by
+      (fun input => constraintPayload (first input) (second input)
+        (third input) (fourth input) (fifth input)) := by
   have hVariables := TMPolyTimeMap.list_cons_of hFirst
     (TMPolyTimeMap.list_cons_of hSecond
-      (TMPolyTimeMap.list_singleton_of hThird))
+      (TMPolyTimeMap.list_cons_of hThird
+        (TMPolyTimeMap.list_cons_of hFourth
+          (TMPolyTimeMap.list_singleton_of hFifth))))
   have hRelation : TMPolyTimeMap X EncodedType.nat
       (fun _ : X.Carrier => (show Nat from 0)) :=
     TMPolyTimeMap.const X EncodedType.nat (show Nat from 0)
@@ -337,21 +332,24 @@ theorem constraintPayload_tmPolyTime {X : EncodedType}
     Function.comp] using output
 
 /--
-Direct-TM assembly of the encoded canonical ternary constraint.
-The three computed variable keys are inferred from their polynomial-time proofs;
+Direct-TM assembly of the encoded canonical five-ary constraint.
+The five computed variable keys are inferred from their polynomial-time proofs;
 the caller still chooses the keys and how the resulting constraints are assembled.
 -/
-theorem ternaryConstraintCode_tmPolyTime {X : EncodedType}
-    {first second third : X.Carrier → Nat}
+theorem pentaryConstraintCode_tmPolyTime {X : EncodedType}
+    {first second third fourth fifth : X.Carrier → Nat}
     (hFirst : TMPolyTimeMap X EncodedType.nat first)
     (hSecond : TMPolyTimeMap X EncodedType.nat second)
-    (hThird : TMPolyTimeMap X EncodedType.nat third) :
+    (hThird : TMPolyTimeMap X EncodedType.nat third)
+    (hFourth : TMPolyTimeMap X EncodedType.nat fourth)
+    (hFifth : TMPolyTimeMap X EncodedType.nat fifth) :
     TMPolyTimeMap X
       Presentation.FiniteDomainCSPTable.constraintCodeEncodedType
       (fun input => Presentation.FiniteDomainCSPTable.constraintCode
-        (ternaryConstraint (first input) (second input) (third input))) := by
-  simpa only [constraintCode_ternaryConstraint] using
-    constraintPayload_tmPolyTime hFirst hSecond hThird
+        (pentaryConstraint (first input) (second input) (third input)
+          (fourth input) (fifth input))) := by
+  simpa only [constraintCode_pentaryConstraint] using
+    constraintPayload_tmPolyTime hFirst hSecond hThird hFourth hFifth
 
 /-- Lift an authored clause gadget pointwise to an exact NAE formula bridge. -/
 noncomputable def referenceExecutableFromClauseGadget
@@ -431,11 +429,10 @@ assert_standard_axioms
   literalAssignment_literalKey,
   literal_eval_positiveKeyAssignment,
   literal_eval_positiveKeyAssignment_of_complement,
-  ternaryConstraint_satisfies_iff,
+  pentaryConstraint_satisfies_iff,
+  clauseConstraint_satisfies_iff,
   bool_ne_iff_eq_not,
-  ternaryConstraint_repeat_satisfies_iff,
-  ternaryConstraint_repeat_first_satisfies_iff,
-  ternaryConstraint_repeat_second_satisfies_iff,
+  pentaryConstraint_repeat_satisfies_iff,
   clausePayload_tmPolyTime,
   clauseFirst_tmPolyTime,
   clauseSecond_tmPolyTime,
@@ -445,13 +442,14 @@ assert_standard_axioms
   literalKeyAfter_tmPolyTime,
   complementLiteralAfter_tmPolyTime,
   complementKeyAfter_tmPolyTime,
-  ternaryConstraint,
-  constraintCode_ternaryConstraint,
+  pentaryConstraint,
+  clauseConstraint,
+  constraintCode_pentaryConstraint,
   constraintPayload_tmPolyTime,
-  ternaryConstraintCode_tmPolyTime,
+  pentaryConstraintCode_tmPolyTime,
   referenceExecutableFromClauseGadget,
   referenceExecutableFromClauseGadget_tmPolyTime,
   executableFromReference,
   executableFromReference_tmPolyTime
 
-end ComplexityReduction.Agent.Hardness.BooleanCSPReductionScaffold
+end ComplexityReduction.Agent.Hardness.BooleanCSPNAE5ReductionScaffold

@@ -25,6 +25,12 @@ MODULE = "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case03PositiveNAE3"
 SCAFFOLD = "ComplexityReduction.Agent.Hardness.BooleanCSPReductionScaffold"
 
 
+def _declaration(task, node_id: str) -> str:
+    matches = [node for node in task.gap_nodes if node.node_id == node_id]
+    assert len(matches) == 1, node_id
+    return matches[0].declaration
+
+
 @pytest.fixture(scope="module")
 def semantic_task(tmp_path_factory):
     plan = NPHardAuthoringPlannerV2(
@@ -147,6 +153,30 @@ def _plan(task, bodies) -> NPHardSemanticPlanV1:
             ],
         },
         "ordered_obligations": forward + forward,
+        "final_bridge": {
+            "source_bridge_theorem": (
+                SCAFFOLD + ".threeSATToNAEThreeSATIngress.executableCorrect"
+            ),
+            "reference_formula_builder": (
+                SCAFFOLD + ".threeSATToNAEThreeSATIngress.executable"
+            ),
+            "application_form": "apply_bridge_at_input_then_project",
+            "program_run_declaration": _declaration(task, "program-run-coherence"),
+            "synthesized_executable_declaration": _declaration(
+                task, "reduction-executable"
+            ),
+            "reference_executable_declaration": _declaration(
+                task, "reference-executable"
+            ),
+            "reference_forward_declaration": _declaration(
+                task, "reference-semantic-forward"
+            ),
+            "reference_reverse_declaration": _declaration(
+                task, "reference-semantic-reverse"
+            ),
+            "semantic_forward_declaration": _declaration(task, "semantic-forward"),
+            "semantic_reverse_declaration": _declaration(task, "semantic-reverse"),
+        },
     }
     return NPHardSemanticPlanV1.from_dict(value)
 

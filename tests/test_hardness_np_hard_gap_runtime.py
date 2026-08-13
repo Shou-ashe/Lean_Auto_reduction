@@ -15,7 +15,7 @@ from agent.hardness.np_hard_gap_runtime import NPHardGapRuntimeV1
 
 
 ROOT = Path(__file__).resolve().parents[1]
-MODULE = "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case02PositiveNAE4"
+MODULE = "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case04PositiveExactlyOne3"
 PROBLEM = f"{MODULE}.problem"
 
 
