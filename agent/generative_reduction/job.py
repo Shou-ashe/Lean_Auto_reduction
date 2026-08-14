@@ -117,5 +117,17 @@ class GeneralJobStore:
             events.write(stable_json(event) + "\n")
         self.write_json("state.json", event)
 
+    def append_event(
+        self, event_name: str, *, details: Mapping[str, Any] | None = None
+    ) -> None:
+        event = {
+            "schema_version": "general_np_hard_search_event_v1",
+            "time": datetime.now(timezone.utc).isoformat(),
+            "event": event_name,
+            "details": dict(details or {}),
+        }
+        with self.events_path.open("a", encoding="utf-8") as events:
+            events.write(stable_json(event) + "\n")
+
 
 __all__ = ["GeneralJobStore", "STATES"]

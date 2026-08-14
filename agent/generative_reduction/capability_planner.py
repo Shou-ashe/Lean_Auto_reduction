@@ -56,6 +56,7 @@ class CapabilityPlanner:
         return stable_sha256(
             {
                 "goal": goal.key.fingerprint,
+                "attempted_actions": goal.attempted_actions,
                 "environment": environment_fingerprint,
                 "capabilities": capability_fingerprint,
             }

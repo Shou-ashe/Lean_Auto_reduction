@@ -26,9 +26,9 @@ def proof_state_cost(state: ProofState) -> tuple[object, ...]:
 
 def guidance_cost(guidance: ProofGuidance) -> tuple[object, ...]:
     return (
+        guidance.estimated_cost,
         len(guidance.residual_obligations),
         -guidance.coverage_score,
-        guidance.estimated_cost,
         -guidance.confidence,
         guidance.candidate_declaration,
         guidance.guidance_id,

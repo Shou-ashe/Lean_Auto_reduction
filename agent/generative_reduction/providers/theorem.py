@@ -18,7 +18,11 @@ class TheoremActionProvider:
         actions: list[CandidateAction] = []
         for plan in guidance:
             digest = stable_sha256(
-                {"goal": plan.goal_key.fingerprint, "guidance": plan.guidance_id}
+                {
+                    "goal": plan.goal_key.fingerprint,
+                    "declaration": plan.candidate_declaration,
+                    "provider": self.kind.value,
+                }
             )
             actions.append(
                 CandidateAction(

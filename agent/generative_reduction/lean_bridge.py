@@ -4,11 +4,25 @@ from __future__ import annotations
 
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Iterable
+import secrets
+from typing import Iterable, Mapping, Sequence
 
-from agent.hardness.lean_runner import run_command, sha256_file
+from agent.hardness.lean_runner import (
+    run_command,
+    sha256_file,
+    validate_declaration_name,
+    validate_module_name,
+)
 
-from .models import stable_sha256
+from .models import GeneratedCapability, PremiseKind, ReusableFragment, stable_sha256
+
+
+RULE_MARKER = "GENERAL_REDUCTION_RULE_INSTANTIATION"
+RULE_SCHEMA = "general_reduction_rule_instantiation_v1"
+RECURSIVE_ELABORATION_OPTIONS = (
+    "set_option maxRecDepth 100000\n"
+    "set_option maxHeartbeats 10000000\n"
+)
 
 
 @dataclass(frozen=True)
@@ -22,6 +36,25 @@ class EnvironmentSnapshot:
 
     def to_dict(self) -> dict[str, object]:
         return asdict(self)
+
+
+@dataclass(frozen=True)
+class RuleSlotReceipt:
+    ordinal: int
+    kind: PremiseKind
+    dependency_ordinals: tuple[int, ...]
+    status: str
+    exact_type: str
+    bound_declaration: str | None
+    type_hash: str
+
+
+@dataclass(frozen=True)
+class RuleInstantiationReceipt:
+    declaration: str
+    target_exact_type: str
+    slots: tuple[RuleSlotReceipt, ...]
+    receipt_hash: str
 
 
 def snapshot_environment(
@@ -61,4 +94,214 @@ def run_lean_file(
     )
 
 
-__all__ = ["EnvironmentSnapshot", "run_lean_file", "snapshot_environment"]
+def _safe_exact_type(exact_type: str) -> str:
+    value = exact_type.strip()
+    if not value or any(marker in value for marker in ("\n", "\r", ";", "#", "import ")):
+        raise ValueError("exact Lean type must be one safe term")
+    return value
+
+
+def render_generated_capabilities(
+    capabilities: Sequence[GeneratedCapability],
+) -> str:
+    rendered: list[str] = []
+    for capability in capabilities:
+        namespace = validate_declaration_name(
+            capability.namespace, label="generated namespace"
+        )
+        rendered.append(
+            f"namespace {namespace}\n\n{capability.implementation.strip()}\n\nend {namespace}\n"
+        )
+    return "\n".join(rendered)
+
+
+def _direct_binding_declaration(fragment: ReusableFragment) -> str | None:
+    """Return a stable declaration only when the proof is exactly that declaration."""
+
+    if not fragment.declaration:
+        return None
+    declaration = validate_declaration_name(
+        fragment.declaration, label="bound declaration"
+    )
+    normalized = " ".join(fragment.proof_term.split())
+    if normalized in {
+        declaration,
+        f"by exact {declaration}",
+        f"by apply_generative_rule {declaration}",
+    }:
+        return declaration
+    return None
+
+
+def build_rule_instantiation_probe_source(
+    *,
+    modules: Iterable[str],
+    declaration: str,
+    exact_target: str,
+    assignments: Mapping[int, ReusableFragment],
+    generated_capabilities: Sequence[GeneratedCapability] = (),
+    nonce: str,
+) -> str:
+    theorem = validate_declaration_name(declaration, label="rule declaration")
+    target = _safe_exact_type(exact_target)
+    imports = tuple(
+        dict.fromkeys(
+            (
+                "ComplexityReduction.Agent.GenerativeReduction.RuleApplication",
+                *map(validate_module_name, modules),
+                *(
+                    validate_module_name(fragment.module)
+                    for fragment in assignments.values()
+                    if fragment.module
+                ),
+                *(
+                    validate_module_name(module)
+                    for fragment in assignments.values()
+                    for module in fragment.imports
+                ),
+            )
+        )
+    )
+    namespace = (
+        "ComplexityReduction.Agent.GenerativeReduction.RuleInstantiationProbe."
+        f"N{nonce}"
+    )
+    definitions: list[str] = []
+    assignment_rows: list[str] = []
+    for ordinal, fragment in sorted(assignments.items()):
+        if not fragment.lean_verified:
+            raise ValueError("rule binding requires a Lean-verified fragment")
+        direct_declaration = _direct_binding_declaration(fragment)
+        if direct_declaration:
+            assignment_rows.append(
+                f"{ordinal}=" + direct_declaration
+            )
+        else:
+            bound_name = f"bound{ordinal}"
+            definitions.append(
+                "noncomputable def "
+                f"{bound_name} : {_safe_exact_type(fragment.exact_type)} :=\n"
+                f"  {fragment.proof_term.strip()}"
+            )
+            assignment_rows.append(f"{ordinal}={namespace}.{bound_name}")
+    generated = render_generated_capabilities(generated_capabilities)
+    return (
+        "".join(f"import {module}\n" for module in imports)
+        + "\n"
+        + RECURSIVE_ELABORATION_OPTIONS
+        + "\n"
+        + generated
+        + f"\nnamespace {namespace}\n\n"
+        + "\n\n".join(definitions)
+        + f"\n\nend {namespace}\n\n"
+        + f'#generative_reduction_probe_rule "{nonce}" {theorem} '
+        + f"({target}) \"{','.join(assignment_rows)}\"\n"
+    )
+
+
+def parse_rule_instantiation_output(
+    *, stdout: str, stderr: str, nonce: str
+) -> RuleInstantiationReceipt:
+    prefix = f"{RULE_MARKER}\t{RULE_SCHEMA}\t{nonce}\t"
+    declaration: str | None = None
+    target: str | None = None
+    expected_slot_count: int | None = None
+    slots: list[RuleSlotReceipt] = []
+    for raw_line in (stdout + "\n" + stderr).splitlines():
+        marker_at = raw_line.find(prefix)
+        if marker_at < 0:
+            continue
+        fields = raw_line[marker_at:].split("\t")
+        if len(fields) < 5:
+            raise ValueError("rule instantiation probe emitted a truncated row")
+        if fields[3] == "frame":
+            if len(fields) != 7:
+                raise ValueError("rule instantiation probe emitted an invalid frame row")
+            declaration = validate_declaration_name(fields[4], label="rule declaration")
+            target = fields[5]
+            expected_slot_count = int(fields[6])
+            continue
+        if fields[3] != "slot" or len(fields) != 11:
+            raise ValueError("rule instantiation probe emitted an invalid slot row")
+        dependencies = tuple(
+            int(value) for value in fields[6].split(",") if value
+        )
+        slots.append(
+            RuleSlotReceipt(
+                ordinal=int(fields[4]),
+                kind=PremiseKind(fields[5]),
+                dependency_ordinals=dependencies,
+                status=fields[7],
+                exact_type=fields[8],
+                bound_declaration=(fields[9] or None),
+                type_hash=fields[10],
+            )
+        )
+    if declaration is None or target is None or expected_slot_count is None:
+        raise ValueError("rule instantiation probe emitted no frame row")
+    slots.sort(key=lambda item: item.ordinal)
+    if len(slots) != expected_slot_count:
+        raise ValueError("rule instantiation probe lost slot alignment")
+    if tuple(item.ordinal for item in slots) != tuple(range(expected_slot_count)):
+        raise ValueError("rule instantiation probe emitted unstable slot ordinals")
+    return RuleInstantiationReceipt(
+        declaration=declaration,
+        target_exact_type=target,
+        slots=tuple(slots),
+        receipt_hash=stable_sha256(
+            {
+                "declaration": declaration,
+                "target": target,
+                "slots": slots,
+            }
+        ),
+    )
+
+
+def run_rule_instantiation_probe(
+    *,
+    root: Path,
+    modules: Iterable[str],
+    declaration: str,
+    exact_target: str,
+    assignments: Mapping[int, ReusableFragment],
+    generated_capabilities: Sequence[GeneratedCapability],
+    output_path: Path,
+    timeout_seconds: int,
+):
+    nonce = secrets.token_hex(12)
+    source = build_rule_instantiation_probe_source(
+        modules=modules,
+        declaration=declaration,
+        exact_target=exact_target,
+        assignments=assignments,
+        generated_capabilities=generated_capabilities,
+        nonce=nonce,
+    )
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(source, encoding="utf-8")
+    command = run_lean_file(root=root, path=output_path, timeout_seconds=timeout_seconds)
+    if not command.ok:
+        raise RuntimeError(command.stderr or command.stdout)
+    return (
+        parse_rule_instantiation_output(
+            stdout=command.stdout, stderr=command.stderr, nonce=nonce
+        ),
+        command,
+    )
+
+
+__all__ = [
+    "EnvironmentSnapshot",
+    "RULE_MARKER",
+    "RULE_SCHEMA",
+    "RECURSIVE_ELABORATION_OPTIONS",
+    "RuleInstantiationReceipt",
+    "RuleSlotReceipt",
+    "build_rule_instantiation_probe_source",
+    "parse_rule_instantiation_output",
+    "render_generated_capabilities",
+    "run_lean_file",
+    "run_rule_instantiation_probe",
+    "snapshot_environment",
+]

@@ -58,6 +58,11 @@ private def conclusionHead? (type : Expr) : MetaM (Option Name) := do
   forallTelescope type fun _ conclusion =>
     pure conclusion.consumeMData.getAppFn.constName?
 
+private def compatibleConclusionHeads (candidate target : Name) : Bool :=
+  candidate == target ||
+    (candidate == ``Not && target == ``False) ||
+    (candidate == ``False && target == ``Not)
+
 private structure Premise where
   kind : String
   type : Expr
@@ -81,20 +86,48 @@ private def premiseKind (type : Expr) : MetaM String := do
 private def nativeHardnessType (problem : Expr) : MetaM Expr :=
   mkAppM ``NativeTMNPHard #[problem]
 
+private partial def applyUntilTarget (term type target : Expr)
+    (arguments : Array Expr := #[]) : MetaM (Option (Expr × Array Expr)) := do
+  let state ← saveState
+  try
+    if ← isDefEq (← whnf type) (← whnf target) then
+      return some (term, arguments)
+  catch _ =>
+    pure ()
+  state.restore
+  match ← whnf type with
+  | .forallE _ domain body _ =>
+      let argument ← mkFreshExprMVar domain
+      applyUntilTarget (mkApp term argument) (body.instantiate1 argument)
+        target (arguments.push argument)
+  | _ =>
+      return none
+
 private def tryApplication (environment : Environment) (declaration : Name)
     (information : ConstantInfo) (target : Expr) (targetHead : Name) :
     MetaM (Option Application) := do
   unless allowedPublicName declaration do
     return none
   let some head ← conclusionHead? information.type | return none
-  unless head == targetHead do
+  /-
+  `Not P` is definitionally `P → False`, but rule instantiation can return
+  either spelling depending on how far the theorem telescope was reduced.  A
+  purely syntactic head filter therefore hid reflection theorems precisely
+  when a dependent premise was rendered as an arrow.  Keep the cheap head
+  prefilter, while admitting the two definitionally equivalent spellings;
+  `applyUntilTarget` remains the authoritative unification check below.
+  -/
+  unless compatibleConclusionHeads head targetHead do
     return none
   let some moduleName := declarationModule? environment declaration | return none
   let state ← saveState
   try
     let theoremTerm ← mkConstWithFreshMVarLevels declaration
-    let (arguments, _, conclusion) ← forallMetaTelescope (← inferType theoremTerm)
-    unless ← isDefEq (← whnf conclusion) (← whnf target) do
+    let some (result, arguments) ←
+        applyUntilTarget theoremTerm (← inferType theoremTerm) target
+      | state.restore
+        return none
+    unless ← isDefEq (← inferType result) target do
       state.restore
       return none
     let mut premises := #[]
@@ -106,7 +139,7 @@ private def tryApplication (environment : Environment) (declaration : Name)
           let type ← instantiateMVars (← inferType (mkMVar mvarId))
           premises := premises.push { kind := ← premiseKind type, type }
           premiseIds := premiseIds.push mvarId
-    let result ← instantiateMVars (mkAppN theoremTerm arguments)
+    let result ← instantiateMVars result
     return some {
       declaration,
       moduleName,
@@ -121,7 +154,7 @@ private def tryApplication (environment : Environment) (declaration : Name)
 
 private def runTarget (environment : Environment) (nonce label : String) (target : Expr) :
     MetaM Unit := do
-  let some targetHead := target.consumeMData.getAppFn.constName?
+  let some targetHead ← conclusionHead? target
     | throwError "general theorem-index target has no constant conclusion head"
   let mut applications := #[]
   for (declaration, information) in environment.constants.toList do

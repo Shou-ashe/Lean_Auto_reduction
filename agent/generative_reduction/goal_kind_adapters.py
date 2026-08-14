@@ -25,8 +25,15 @@ def classify_goal(exact_type: str, *, premise_kind: str | None = None) -> GoalKi
     for marker, kind in HEADS:
         if marker in exact_type:
             return kind
+    # The Lean rule probe is authoritative about whether a telescope slot lives
+    # in data or proposition space.  In particular, a dependent function that
+    # returns a structure still contains an arrow but is not a proposition.
+    if premise_kind == "data":
+        return GoalKind.DATA
     if "↔" in exact_type or "accepts" in exact_type or "Semantic" in exact_type:
         return GoalKind.SEMANTICS
+    if premise_kind == "proposition":
+        return GoalKind.PROPOSITION
     if exact_type.lstrip().startswith(("∀", "∃", "¬")) or any(
         token in exact_type for token in (" = ", " → ", " ∧ ", " ∨ ")
     ):
@@ -50,6 +57,7 @@ def construction_modes(kind: GoalKind) -> tuple[str, ...]:
         GoalKind.COMPONENT: ("component-first", "direct-synthesis"),
         GoalKind.PRESENTATION: ("presentation-first", "direct-authoring"),
         GoalKind.PROPOSITION: ("apply-existing-theorem", "direct-authoring"),
+        GoalKind.DATA: ("typed-witness", "direct-authoring"),
     }.get(kind, ("open-candidate-module",))
 
 
@@ -64,6 +72,7 @@ def is_generation_eligible(kind: GoalKind) -> bool:
         GoalKind.COMPONENT,
         GoalKind.PRESENTATION,
         GoalKind.PROPOSITION,
+        GoalKind.DATA,
         GoalKind.UNKNOWN,
     }
 
