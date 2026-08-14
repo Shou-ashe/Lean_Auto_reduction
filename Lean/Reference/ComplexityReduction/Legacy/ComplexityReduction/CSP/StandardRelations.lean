@@ -20,7 +20,7 @@ namespace CSP
 namespace BoolRel
 
 /-- Build a Boolean relation from a decidable predicate on tuples. -/
-noncomputable def ofPredicate (k : Nat) (p : BoolTuple k → Prop) [DecidablePred p] : BoolRel where
+def ofPredicate (k : Nat) (p : BoolTuple k → Prop) [DecidablePred p] : BoolRel where
   arity := k
   accepts := Finset.univ.filter p
 
@@ -54,7 +54,7 @@ def trueCount (k : Nat) (t : BoolTuple k) : Nat :=
   ((Finset.univ : Finset (Fin k)).filter fun i => t i = true).card
 
 /-- The relation accepting tuples with exactly `n` true entries. -/
-noncomputable def exactlyRel (k n : Nat) : BoolRel :=
+def exactlyRel (k n : Nat) : BoolRel :=
   BoolRel.ofPredicate k fun t => trueCount k t = n
 
 /-- The ternary one-in-three relation. -/
@@ -62,58 +62,58 @@ noncomputable def exactlyOne3Rel : BoolRel :=
   exactlyRel 3 1
 
 /-- The relation accepting tuples whose entries are not all equal. -/
-noncomputable def notAllEqualRel (k : Nat) : BoolRel :=
+def notAllEqualRel (k : Nat) : BoolRel :=
   BoolRel.ofPredicate k fun t => ∃ i j : Fin k, t i ≠ t j
 
 /-- The ternary not-all-equal relation used by NAE-3SAT. -/
-noncomputable def notAllEqual3Rel : BoolRel :=
+def notAllEqual3Rel : BoolRel :=
   notAllEqualRel 3
 
 /-- A `k`-literal clause relation with one negation flag per coordinate. -/
-noncomputable def clauseRel (k : Nat) (neg : Fin k → Bool) : BoolRel :=
+def clauseRel (k : Nat) (neg : Fin k → Bool) : BoolRel :=
   BoolRel.ofPredicate k fun t => ∃ i : Fin k, literalValue (neg i) (t i) = true
 
 /-- A binary clause relation, parameterized by the two literal polarities. -/
-noncomputable def binaryClauseRel (leftNeg rightNeg : Bool) : BoolRel :=
+def binaryClauseRel (leftNeg rightNeg : Bool) : BoolRel :=
   clauseRel 2 fun
     | ⟨0, _⟩ => leftNeg
     | ⟨1, _⟩ => rightNeg
 
 /-- A ternary clause relation, parameterized by the three literal polarities. -/
-noncomputable def ternaryClauseRel (firstNeg secondNeg thirdNeg : Bool) : BoolRel :=
+def ternaryClauseRel (firstNeg secondNeg thirdNeg : Bool) : BoolRel :=
   clauseRel 3 fun
     | ⟨0, _⟩ => firstNeg
     | ⟨1, _⟩ => secondNeg
     | ⟨2, _⟩ => thirdNeg
 
 /-- The binary implication relation `x -> y`. -/
-noncomputable def implicationRel : BoolRel :=
+def implicationRel : BoolRel :=
   BoolRel.ofPredicate 2 fun t =>
     literalValue true (t ⟨0, by decide⟩) = true ∨
       literalValue false (t ⟨1, by decide⟩) = true
 
 /-- The binary disequality/XOR relation. -/
-noncomputable def xorRel : BoolRel :=
+def xorRel : BoolRel :=
   BoolRel.ofPredicate 2 fun t => t ⟨0, by decide⟩ ≠ t ⟨1, by decide⟩
 
 /-- The relation accepting tuples whose number of true entries has a fixed parity. -/
-noncomputable def parityRel (k parity : Nat) : BoolRel :=
+def parityRel (k parity : Nat) : BoolRel :=
   BoolRel.ofPredicate k fun t => trueCount k t % 2 = parity % 2
 
 /-- The ternary odd-parity relation `x xor y xor z = true`. -/
-noncomputable def oddParity3Rel : BoolRel :=
+def oddParity3Rel : BoolRel :=
   parityRel 3 1
 
 /-- The ternary even-parity relation `x xor y xor z = false`. -/
-noncomputable def evenParity3Rel : BoolRel :=
+def evenParity3Rel : BoolRel :=
   parityRel 3 0
 
 /-- Unary pinning to true. -/
-noncomputable def pinTrueRel : BoolRel :=
+def pinTrueRel : BoolRel :=
   BoolRel.ofPredicate 1 fun t => t ⟨0, by decide⟩ = true
 
 /-- Unary pinning to false. -/
-noncomputable def pinFalseRel : BoolRel :=
+def pinFalseRel : BoolRel :=
   BoolRel.ofPredicate 1 fun t => t ⟨0, by decide⟩ = false
 
 @[simp]

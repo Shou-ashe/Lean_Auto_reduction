@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 -/
 
 import ComplexityReduction.Domain.BooleanCSP.Hardness.PPDefinability
+import ComplexityReduction.Certificate.CompletenessTransport
 import ComplexityReduction.Program.List
 import ComplexityReduction.Program.ContextListMap
 import ComplexityReduction.Legacy.ComplexityReduction.Bridges.CostedToTM.Maps.BoolDispatch
@@ -42,6 +43,7 @@ namespace BooleanCSP
 namespace Hardness
 
 open ComplexityReduction.CSP
+open ComplexityReduction.Certificate
 open ComplexityReduction.Encoding
 open ComplexityReduction.Program
 open Presentation.FiniteDomainCSPTable
@@ -301,11 +303,15 @@ theorem varsMaxCode_tmPolyTime :
       let acc' : Nat := accumulator
       let item' : Nat := item
       have hItemLe : item' + 1 ≤ (EncodedType.list EncodedType.nat).inputSize source := by
-        have hsub : EncodedType.nat.inputSize item ≤ (EncodedType.list EncodedType.nat).inputSize source := by
-          simpa [acc', item'] using itemBound
+        have hsub : EncodedType.nat.inputSize item ≤ (EncodedType.list EncodedType.nat).inputSize source := itemBound
         simpa [EncodedType.inputSize_nat, item'] using hsub
-      have hMaxLe : Nat.max acc' item' + 1 ≤ acc' + 1 + item' + 1 := by omega
-      simp [EncodedType.inputSize_nat, natMaxCode_eq_max, acc', item'] at *
+      simp only [EncodedType.inputSize_nat, Polynomial.eval_add,
+        Polynomial.eval_X, Polynomial.eval_C]
+      change natMaxCode (acc', item') + 1 ≤
+        acc' + 1 + (EncodedType.list EncodedType.nat).inputSize source + 1
+      rw [natMaxCode_eq_max acc' item']
+      have hMaxLe : Nat.max acc' item' ≤ acc' + item' :=
+        max_le_iff.mpr ⟨by omega, by omega⟩
       omega
   convert hFold using 1
   funext xs
@@ -456,7 +462,10 @@ length at most `maxArity`, and stays polynomially bounded on every input. -/
 def listPairEncodeClamped (maxArity : Nat) (vars : List Nat) : Nat :=
   (Program.contextListMapExecutable (C := EncodedType.nat) (X := EncodedType.nat)
     ((varsMaxCode vars + 2) ^ (2 ^ (maxArity + 1)), vars.reverse)).foldl
-      (fun acc item => if acc ≤ item.1 then Nat.pair item.2 acc + 1 else acc) 0
+      (fun acc item =>
+        match natLeBool (acc, item.1) with
+        | true => Nat.pair item.2 acc + 1
+        | false => acc) 0
 
 /-- The clamped list code agrees with the list-pair code on length-bounded lists. -/
 theorem listPairEncodeClamped_eq_listPairEncode {maxArity : Nat} {vars : List Nat}
@@ -481,7 +490,10 @@ theorem listPairEncodeClamped_eq_listPairEncode {maxArity : Nat} {vars : List Na
       (∀ v ∈ ℓ, v + 2 ≤ M) →
       ∀ acc : Nat, acc ≤ M ^ (2 ^ (k + 2) - 2) →
         (ℓ.map (fun v : Nat => (threshold, v))).foldl
-          (fun acc item => if acc ≤ item.1 then Nat.pair item.2 acc + 1 else acc) acc =
+          (fun acc item =>
+            match natLeBool (acc, item.1) with
+            | true => Nat.pair item.2 acc + 1
+            | false => acc) acc =
         ℓ.foldl (fun acc x => Nat.pair x acc + 1) acc := by
     intro ℓ
     induction ℓ with
@@ -548,9 +560,13 @@ theorem listPairEncodeClamped_eq_listPairEncode {maxArity : Nat} {vars : List Na
           have hSq : (Nat.max v acc + 1) ^ 2 ≤ (acc + v + 1) ^ 2 := by
             exact Nat.pow_le_pow_left (by omega) 2
           exact Nat.le_trans hPair (Nat.le_trans hSq hMainBound)
-        have hStepVal : (if acc ≤ (threshold, v).1 then Nat.pair (threshold, v).2 acc + 1 else acc)
-            = Nat.pair v acc + 1 := by
-          simp [hStep]
+        have hStepVal : (match natLeBool (acc, (threshold, v).1) with
+            | true => Nat.pair (threshold, v).2 acc + 1
+            | false => acc) = Nat.pair v acc + 1 := by
+          have hLe : natLeBool (acc, (threshold, v).1) = true := by
+            unfold natLeBool
+            simp [ComplexityReduction.natLtBool, Nat.lt_succ_of_le hStep]
+          simp [hLe]
         -- unfold the fold over the cons
         rw [List.map_cons, List.foldl_cons]
         rw [hStepVal]
@@ -602,12 +618,32 @@ noncomputable def rowsOfCode {Γ' Γ : Gamma} (interpretation : LanguageInterpre
     rowsOfSymbol interpretation (Presentation.FiniteDomainCSPTable.relationSymbol Γ' ⟨code, h⟩)
   else []
 
+/-- A fixed finite lookup table for source relation codes. -/
+noncomputable def rowsLookup {Γ' Γ : Gamma} (interpretation : LanguageInterpretation Γ' Γ) :
+    List Nat → Nat → List (Nat × List (Bool × Nat))
+  | [], _ => []
+  | candidate :: candidates, code =>
+      if code = candidate then rowsOfCode interpretation candidate
+      else rowsLookup interpretation candidates code
+
 /-- The rows of a source relation code, by fixed finite lookup over the code range. -/
 noncomputable def rowsByCode {Γ' Γ : Gamma} (interpretation : LanguageInterpretation Γ' Γ)
     (code : Nat) : List (Nat × List (Bool × Nat)) :=
-  (List.range (Fintype.card Γ'.Symbol)).foldl
-    (fun acc c => if code = c then rowsOfCode interpretation c else acc)
-    (rowsOfCode interpretation 0)
+  rowsLookup interpretation (List.range (Fintype.card Γ'.Symbol)) code
+
+theorem rowsLookup_append_of_forall_ne {Γ' Γ : Gamma}
+    (interpretation : LanguageInterpretation Γ' Γ) (initial suffix : List Nat) (code : Nat)
+    (notInInitial : ∀ candidate ∈ initial, code ≠ candidate) :
+    rowsLookup interpretation (initial ++ suffix) code =
+      rowsLookup interpretation suffix code := by
+  induction initial with
+  | nil => rfl
+  | cons candidate candidates inductionHypothesis =>
+      have hNe : code ≠ candidate := notInInitial candidate (by simp)
+      have hTail : ∀ other ∈ candidates, code ≠ other := by
+        intro other member
+        exact notInInitial other (by simp [member])
+      simp [rowsLookup, hNe, inductionHypothesis hTail]
 
 /-- Splitting a range at a fixed code: `range n = range code ++ [code] ++ shifted tail`. -/
 theorem range_split (n code : Nat) (h : code < n) :
@@ -655,42 +691,15 @@ theorem rowsByCode_eq_rowsOfSymbol {Γ' Γ : Gamma} (interpretation : LanguageIn
     rw [dif_pos hCodeLt]
     congr 1
     exact Presentation.FiniteDomainCSPTable.relationSymbol_relationIndex Γ' symbol
-  -- every other code in the range is skipped
-  have hSkip : ∀ {acc : List (Nat × List (Bool × Nat))} {rest : List Nat},
-      (∀ d ∈ rest, d ≠ code) →
-        rest.foldl (fun acc c => if code = c then rowsOfCode interpretation c else acc) acc = acc := by
-    intro acc rest hAll
-    induction rest with
-    | nil => rfl
-    | cons d ds ih =>
-        have hd : code ≠ d := fun hEq => hAll d (by simp) hEq.symm
-        simp [hd, ih (fun e he => hAll e (by simp [he]))]
-  have hSplit : List.range (Fintype.card Γ'.Symbol) =
-      List.range code ++ [code] ++
-        (List.range (Fintype.card Γ'.Symbol - code - 1)).map (fun i => i + code + 1) :=
-    range_split (Fintype.card Γ'.Symbol) code hCodeLt
-  rw [hSplit]
-  rw [List.foldl_append, List.foldl_append]
-  -- the prefix before the match keeps the default
-  have hAllBefore : ∀ d ∈ List.range code, d ≠ code := by
-    intro d hd
-    have hd' : d < code := List.mem_range.mp hd
+  rw [range_split (Fintype.card Γ'.Symbol) code hCodeLt]
+  rw [List.append_assoc]
+  rw [rowsLookup_append_of_forall_ne interpretation (List.range code)]
+  · have hCodeEq : Presentation.FiniteDomainCSPTable.relationCode Γ' symbol = code := rfl
+    rw [hCodeEq]
+    simp [rowsLookup, hFound]
+  · intro candidate member
+    have hCandidate : candidate < code := List.mem_range.mp member
     omega
-  rw [hSkip (rest := List.range code)]
-  -- the match
-  have hMid : (fun acc c => if code = c then rowsOfCode interpretation c else acc)
-      (rowsOfCode interpretation 0) code = rowsOfSymbol interpretation symbol := by
-    simp [hFound]
-  simp [hMid]
-  -- the suffix after the match keeps the rows
-  have hAllAfter : ∀ d ∈ (List.range (Fintype.card Γ'.Symbol - code - 1)).map (fun i => i + code + 1),
-      d ≠ code := by
-    intro d hd
-    rcases List.mem_map.mp hd with ⟨i, hi, rfl⟩
-    have hi' : i < Fintype.card Γ'.Symbol - code - 1 := List.mem_range.mp hi
-    omega
-  rw [hSkip (rest := (List.range (Fintype.card Γ'.Symbol - code - 1)).map (fun i => i + code + 1))]
-  rfl
 
 /-! ### Code-level instantiation -/
 
@@ -712,7 +721,7 @@ def instantiateRow (maxArity : Nat) :
 noncomputable def instantiateCode {Γ' Γ : Gamma} (interpretation : LanguageInterpretation Γ' Γ)
     (reference symbolCode : Nat) (vars : List Nat) : List (Nat × List Nat) :=
   (rowsByCode interpretation symbolCode).map (fun row =>
-    instantiateRow (maxRelationArity Γ') (reference, (symbolCode, vars), row))
+    instantiateRow (maxRelationArity Γ') ((reference, (symbolCode, vars)), row))
 
 /-- The code-level substitution of a whole formula code. -/
 noncomputable def interpretCode {Γ' Γ : Gamma} (interpretation : LanguageInterpretation Γ' Γ)
@@ -732,100 +741,49 @@ theorem instantiateVarCode_eq_instantiateVar {Γ' Γ : Gamma}
     instantiateVarCode (maxRelationArity Γ') reference
         (Presentation.FiniteDomainCSPTable.relationCode Γ' constraint.symbol)
         constraint.varsList
-        (gadgetRow (interpretation.gadgetOf constraint.symbol) d).2[j.val] =
+        (if h : d.vars j ∈ Set.range (interpretation.gadgetOf constraint.symbol).outputs then
+          (true, (Classical.choose h).val)
+        else (false, d.vars j)) =
       instantiateVar interpretation reference constraint (d.vars j) := by
   classical
-  let gadget := interpretation.gadgetOf constraint.symbol
-  unfold instantiateVarCode gadgetRow instantiateVar freshVar constraintKey
-  by_cases hMem : d.vars j ∈ Set.range gadget.outputs
-  · have hEntry : (List.ofFn (fun k : Fin (Γ.relationOf d.symbol).arity =>
-        if h : d.vars k ∈ Set.range gadget.outputs then
-          (true, (Classical.choose h).val)
-        else (false, d.vars k)))[j.val] =
-        (true, (Classical.choose hMem).val) := by
-      rw [List.getElem_ofFn]
-      simp [hMem]
-    have hSelect : (fun p : Bool × Nat => if p.1 then constraint.varsList.getD p.2 0 else
-        reference + Nat.pair (Nat.pair (Presentation.FiniteDomainCSPTable.relationCode Γ' constraint.symbol)
-          (listPairEncodeClamped (maxRelationArity Γ') constraint.varsList)) p.2 + 1)
-          (true, (Classical.choose hMem).val) = constraint.varsList.getD (Classical.choose hMem).val 0 := by
-      simp
-    have hChoose : (Classical.choose hMem).val < constraint.varsList.length := by
-      have hlt : (Classical.choose hMem).val < (Γ'.relationOf constraint.symbol).arity :=
-        (Classical.choose hMem).isLt
-      simpa using hlt
+  by_cases hMem : d.vars j ∈
+      Set.range (interpretation.gadgetOf constraint.symbol).outputs
+  · have hChoose : (Classical.choose hMem).val < constraint.varsList.length := by
+      simpa [Constraint.varsList] using (Classical.choose hMem).isLt
     have hGetD : constraint.varsList.getD (Classical.choose hMem).val 0 =
         constraint.vars (Classical.choose hMem) := by
       rw [List.getD_eq_getElem constraint.varsList 0 hChoose]
-      rw [Constraint.varsList]
-      simp
-    rw [dif_pos hMem]
-    rw [hSelect, hGetD]
-  · have hEntry : (List.ofFn (fun k : Fin (Γ.relationOf d.symbol).arity =>
-        if h : d.vars k ∈ Set.range gadget.outputs then
-          (true, (Classical.choose h).val)
-        else (false, d.vars k)))[j.val] = (false, d.vars j) := by
-      rw [List.getElem_ofFn]
-      simp [hMem]
-    have hCode : listPairEncodeClamped (maxRelationArity Γ') constraint.varsList =
+      simp [Constraint.varsList]
+    unfold instantiateVarCode instantiateVar
+    simp only [hMem, dif_pos, Bool.if_true_right]
+    exact hGetD
+  · have hCode : listPairEncodeClamped (maxRelationArity Γ') constraint.varsList =
         listPairEncode constraint.varsList :=
       listPairEncodeClamped_eq_listPairEncode
         (varsList_length_le_maxRelationArity constraint)
-    have hSelect : (fun p : Bool × Nat => if p.1 then constraint.varsList.getD p.2 0 else
-        reference + Nat.pair (Nat.pair (Presentation.FiniteDomainCSPTable.relationCode Γ' constraint.symbol)
-          (listPairEncodeClamped (maxRelationArity Γ') constraint.varsList)) p.2 + 1)
-        (false, d.vars j) =
-        reference + Nat.pair (Nat.pair (Presentation.FiniteDomainCSPTable.relationCode Γ' constraint.symbol)
-          (listPairEncode constraint.varsList)) (d.vars j) + 1 := by
-      simp [hCode]
-    rw [dif_neg hMem]
-    rw [hSelect]
-    rfl
+    unfold instantiateVarCode instantiateVar freshVar constraintKey
+    simp [hMem, hCode]
 
 /-- One gadget row's code equals the code of its instantiated constraint. -/
 theorem instantiateRow_eq_constraintCode {Γ' Γ : Gamma}
     (interpretation : LanguageInterpretation Γ' Γ)
     {constraint : Constraint Γ'} (reference : Nat) {d : Constraint Γ}
     (dMember : d ∈ (interpretation.gadgetOf constraint.symbol).formula) :
-    instantiateRow (maxRelationArity Γ') (reference,
+    instantiateRow (maxRelationArity Γ') ((reference,
         (Presentation.FiniteDomainCSPTable.relationCode Γ' constraint.symbol,
-        constraint.varsList), gadgetRow (interpretation.gadgetOf constraint.symbol) d) =
-      constraintCode { symbol := d.symbol
-        vars := fun j => instantiateVar interpretation reference constraint (d.vars j) } := by
+        constraint.varsList)), gadgetRow (interpretation.gadgetOf constraint.symbol) d) =
+      constraintCode { symbol := d.symbol, vars := fun j => instantiateVar interpretation reference constraint (d.vars j) } := by
   classical
   unfold instantiateRow
   apply Prod.ext
   · rfl
   · -- both variable lists agree entrywise
-    have hMapOfFn :
-        (List.ofFn (fun k : Fin (Γ.relationOf d.symbol).arity =>
-          if h : d.vars k ∈ Set.range (interpretation.gadgetOf constraint.symbol).outputs then
-            (true, (Classical.choose h).val)
-          else (false, d.vars k))).map (fun position =>
-            instantiateVarCode (maxRelationArity Γ') reference
-              (Presentation.FiniteDomainCSPTable.relationCode Γ' constraint.symbol)
-              constraint.varsList position) =
-          List.ofFn (fun k : Fin (Γ.relationOf d.symbol).arity =>
-            instantiateVarCode (maxRelationArity Γ') reference
-              (Presentation.FiniteDomainCSPTable.relationCode Γ' constraint.symbol)
-              constraint.varsList
-              (if h : d.vars k ∈ Set.range (interpretation.gadgetOf constraint.symbol).outputs then
-                (true, (Classical.choose h).val)
-              else (false, d.vars k))) := by
-      rw [List.map_ofFn]
-    rw [hMapOfFn]
-    -- the semantic varsList is the same ofFn of the semantic instantiation
-    have hVarsList : Constraint.varsList
-        { symbol := d.symbol
-          vars := fun j => instantiateVar interpretation reference constraint (d.vars j) } =
-        List.ofFn (fun j : Fin (Γ.relationOf d.symbol).arity =>
-          instantiateVar interpretation reference constraint (d.vars j)) := by
-      rfl
-    rw [hVarsList]
-    congr 1
+    simp only [gadgetRow, constraintCode, Constraint.varsList, List.map_ofFn]
+    apply congrArg List.ofFn
     funext k
-    exact instantiateVarCode_eq_instantiateVar interpretation (constraint := constraint) reference
-      (d := d) dMember k
+    simpa [Function.comp_apply] using
+      (instantiateVarCode_eq_instantiateVar interpretation (constraint := constraint) reference
+        (d := d) dMember k)
 
 /-- The code-level instantiation agrees with the semantic one, per constraint. -/
 theorem instantiateCode_eq_formulaCode {Γ' Γ : Gamma}
@@ -838,7 +796,9 @@ theorem instantiateCode_eq_formulaCode {Γ' Γ : Gamma}
   classical
   unfold instantiateCode
   rw [rowsByCode_eq_rowsOfSymbol]
-  unfold rowsOfSymbol formulaCode
+  unfold rowsOfSymbol formulaCode instantiate
+  rw [List.map_map]
+  rw [List.map_map]
   apply List.map_congr_left
   intro d dMember
   exact instantiateRow_eq_constraintCode interpretation (constraint := constraint) reference
@@ -855,6 +815,7 @@ theorem interpretCode_eq_formulaCode {Γ' Γ : Gamma}
     exact codeMaxVar_eq_formulaMaxVar formula
   rw [hReference]
   rw [List.map_flatMap]
+  rw [List.flatMap_map]
   apply List.flatMap_congr
   intro constraint _
   exact instantiateCode_eq_formulaCode interpretation constraint (Formula.maxVar formula)
@@ -891,7 +852,9 @@ theorem listPairEncodeClamped_tmPolyTime (maxArity : Nat) :
   have hAttachedComp := TMPolyTimeMap.comp hAttached hAttachedInput
   -- the clamped fold step
   let step (p : Nat × (Nat × Nat)) : Nat :=
-    if p.1 ≤ p.2.1 then Nat.pair p.2.2 p.1 + 1 else p.1
+    match natLeBool (p.1, p.2.1) with
+    | true => Nat.pair p.2.2 p.1 + 1
+    | false => p.1
   have hStep : TMPolyTimeMap (EncodedType.prod EncodedType.nat Item) EncodedType.nat step := by
     let Input := EncodedType.prod EncodedType.nat Item
     have hAcc : TMPolyTimeMap Input EncodedType.nat (fun p : Nat × (Nat × Nat) => p.1) := by
@@ -939,60 +902,71 @@ theorem listPairEncodeClamped_tmPolyTime (maxArity : Nat) :
     have hComp := TMPolyTimeMap.comp hDispatch hFlagged
     simpa [step, Function.comp] using hComp
   rcases hStep with ⟨stepTM⟩
-  -- the explicit clamped bound: B(N) = ((N+2)^E + N + 2)^2 + 2
+  -- Once the threshold is attached, both the threshold and the next value are
+  -- bounded by the encoded source list itself.  Clamping therefore gives the
+  -- uniform quadratic accumulator bound B(N) = (N + 1)^2 + 1.
   let bound : Polynomial Nat :=
-    ((Polynomial.X + Polynomial.C 2) ^ E + Polynomial.X + Polynomial.C 2) ^ 2 + Polynomial.C 2
+    (Polynomial.X + Polynomial.C 1) ^ 2 + Polynomial.C 1
   have hFold : TMPolyTimeMap (EncodedType.list Item) EncodedType.nat
-      (fun xs : List Item.Carrier => xs.foldl step 0) := by
+      (fun xs : List Item.Carrier => xs.foldl (fun acc item => step (acc, item)) (0 : Nat)) := by
     refine TMPolyTimeMap.list_foldl_typed_bounded
-      Item EncodedType.nat step (0 : Nat) stepTM bound ?_ ?_
+      Item EncodedType.nat (fun p : Nat × (Nat × Nat) => step p) (0 : Nat) stepTM bound ?_ ?_
     · intro source
       simp [bound, Polynomial.eval_add, Polynomial.eval_pow, Polynomial.eval_X]
-      omega
     · intro source accumulator item accumulatorBound itemBound
       let N := (EncodedType.list Item).inputSize source
-      have hThrLe : item.1 ≤ N := by
+      let accumulator' : Nat := accumulator
+      let threshold : Nat := item.1
+      let value : Nat := item.2
+      have hThrLe : threshold ≤ N := by
         have hsub : Item.inputSize item ≤ N := by simpa [N] using itemBound
-        rw [EncodedType.inputSize_prod] at hsub
+        simp [Item, EncodedType.inputSize_prod, EncodedType.inputSize_nat,
+          threshold, value] at hsub
         omega
-      have hValLe : item.2 ≤ N := by
+      have hValLe : value ≤ N := by
         have hsub : Item.inputSize item ≤ N := by simpa [N] using itemBound
-        rw [EncodedType.inputSize_prod] at hsub
+        simp [Item, EncodedType.inputSize_prod, EncodedType.inputSize_nat,
+          threshold, value] at hsub
         omega
-      by_cases hLe : accumulator ≤ item.1
+      by_cases hLe : accumulator' ≤ threshold
       · -- the clamped branch: pair item.2 accumulator + 1
-        have hPair : Nat.pair item.2 accumulator + 1 ≤ (Nat.max item.2 accumulator + 1) ^ 2 :=
-          Nat.pair_lt_max_add_one_sq item.2 accumulator
-        have hAccN : accumulator ≤ N := by
+        have hPair : Nat.pair value accumulator' + 1 ≤ (Nat.max value accumulator' + 1) ^ 2 :=
+          Nat.pair_lt_max_add_one_sq value accumulator'
+        have hAccN : accumulator' ≤ N := by
           exact Nat.le_trans hLe (by simpa [N] using hThrLe)
-        have hOut : Nat.pair item.2 accumulator + 1 ≤ (2 * N + 1) ^ 2 := by
-          have hsum : item.2 + accumulator + 1 ≤ 2 * N + 1 := by omega
-          have hpow : (item.2 + accumulator + 1) ^ 2 ≤ (2 * N + 1) ^ 2 :=
-            Nat.pow_le_pow_left hsum 2
+        have hMaxN : Nat.max value accumulator' ≤ N :=
+          max_le (by simpa [N] using hValLe) hAccN
+        have hPow : (Nat.max value accumulator' + 1) ^ 2 ≤ (N + 1) ^ 2 :=
+          Nat.pow_le_pow_left (by omega) 2
+        have hOut : Nat.pair value accumulator' + 2 ≤ (N + 1) ^ 2 + 1 := by
           omega
-        have hB : (2 * N + 1) ^ 2 ≤ bound.eval N := by
-          have hEne0 : E ≠ 0 := by
-            unfold E
-            exact Nat.pow_ne_zero _ (by omega : 2 ≠ 0)
-          have hBaseLe : N + 2 ≤ (N + 2) ^ E := le_self_pow (by omega) hEne0
-          have hTwo : 2 * N + 1 ≤ (N + 2) ^ E + N + 2 := by omega
-          have hSqB : (2 * N + 1) ^ 2 ≤ ((N + 2) ^ E + N + 2) ^ 2 :=
-            Nat.pow_le_pow_left hTwo 2
-          have hBound : ((N + 2) ^ E + N + 2) ^ 2 ≤ bound.eval N := by
-            simp [bound, Polynomial.eval_add, Polynomial.eval_pow, Polynomial.eval_X]
-            omega
-          exact Nat.le_trans hSqB hBound
-        -- inputSize of the output nat is the value plus one
-        have hSize : (EncodedType.nat).inputSize (Nat.pair item.2 accumulator + 1) =
-            Nat.pair item.2 accumulator + 2 := by
-          simp [EncodedType.inputSize_nat]
-        rw [hSize]
-        omega
+        have hStepEq : step (accumulator, item) = Nat.pair value accumulator' + 1 := by
+          unfold step
+          have hBool : natLeBool (accumulator', threshold) = true := by
+            unfold natLeBool
+            simp [ComplexityReduction.natLtBool, Nat.lt_succ_of_le hLe]
+          change (match natLeBool (accumulator', threshold) with
+            | true => Nat.pair value accumulator' + 1
+            | false => accumulator') = Nat.pair value accumulator' + 1
+          rw [hBool]
+        change EncodedType.nat.inputSize (step (accumulator, item)) ≤ bound.eval N
+        rw [hStepEq]
+        simpa [EncodedType.inputSize_nat, bound, Polynomial.eval_add,
+          Polynomial.eval_pow, Polynomial.eval_X] using hOut
       · -- the unclamped branch keeps the accumulator
-        have hSize : (EncodedType.nat).inputSize accumulator = accumulator + 1 := by
-          simp [EncodedType.inputSize_nat]
-        rw [hSize]
-        omega
+        have hStepEq : step (accumulator, item) = accumulator := by
+          unfold step
+          have hBool : natLeBool (accumulator', threshold) = false := by
+            unfold natLeBool
+            simp [ComplexityReduction.natLtBool]
+            omega
+          change (match natLeBool (accumulator', threshold) with
+            | true => Nat.pair value accumulator' + 1
+            | false => accumulator') = accumulator'
+          rw [hBool]
+        change EncodedType.nat.inputSize (step (accumulator, item)) ≤ bound.eval N
+        rw [hStepEq]
+        simpa [N] using accumulatorBound
   have hComp := TMPolyTimeMap.comp hFold hAttachedComp
   -- the composed map is exactly the clamped list code
   simpa [listPairEncodeClamped, step, Function.comp] using hComp
@@ -1005,44 +979,48 @@ theorem rowsByCode_tmPolyTime {Γ' Γ : Gamma} (interpretation : LanguageInterpr
       (EncodedType.list (EncodedType.prod EncodedType.nat
         (EncodedType.list (EncodedType.prod EncodedType.bool EncodedType.nat))))
       (rowsByCode interpretation) := by
+  classical
   let Row := EncodedType.prod EncodedType.nat
     (EncodedType.list (EncodedType.prod EncodedType.bool EncodedType.nat))
   let Table := EncodedType.list Row
-  let rows := rowsOfCode interpretation
-  have hLookup : ∀ codes : List Nat, TMPolyTimeMap EncodedType.nat Table
-      (fun code : Nat => codes.foldl
-        (fun acc c => if code = c then rows c else acc) (rows 0)) := by
-    intro codes
-    induction codes with
+  have hLookup : ∀ candidates : List Nat,
+      TMPolyTimeMap EncodedType.nat Table (rowsLookup interpretation candidates) := by
+    intro candidates
+    induction candidates with
     | nil =>
-        simpa using (TMPolyTimeMap.const EncodedType.nat Table (rows 0) :
-          TMPolyTimeMap EncodedType.nat Table (fun _ : Nat => rows 0))
-    | cons c cs ih =>
+        simpa [rowsLookup, Table, Row] using
+          (TMPolyTimeMap.const EncodedType.nat Table
+            ([] : List (Nat × List (Bool × Nat))))
+    | cons candidate candidates inductionHypothesis =>
+        have hCandidate : TMPolyTimeMap EncodedType.nat EncodedType.nat
+            (fun _ : Nat => candidate) :=
+          TMPolyTimeMap.const EncodedType.nat EncodedType.nat candidate
+        have hEqInput : TMPolyTimeMap EncodedType.nat
+            (EncodedType.prod EncodedType.nat EncodedType.nat)
+            (fun code : Nat => (code, candidate)) :=
+          TMPolyTimeMap.prod_mk (TMPolyTimeMap.id EncodedType.nat) hCandidate
         have hEq : TMPolyTimeMap EncodedType.nat EncodedType.bool
-            (fun code : Nat => decide (code = c)) := by
-          have hInput : TMPolyTimeMap EncodedType.nat
-              (EncodedType.prod EncodedType.nat EncodedType.nat)
-              (fun code : Nat => (code, c)) :=
-            TMPolyTimeMap.prod_mk (TMPolyTimeMap.id EncodedType.nat)
-              (TMPolyTimeMap.const EncodedType.nat EncodedType.nat c)
-          have hComp := TMPolyTimeMap.comp TMPolyTimeMap.nat_eq hInput
+            (fun code : Nat => decide (code = candidate)) := by
+          have hComp := TMPolyTimeMap.comp TMPolyTimeMap.nat_eq hEqInput
           simpa [Function.comp] using hComp
-        have hConst : TMPolyTimeMap EncodedType.nat Table
-            (fun _ : Nat => rows c) :=
-          TMPolyTimeMap.const EncodedType.nat Table (rows c)
-        have hFlagged : TMPolyTimeMap EncodedType.nat
+        have hRows : TMPolyTimeMap EncodedType.nat Table
+            (fun _ : Nat => rowsOfCode interpretation candidate) :=
+          TMPolyTimeMap.const EncodedType.nat Table (rowsOfCode interpretation candidate)
+        have hTagged : TMPolyTimeMap EncodedType.nat
             (EncodedType.prod EncodedType.bool EncodedType.nat)
-            (fun code : Nat => (decide (code = c), code)) :=
+            (fun code : Nat => (decide (code = candidate), code)) :=
           TMPolyTimeMap.prod_mk hEq (TMPolyTimeMap.id EncodedType.nat)
         have hDispatch := ComplexityReduction.boolProduct_dispatch_tm_polytime
           EncodedType.nat Table
-          (fFalse := fun code : Nat => cs.foldl
-            (fun acc d => if code = d then rows d else acc) (rows 0))
-          (fTrue := fun _ : Nat => rows c)
-          ih hConst
-        have hComp := TMPolyTimeMap.comp hDispatch hFlagged
-        simpa [List.foldl_cons, Function.comp] using hComp
-  simpa [rowsByCode, rows] using hLookup (List.range (Fintype.card Γ'.Symbol))
+          (fFalse := rowsLookup interpretation candidates)
+          (fTrue := fun _ : Nat => rowsOfCode interpretation candidate)
+          inductionHypothesis hRows
+        have hComp := TMPolyTimeMap.comp hDispatch hTagged
+        convert hComp using 1
+        funext code
+        by_cases h : code = candidate <;>
+          simp [rowsLookup, Function.comp, h]
+  simpa [rowsByCode] using hLookup (List.range (Fintype.card Γ'.Symbol))
 
 /-- The per-position instantiation step is direct-TM polynomial time. -/
 theorem instantiateVarCode_tmPolyTime (maxArity : Nat) :
@@ -1065,13 +1043,15 @@ theorem instantiateVarCode_tmPolyTime (maxArity : Nat) :
   have hSymbolCode : TMPolyTimeMap X EncodedType.nat
       (fun p : (Nat × (Nat × List Nat)) × (Bool × Nat) => p.1.2.1) := by
     have h1 := TMPolyTimeMap.comp (TMPolyTimeMap.fst EncodedType.nat (EncodedType.list EncodedType.nat))
-      (TMPolyTimeMap.snd Input Position)
+      (TMPolyTimeMap.snd EncodedType.nat
+        (EncodedType.prod EncodedType.nat (EncodedType.list EncodedType.nat)))
     have h2 := TMPolyTimeMap.comp h1 (TMPolyTimeMap.fst Input Position)
     simpa [X, Input, Function.comp] using h2
   have hVars : TMPolyTimeMap X (EncodedType.list EncodedType.nat)
       (fun p : (Nat × (Nat × List Nat)) × (Bool × Nat) => p.1.2.2) := by
     have h1 := TMPolyTimeMap.comp (TMPolyTimeMap.snd EncodedType.nat (EncodedType.list EncodedType.nat))
-      (TMPolyTimeMap.snd Input Position)
+      (TMPolyTimeMap.snd EncodedType.nat
+        (EncodedType.prod EncodedType.nat (EncodedType.list EncodedType.nat)))
     have h2 := TMPolyTimeMap.comp h1 (TMPolyTimeMap.fst Input Position)
     simpa [X, Input, Function.comp] using h2
   have hFlag : TMPolyTimeMap X EncodedType.bool
@@ -1088,7 +1068,8 @@ theorem instantiateVarCode_tmPolyTime (maxArity : Nat) :
   have hGetDInput : TMPolyTimeMap X (EncodedType.prod (EncodedType.list EncodedType.nat) EncodedType.nat)
       (fun p : (Nat × (Nat × List Nat)) × (Bool × Nat) => (p.1.2.2, p.2.2)) :=
     TMPolyTimeMap.prod_mk hVars hValue
-  have hGetD := TMPolyTimeMap.comp (Karp21.EncodedListLookup.getD_tm_polytime EncodedType.nat 0) hGetDInput
+  have hGetD := TMPolyTimeMap.comp
+    (Karp21.EncodedListLookup.getD_tm_polytime EncodedType.nat (0 : Nat)) hGetDInput
   -- listPairEncodeClamped vars
   have hListPair := TMPolyTimeMap.comp (listPairEncodeClamped_tmPolyTime maxArity) hVars
   -- fresh branch: reference + pair (pair symbolCode (listPairEncodeClamped vars)) value + 1
@@ -1110,7 +1091,9 @@ theorem instantiateVarCode_tmPolyTime (maxArity : Nat) :
           (p.1.1, Nat.pair (Nat.pair p.1.2.1 (listPairEncodeClamped maxArity p.1.2.2)) p.2.2)) :=
       TMPolyTimeMap.prod_mk hReference hPairOuter
     have hAdd := TMPolyTimeMap.comp ComplexityReduction.natAdd_tm_polytime hAddInput
-    simpa [Function.comp] using hAdd
+    convert hAdd using 1
+    funext p
+    simp [Function.comp, Nat.add_comm]
   have hFresh := TMPolyTimeMap.comp (ComplexityReduction.nat_add_const_tm_polytime 1) hAddReference
   -- dispatch on the flag
   have hFlagged : TMPolyTimeMap X (EncodedType.prod EncodedType.bool
@@ -1121,11 +1104,14 @@ theorem instantiateVarCode_tmPolyTime (maxArity : Nat) :
     TMPolyTimeMap.prod_mk hFlag (TMPolyTimeMap.prod_mk hGetD hFresh)
   have hDispatch := ComplexityReduction.boolProduct_dispatch_tm_polytime
     (EncodedType.prod EncodedType.nat EncodedType.nat) EncodedType.nat
-    (fFalse := fun p : Nat × Nat => p.1) (fTrue := fun p : Nat × Nat => p.2)
-    (TMPolyTimeMap.fst EncodedType.nat EncodedType.nat)
+    (fFalse := fun p : Nat × Nat => p.2) (fTrue := fun p : Nat × Nat => p.1)
     (TMPolyTimeMap.snd EncodedType.nat EncodedType.nat)
+    (TMPolyTimeMap.fst EncodedType.nat EncodedType.nat)
   have hComp := TMPolyTimeMap.comp hDispatch hFlagged
-  simpa [instantiateVarCode, Function.comp] using hComp
+  convert hComp using 1
+  funext p
+  cases h : p.2.1 <;> simp [instantiateVarCode, Function.comp, h]
+  omega
 
 /-- One row instantiation is direct-TM polynomial time. -/
 theorem instantiateRow_tmPolyTime (maxArity : Nat) :
@@ -1171,7 +1157,17 @@ theorem instantiateRow_tmPolyTime (maxArity : Nat) :
       (TMPolyTimeMap.snd Input Row)
     simpa [X, Input, Function.comp] using h
   have hFinal := TMPolyTimeMap.prod_mk hCode hMappedComp
-  simpa [instantiateRow, Function.comp] using hFinal
+  convert hFinal using 1
+  funext p
+  simp only [Function.comp_apply]
+  change instantiateRow maxArity p =
+    (p.2.1, (Program.contextListMapExecutable (C := Input) (X := Position)
+      (p.1, p.2.2)).map (fun q =>
+        instantiateVarCode maxArity q.1.1 q.1.2.1 q.1.2.2 q.2))
+  rw [Program.contextListMapExecutable_eq_map (C := Input) (X := Position) p.1 p.2.2]
+  rcases p with ⟨⟨reference, symbolCode, vars⟩, rowCode, positions⟩
+  simp only [instantiateRow, List.map_map]
+  congr 1
 
 /-- The code-level instantiation of one constraint is direct-TM polynomial time. -/
 theorem instantiateCode_tmPolyTime {Γ' Γ : Gamma}
@@ -1206,7 +1202,26 @@ theorem instantiateCode_tmPolyTime {Γ' Γ : Gamma}
     simpa [Input, Row, Code] using instantiateRow_tmPolyTime (maxRelationArity Γ')
   have hMapped := TMPolyTimeMap.list_map hPerRow
   have hComp := TMPolyTimeMap.comp hMapped hAttachedComp
-  simpa [instantiateCode, rowsByCode, Function.comp] using hComp
+  convert hComp using 1
+  funext input
+  simp only [Function.comp_apply]
+  change instantiateCode interpretation input.1 input.2.1 input.2.2 =
+    (Program.contextListMapExecutable (C := Input) (X := Row)
+      (input, rowsByCode interpretation input.2.1)).map
+        (fun p => instantiateRow (maxRelationArity Γ') p)
+  rw [Program.contextListMapExecutable_eq_map (C := Input) (X := Row)
+    input (rowsByCode interpretation input.2.1)]
+  rcases input with ⟨reference, symbolCode, vars⟩
+  change
+    (rowsByCode interpretation symbolCode).map (fun row =>
+      instantiateRow (maxRelationArity Γ') ((reference, (symbolCode, vars)), row)) =
+    ((rowsByCode interpretation symbolCode).map (fun element =>
+      ((reference, (symbolCode, vars)), element))).map
+        (fun p => instantiateRow (maxRelationArity Γ') p)
+  rw [List.map_map]
+  apply List.map_congr_left
+  intro row _
+  rfl
 
 /-- The code-level substitution is direct-TM polynomial time. -/
 theorem interpretCode_tmPolyTime {Γ' Γ : Gamma}
@@ -1235,7 +1250,18 @@ theorem interpretCode_tmPolyTime {Γ' Γ : Gamma}
   -- flatten
   have hFlatten := Program.listFlatten_tmPolyTime Code
   have hComp := TMPolyTimeMap.comp hFlatten hMappedComp
-  simpa [interpretCode, Function.comp] using hComp
+  convert hComp using 1
+  funext code
+  simp only [Function.comp_apply]
+  change interpretCode interpretation code =
+    ((Program.contextListMapExecutable (C := EncodedType.nat) (X := Code)
+      (codeMaxVar code, code)).map (fun p =>
+        instantiateCode interpretation p.1 p.2.1 p.2.2)).flatten
+  rw [Program.contextListMapExecutable_eq_map (C := EncodedType.nat) (X := Code)
+    (codeMaxVar code) code]
+  unfold interpretCode
+  rw [List.map_map]
+  rfl
 
 /-! ### The automatic transport -/
 
@@ -1251,7 +1277,11 @@ theorem interpretation_tmPolyTime {Γ' Γ : Gamma}
       (fun formula => formulaCode Γ' formula) := by
     exact TMPolyTimeMap.of_encodingEquiv (Presentation.FiniteDomainCSPTable.encodedType Γ')
       Presentation.FiniteDomainCSPTable.formulaCodeEncodedType
-      (fun formula => formulaCode Γ' formula) (Equiv.refl _) (by intro formula; rfl)
+      (fun formula => formulaCode Γ' formula) (Equiv.refl _) (by
+        intro formula
+        change formulaCodeEncodedType.encode (formulaCode Γ' formula) =
+          List.map id (formulaCodeEncodedType.encode (formulaCode Γ' formula))
+        rw [List.map_id])
   have hCode : TMPolyTimeMap (Presentation.FiniteDomainCSPTable.encodedType Γ')
       Presentation.FiniteDomainCSPTable.formulaCodeEncodedType
       (fun formula => interpretCode interpretation (formulaCode Γ' formula)) := by
@@ -1280,6 +1310,11 @@ theorem nPHard_of_interpretation_auto {Γ' Γ : Gamma}
     NativeTMNPHard (cspOf Γ) :=
   NativeTMNPHard.alongPath coreNPHard
     (CertifiedPath.step (certifiedReduction_of_interpretation_auto interpretation))
+
+assert_standard_axioms
+  interpretation_tmPolyTime,
+  certifiedReduction_of_interpretation_auto,
+  nPHard_of_interpretation_auto
 
 end
 

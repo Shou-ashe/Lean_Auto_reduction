@@ -15,12 +15,20 @@ from pathlib import Path
 import re
 from typing import Any, Mapping, Sequence
 
-from .np_hard_input import NPHardInputError
-from .np_hard_orchestrator import (
-    NPHardOrchestratorConfigV2,
-    NPHardOrchestratorError,
-    NPHardOrchestratorV2,
+from agent.reduction import (
+    PROFILE_NAMES,
+    ReductionOrchestrator,
+    ReductionOrchestratorConfig,
+    SearchBudget,
+    public_status,
 )
+
+# Compatibility names for callers that monkeypatch the historical adapter.
+NPHardOrchestratorV2 = ReductionOrchestrator
+NPHardOrchestratorConfigV2 = ReductionOrchestratorConfig
+
+from .np_hard_input import NPHardInputError
+from .np_hard_orchestrator import NPHardOrchestratorError
 from .np_hard_production import (
     load_np_hard_production_model_config,
     public_np_hard_status,
@@ -225,6 +233,7 @@ def _run_one(
     reasoning_effort: str | None,
     authoring_attempts: int | None,
     model_call_budget: int | None,
+    profile: str,
 ) -> dict[str, Any]:
     case_dir = (output_root / case.case_id).resolve()
     case_dir.mkdir(parents=True, exist_ok=True)
@@ -244,10 +253,18 @@ def _run_one(
                 input_module=case.module,
                 problem_declaration=case.problem,
                 output_dir=case_dir,
+                profile=profile,
                 lean_timeout_seconds=lean_timeout,
-                authoring_policy=authoring,
-                attempt_budget=authoring_attempts or 4,
-                call_budget=model_call_budget,
+                budget=SearchBudget(
+                    max_model_calls=(
+                        model_call_budget if model_call_budget is not None else 2
+                    )
+                ),
+                model_policy={
+                    "disabled": "disabled",
+                    "model-auto": "auto",
+                    "model-required": "required",
+                }[authoring],
                 deepseek=deepseek,
             )
         ).run()
@@ -263,6 +280,9 @@ def _run_one(
             "status": status,
             "failure_code": error.code,
             "model_calls": 0,
+            "model_http_ok": False,
+            "model_strategy_accepted": False,
+            "model_total_tokens": 0,
             "return_code": 1 if status.startswith("FAILED_") else 2,
             "timed_out": False,
             "elapsed_seconds": (datetime.now(timezone.utc) - started).total_seconds(),
@@ -272,16 +292,38 @@ def _run_one(
             "endpoint_equality_audit_passed": False,
         }
 
-    payload = result.to_dict()
-    identity = payload.get("input_identity") or {}
-    artifact = payload.get("artifact") or {}
-    replay = payload.get("independent_replay") or {}
-    axiom = payload.get("axiom_audit") or {}
-    status = public_np_hard_status(
-        internal_status=result.status,
-        failure_code=result.failure_code,
-        model_calls=result.model_calls,
-    )
+    if hasattr(result, "model_call_count"):
+        identity = result.input_identity or {}
+        status = public_status(result)
+        model_calls = result.model_call_count
+        replay_passed = result.independent_replay_passed
+        axiom_passed = result.axiom_audit_passed
+        endpoint_passed = result.endpoint_equality_audit_passed
+        records = result.model_calls
+        model_http_ok = bool(records) and all(
+            record.called and record.status_code == 200 for record in records
+        )
+        model_strategy_accepted = any(record.ok for record in records)
+        model_total_tokens = sum(
+            int((record.usage or {}).get("total_tokens", 0)) for record in records
+        )
+    else:
+        payload = result.to_dict()
+        identity = payload.get("input_identity") or {}
+        artifact = payload.get("artifact") or {}
+        replay_passed = (payload.get("independent_replay") or {}).get("passed") is True
+        axiom_passed = (payload.get("axiom_audit") or {}).get("passed") is True
+        endpoint_passed = artifact.get("endpoint") == identity.get("canonical_problem")
+        raw_model_calls = result.model_calls
+        model_calls = raw_model_calls if isinstance(raw_model_calls, int) else len(raw_model_calls)
+        status = public_np_hard_status(
+            internal_status=result.status,
+            failure_code=result.failure_code,
+            model_calls=model_calls,
+        )
+        model_http_ok = model_calls > 0
+        model_strategy_accepted = model_calls > 0
+        model_total_tokens = 0
     child_report_path = case_dir / "report.json"
     return {
         "case_id": case.case_id,
@@ -290,17 +332,20 @@ def _run_one(
         "problem": case.problem,
         "status": status,
         "failure_code": result.failure_code,
-        "model_calls": result.model_calls,
+        "model_calls": model_calls,
+        "model_http_ok": model_http_ok,
+        "model_strategy_accepted": model_strategy_accepted,
+        "model_total_tokens": model_total_tokens,
         "return_code": (
             0 if status == "VERIFIED" else (1 if status.startswith("FAILED_") else 2)
         ),
         "timed_out": False,
         "elapsed_seconds": (datetime.now(timezone.utc) - started).total_seconds(),
         "report": str(child_report_path) if child_report_path.exists() else None,
-        "independent_replay_passed": replay.get("passed") is True,
-        "axiom_audit_passed": axiom.get("passed") is True,
+        "independent_replay_passed": replay_passed,
+        "axiom_audit_passed": axiom_passed,
         "endpoint_equality_audit_passed": (
-            artifact.get("endpoint") == identity.get("canonical_problem")
+            endpoint_passed
             and identity.get("requested_declaration") == case.problem
             and identity.get("normalization_certificate") == "lean-checked-artifact"
         ),
@@ -325,11 +370,14 @@ def run_suite(
     reasoning_effort: str | None = None,
     authoring_attempts: int | None = None,
     model_call_budget: int | None = None,
+    profile: str = "benchmark",
 ) -> dict[str, Any]:
     """Run selected public cases without reading any scorer/oracle file."""
 
     if authoring not in {"disabled", "model-auto", "model-required"}:
         raise BooleanCSPBenchmarkError("unsupported authoring policy")
+    if profile not in PROFILE_NAMES:
+        raise BooleanCSPBenchmarkError("unsupported reduction profile")
     if jobs < 1 or lean_timeout < 1:
         raise BooleanCSPBenchmarkError("jobs and Lean timeout must be positive")
     root = root.resolve()
@@ -351,6 +399,7 @@ def run_suite(
         "reasoning_effort": reasoning_effort,
         "authoring_attempts": authoring_attempts,
         "model_call_budget": model_call_budget,
+        "profile": profile,
     }
     by_id: dict[str, dict[str, Any]] = {}
     with ThreadPoolExecutor(max_workers=min(jobs, len(selected))) as executor:
@@ -367,9 +416,26 @@ def run_suite(
         "suite_sha256": suite.sha256,
         "suite_file": str(suite.path),
         "authoring": authoring,
+        "profile": profile,
+        "external_model_payload": "opaque-candidate-metadata-only",
         "selected_case_ids": [case.case_id for case in selected],
         "started_case_count": len(selected),
         "completed_case_count": len(results),
+        "total_model_calls": sum(result["model_calls"] for result in results),
+        "model_called_case_count": sum(result["model_calls"] > 0 for result in results),
+        "model_http_ok_case_count": sum(result["model_http_ok"] for result in results),
+        "model_strategy_accepted_case_count": sum(
+            result["model_strategy_accepted"] for result in results
+        ),
+        "model_total_tokens": sum(result["model_total_tokens"] for result in results),
+        "required_model_call_coverage_passed": (
+            authoring != "model-required"
+            or all(result["model_calls"] > 0 for result in results)
+        ),
+        "required_model_http_coverage_passed": (
+            authoring != "model-required"
+            or all(result["model_http_ok"] for result in results)
+        ),
         "cases": results,
         "oracle_accessed": False,
     }
