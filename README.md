@@ -36,6 +36,43 @@ checks the exact canonical endpoint, independently replays the artifact, and aud
 returns a stable public status such as `VERIFIED`, `BLOCKED_NOT_TARGET`,
 `BLOCKED_MISSING_PREREQUISITE`, `FAILED_MODEL`, `FAILED_LEAN`, or `INPUT_ERROR`.
 
+## General generative NP-hard agent (new independent entry)
+
+`prove_np_hard_general.py` is the new problem-family-independent development
+line. It keeps the existing CLI and Boolean-CSP benchmark adapter unchanged,
+uses its own output/schema namespace, and separates kernel proof validity from
+generation classification and optional qualification:
+
+```bash
+python3 scripts/prove_np_hard_general.py \
+  --module Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case02PositiveNAE4 \
+  --problem Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case02PositiveNAE4.problem \
+  --strategy balanced \
+  --profile research \
+  --model-policy auto \
+  --plugins boolean_csp
+```
+
+Its stable schemas are `general_np_hard_request_v1`,
+`general_np_hard_result_v1`, and
+`general_np_hard_generation_evidence_v1`. The three result dimensions are:
+
+- `proof_status`: whether the exact root theorem passed Lean/kernel checks;
+- `solution_classification`: reuse, auxiliary generation, or a used new
+  `CertifiedReduction`;
+- `qualification_status`: optional strict-release/benchmark checks, which do
+  not overwrite a kernel-valid proof result.
+
+The default output prefix is `.reduction-agent/general-np-hard/`. Domain
+plugins are removable premise/observation extensions; the core Lean modules do
+not import the Boolean-CSP plugin.
+
+For route-ablation experiments, repeat `--forbid-declaration` with fully
+qualified Lean declaration names. Forbidden declarations are removed from the
+planner's candidates and checked again against the final theorem's transitive
+Lean dependency closure, so a generated alias or wrapper cannot bypass the
+restriction.
+
 ## Run benchmarks
 
 The repository has exactly one benchmark runner:

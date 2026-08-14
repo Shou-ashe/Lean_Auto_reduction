@@ -1,0 +1,117 @@
+{
+  "schema_version": "general_agent_boolean_csp_real_api_report_v1",
+  "passed": true,
+  "date": "2026-08-14",
+  "implementation": {
+    "python_entrypoint": "scripts/prove_np_hard_general.py",
+    "python_package": "agent/generative_reduction",
+    "lean_namespace": "ComplexityReduction.Agent.GenerativeReduction",
+    "stable_entrypoints": {
+      "scripts/prove_np_hard.py": "976dd31924a95e5810841f15c68b7c52e0d9f9811f9ee73f3e88fb9635437de1",
+      "agent/hardness/boolean_csp_np_hard_benchmark.py": "0cc7ce55a68faa2b0680dc6229e0d929c6e6abe76fcfec41e7ef8028889ac460"
+    }
+  },
+  "general_agent_smoke": {
+    "case_id": "q-b02-positive-nae4",
+    "report": "tmp/general-agent-smoke-case02-final-v2/report.json",
+    "proof_status": "VERIFIED",
+    "solution_classification": "VERIFIED_REUSE",
+    "qualification_status": "NOT_REQUESTED",
+    "model_call_count": 0,
+    "typed_candidate_count": 16,
+    "selected_declaration": "ComplexityReduction.Domain.BooleanCSP.Hardness.NativeTMNPHard_of_notSchaeferTractable",
+    "residual_obligation_count": 0,
+    "verification": {
+      "exact_type_verified": true,
+      "kernel_verified": true,
+      "axiom_audit_passed": true,
+      "independent_replay_passed": true,
+      "endpoint_equality_audit_passed": true,
+      "placeholder_scan_passed": true,
+      "same_index_audit_passed": true
+    }
+  },
+  "local_verification": {
+    "new_agent_unit_tests_passed": 10,
+    "related_regression_tests_passed": 21,
+    "persistent_lean_worker_test_passed": true,
+    "persistent_lean_worker_test_seconds": 673.37,
+    "lean_build_completed": true,
+    "lean_build_job_count": 3525,
+    "python_compileall_completed": true,
+    "git_diff_check_passed": true
+  },
+  "real_api_benchmark": {
+    "benchmark_id": "np-hard-real-reduction-v1",
+    "suite_id": "boolean-csp-np-hard-v1",
+    "suite_sha256": "sha256:f5127d4795a19f9f02ac18133d6dd5fdfb8d96d7c4d5a9bc76a1bcf97fea47a0",
+    "provider": "deepseek",
+    "base_url": "https://api.deepseek.com",
+    "model": "deepseek-v4-flash",
+    "reasoning_effort": "max",
+    "authoring": "model-required",
+    "profile": "benchmark",
+    "jobs": 4,
+    "selected_case_count": 20,
+    "started_case_count": 20,
+    "completed_case_count": 20,
+    "passed_case_count": 20,
+    "completion_rate": 1.0,
+    "run_valid": true,
+    "status_counts": {
+      "VERIFIED": 20
+    },
+    "failure_count": 0,
+    "timed_out_count": 0,
+    "total_model_calls": 20,
+    "model_called_case_count": 20,
+    "model_http_ok_case_count": 20,
+    "model_strategy_accepted_case_count": 20,
+    "required_model_call_coverage_passed": true,
+    "required_model_http_coverage_passed": true,
+    "http_status_counts": {
+      "200": 20
+    },
+    "attempt_counts": {
+      "1": 20
+    },
+    "call_purposes": {
+      "existing-route-review": 1,
+      "strategy-proposal": 19
+    },
+    "model_total_tokens": 13626,
+    "prompt_tokens": 5177,
+    "completion_tokens": 8449,
+    "reasoning_tokens": 7560,
+    "cached_prompt_tokens": 2176,
+    "model_duration_seconds": 81.715,
+    "wall_seconds": 3235.063,
+    "started_at_utc": "2026-08-14T09:15:33.025490+00:00",
+    "completed_at_utc": "2026-08-14T10:09:28.088542+00:00",
+    "oracle_accessed_during_run": false,
+    "external_model_payload": "opaque-candidate-metadata-only",
+    "run_report": ".reduction-agent/boolean-csp-active-plan-real-api-20260814-v1/boolean_csp/run_report.json",
+    "score_report": ".reduction-agent/boolean-csp-active-plan-real-api-20260814-v1/boolean_csp/score.json"
+  },
+  "formal_audits": {
+    "all_exact_types_verified": true,
+    "all_kernel_checks_passed": true,
+    "all_axiom_audits_passed": true,
+    "all_independent_replays_passed": true,
+    "all_endpoint_equality_audits_passed": true,
+    "all_scorer_cases_passed": true,
+    "scorer_oracle_sha256": "sha256:d12f52653e61577dcbc7236152567ab71f202ba38abced36b4ce39558224e2ae"
+  },
+  "regression_fixed_during_final_validation": {
+    "symptom": "NP-hard theorem probe source was None after adding the generic typed-goal probe",
+    "root_cause": "build_probe_source lost its return statement and an unreachable return was left in build_typed_goal_probe_source",
+    "fix": "restored the NP-hard probe return, removed unreachable code, and added a source-materialization regression test",
+    "benchmark_dependency_impact": false,
+    "benchmark_runner_imports_general_agent_package": false,
+    "post_fix_general_agent_end_to_end_passed": true,
+    "verified_by": [
+      "tests/test_generative_reduction.py",
+      "tmp/general-agent-smoke-case02-final-v2/report.json"
+    ]
+  }
+}
