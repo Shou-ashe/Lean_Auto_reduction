@@ -1,0 +1,108 @@
+{
+  "schema_version": "general_agent_boolean_csp20_dichotomy_free_real_api_report_v1",
+  "date": "2026-08-14",
+  "scope": {
+    "suite": "Boolean CSP NP-hard benchmark",
+    "selected_case_count": 20,
+    "started_case_count": 20,
+    "completed_case_count": 20,
+    "jobs": 4,
+    "full_20_case_rerun": true
+  },
+  "route_policy": {
+    "forbidden_declarations": [
+      "ComplexityReduction.Domain.BooleanCSP.Hardness.NativeTMNPHard_of_notSchaeferTractable",
+      "ComplexityReduction.Domain.BooleanCSP.Hardness.NativeTMNPHard_of_notSchaeferTractable_with_oneInThree",
+      "ComplexityReduction.Domain.BooleanCSP.schaefer_dichotomy"
+    ],
+    "total_raw_typed_candidates": 323,
+    "total_eligible_typed_candidates": 285,
+    "total_excluded_typed_candidates": 38,
+    "cases_with_direct_hardness_candidates_excluded": 19,
+    "final_transitive_dependency_audit_enabled": true,
+    "alias_wrapper_bypass_regression_rejected": true
+  },
+  "real_api": {
+    "provider": "deepseek",
+    "base_url": "https://api.deepseek.com",
+    "model": "deepseek-v4-flash",
+    "reasoning_effort": "low",
+    "max_tokens": 12000,
+    "max_retries": 0,
+    "total_calls": 53,
+    "http_200_calls": 53,
+    "protocol_accepted_calls": 49,
+    "prompt_tokens": 127800,
+    "completion_tokens": 217623,
+    "reasoning_tokens": 211540,
+    "total_tokens": 345423,
+    "summed_model_duration_seconds": 2023.833,
+    "benchmark_wall_seconds": 769.348
+  },
+  "results": {
+    "status_counts": {
+      "VERIFIED": 3,
+      "BLOCKED": 15,
+      "FAILED_MODEL": 2
+    },
+    "verified_case_count": 3,
+    "verified_generated_case_count": 0,
+    "generated_certified_reduction_case_count": 0,
+    "generated_edge_used_case_count": 0,
+    "language_interpretation_failure_count": 6,
+    "explicit_reduction_route_completed": false
+  },
+  "verified_cases": [
+    {
+      "case": "Case01Canonical",
+      "classification": "VERIFIED_REUSE",
+      "reused_declaration": "ComplexityReduction.Domain.BooleanCSP.Hardness.threeSATLikeCoreNPHard",
+      "new_certified_reductions": []
+    },
+    {
+      "case": "Case03PositiveNAE3",
+      "classification": "VERIFIED_REUSE",
+      "reused_declaration": "ComplexityReduction.Domain.BooleanCSP.Hardness.nae3CoreNPHard",
+      "new_certified_reductions": []
+    },
+    {
+      "case": "Case07PositiveExactlyTwo3",
+      "classification": "VERIFIED_REUSE",
+      "reused_declaration": "ComplexityReduction.Domain.BooleanCSP.Hardness.exactlyTwo3CoreNPHard",
+      "new_certified_reductions": []
+    }
+  ],
+  "representative_failures": [
+    {
+      "cases": [
+        "Case05OR2EvenParity3",
+        "Case12PositiveExactlyTwo5",
+        "Case20OR3XOR2"
+      ],
+      "failure": "nPHard_of_interpretation_auto left LanguageInterpretation, source Gamma, and source hardness obligations open"
+    },
+    {
+      "case": "Case08PositiveExactlyOne4",
+      "failure": "the interpretation transport theorem was supplied without constructing its interpretation and source-hardness arguments"
+    },
+    {
+      "cases": [
+        "Case06PositiveNAE5",
+        "Case11PositiveExactlyOne5"
+      ],
+      "failure": "authoring output exhausted the response limit before producing a usable final candidate"
+    }
+  ],
+  "artifacts": {
+    "run_summary": "tmp/dichotomy-free-real-api-boolean-csp20-v1/summary.json",
+    "case_reports": "tmp/dichotomy-free-real-api-boolean-csp20-v1/cases/*/report.json",
+    "single_case_configuration_probe": "tmp/dichotomy-free-real-api-case02-v2/report.json"
+  },
+  "local_verification": {
+    "python_tests_passed": 11,
+    "python_compileall_passed": true,
+    "lean_final_check_build_passed": true,
+    "lean_final_check_build_jobs": 3505
+  },
+  "conclusion": "The real 20-case API run shows that forbidding direct Schaefer/dichotomy closure leaves the current production orchestrator unable to execute an explicit Boolean-CSP reduction workflow end to end. Three canonical hard-core endpoints remain provable by direct reuse, but no case generated or used a new CertifiedReduction."
+}

@@ -1,1584 +1,1025 @@
-# Complexity Reduction Agent：NP-hard-first 通用自动归约 Agent 核心重构计划
+# 通用 NP-hard Agent 递归调度与整树重建实施计划
 
 > 状态：Active
 >
-> 更新日期：2026-08-13
+> 更新日期：2026-08-14
 >
-> 当前唯一优先主线：最大限度复用 ComplexityReduction 的原生证书、路径、transport 与程序复杂度抽象，先构建一个能够自动产出 `NativeTMNPHard target` 的通用归约 Agent；一般定理搜索、前提求解和新归约创作都服务于这一 NP-hard 闭环。
+> 当前唯一实施主线：在保持现有输入校验、环境冻结、typed index、Capability Planner、三类 Action Provider、预算、模型协议和最终 Lean 审计设计不变的前提下，接通全局 AND/OR 递归调度，使 theorem premise、data witness、局部生成 capability 和失败分支能够重新进入统一搜索。
+>
+> 本文件只记录尚未完成的工作。已经存在的 CLI、package、Lean probe、planner/provider/frontier 骨架、基础 route audit 和已经执行过的测试不再作为待办重复列出。
+
+## 1. 本轮目标
+
+给定已经通过 Input Gate 的根目标：
+
+    ComplexityReduction.Certificate.NativeTMNPHard target
+
+Agent 必须能够完成以下闭环：
+
+1. 从 Global Proof Frontier 选择一个 ProofState；
+2. 从该 state 选择一个当前可求解的 OpenGoal；
+3. 对该子目标运行 Capability Planner；
+4. 从 Reuse、Theorem、Synthesis 三类候选中扩张一个或多个 OR 分支；
+5. theorem application 产生的全部前提作为 AND obligations 进入同一个 ProofState；
+6. data binder 被具体实例化后，所有依赖它的 sibling obligations 自动得到同一实例；
+7. 子目标失败只淘汰当前 action 或当前 branch，不直接终止整个 job；
+8. 生成并通过 Lean 检查的新 capability 立即回注当前 branch，并触发相关子目标重新规划；
+9. 所有 application frame 闭合后重建完整 Lean application tree；
+10. 最终 artifact 独立 elaboration、kernel check、axiom check 和 forbidden-declaration 传递依赖审计通过。
+
+本轮不以“Python 函数递归调用”为目标。递归语义由 ProofState 的 goal decomposition 表达，调度继续使用有界、可恢复、可回溯的迭代式全局 frontier。
+
+## 2. 当前必须解决的行为缺口
+
+当前实现的核心缺口不是缺少 planner 或 frontier 类型，而是生产控制流没有把它们接成闭环：
+
+- orchestrator 在 INDEX_READY 后只对根目标规划一次；
+- 根目标不能直接闭合时，控制流进入根目标整体 authoring，而不是递归处理 theorem premises；
+- SearchCoordinator 尚未接入生产 orchestrator；
+- SearchCoordinator 每轮只选择一个 action，该 action 没有产生 child state 时会直接丢弃当前 state；
+- OpenGoal 已有 attempted_actions 字段，但 ProofState 没有对应的不可变更新接口；
+- ProofState fingerprint 没有纳入 attempted actions 和 failure memory，失败状态重新入队时可能被 frontier 当成旧状态去重；
+- decompose_goal 只复制 pretty-printed residual type，不能保存不同前提之间共享的 Lean binder；
+- 带有 ?Γ' 等 unresolved metavariable 的文本被当成彼此独立的子目标，无法保证 source hardness 与 interpretation 使用同一个 Γ'；
+- proof_skeleton 是平面 ProofStep 序列，不能证明全部 child proof term 已经正确填回 parent theorem telescope；
+- reconstruction 只能处理单定理闭包或根目标整体 authored source，不能重建多层 application tree；
+- 单次模型失败、Lean 失败或某个 theorem route 失败仍可能过早映射为 BLOCKED 或 FAILED_MODEL。
+
+当前 dichotomy-free Boolean CSP 真实 API 基线为：
+
+- 20 个 case 全量执行；
+- 53 次真实模型调用，53 次 HTTP 200；
+- 3 个 VERIFIED；
+- 15 个 BLOCKED；
+- 2 个 FAILED_MODEL；
+- 0 个新 CertifiedReduction；
+- 0 个 generated edge 被最终 artifact 使用。
+
+代表性失败已经能选中 interpretation transport theorem，但没有继续递归完成以下共享前提：
+
+    Γ' : Gamma
+    LanguageInterpretation Γ' target
+    NativeTMNPHard (cspOf Γ')
+
+因此本轮优先修复控制流、依赖绑定和重建，不先扩大模型 prompt 或增加 Boolean CSP 专用结论。
+
+## 3. 保持不变的边界
+
+以下流程继续保留，不在本轮重写：
+
+- scripts/prove_np_hard.py 的旧入口行为；
+- agent/hardness/boolean_csp_np_hard_benchmark.py 的旧 benchmark 协议；
+- scripts/prove_np_hard_general.py 的 request、strategy、profile 和 budget 接口；
+- Input Gate、endpoint normalization 和 environment snapshot；
+- closed resolver fast path；
+- typed theorem index 的总体召回入口；
+- ExactClosureProbe 先执行闭包检查、GuidedProofPlanner 再提供证明指导的职责划分；
+- ReuseActionProvider、TheoremActionProvider、SynthesisActionProvider 三类来源；
+- GlobalProofFrontier 与 ReadyActionBuckets 的总体设计；
+- job-local generated module 边界；
+- model strategy 与 authoring 调用分离；
+- final Lean verification、标准公理检查和 forbidden-declaration 审计；
+- proof_status、solution_classification、qualification_status 三类结果字段；
+- Boolean CSP 领域信息不得进入 generic core 的原则。
+
+本轮只允许为递归闭环扩展这些接口，不重新引入三套彼此独立的 proof pipeline。
+
+## 4. 目标控制流
+
+生产 orchestrator 的中段改为：
+
+    INPUT_VALIDATED
+      -> ENVIRONMENT_FROZEN
+      -> FAST_PATH_CHECKED
+      -> INDEX_READY
+      -> SEARCHING
+           -> pop ProofState
+           -> select ready OpenGoal
+           -> state-aware candidate lookup
+           -> Capability Planner
+           -> select unattempted action
+           -> execute action
+           -> push child/failure-memory states
+           -> repeat
+      -> PROOF_RECONSTRUCTED
+      -> final Lean verification and route audit
+      -> COMPLETED
+
+局部 action 的结果只允许是：
+
+- closed：关闭当前 goal 或 application slot；
+- decomposed：创建 application frame，并激活当前已经具备依赖的 child goals；
+- generated：注册一个 Lean 已验证 capability，然后关闭或继续分解当前 goal；
+- failed-branch：记录失败并将仍有 alternative 的 state 重新入队；
+- pruned-cycle：当前 action 无实质进展，淘汰该 action；
+- budget-stop：由统一 BudgetTracker 终止搜索。
+
+BLOCKED 只能在 GlobalProofFrontier 真正耗尽后产生，不能作为单个 action handler 的返回值直接结束 job。
+
+## 5. ProofState 与依赖应用图
+
+### 5.1 新增 ApplicationFrame
+
+在 agent/generative_reduction/models.py 中增加可序列化、不可变的数据结构：
+
+    BinderSlot
+      slot_id
+      ordinal
+      binder_name
+      binder_kind
+      exact_type
+      dependency_slot_ids
+      bound_term
+      bound_declaration
+      provenance
+
+    PremiseSlot
+      slot_id
+      ordinal
+      premise_kind
+      type_template_receipt
+      dependency_slot_ids
+      instantiated_exact_type
+      child_goal_id
+      proof_term
+      declaration
+      status
+
+    ApplicationFrame
+      frame_id
+      parent_goal_id
+      parent_exact_type
+      action_id
+      declaration
+      guidance_id
+      application_skeleton
+      binder_slots
+      premise_slots
+      result_proof_term
+      status
+      lean_receipt_hash
+
+frame status 至少包含：
+
+- waiting-bindings；
+- active；
+- saturated；
+- verified；
+- failed。
+
+### 5.2 OpenGoal 扩展
+
+OpenGoal 增加：
+
+- producer_frame_id；
+- producer_slot_id；
+- dependency_slot_ids；
+- ready；
+- attempted_actions；
+- normalized_last_diagnostic_hash。
+
+强制不变量：
+
+1. 每个进入 open_goals 的 exact_type 必须可以在其显式 local context 下重新 elaboration；
+2. open_goals 中不得保存跨进程不可恢复的 Lean metavariable ID；
+3. 仍依赖未绑定 data slot 的 premise 不进入 open_goals，只保存在 ApplicationFrame 中；
+4. 同一 goal 的 attempted_actions 只记录已经真实扩张过的 action；
+5. 一个 child goal 只能填充一个明确的 frame slot。
+
+### 5.3 ProofState 扩展
 
-## 0. 战略重置
+ProofState 增加：
 
-此前活动计划以冻结 benchmark、exact-edge 审查、逐节点模型调用记录和发布级复现为中心。这些工作可以继续作为独立评测或发布工具存在，但不再决定核心 Agent 的架构，也不再是默认求证路径的前置义务。
+- application_frames；
+- generated_capabilities；
+- verified_frame_fragments；
+- root_fragment；
+- normalized_failure_fingerprints。
 
-从本计划开始，项目的第一产品目标不是“严格执行一套预先冻结的 benchmark 协议”，也不是“证明任意 Lean 命题”，而是：
+新增不可变状态转换：
 
-> 给定一个精确的 `PresentedProblem target`，Agent 自动构造并验证 `NativeTMNPHard target`：优先复用已有 hardness/completeness 证据、`CertifiedReduction`、`CertifiedPath`、presentation transport 和一般 hardness theorem；递归解决这些规则产生的前提；若复用路径均失败，再从合适的 hard/complete hub 到目标自主定义并验证新的 `CertifiedReduction`。
+- mark_action_attempted(goal_id, action_id)；
+- add_application_frame(goal_id, action, guidance, frame)；
+- activate_ready_premises(frame_id)；
+- bind_data_slot(frame_id, slot_id, fragment)；
+- fill_premise_slot(frame_id, slot_id, fragment)；
+- refresh_dependent_premises(frame_id, lean_instantiation_result)；
+- verify_saturated_frame(frame_id, receipt)；
+- fail_frame(frame_id, diagnostic)；
+- add_generated_capability(fragment, module, source_hash)；
+- remember_failure(action, diagnostic, blocker_code)；
+- prune_non_progressing_action(goal_id, action_id, reason)。
 
-核心成功标准不是命中预先指定的路线，而是最终产生一个精确类型为 `NativeTMNPHard target`、可被 Lean kernel 接受的证明项。`CertifiedReduction`、`CertifiedPath`、性质证明和程序复杂度证明是这一根目标的内部证明对象，而不是当前范围内彼此独立的产品线。
+ProofState.complete 改为同时满足：
 
-本计划取代本文件此前全部 exact-edge 优先事项、冻结 case 实施表、模型 ledger 门槛和 benchmark 发布目标。旧报告与 benchmark 数据仍可用于回归和对照，但不得反向限制通用 Agent 的证明搜索能力。
+- 没有 ready 或 dormant 的未闭合 obligation；
+- 所有 application frame 均为 verified；
+- root_fragment 已存在；
+- root_fragment.exact_type 与 root_goal.exact_type 一致。
 
-## 1. 产品目标与非目标
+### 5.4 State fingerprint
 
-### 1.1 第一且当前唯一产品目标：自动证明 `NativeTMNPHard`
+ProofState fingerprint 必须包含：
 
-当前产品入口只承诺处理以下根目标：
+- root exact type；
+- 每个 open goal 的 GoalKey；
+- 每个 open goal 的 attempted action IDs；
+- application frame 的 declaration、slot 状态和 binder substitutions；
+- generated capability 的 exact type、declaration、module 和 source hash；
+- normalized failure fingerprint；
+- verified fragment 的 exact type 与 proof term fingerprint。
 
-```lean
-ComplexityReduction.Certificate.NativeTMNPHard target
-```
+不得把完整、非规范化 diagnostics 文本直接加入 fingerprint；只保存稳定 blocker code 和 diagnostic hash。
 
-调用方可以通过精确 goal expression、目标 declaration，或现有 `TypedNPHardRequestV1` 提交任务。搜索内部可以并且必须处理下列中间目标：
+这个修改必须保证：
 
-- `NativeTMNPHard hub`；
-- `NativeTMNPComplete hub`，仅用于投影 hardness；
-- `CertifiedReduction source target`；
-- `CertifiedPath source target`；
-- `CertifiedEquiv source target`；
-- `CertifiedPresentationChange source target`；
-- 一般 hardness theorem 的性质前提；
-- 新 reduction constructor 暴露出的程序、语义和复杂度义务；
-- 这些目标递归产生的局部辅助命题。
+- action 失败后的 state 与失败前 state 不会被误去重；
+- 两个使用不同 Γ' witness 的分支不会被合并；
+- 两个只在物理 workspace 中存在、但 state import set 不同的分支不会互相污染；
+- resume 后可以重新构造同一搜索状态。
 
-典型辅助命题包括：
+## 6. Lean 侧依赖实例化
 
-- 两个 presentation 或 representation 的一致性；
-- 某个关系、语言或实例满足结构性质；
-- 某个函数是多项式时间映射；
-- 某个程序运行结果与数学构造一致；
-- 某个有限对象非空、可判定或不属于某个分类；
-- 某个 reduction 的语义等价；
-- 某个一般定理的依赖前提。
+### 6.1 禁止 Python 替换 Lean metavariable 文本
 
-`NativeTMInNP target`、`NativeTMNPComplete target` 和任意一般 `Prop` 的独立自动证明不属于当前交付范围。它们只有在闭合 NP-hard 根目标所需时才进入搜索。待 NP-hard Agent 稳定后，再评估是否提升为新的产品目标。
+Python 不得通过字符串替换把 ?Γ' 改成某个 declaration。Lean 负责 theorem telescope、implicit binder、universe 和 dependent premise 的重新实例化。
 
-Agent 不得把 NP-hard 目标预先压缩成有限种 benchmark task class。目标类型、ComplexityReduction 的证书构造和当前 Lean 环境决定可用推理规则，Python 枚举值不得成为系统能力边界。
+扩展以下 Lean 模块：
 
-默认不得把 `NativeTMNPHard target` 直接展开为
+- Lean/Reference/ComplexityReduction/Agent/GenerativeReduction/RuleApplication.lean；
+- Lean/Reference/ComplexityReduction/Agent/GenerativeReduction/TheoremIndex.lean；
+- 必要时扩展 GuidedProofProbe.lean。
 
-```lean
-∀ source, NativeTMInNP source → Nonempty (CertifiedReduction source target)
-```
+新增一个 typed rule instantiation probe，输入：
 
-并从零证明该全称命题。正常路线必须通过库中已经封装好的 hardness/completeness、path transport 或一般 hardness theorem 闭合。只有库 theorem 本身要求展开，或最终 synthesis 明确构造了同等强度的通用证据时，才允许受控展开。
+- candidate declaration；
+- 当前 exact target goal；
+- 已绑定 binder slot 的 ordinal 和 Lean term；
+- local context receipt；
+- transparency mode。
 
-### 1.2 扩展性目标：无需修改 planner 即可吸收新定理
+输出：
 
-扩展性的核心验收条件是：
+- stable binder slot IDs；
+- 每个 binder 的类型和依赖 ordinal；
+- 已由 target unification 决定的 binder assignments；
+- 仍需搜索的 data binder；
+- 每个 premise 的依赖 slot IDs；
+- 当前已完全实例化且可独立 elaboration 的 premise exact type；
+- 暂时 dormant 的 premise；
+- 可重建 application skeleton；
+- environment/import receipt。
 
-> 向 Lean 库新增一个结论能够与 `NativeTMNPHard target` 或其可达内部子目标统一的一般定理后，在不修改 Python planner、不增加 relation 名称特判、不增加 benchmark case ID 和不注册专用 scaffold 的情况下，Agent 能发现该定理、生成它的前提子目标并尝试完成证明。
+stable slot ID 使用 theorem binder ordinal 和 frame ID，不保存 Lean internal metavariable ID。
 
-例如，当库中存在闭合的 Schaefer hardness 定理时：
+### 6.2 Dependent premise 激活
 
-```lean
-theorem nPHard_of_not_schaefer_tractable
-    (Γ : Gamma)
-    (nonempty : ∀ symbol, (Γ.relationOf symbol).Nonempty)
-    (hardSide : ¬ Γ.IsSchaeferTractable) :
-    NativeTMNPHard (cspOf Γ)
-```
+以 interpretation transport 为例，第一次 probe 返回：
 
-Agent 应通过结论统一自动发现它，而不是在 Python 中检查 `NAE3`、`NAE4`、`EXACTLY-t-OF-k` 或特定源文件字符串。
+    b0 : Gamma
+    p1 : LanguageInterpretation $b0 target    depends on b0
+    p2 : NativeTMNPHard (cspOf $b0)          depends on b0
 
-### 1.3 规划目标：开放式路线提出，封闭式最终验证
+只有 b0 先进入 open_goals。
 
-模型可以：
+当 b0 被关闭为 KnownHardGamma 后，重新调用 Lean probe，得到：
 
-- 提议使用哪个定理；
-- 提议定理参数如何实例化；
-- 提议新的辅助 lemma；
-- 改变上一轮失败的数学路线；
-- 选择直接定理、归约组合、反射证明或新归约创作；
-- 在受控工作区内生成完整候选 Lean 源码。
+    LanguageInterpretation KnownHardGamma target
+    NativeTMNPHard (cspOf KnownHardGamma)
 
-模型、Python planner、JSON、缓存、日志和 benchmark metadata 都不能直接授予数学能力。唯一的最终正确性依据是：
+此时才创建 p1 和 p2 的 OpenGoal。
 
-1. 候选源码能够在目标 Lean 环境中 elaboration；
-2. 最终声明具有用户请求的精确类型；
-3. Lean kernel 接受完整证明项；
-4. 默认策略下不存在 `sorry`、`admit`、`sorryAx` 或未经允许的新公理。
+### 6.3 Data witness 搜索
 
-“允许模型提出路线”和“信任模型提出的路线”必须严格区分。前者是通用智能所必需的，后者仍然禁止。
+data binder 与 proposition premise 使用同一个 typed candidate lookup，但排序需要增加通用 downstream lookahead：
 
-### 1.4 非目标
+- candidate term 是否精确具有 binder type；
+- 绑定后可以直接闭合多少 sibling premises；
+- 绑定后是否出现已知 hardness、path 或 exact theorem；
+- 是否产生 forbidden dependency；
+- 是否使 residual obligation 数量减少；
+- 是否重复祖先 binding。
 
-核心 Agent 不再以以下事项作为默认产品目标：
+该 lookahead 必须基于 dependent premise 的类型覆盖率，不得写 Boolean CSP、Gamma 或 NAE 名称分支。
 
-- 命中隐藏 oracle 中的 gold route；
-- 保证模型调用次数大于零；
-- 强制为已有定理重新创作一条新归约；
-- 为每道 benchmark 维护固定 DAG；
-- 逐节点保存发布级 hash receipt；
-- 在普通求证中执行独立 replay、fresh scan、mutation scorer 或 oracle isolation；
-- 因 benchmark construction policy 禁止一条数学上合法且 Lean 可验证的更优路线；
-- 把当前项目扩张成可证明任意 Lean `Prop` 的通用 theorem prover；
-- 在 NP-hard MVP 之前并列实现自动 membership、NP-completeness 和其他复杂性类别；
-- 绕开 ComplexityReduction 的 `CertifiedReduction`/`CertifiedPath` 体系，建立一套平行且不兼容的归约证书。
+## 7. State-aware Candidate Lookup
 
-其中审查、复现和计分需求只能存在于显式选择的 benchmark 或 strict-release profile；扩大到其他复杂性目标则属于 NP-hard MVP 完成后的独立路线图，不自动进入当前范围。
+修改 SearchCoordinator 的 CandidateLookup 协议：
 
-## 2. 核心可信边界
+    candidate_lookup(state, goal) -> Sequence[TheoremIndexEntry]
 
-### 2.1 默认保留的正确性义务
+原因是每个 branch 的 generated modules、fragments、imports 和 failure memory 不同，candidate lookup 不能只依赖 OpenGoal。
 
-默认 `research` profile 只保留以下硬边界：
+实现要求：
 
-1. **精确目标类型**：最终声明必须与用户请求的 Lean 类型通过 elaboration 和 definitional equality 对齐。
-2. **Kernel 验证**：最终 artifact 必须由 Lean kernel 接受。
-3. **无占位证明**：禁止 `sorry`、`admit`、`sorryAx` 及等价绕过。
-4. **公理策略**：默认只允许项目明确配置的基础公理集合；新增领域公理必须显式授权，不能由模型自行声明。
-5. **程序与证明同索引**：`CertifiedReduction`、`TMPolyTimeMap`、`PolyProg` 等现有依赖类型约束必须继续保证构造、复杂度和语义证明指向同一程序。
-6. **资源边界**：搜索深度、状态数、Lean 检查次数、模型调用数和运行时间必须有界。
-7. **工作区安全**：模型只能修改当前任务允许的候选文件，不能覆盖用户源码或扩大任务授权范围。
+1. 基础模块来自冻结的 environment snapshot；
+2. branch-local 模块只取 state.generated_modules；
+3. 对每个 exact child goal 调用 query_typed_goal_index；
+4. 当前 state 的 verified fragments 同时进入 ExactClosureProbe；
+5. forbidden declarations 在召回、规划、生成源码扫描和最终传递依赖审计四层过滤；
+6. action_id 已在 goal.attempted_actions 中的 candidate 不再返回；
+7. 失败 declaration、binding 和 guidance fingerprint 进入局部负缓存；
+8. 新 capability 注入后只使相关 GoalKey 的 capability cache 失效；
+9. 不把某个 branch 已生成但未导入的物理文件视为全局 capability。
 
-### 2.2 从核心路径删除的审查义务
+缓存 key 至少包含：
 
-以下逻辑必须从默认 orchestrator 中移除：
+- GoalKey；
+- environment fingerprint；
+- state capability fingerprint；
+- import set fingerprint；
+- failure memory fingerprint；
+- forbidden declaration fingerprint。
 
-- benchmark registry 与 suite hash 前置校验；
-- oracle、gold、split 和 statement hash 对求证路线的约束；
-- route ID 冻结与 shortest-route 审查；
-- “模型不得选择 theorem name 或 route”的限制；
-- 固定 task class 后禁止改变数学策略；
-- 每个节点的 dependency receipt、publication manifest 和 token ledger 验收；
-- candidate deletion audit、stale checkpoint audit 和 scorer mutation；
-- 默认 independent replay；
-- 为 benchmark directness 而禁止合法 composition；
-- 为保证 `model_calls > 0` 而绕开已有通用定理；
-- 将标准公理审查、endpoint equality、fresh scan 分散执行多次。
-
-默认路径只在最终 artifact 上进行一次必要验证。重复验证和发布证据收集移动到可选 profile。
-
-### 2.3 三种运行 profile
-
-| Profile | 默认 | 用途 | 验证范围 |
-|---|---:|---|---|
-| `research` | 是 | 日常自动证明与库开发 | 精确类型、kernel、占位/公理策略、基本资源边界 |
-| `strict-release` | 否 | 发布候选和高可信复现 | 在 `research` 成功结果上增加 clean replay、依赖 hash、完整 axiom provenance |
-| `benchmark` | 否 | 冻结实验与论文评分 | 显式 suite、oracle 隔离、construction policy、计分与 mutation |
-
-三个 profile 必须共享同一个核心证明搜索器。`strict-release` 和 `benchmark` 只能包装或拒绝核心结果，不能修改核心搜索器对数学路线的理解，也不能把 benchmark case 信息注入核心 theorem planner。
-
-## 3. 当前架构的根本缺口
-
-### 3.1 只会搜索闭合边，不会应用带前提的定理
-
-当前 resolver 主要处理：
-
-```text
-hardness seed ── CertifiedReduction ──> target
-```
-
-这相当于在闭合 capability 图上做路径搜索。一般定理则具有：
-
-```text
-premise₁ → premise₂ → ... → target
-```
-
-甚至包含依赖参数、类型类前提和 existential witness。当前系统没有将 theorem telescope 展开为可递归求解的子目标，因此无法自然应用 Schaefer dichotomy、参数化 family theorem 或其他数学分类定理。
-
-### 3.2 theorem discovery 受 registry 和 attribute 限制
-
-库中未注册为 canonical capability、但具有正确 Lean 类型的 theorem 可能对 planner 不可见。核心系统必须从 elaborated environment 构建 typed theorem index，而不是把 attribute registry 当作知识边界。
-
-Attribute 可以继续提供：
-
-- 搜索优先级；
-- theorem 角色提示；
-- 不透明或不推荐标记；
-- 人工分类 metadata。
-
-但 theorem 是否可应用必须由其 elaborated type 和 Lean 统一结果决定。
-
-### 3.3 固定 DAG 把安全策略变成能力边界
-
-当前 planner 在模型调用前就固定 task class、节点集合、allowed imports 和 allowed primitives。模型只能填写选定路线中的局部 body，不能提出另一条通用定理路线。
-
-这种机制可以保留为某些高风险 synthesis action 的文件编辑约束，但不能继续支配 theorem reuse 和高层规划。
-
-### 3.4 case-specific scaffold 代替了数学抽象
-
-Boolean CSP 当前通过 relation 源码字符串选择 NAE3/4/5 scaffold。该策略必须从核心 planner 中删除。类似的按 case、arity、文件名或 benchmark family 分支都视为架构债务。
-
-### 3.5 审查、benchmark 与求证核心混合
-
-当前系统把 route discovery、authoring、oracle isolation、checkpoint、replay 和 scoring 混在同一运行链，导致：
-
-- 普通 theorem reuse 承担发布级成本；
-- planner 为满足审查协议而拒绝探索；
-- benchmark 的 direct-new 要求污染产品行为；
-- 新数学定理无法自然改变求解策略。
-
-本计划要求先拆出独立核心，再决定旧审查代码是保留为可选工具还是删除。
-
-## 4. NP-hard-first 目标架构
-
-```text
-精确目标：NativeTMNPHard target
-      │
-      ▼
-Goal Intake / PresentedProblem 与 endpoint normalization
-      │
-      ▼
-ComplexityReduction NP-hard Rule Kernel
-      │
-      ├── 现有 NPHardResolver fast path
-      ├── exact registered hardness / completeness projection
-      ├── NativeTMNPHard.alongPath / ofCompleteAlongPath
-      ├── CertifiedReduction.comp / CertifiedPath
-      ├── CertifiedEquiv / CertifiedPresentationChange
-      └── hardness theorem-schema application
-      │
-      ▼
-Hybrid NP-hard Search
-      │
-      ├── 向后：从 NativeTMNPHard target 应用定理规则
-      ├── 向前：从 hard/complete seed 搜索 certified path
-      ├── 汇合：在 hub/path/reduction endpoint 处相遇
-      └── 性质前提：Premise Solvers / bounded Lean automation
-      │
-      ├── 成功：重建完整 Lean proof term
-      └── 复用失败：模型规划与新 CertifiedReduction synthesis
-                    │
-                    └── 从合适 hard/complete hub 到 target
-      ▼
-精确 NP-hard Artifact
-      │
-      ▼
-一次最终 Lean elaboration + kernel check
-      │
-      ├── research：返回验证结果
-      ├── strict-release：附加 replay/provenance
-      └── benchmark：附加 suite/scorer
-```
-
-核心不是纯 backward reasoning，也不是当前 resolver 的纯 closed-edge forward search，而是二者的混合：
-
-- 从 `NativeTMNPHard target` 向后寻找 conclusion 可统一的 theorem schema；
-- 从已验证的 `NativeTMNPHard`/`NativeTMNPComplete` seed 沿 `CertifiedReduction` 图向前搜索；
-- 在 theorem 产生的 hub、path 或 reduction endpoint 与 forward frontier 汇合；性质前提交给递归 theorem search 和 premise solvers；
-- 只有无法通过现有证书代数闭合时，才创建新的归约程序和证书。
-
-### 4.1 ComplexityReduction 原生 NP-hard Rule Kernel
-
-第一版 planner 必须显式理解一小组稳定的、由库类型决定的证明规则。这些规则构成搜索语义的主干，不是 benchmark 特判：
-
-| 优先级 | 规则 | 结果 |
-|---:|---|---|
-| R0 | local/exact registered hardness | 直接得到 `NativeTMNPHard target` |
-| R1 | `NativeTMNPComplete.nativeHardness` | 从 exact complete endpoint 投影 hardness |
-| R2 | `NativeTMNPHard.alongPath` | 从 `NativeTMNPHard hub` 与 `CertifiedPath hub target` transport |
-| R3 | `NativeTMNPHard.ofCompleteAlongPath` | 从 `NativeTMNPComplete hub` 与路径得到 target hardness |
-| R4 | `CertifiedPath.step/cons/append`、`CertifiedReduction.comp` | 构造和组合精确方向的路径 |
-| R5 | `CertifiedEquiv`、`CertifiedPresentationChange` 的 forward/backward reduction | 解决 presentation 与 representation 差异 |
-| R6 | conclusion 可统一的一般 hardness theorem | 产生待递归求解的性质或证书前提 |
-| R7 | 新 `CertifiedReduction hub target` synthesis | 现有知识不足时扩展路径图 |
-
-规则内核必须直接调用库中的 constructor/theorem，不得复制 `NativeTMNPHard`、`CertifiedReduction` 或 path composition 的语义到 Python。Python 只管理候选、预算和搜索状态；Lean 负责实例化并生成权威 proof term。
-
-### 4.2 根目标规范形
-
-每个任务在进入搜索后归一化为：
-
-```text
-RootGoal
-  target        : exact PresentedProblem Expr
-  proposition   : NativeTMNPHard target
-  request?      : optional TypedNPHardRequestV1
-  endpoint key  : Lean-side normalized fingerprint
-```
-
-如果输入目标不是 definitionally equal 于 `NativeTMNPHard target`，NP-hard MVP 必须明确拒绝并报告“不属于当前产品目标”，而不是悄悄切换成通用定理证明模式。
-
-### 4.3 Proof reconstruction 是核心能力
-
-搜索成功必须产生可重建的 Lean application tree，而不只是“找到一条路线”：
-
-```text
-NativeTMNPHard target
-└── NativeTMNPHard.alongPath hubHardness path
-    ├── hubHardness : NativeTMNPHard hub
-    └── path : CertifiedPath hub target
-        ├── edge₁ : CertifiedReduction hub middle
-        └── edge₂ : CertifiedReduction middle target
-```
-
-每个 rule application 保存 declaration、显式参数、子证明引用和目标 fingerprint。最终统一在 job-local Lean module 中重建完整 declaration，再进行一次根级 elaboration 与 kernel 验证。证明树 JSON 仅用于调试，不得替代 Lean artifact。
-
-如果调用方使用 `TypedNPHardRequestV1`，最终还必须复用协议层：
-
-- exact hardness 使用 `TypedNPHardResultV1.fromRegistered`；
-- hub-to-target path 使用 `TypedNPHardResultV1.fromPath`；
-- caller-facing theorem 通过 `extractNativeHardness` 得到。
-
-一般 hardness theorem 得到的 exact target hardness 也可以进入 `fromRegistered` 这一证据形态；无需为 theorem-schema 新建平行结果协议。
-
-### 4.4 Hardness seed 与方向策略
-
-默认可信 seed 集合来自当前 Lean 环境中已验证的 native hardness/completeness declarations，包括但不限于：
-
-- `NativeCookLevin.canonicalThreeSATNativeCompleteness`；
-- production registry 中通过类型和公理策略重新验证的 `NativeTMNPHard`；
-- production registry 中通过验证的 `NativeTMNPComplete`。
-
-对每个 seed，唯一默认归约方向是：
-
-```text
-hard/complete seed ── CertifiedPath ──> requested target
-```
-
-`target → seed` 不能证明 target NP-hard，只能作为错误方向诊断或在存在额外双向 equivalence 证据时使用。选择 synthesis hub 时，按“已有可复用路径长度、presentation 距离、可用 gadget/theorem、预期证明成本”排序；canonical structured 3SAT 始终是可解释的基础 completeness root，但不强制所有任务都从它直接起步。
-
-### 4.5 Library-first 职责边界
-
-为了确保项目扩展的是 ComplexityReduction，而不是在它旁边再造一个系统，职责必须固定为：
-
-| 层 | 负责内容 |
-|---|---|
-| ComplexityReduction Lean 库 | 问题表示、`CertifiedReduction`、`CertifiedPath`、hardness/completeness、transport、presentation adapter、polytime combinator、可复用数学 theorem |
-| Lean Agent meta 层 | theorem/module index、真实类型统一、前提提取、application skeleton、proof reconstruction、最终检查 |
-| Python orchestration 层 | 搜索状态、排序、预算、回溯、模型调用、候选工作区和诊断汇总 |
-| 模型 | 数学路线建议、helper lemma 和缺失 reduction 的候选实现 |
-
-若同一种前提或归约模式在多个 family 中重复出现，应优先把它抽象为 ComplexityReduction 中的通用 theorem/combinator，再由索引自动吸收；不得用新的 Python family 分支长期填补库抽象缺口。
-
-Agent 新生成的所有程序型归约必须最终落入 `CertifiedReduction` 或由它组成的 `CertifiedPath`。Python `Rule`、`Action`、JSON proof tree 和模型输出都只是控制数据，不是第二套数学证书。
-
-## 5. NP-hard 相关的 Typed Theorem Index
-
-### 5.1 索引范围
-
-索引能力可以覆盖当前 Lean environment 中所有可见声明，但每个 NP-hard 任务必须按需检索，不能把“全库所有 theorem 平铺给搜索器”作为默认行为。
-
-首层索引只检索 conclusion head 属于 NP-hard 闭环的声明：
-
-- `NativeTMNPHard`；
-- `NativeTMNPComplete`；
-- `CertifiedReduction`；
-- `CertifiedPath`；
-- `CertifiedEquiv`；
-- `CertifiedPresentationChange`。
-
-当这些规则实例化产生新的前提后，才按该前提的 conclusion head 递归扩大检索范围。索引总体应覆盖：
-
-- 相关 `theorem`、`lemma`；
-- 返回证书的 `def`；
-- structure constructor；
-- 已注册 reduction、hardness、membership 和 completeness capability；
-- 未注册但结论类型匹配的声明；
-- presentation adapter、equivalence 和 transport theorem；
-- decidability/reflection theorem；
-- polynomial-time combinator；
-- 用户输入模块中的局部公共 theorem。
-
-已有 registry/attribute 不再是知识边界，但继续作为高价值种子和排序提示。应优先查询：
-
-1. 当前 `NPHardResolver` 已验证的 exact seed 与 forward path；
-2. ComplexityReduction certificate/transport 模块中的原生规则；
-3. 带 capability attribute 的候选；
-4. 未注册、但 conclusion 可统一的声明。
-
-这样既保留“新增 theorem 不改 Python 即可吸收”的开放性，也避免在每个 NP-hard 目标上退化为无方向的通用 Lean theorem search。
-
-默认排除：
-
-- private declaration；
-- unsafe 或无法在当前信任策略下使用的声明；
-- 明确标记为 benchmark oracle、gold、test poison 的模块；
-- 结论不在 `Prop` 或不产生可用构造且无规则价值的声明；
-- 依赖禁止公理且当前 profile 不允许的声明。
-
-### 5.2 Index entry
-
-每个声明至少记录：
-
-```text
-declaration name
-owning module / required import
-universe parameters
-explicit and implicit binders
-typeclass binders
-propositional premises
-data-producing premises
-normalized conclusion
-conclusion head constant
-conclusion fingerprint
-reducibility/opacity information
-optional role attributes
-known axiom basis or deferred-audit marker
-dependency fingerprint
-```
-
-索引不得只保存 pretty-printed type 字符串。权威匹配必须在 Lean `MetaM` 中对 `Expr` 执行。
-
-### 5.3 索引构建方式
-
-新增 Lean 侧模块，建议位于：
-
-```text
-Lean/Reference/ComplexityReduction/Agent/Reduction/TheoremIndex.lean
-Lean/Reference/ComplexityReduction/Agent/Reduction/GoalProbe.lean
-Lean/Reference/ComplexityReduction/Agent/Reduction/RuleApplication.lean
-```
-
-Lean 侧负责：
-
-- 枚举 environment declaration；
-- 展开 theorem telescope；
-- 对 conclusion 做受控 `whnf`；
-- 计算结构化 fingerprint；
-- 按 conclusion head 建倒排索引；
-- 对给定目标执行真实 metavariable unification；
-- 返回可重建的候选规则、参数赋值和前提类型。
-
-Python 不重新实现 Lean unification，也不通过字符串替换构造类型。
-
-索引分成两个层级：
-
-1. **Environment index**：对当前已导入环境中的声明保存可直接用于 MetaM unification 的 typed entry；
-2. **Project module catalog**：离线扫描 Lake 项目的公共 Lean 模块，记录模块名、导出的 declaration 名、轻量 conclusion fingerprint 和来源文件，用于发现尚未位于当前 import closure 的候选。
-
-当 module catalog 命中潜在候选时，Agent 在临时 probe module 中增加对应 import，重新由 Lean 构建 environment entry 并执行真实 unification。catalog 中的字符串或离线 fingerprint 只能用于召回，不能授予 theorem 可用性。
-
-只扫描当前 environment 而要求调用者预先知道并 import 正确 theorem 模块，不满足“全库定理发现”的扩展性目标。
-
-### 5.4 增量与缓存
-
-Index cache 绑定：
-
-- Lean toolchain；
-- lake manifest；
-- import closure；
-- declaration environment fingerprint。
-
-缓存仅用于性能，不能直接授予 proof。最终候选仍需在当前环境重新 elaboration。开发环境变化时允许局部增量重建，而不是每个目标扫描全库。
-
-### 5.5 索引验收
-
-必须增加 synthetic regression：
-
-1. 在测试 Lean 模块中新增一个未加 attribute、且初始输入模块未 import 的直接 `NativeTMNPHard` theorem；
-2. 新增一个带两个前提、结论为 `NativeTMNPHard (P x)` 的一般 theorem；
-3. 新增一个产生 `CertifiedReduction (A x) (B x)` 的 polymorphic/dependent theorem；
-4. module catalog 找到所需 import，临时环境重新验证候选；
-5. 不修改 Python planner；
-6. Agent 自动发现并应用它们。
-
-若必须增加 theorem name allowlist 或 Python 分支才能通过，则 typed theorem index 不算完成。
-
-## 6. Lean 驱动的结论统一
-
-### 6.1 统一输入
-
-对每个开放目标，Lean 侧接收：
-
-- 精确目标 `Expr`；
-- local context；
-- 当前允许的 transparency mode；
-- profile 的公理和模块策略；
-- 搜索预算。
-
-### 6.2 统一过程
-
-对于候选 theorem：
-
-1. 创建 theorem universe metavariables；
-2. 依次实例化非前提参数；
-3. 将 theorem conclusion 与目标执行 `isDefEq`；
-4. 收集成功统一产生的参数赋值；
-5. 把尚未解决的显式前提和类型类前提转成子目标；
-6. 生成可重建的 theorem application skeleton；
-7. 返回候选成本和所有子目标的规范化 fingerprint。
-
-统一失败必须提供结构化原因，例如：
-
-- conclusion head 不匹配；
-- endpoint 不可 definitionally equal；
-- universe constraint 失败；
-- implicit parameter 无法推断；
-- typeclass 前提未解；
-- theorem 依赖当前 profile 禁止的公理。
-
-### 6.3 不跨进程持久化 Lean metavariable
-
-Python 状态中不得保存不可重建的 Lean metavariable ID。持久状态保存：
-
-- theorem declaration；
-- 规范化目标；
-- 已确定的显式参数表达式；
-- 前提序号和精确类型；
-- application skeleton 的内容 hash。
-
-每次验证由 Lean 重新建立 metavariable context 并 elaboration。
-
-### 6.4 直接 theorem 与 schema theorem
-
-统一成功且无剩余前提时，候选是直接 theorem reuse。
-
-统一成功但有剩余前提时，候选是 inference rule：
-
-```text
-subgoal₁ ... subgoalₙ
-────────────────────── theorem application
-original goal
-```
-
-两者必须进入同一个搜索器，不能继续把带前提 theorem 视为“没有闭合路线”。
-
-## 7. Hybrid NP-hard 搜索器
-
-### 7.1 核心状态
-
-新增通用 Python package，建议使用：
-
-```text
-agent/reduction/
-  models.py
-  theorem_index.py
-  lean_bridge.py
-  proof_state.py
-  search.py
-  ranking.py
-  premise_solvers.py
-  model_planner.py
-  synthesis.py
-  verifier.py
-  profiles.py
-  orchestrator.py
-```
-
-一个 proof state 至少包含：
-
-```text
-root goal
-open goals
-local contexts
-selected rule applications
-completed proof fragments
-known hard/complete seeds
-forward reachable endpoints and certified paths
-backward theorem obligations
-frontier meeting points
-imports
-search cost
-depth
-Lean-check count
-model-call count
-cycle fingerprints
-last diagnostics
-```
-
-### 7.2 默认 action 顺序
-
-对根 NP-hard 目标先执行第 1 项；随后对每个开放目标按其类型执行其余可适用 action：
-
-1. 调用现有 `NPHardResolver` fast path，尝试 exact hardness 或现有 seed-to-target path；若返回 no-path/aggregate-missing 等非成功结果，记录诊断并继续开放搜索，不得直接终止任务；
-2. local hypothesis、已有闭合 hardness theorem 和 completeness projection；
-3. `alongPath`/`ofCompleteAlongPath` 与已注册 reduction graph 的向前扩展；
-4. 带前提的一般 hardness theorem 的向后实例化；
-5. 在向前 endpoint 与向后所需 hub/reduction 之间做 meet-in-the-middle；
-6. presentation/equivalence adapter；
-7. typeclass、`simp`、有限 reflection 和专用 premise solver；
-8. 有界 Lean tactic automation；
-9. 模型路线规划、helper lemma proposal 与路线切换；
-10. 从选定 hard/complete hub 到目标的新 `CertifiedReduction` synthesis。
-
-此顺序是成本偏好，不是硬编码路线。搜索器必须保留多个候选，不能因第一个 theorem 产生困难前提就永久丢弃其他路线。
-
-### 7.3 搜索算法
-
-第一版本采用有界 best-first 或 beam search，但搜索节点同时包含 backward obligations 和 forward certified frontier：
-
-- normalized goal fingerprint 做 cycle detection；
-- endpoint fingerprint 对 forward reachable path 做去重；
-- 以 `CertifiedPath` 类型方向检查所有 forward edge；
-- backward 子目标出现 `NativeTMNPHard hub`、`NativeTMNPComplete hub`、`CertifiedReduction hub target` 或 `CertifiedPath hub target` 时，主动与 forward frontier 尝试汇合；
-- 相同目标与相同 local context 做 memoization；
-- 明显更差的重复状态做 subsumption；
-- 每条 theorem application 计基础成本；
-- 每个未解决前提增加估计成本；
-- 模型调用和新源码 synthesis 具有更高成本；
-- 禁止公理或 endpoint 不匹配的候选直接丢弃；
-- 达到预算后返回最小、最具体的 blocker，而不是伪造成功。
-
-搜索不得为了“通用”而忽略现有 reduction graph。它是 ComplexityReduction 已积累知识的高性能索引，应作为 NP-hard rule kernel 的一级能力；但它也不得继续成为唯一 planner。
-
-### 7.4 默认预算
-
-所有预算可配置，但必须有合理默认值：
-
-```text
-max_search_depth
-max_expanded_states
-max_candidates_per_goal
-max_lean_checks
-max_model_calls
-max_synthesis_rounds
-wall_clock_timeout
-```
-
-预算耗尽时报告：
-
-- 最接近闭合的候选路线；
-- 未解决子目标；
-- 每个子目标尝试过的 solver；
-- Lean 最后诊断；
-- 是否存在需要新库定理的明确能力缺口。
-
-### 7.5 路线可修改
-
-模型或确定性搜索选择一条路线后，如果后续前提无法完成，系统必须能够回溯并选择另一条 theorem。当前“task class 一旦确定便不可改变”的限制必须删除。
-
-## 8. 可插拔 Premise Solver
-
-### 8.1 统一协议
-
-每种 solver 实现统一接口：
-
-```text
-supports(goal, context) -> confidence
-propose(goal, context, budget) -> candidate proof actions
-check(candidate) -> Lean-verified result
-```
-
-Solver 只能提出候选，不能绕过最终 Lean 检查。
-
-### 8.2 基础 solver
-
-第一批必须实现：
-
-1. **LocalContextSolver**
-   - local hypothesis；
-   - assumption；
-   - constructor/projection；
-   - equality substitution。
-
-2. **DefinitionalSolver**
-   - `rfl`；
-   - controlled unfolding；
-   - presentation abbreviation；
-   - exact endpoint definitional equality。
-
-3. **TypeclassSolver**
-   - `synthInstance`；
-   - decidability、finiteness、encoding instance。
-
-4. **SimpSolver**
-   - bounded `simp`；
-   - theorem-supplied simp set；
-   - 禁止无界展开大定义。
-
-5. **FiniteReflectionSolver**
-   - finite enumeration；
-   - `decide`/`native_decide` 可用性探测；
-   - 显式 counterexample/witness 证书；
-   - 反射 theorem。
-
-6. **ReductionGraphSolver**
-   - 直接包装现有 `NPHardResolver`/closed resolver 的 seed 与 certified route 能力；
-   - 同时提供根目标 fast path、forward frontier 和内部 premise solver 三种入口；
-   - 可以解决 `CertifiedReduction A B` 或相应 transport 子目标。
-
-7. **PolynomialCombinatorSolver**
-   - 组合已有 `TMPolyTimeMap`、`Primitive`、`PolyProg`；
-   - 解决标准 list/map/compose/transport 复杂度前提。
-
-8. **LeanTacticSolver**
-   - 有界运行 `aesop`、`omega`、`simp_all` 等；
-   - 记录所用 tactic 和超时；
-   - 最终保存 elaborated proof，而不是只保存 tactic 成功日志。
-
-### 8.3 领域 solver 与核心解耦
-
-允许增加 Boolean CSP、图论、数值编码等领域 solver，但必须满足：
-
-- 通过类型或 typeclass capability 注册；
-- 不检查 benchmark case ID；
-- 不在核心搜索器中添加 relation 名称分支；
-- 新 solver 插件删除后，通用 theorem search 仍可工作；
-- solver 输出仍由 Lean 检查。
-
-## 9. 模型在新架构中的职责
-
-### 9.1 模型可见信息
-
-模型 planner 可以看到：
-
-- 当前精确目标和 local context；
-- typed theorem index 返回的候选及其精确类型；
-- 各候选统一后产生的子目标；
-- 已尝试路线和 Lean 诊断；
-- 相关公共源码；
-- 剩余预算。
-
-模型不需要接触：
-
-- benchmark oracle；
-- gold proof；
-- scorer-only construction route；
-- 未经请求的用户私有文件。
-
-### 9.2 模型允许的规划输出
-
-模型可以返回以下 action：
-
-```text
-apply_theorem
-instantiate_argument
-solve_premise_with_tactic
-prove_helper_lemma
-define_auxiliary_object
-compose_reductions
-switch_route
-synthesize_reduction
-request_more_relevant_source
-```
-
-每个 action 必须携带目标 fingerprint 和候选声明，不允许用自然语言声称目标已经证明。
-
-### 9.3 模型的两类工作
-
-模型调用分为：
-
-1. **Strategy proposal**
-   - 选择或组合数学路线；
-   - 分析前提；
-   - 提出辅助 lemma；
-   - 可以在失败后改变路线。
-
-2. **Lean implementation**
-   - 为选定 action 生成 proof term、tactic block、definition 或 theorem body；
-   - 接收 Lean diagnostics 修复；
-   - 允许同时新增与当前路线直接相关的辅助声明。
-
-不再要求所有问题都套用同一个 8 节点或 16 节点 DAG。
-
-### 9.4 模型失败不污染可信状态
-
-以下情况只产生被拒绝候选：
-
-- theorem name 不存在；
-- 类型无法统一；
-- 使用错误 endpoint；
-- 引入 forbidden axiom；
-- 使用 `sorry`；
-- proof 不编译；
-- 复杂度 witness 指向不同程序。
-
-搜索器随后可以修复、回溯或尝试其他路线。
-
-## 10. 新归约 Synthesis Fallback
-
-### 10.1 触发条件
-
-只有以下路径都未闭合时才进入新归约创作：
-
-- 直接 theorem；
-- theorem schema；
-- reduction graph composition；
-- premise solvers；
-- 模型辅助 theorem reuse。
-
-进入 synthesis 不再要求 benchmark 显式声明 `direct_new_edge`。它是通用 Agent 在现有知识不足时的正常 fallback。
-
-对 `NativeTMNPHard target` 根目标，synthesis 默认不是重证 `NativeTMNPHard` 的展开定义，而是：
-
-1. 从已验证 hard/complete seeds 中选择合适 hub；
-2. 生成 `CertifiedReduction hub target` 或多步 `CertifiedPath hub target`；
-3. 使用 `NativeTMNPHard.alongPath` 或 `ofCompleteAlongPath` 组装最终 hardness；
-4. 如目标只与某个已知 endpoint 存在 presentation 差异，优先合成/证明 adapter，而不是重写整个归约。
-
-只有没有可用 hardness seed、且库中存在另一条足以构造通用 hardness 的数学定理时，才允许采用其他根级证明形态。
-
-### 10.2 动态分解
-
-Synthesis 根据目标类型动态生成 obligations。例如 `CertifiedReduction source target` 通常需要：
-
-- instance transformation；
-- target representation/encoding 对齐；
-- direct-TM 或 polynomial program；
-- forward semantics；
-- reverse semantics；
-- program/run coherence；
-- certificate assembly。
-
-但节点必须从目标 certificate 的实际 constructor 和缺失 metavariables 导出，而不是来自固定 Python 清单。若某个库 theorem 已经封装部分义务，搜索器应直接应用并减少剩余子目标。
-
-### 10.3 辅助声明
-
-模型可以在 job-local module 中创建：
-
-- helper definitions；
-- gadget；
-- invariant；
-- witness transformation；
-- local semantic lemmas；
-- local polynomial lemmas。
-
-这些声明的依赖图由 Lean 类型自然形成。系统只需保证：
-
-- 不覆盖库源码；
-- 不逃出任务工作区；
-- 无占位证明或禁止公理；
-- 最终 root declaration 闭合。
-
-### 10.4 成功后的能力复用
-
-成功生成的新 theorem 默认只存在于当前 artifact。用户显式要求发布时，才：
-
-- 移入正式库模块；
-- 添加文档与测试；
-- 可选添加 capability attribute；
-- 更新 theorem index cache。
-
-核心 Agent 不得自动修改全局 registry 或把一次未审阅 synthesis 永久加入库。
-
-## 11. Boolean CSP：旗舰领域纵切，而非引擎前置条件
-
-Boolean CSP 20 题是新架构的旗舰验收案例，但不作为确定性 NP-hard theorem/path reuse 引擎或最小新归约闭环的前置条件。通用搜索、规则内核和 proof reconstruction 必须先通过更小的 synthetic 与非 Boolean CSP theorem-schema 回归，避免 Schaefer 形式化规模掩盖 Agent 架构是否成立。
-
-完成该纵切时，仍不得通过 case-specific planner 或 20 份专用 proof 绕过一般 theorem。
-
-### 11.1 目标公共 theorem
-
-最终必须提供无 caller-supplied reduction witness、无新增领域 axiom 的闭合接口：
-
-```lean
-theorem nPHard_of_not_schaefer_tractable
-    (Γ : Gamma)
-    (nonempty : ∀ symbol : Γ.Symbol, (Γ.relationOf symbol).Nonempty)
-    (hardSide : ¬ Γ.IsSchaeferTractable) :
-    NativeTMNPHard (cspOf Γ)
-```
-
-或者一个结论 definitionally equal、同样只要求有限语言性质前提的 theorem。
-
-### 11.2 必须消除的公理缺口
-
-当前以下内容不能继续作为最终证明基础：
-
-- `oneInThreeCoreNPHard` axiom；
-- `exactlyTwo3CoreNPHard` axiom；
-- `interpretation_hardCore_of_not_schaefer_tractable` axiom。
-
-需要完成：
-
-1. Exact Cover 到 positive 1-IN-3 CSP 的完整 executable；
-2. 该 executable 的 direct-TM / polynomial proof；
-3. 正反向 satisfiability proof；
-4. `oneInThreeCoreNPHard` 的真实 certificate；
-5. exactly-one / exactly-two pp-interpretation 的通用 substitution TM；
-6. `exactlyTwo3CoreNPHard` 的真实 transport；
-7. Schaefer expressive-power case analysis中剩余的 bijunctive、affine 与 hard-core assembly；
-8. 从所得 interpretation 自动获得 `TMPolyTimeMap` 的通用 compiler。
-
-### 11.3 PP interpretation 的通用 polynomial compiler
-
-当前 `LanguageInterpretation` 已表达有限 gadget substitution 的语义，但调用者仍需提供 `interpretTM`。应新增一般 theorem：
-
-```lean
-noncomputable def interpret_tmPolyTime
-    (interpretation : LanguageInterpretation Γ' Γ) :
-    TMPolyTimeMap
-      (FiniteDomainCSPTable.encodedType Γ')
-      (FiniteDomainCSPTable.encodedType Γ)
-      (interpret interpretation)
-```
-
-若无法对任意 representation 直接成立，则应明确最小、可自动生成的固定 gadget size / encoding coherence 前提，并由 typeclass 或 reflection 自动求解。
-
-这一步完成后，Schaefer theorem 才能真正把数学 expressive-power 结果转化为库要求的 executable hardness certificate。
-
-### 11.4 六类反证的有限反射
-
-新增通用 Boolean CSP reflection 层：
-
-- relation 非空检查；
-- zero-valid / one-valid；
-- meet closure；
-- join closure；
-- majority closure；
-- affine closure；
-- 从六个 `false` 结果反射得到 `¬ Γ.IsSchaeferTractable`。
-
-对于 closure 失败，应产生明确有限 witness：
-
-```text
-Horn:       accepted a, accepted b, rejected (a ∧ b)
-Dual-Horn:  accepted a, accepted b, rejected (a ∨ b)
-Bijunctive: accepted a, b, c, rejected majority(a,b,c)
-Affine:     accepted a, b, c, rejected xor(a,b,c)
-```
-
-证明可以由 `decide`、反射 theorem 或生成的 witness lemma 完成，但必须最终由 kernel 检查，不得只相信 Python 真值表分类。
-
-### 11.5 Agent 的预期搜索行为
-
-输入：
-
-```lean
-NativeTMNPHard CaseXX.problem
-```
-
-预期自动过程：
-
-1. unfolding/definitional solver 识别 `problem = cspOf gamma`；
-2. theorem index 找到 Schaefer hardness theorem；
-3. conclusion unification 实例化 `Γ := CaseXX.gamma`；
-4. 产生 `nonempty` 与 `¬ IsSchaeferTractable` 两个子目标；
-5. FiniteReflectionSolver 完成两个子目标；
-6. application theorem 组装最终 proof；
-7. Lean kernel 编译。
-
-此过程不得依赖：
-
-- case ID；
-- split；
-- relation 名称；
-- arity；
-- NAE scaffold；
-- `EXACTLY-t-OF-k` 专用 Python 分支；
-- hidden oracle。
-
-### 11.6 Boolean CSP 验收
-
-必须同时满足：
-
-- 20/20 题通过最终 kernel 验证；
-- 19 个 hard-side case 使用同一一般 theorem family；
-- canonical case 可以继续走已有直接 endpoint；
-- 默认不需要模型调用；
-- 删除 NAE3/4/5 planner 特判后结果不退化；
-- 添加至少 10 个运行时新生成、未出现在 benchmark 中的 finite Gamma，仍能自动分类并证明 hard-side 实例；
-- 核心 Python 文件中搜索不到 20 个 case ID、relation 名称或 arity 匹配表。
-
-如果只能通过为每种 relation 增加 scaffold，则本纵切失败。
-
-## 12. Schaefer 之前的 NP-hard 通用性验收
-
-这些回归属于通用引擎 MVP，必须先于 Schaefer 闭合完成。它们验证 Agent 的能力来自 ComplexityReduction 证书代数和 theorem schema，而不是 Boolean CSP 特化。
-
-### 12.1 参数化 reduction theorem
-
-测试一个 theorem：
-
-```text
-P x → CertifiedReduction (A x) (B x)
-```
-
-Agent 应自动实例化 `x`、递归证明 `P x`，并把所得 edge 与已知 hard seed 组合成目标 hardness。
-
-### 12.2 Transport theorem
-
-测试：
-
-```text
-PresentedEquivalent A B →
-NativeTMNPHard A →
-NativeTMNPHard B
-```
-
-Agent 应分别解决 equivalence 与 source hardness，而不是要求预注册一条闭合 edge。
-
-### 12.3 多跳 certified route 与 presentation change
-
-测试：
-
-```text
-NativeTMNPHard A
-CertifiedReduction A B
-CertifiedPresentationChange B C
-────────────────────────────────
-NativeTMNPHard C
-```
-
-Agent 应通过 `CertifiedPath`/`CertifiedReduction.comp` 和 presentation adapter 组装证明，且所有边方向精确。该测试不要求把 `NativeTMNPComplete C` 作为产品目标。
-
-### 12.4 未注册 theorem 热插拔
-
-在测试模块新增一个未注册 theorem 后：
-
-- theorem index 自动发现；
-- planner 无代码变化；
-- 新 theorem 可以改变原目标的最佳路线；
-- 删除 theorem 后系统恢复到其他路线或精确 blocker。
-
-### 12.5 最小动态 synthesis
-
-至少选择一个不依赖 Schaefer 的小型 target family：库中已有 hard seed，但没有 seed-to-target edge。Agent 必须动态创建一个新的 `CertifiedReduction hub target`，随后使用库的 hardness transport 得到 `NativeTMNPHard target`。验收重点是根证明结构和证书复用，不是 benchmark direct-edge policy。
-
-## 13. 代码迁移方案
-
-### 13.1 新增 NP-hard-first 通用核心
-
-优先新增 `agent/reduction/`，避免继续把所有能力塞入 `agent/hardness/`。这里的“通用”指不依赖 problem family、relation 名称或 benchmark case 的 NP-hard 自动归约核心，不表示首版支持任意 Lean 根目标。该 package 不得 import benchmark runner、oracle loader 或 scorer。
-
-建议模块职责：
-
-| 文件 | 职责 |
-|---|---|
-| `models.py` | NP-hard RootGoal、Rule、SearchState、Action、Result schema |
-| `lean_bridge.py` | 调用 Lean goal probe、unifier 和 candidate checker |
-| `theorem_index.py` | typed index cache、查询与 import discovery |
-| `proof_state.py` | open goals、proof fragments、回溯状态 |
-| `search.py` | best-first/beam hybrid NP-hard search |
-| `ranking.py` | 成本模型和候选排序 |
-| `premise_solvers.py` | solver registry 与基础 solver |
-| `model_planner.py` | 开放式 strategy proposal |
-| `synthesis.py` | 动态新归约/辅助 lemma 创作 |
-| `verifier.py` | 最终 artifact 与 kernel 验证 |
-| `profiles.py` | research/strict-release/benchmark 分层 |
-| `orchestrator.py` | 通用任务生命周期 |
-
-### 13.2 Lean 侧通用模块
+## 8. Recursive Action Executor
 
 新增：
 
-```text
-ComplexityReduction.Agent.Reduction.TheoremIndex
-ComplexityReduction.Agent.Reduction.GoalProbe
-ComplexityReduction.Agent.Reduction.RuleApplication
-ComplexityReduction.Agent.Reduction.Reflection
-ComplexityReduction.Agent.Reduction.FinalCheck
-```
+- agent/generative_reduction/recursive_runtime.py。
 
-现有 registry、resolver 和 authoring meta code 必须被这些模块复用，但不得成为唯一入口。尤其：
+该文件承载 candidate lookup、action execution、frame verification和 subgoal synthesis 适配，避免继续扩大 orchestrator。
 
-- `NPHardResolver.resolveNPHardRequestV1` 保留为 exact/closed-route fast path；
-- `ClosedResolver` 的路径搜索暴露为 forward-frontier 服务；
-- `TypedNPHardRequestV1`/`TypedNPHardResultV1` 保留为稳定 NP-hard 协议；
-- 现有 authoring executor、candidate workspace、Lean diagnostics 和 artifact compiler 通过 adapter 接入 synthesis；
-- 新 package 不得重新实现一套与这些类型不兼容的请求、路径或证书语义。
+### 8.1 CLOSED
 
-### 13.3 兼容现有 hardness CLI
+执行顺序：
 
-现有 `scripts/prove_np_hard.py` 保留为薄适配器：
+1. 检查 action.lean_verified；
+2. 确认 proof term exact type；
+3. mark_action_attempted；
+4. 创建 ReusableFragment；
+5. 如果 goal 是普通 root/child goal，关闭 goal；
+6. 如果 goal 对应 binder slot，绑定 slot 并调用 Lean 重新实例化 dependent premises；
+7. 如果 goal 对应 proposition premise slot，填充 slot；
+8. 激活新 ready premises；
+9. 若 frame saturated，立即重建并 Lean 检查该 frame；
+10. frame verified 后生成 parent fragment。
 
-```text
-parse NP-hard request
-→ 构造精确 Lean goal
-→ 调用 agent.reduction.orchestrator
-→ 格式化 hardness-specific result
-```
+### 8.2 DECOMPOSED
 
-在 NP-hard MVP 内不新增任意 complexity goal 入口；直接扩展现有 `scripts/prove_np_hard.py`。它接受：
+执行顺序：
 
-- input module；
-- target problem declaration 或 `NativeTMNPHard target` goal expression；
-- profile；
-- search/model budgets；
-- 输出目录。
+1. 从 plan.ranked_proof_guidance 精确找到 guidance_id；
+2. 调用 Lean rule instantiation probe；
+3. 验证 probe conclusion 与 goal exact type 一致；
+4. 创建 ApplicationFrame；
+5. 将 already_closed_premises 填入对应 slot；
+6. 只激活当前依赖已经满足的 premise；
+7. 将 parent goal 从 open_goals 移除；
+8. 返回包含 frame 和 child goals 的新 ProofState。
 
-benchmark runner 继续单独存在，但不得成为产品 CLI 的内部依赖。
+以下情况不得创建 child state：
 
-### 13.4 旧代码的迁移原则
+- candidate conclusion 不能重新统一；
+- residual premise 含未受 frame 管理的 unresolved metavariable；
+- theorem application 只产生与 parent 相同的 goal，且没有新 binding、fragment 或 capability；
+- declaration、binding 和 residual multiset 与祖先 frame 完全相同；
+- route 使用 forbidden declaration。
 
-保留并复用：
+### 8.3 SYNTHESIS_REQUIRED
 
-- Lean input gate；
-- exact endpoint normalization；
-- certified reduction registry；
-- TM/polytime combinators；
-- model client；
-- Lean diagnostic collection；
-- candidate workspace sandbox；
-- final artifact compiler。
+把 orchestrator._attempt_open_synthesis 的可复用逻辑迁移为子目标 executor：
 
-重构为核心可组合服务：
+    execute_synthesis(state, goal, plan, action)
 
-- `NPHardResolver`，其失败转换为可继续搜索的结构化诊断；
-- route graph search；
-- authoring source discovery；
-- semantic proof generator。
+约束：
 
-其中前两项是确定性高优先级能力，不得因“通用搜索”而被低优先级模型流程取代；后两项主要服务 synthesis fallback。
+- expected declaration type 必须等于 goal.exact_type；
+- prompt 只要求实现当前 child capability，不要求直接证明根 problemIsNPHard；
+- model strategy 可以选择 helper、intermediate 或 construction mode；
+- authoring 每次只写 job-local generated module；
+- 每次 materialization 必须先确认 goal、plan fingerprint 和 capability fingerprint 仍有效；
+- 编译成功后注册 generated capability；
+- generated module 使用内容 hash 或 job/state/action hash 命名；
+- 新 capability 立即关闭当前 slot 或重新进入 Planner；
+- 编译失败更新 action failure memory，并回到全局 frontier；
+- 单个 model call 失败只淘汰当前 synthesis attempt；
+- model policy required 只有在所有剩余分支均要求模型且 provider 不可用时，才聚合为顶层 FAILED_MODEL。
 
-从核心删除：
+### 8.4 Action failure
 
-- `_whole_reduction_authoring_seed_modules`；
-- `_BOOLEAN_CSP_*_SCAFFOLD_*` planner maps；
-- 通过 relation 源码字符串选择 task family；
-- 默认固定 8/16 节点 whole-reduction DAG；
-- `semantic_plan` 只能描述 NAE clause gadget 的固定 schema；
-- benchmark policy 决定 theorem reuse 是否允许；
-- final result 依赖 scorer 布尔值才能成为 verified。
+action executor 不得用空 children 表示“整个 state 无路可走”。
 
-旧 exact-edge、capability、frontier benchmark code 可以迁移到：
+普通失败返回：
 
-```text
-agent/benchmark/
-```
+    state
+      -> mark_action_attempted
+      -> remember_failure
+      -> push back to GlobalProofFrontier
 
-在核心迁移完成前允许保留兼容 wrapper，但新通用 package 不得反向 import 它们。
+只有当前 goal 的所有 action 都已尝试，且重新规划也没有新 candidate 时，当前 state 才被淘汰。
 
-## 14. 实施任务与依赖顺序
+## 9. SearchCoordinator 修正
 
-### 固定 NP-hard 产品边界并切断 benchmark 对核心的控制
+修改 agent/generative_reduction/search.py。
+
+### 9.1 调度
+
+每轮流程：
+
+1. pop best state；
+2. 如果 state complete，返回 completed_state；
+3. 选择 ready OpenGoal；
+4. state-aware candidate lookup；
+5. planner.plan；
+6. 过滤 attempted actions；
+7. ReadyActionBuckets 选择 provider-aware action；
+8. executor 返回 success child、failure-memory child 或多个 OR child；
+9. 将所有合法 child 推回同一个 GlobalProofFrontier。
+
+### 9.2 多 action 与回退
+
+第一版可以继续每次只扩张一个 action，但必须满足：
+
+- 失败 state 重新入队；
+- 下次不会再次选择同一个 action；
+- alternative theorem/reuse/synthesis action 仍然存在；
+- provider activation deadline 在多次回队后仍正确累计。
+
+如果实现复杂度可控，可以增加 choose_many：
+
+- exact CLOSED action 立即执行；
+- 其余 provider 每轮各保留最多一个 action；
+- 受 max_branching_per_expansion 限制；
+- 每个 action 产生独立 immutable child state。
+
+choose_many 不是首个实现版本的硬要求，正确回队是硬要求。
+
+### 9.3 Goal 选择
+
+select_open_goal 改为只选择 ready goal。建议排序：
+
+1. 可以 exact close 的 goal；
+2. data binder，因为它可能解锁多个 dependent premises；
+3. 预计 deterministic coverage 高的 proposition；
+4. residual count 少的 theorem/path goal；
+5. synthesis goal。
+
+排序只能影响成本，不得成为 provider 门禁。
+
+### 9.4 循环与进展
+
+新增通用 progress fingerprint：
+
+- parent GoalKey；
+- selected declaration；
+- binder substitutions；
+- residual GoalKey multiset；
+- generated capability delta。
+
+如果 action 后：
+
+- parent goal 等价地重新出现；
+- residual multiset 没有减少或具体化；
+- 没有新 verified fragment；
+- 没有新 binder substitution；
+- 没有新 generated capability；
+
+则记录 non_progressing_decomposition 并淘汰该 action。
+
+### 9.5 顶层终止语义
+
+- VERIFIED：completed state 经整树重建和最终 Lean 验证；
+- BLOCKED：frontier 为空，预算仍有剩余，且所有 state/action 均已穷尽；
+- BUDGET_EXHAUSTED：统一 BudgetTracker 抛出预算停止；
+- FAILED_MODEL：模型是所有剩余可行分支的必要条件，并且 required provider 全部失败或不可用；
+- FAILED_LEAN：输入/环境/最终验证发生不能归属于普通 branch 的基础设施或可信边界错误。
+
+每个 BLOCKED 必须包含：
+
+- 最佳 state；
+- 所有剩余或最后淘汰的 goals；
+- 每个 goal 已尝试 action；
+- action failure codes；
+- 是否存在 dormant dependent premises；
+- frontier exhaustion receipt；
+- provider statistics；
+- remaining budget。
+
+## 10. Frame Verification 与 Proof Reconstruction
+
+### 10.1 局部 frame 验证
+
+当一个 ApplicationFrame 的全部 binder 和 premise slots 已填充时：
+
+1. 生成 job-local frame theorem；
+2. 使用保存的 application skeleton 和 child proof terms；
+3. 精确声明 parent_exact_type；
+4. 运行 Lean；
+5. 成功后把 frame 标记为 verified，并创建 parent ReusableFragment；
+6. 失败后将对应 theorem action 标记失败，保存 diagnostic，并让其他 OR branch 继续。
+
+state 不能仅因 open_goals 为空就完成；每个 frame 必须已经通过上述局部验证。
+
+### 10.2 整树重建
+
+在 agent/generative_reduction/reconstruction.py 中新增：
+
+    build_search_artifact_source(completed_state, ...)
+
+职责：
+
+- 按 application frame DAG 拓扑排序；
+- 导入 base modules、plugin modules 和当前 completed branch 的 generated modules；
+- 发出 generated helper；
+- 发出每个 verified frame 对应的局部 theorem；
+- 发出精确根声明 problemIsNPHard；
+- 保留 assert_standard_axioms；
+- 保留 forbidden source scan；
+- 保留最终 theorem 的传递依赖 RouteAudit；
+- 保留 endpoint 和 exact type 检查。
+
+最终 Artifact.lean 仍需独立编译。Python 的 completed_state 只表示“具备完整、局部已验证的重建材料”，不能取代最终 Lean 权威。
+
+### 10.3 最终重建失败
+
+如果局部 frame 都已验证但最终 artifact 失败：
+
+- 首先分类为 import/order/name collision、stale capability、route audit 或真实 proof mismatch；
+- 可定位到具体 frame/action 时，把诊断写入 failure memory 并恢复到最近可重建 state；
+- 只有无法归因于普通 proof branch 的基础设施错误才返回 FAILED_LEAN；
+- 不允许直接丢弃整棵搜索树而不保存 reconstruct receipt。
+
+## 11. Orchestrator 接线
+
+修改 agent/generative_reduction/orchestrator.py。
+
+### 11.1 保留前段
+
+以下前置流程原样保留：
+
+- request 和 job store；
+- stable entrypoint guard；
+- input certification；
+- environment snapshot；
+- optional input module build；
+- closed resolver fast path；
+- root theorem index；
+- plugin installation；
+- route policy；
+- BudgetTracker；
+- final result/report 写入。
+
+### 11.2 替换中段
+
+在 INDEX_READY 之后：
+
+1. 建立 RecursiveSearchRuntime；
+2. 建立 ProofState.initial；
+3. 建立 SearchCoordinator；
+4. 调用 coordinator.run(initial_state)；
+5. 持续写入 state、plan、frame 和 action events；
+6. completed_state 进入 build_search_artifact_source；
+7. blocked/budget/model outcome 进入统一 failure result。
+
+删除生产路径中的：
+
+- 根目标只运行一次 planner 的终止语义；
+- root-substep-plan 作为唯一 plan 的假设；
+- 非 closed 根目标直接跳到整体 _attempt_open_synthesis 的行为。
+
+旧 _attempt_open_synthesis 在子目标 executor 完成迁移并通过测试后删除；迁移期间不得保留两个可同时触发的 authoring 入口。
+
+### 11.3 状态事件
+
+至少记录：
+
+- STATE_PUSHED；
+- STATE_POPPED；
+- GOAL_SELECTED；
+- PLAN_REUSED；
+- PLAN_COMPUTED；
+- ACTION_EXPANDED；
+- ACTION_FAILED_REQUEUED；
+- GOAL_DECOMPOSED；
+- BINDER_BOUND；
+- DEPENDENT_GOAL_ACTIVATED；
+- GOAL_CLOSED；
+- FRAME_SATURATED；
+- FRAME_VERIFIED；
+- GENERATED_CAPABILITY_REGISTERED；
+- STATE_COMPLETED；
+- FRONTIER_EXHAUSTED；
+- PROOF_RECONSTRUCTED。
+
+## 12. 报告字段
+
+GeneralNPHardResult 和 report.json 增加：
+
+- expanded_state_count；
+- requeued_failure_state_count；
+- pruned_cycle_count；
+- max_observed_search_depth；
+- application_frame_count；
+- verified_application_frame_count；
+- data_binding_count；
+- dependent_goal_activation_count；
+- recursive_substep_plan_count；
+- generated_capability_count；
+- final_frontier_size；
+- frontier_exhaustion_receipt；
+- proof_tree；
+- per-goal attempted actions；
+- per-action blocker code；
+- branch-local generated imports；
+- final route audit receipt。
+
+真实 API 报告还必须包含：
+
+- provider 和 model；
+- strategy call count；
+- authoring call count；
+- HTTP status receipt；
+- accepted response count；
+- generated source hashes；
+- 每个 generated declaration 的 exact type；
+- 最终 artifact 是否实际使用 generated declaration；
+- 不包含 API key、authorization header 或完整敏感请求。
+
+## 13. 按功能拆分的实施任务
+
+以下列表全部是未完成事项。
+
+### 失败回队与搜索终止语义
+
+修改文件：
+
+- agent/generative_reduction/models.py；
+- agent/generative_reduction/proof_state.py；
+- agent/generative_reduction/search.py；
+- agent/generative_reduction/proof_frontier.py；
+- tests/test_generative_reduction.py。
 
 任务：
 
-- 定义 `research`、`strict-release`、`benchmark` profiles；
-- 建立只接受 `NativeTMNPHard target` 根目标的 orchestrator 空壳；
-- 让现有 NP-hard CLI 能通过 `research` profile 调用新 orchestrator；
-- 保留 `TypedNPHardRequestV1`/`TypedNPHardResultV1` 兼容层；
-- 默认关闭 oracle、scorer、independent replay、route directness 和 publication receipt；
-- 保留最终 kernel、exact type 和公理策略。
+- [ ] 实现 mark_action_attempted；
+- [ ] attempted action 进入 state fingerprint；
+- [ ] normalized failure fingerprint 进入 state fingerprint；
+- [ ] SearchCoordinator 使用 state-aware CandidateLookup 签名；
+- [ ] executor 失败返回 failure-memory child；
+- [ ] Planner/action merge 过滤 attempted actions；
+- [ ] action alternative 可以在下一个 search round 被选择；
+- [ ] BLOCKED 只在 frontier exhausted 时产生；
+- [ ] 增加 non-progressing decomposition guard；
+- [ ] 增加对应 unit tests。
 
 验收：
 
-- 不提供任何 suite/manifest/oracle 仍能运行单个目标；
-- 删除或禁用 benchmark package 后核心 smoke test 仍能运行；
-- `research` 成功不依赖 scorer；
-- 非 NP-hard 根目标得到明确的 unsupported-goal 结果；
-- 旧 benchmark runner 仍可显式选择 `benchmark` profile。
+- 第一个 theorem action 失败后，同一 goal 的第二个 theorem action被扩张；
+- theorem action 失败后 synthesis action仍可被扩张；
+- failure-memory child 不被 dedup；
+- self-loop theorem 不消耗全部 search depth；
+- 单个 model/Lean action 失败不直接返回顶层 BLOCKED。
 
-### 建立 ComplexityReduction NP-hard Rule Kernel 与现有 fast path
+### ApplicationFrame 与 dependent binder
+
+修改文件：
+
+- agent/generative_reduction/models.py；
+- agent/generative_reduction/proof_state.py；
+- agent/generative_reduction/theorem_index.py；
+- agent/generative_reduction/lean_bridge.py；
+- Lean/Reference/ComplexityReduction/Agent/GenerativeReduction/RuleApplication.lean；
+- Lean/Reference/ComplexityReduction/Agent/GenerativeReduction/TheoremIndex.lean；
+- tests/test_generative_reduction.py。
 
 任务：
 
-- 将 `NPHardResolver` 接为根目标第一 fast path；
-- 把 exact hardness、completeness projection、`alongPath`、`ofCompleteAlongPath`、path/reduction composition、equivalence/presentation adapter 编码为 typed rules；
-- 暴露现有 closed resolver 的 seed、forward path 和 endpoint 查询；
-- 实现每条规则的 Lean application 与根 proof reconstruction；
-- 不复制库证书语义到 Python。
+- [ ] 定义 BinderSlot、PremiseSlot、ApplicationFrame；
+- [ ] Lean probe 输出稳定 binder ordinal 和 dependency graph；
+- [ ] 禁止 unresolved metavariable exact_type 进入 OpenGoal；
+- [ ] dormant premise 在依赖绑定前不进入 frontier；
+- [ ] data binder 关闭后由 Lean 重新实例化 dependent premises；
+- [ ] 同一 binder substitution 同时作用于全部 sibling premises；
+- [ ] 增加 branch-specific binding fingerprint；
+- [ ] 增加 data witness downstream coverage ranking；
+- [ ] 实现 frame serialization/resume round-trip；
+- [ ] 增加 synthetic dependent theorem tests。
 
 验收：
 
-- exact registered hardness、complete-to-hardness、单边 path、多边 path 和 presentation transport 均能产生精确 `NativeTMNPHard target` artifact；
-- 现有 resolver 能闭合的目标在新 orchestrator 中不退化；
-- reverse-only edge 被类型方向拒绝；
-- 最终 proof term 直接引用 ComplexityReduction 的原生 constructor/theorem。
+- Γ' 选择一个具体 Gamma 后，interpretation 和 source hardness 精确引用同一个 declaration；
+- 两个不同 Gamma witness 形成两个不同 ProofState；
+- 不出现含 ?m 或 ?Γ' 的独立 OpenGoal；
+- wrong witness 或 wrong dependent proof 被 Lean 拒绝；
+- resume 后能够重建相同 frame 和 exact child types。
 
-### 建立按需 Typed Theorem Index、结论统一与规则实例化
+### Recursive Action Executor
+
+修改文件：
+
+- 新增 agent/generative_reduction/recursive_runtime.py；
+- agent/generative_reduction/capability_planner.py；
+- agent/generative_reduction/exact_closure_probe.py；
+- agent/generative_reduction/guided_proof_planner.py；
+- agent/generative_reduction/providers/reuse.py；
+- agent/generative_reduction/providers/theorem.py；
+- agent/generative_reduction/providers/synthesis.py；
+- tests/test_generative_reduction.py。
 
 任务：
 
-- 实现 Lean environment declaration scan 和 conclusion-head 倒排索引；
-- 建立 project module catalog，支持发现输入 import closure 之外的公共 theorem；
-- 第一层只查询 NP-hard rule heads，随后按新 premise head 递归扩展；
-- Lean MetaM unifier；
-- dependent/implicit/typeclass binder 支持；
-- rule application skeleton；
-- premise extraction；
-- 未注册 theorem 与 required import discovery；
-- environment fingerprint 增量 cache；
-- 结构化失败诊断。
+- [ ] 实现 CLOSED handler；
+- [ ] 实现 DECOMPOSED handler；
+- [ ] 已闭合 premise 精确填入 frame slot；
+- [ ] child goal closure 自动填回 producer slot；
+- [ ] frame saturated 后生成 parent fragment；
+- [ ] 实现 branch-local candidate lookup；
+- [ ] generated modules 纳入 capability fingerprint；
+- [ ] forbidden declaration 在每个 child lookup 中继续生效；
+- [ ] action diagnostics 规范化为稳定 blocker code；
+- [ ] provider statistics 按真实 expansion 更新。
 
 验收：
 
-- 零前提、单前提、多前提、dependent premise、universe-polymorphic theorem 均有回归；
-- 未注册 hardness/reduction theorem 不修改 Python 即可被发现；
-- 未预先 import 的 theorem 模块可被发现、加入临时 import 并由 Lean 重新验证；
-- Python 不使用 pretty string 作为类型权威；
-- 错误 endpoint 不会因字符串相似而匹配；
-- 默认候选集不平铺无关的全库 theorem。
+- 一个三层 theorem application tree 可在 model disabled 下闭合；
+- 普通 Prop、data binder、typeclass premise 均走同一 executor；
+- child fragment 不会填入错误 frame slot；
+- 当前 branch 的 generated capability 不会出现在 sibling branch；
+- provider statistics 与 event log 一致。
 
-### 构建 Hybrid Search、proof reconstruction 与基础 Premise Solver
+### 局部 frame 验证与整树重建
+
+修改文件：
+
+- agent/generative_reduction/reconstruction.py；
+- agent/generative_reduction/proof_state.py；
+- agent/generative_reduction/verification/core.py；
+- Lean/Reference/ComplexityReduction/Agent/GenerativeReduction/ProofReconstruction.lean；
+- Lean/Reference/ComplexityReduction/Agent/GenerativeReduction/FinalCheck.lean；
+- tests/test_generative_reduction.py。
 
 任务：
 
-- proof state；
-- backward theorem obligations + forward certified frontier 的 best-first/beam search；
-- cycle detection、memoization、回溯；
-- Local、Definitional、Typeclass、Simp、LeanTactic solver；
-- reduction graph 的 fast path、frontier 与 premise-solver 三种接口；
-- meet-in-the-middle；
-- 完整 Lean application tree 重建。
+- [ ] frame saturated 时生成局部 Lean theorem；
+- [ ] 局部 theorem 通过后 frame 才标记 verified；
+- [ ] verified frame 产生 parent ReusableFragment；
+- [ ] build_search_artifact_source 按 DAG 拓扑排序；
+- [ ] root_fragment 精确绑定根 endpoint；
+- [ ] generated modules 只导入 completed branch 实际使用集合；
+- [ ] 最终 artifact 保留 axiom 和 forbidden dependency audit；
+- [ ] reconstruction failure 可定位到 frame/action；
+- [ ] 增加 independent final replay tests。
 
 验收：
 
-- 两层和三层 theorem chaining；
-- hard seed 前向路径与一般 theorem 后向前提能够汇合；
-- 一个候选失败后自动换路线；
-- 循环 theorem 不导致无限搜索；
-- 预算耗尽产生精确 blocker；
-- existing route 行为不退化；
-- 所有成功都输出可单独编译的 `NativeTMNPHard target` declaration。
+- Python 手工伪造 complete state 不能绕过 frame verification；
+- child 顺序或 binder substitution 错误时 Lean 失败；
+- 正确多层 tree 可生成独立 Artifact.lean；
+- final theorem 精确为请求的 NativeTMNPHard target；
+- forbidden dichotomy 的直接和传递依赖都被拒绝。
 
-### 验收确定性 NP-hard theorem/path reuse 引擎
+### Orchestrator 生产接线
+
+修改文件：
+
+- agent/generative_reduction/orchestrator.py；
+- agent/generative_reduction/reporting.py；
+- agent/generative_reduction/job.py；
+- scripts/prove_np_hard_general.py；
+- tests/test_generative_reduction.py。
 
 任务：
 
-- 参数化 reduction theorem；
-- property-premised hardness theorem；
-- 多跳 path + presentation change；
-- 未注册 theorem 热插拔；
-- 错误方向、错误 endpoint 和困难前提下的回溯回归。
+- [ ] INDEX_READY 后实例化 SearchCoordinator；
+- [ ] root initial state 进入 GlobalProofFrontier；
+- [ ] state、goal、plan、action、frame events 持久化；
+- [ ] completed outcome 进入整树 reconstruction；
+- [ ] blocked/budget/model outcome 统一映射；
+- [ ] 移除根目标一次性 planner 的生产终止路径；
+- [ ] 移除根目标整体 authoring 的默认 fallback；
+- [ ] 保留 closed resolver fast path；
+- [ ] resume 能恢复 frontier 和 frame；
+- [ ] report 输出递归 proof tree 和 frontier exhaustion receipt。
 
 验收：
 
-- 至少三种非 Boolean CSP theorem schema 自动闭合 NP-hard 根目标；
-- 新 theorem 加入环境后不改 planner 即可改变可用路线；
-- 核心 planner 中无 problem family/case ID 路由；
-- 完成这些验收后，形成可交付的“通用 NP-hard theorem/path reuse 引擎”，但尚未满足自主创作新归约的完整 Agent MVP 定义。
+- rg 搜索能够找到生产代码对 SearchCoordinator 的真实实例化；
+- 非 fast-path job 至少运行两个不同 GoalKey 的 SubstepPlan；
+- 一个 action 失败后日志出现 ACTION_FAILED_REQUEUED，随后出现其他 action expansion；
+- BLOCKED report 能证明 frontier 已耗尽；
+- fast-path case 行为和结果保持不变。
 
-### 接入开放式模型 Planner 并完成最小新归约纵切
+### 子目标级模型生成
+
+修改文件：
+
+- agent/generative_reduction/recursive_runtime.py；
+- agent/generative_reduction/model/strategy.py；
+- agent/generative_reduction/model/authoring.py；
+- agent/generative_reduction/synthesis/actions.py；
+- agent/generative_reduction/synthesis/designs.py；
+- agent/generative_reduction/synthesis/materialize.py；
+- agent/generative_reduction/construction_frontier.py；
+- agent/generative_reduction/orchestrator.py；
+- tests/test_generative_reduction.py。
 
 任务：
 
-- strategy action schema；
-- theorem candidates 与子目标 prompt；
-- route switching；
-- helper lemma generation；
-- Lean diagnostics feedback；
-- 模型候选的逐 action 验证；
-- 将现有 authoring executor 接成 `CertifiedReduction hub target` synthesis action；
-- 完成一个不依赖 Schaefer 的最小“新 edge + hardness transport”案例。
+- [ ] 将 _attempt_open_synthesis 迁移为 execute_synthesis；
+- [ ] prompt 固定当前 child exact type；
+- [ ] authoring 输出一个可命名、可复用的局部 declaration；
+- [ ] compile diagnostics 只反馈当前 subgoal 和 design；
+- [ ] 成功 capability 立即注入当前 state；
+- [ ] 新 capability 触发相关 Planner cache 增量失效；
+- [ ] 同一 plan fingerprint 的 repair 不重复 strategy call；
+- [ ] design 改变时创建新 action/design fingerprint；
+- [ ] 单次 API 失败保留 theorem/reuse alternatives；
+- [ ] 删除旧 root-only synthesis 入口。
 
 验收：
 
-- 模型可以选择未预写路线；
-- 模型可以在路线失败后切换 theorem；
-- hallucinated theorem 被拒绝但任务可以继续；
-- 模型不能通过 JSON 状态伪造完成；
-- 不再受固定 task class 限制；
-- 一个此前没有 route 的 target 通过模型辅助构造 `CertifiedReduction hub target`，再由 `alongPath`/`ofCompleteAlongPath` 得到 exact hardness；
-- 完成该纵切后，形成首个完整“通用 NP-hard 自动归约 Agent MVP”。
+- 模型不再被要求每次直接实现 problemIsNPHard；
+- 一个 child interpretation/helper 编译成功后可被 parent frame 使用；
+- generated declaration exact type 与 child goal 一致；
+- 一个 synthesis design 失败后可以切换 theorem 或另一个 design；
+- report 能区分 strategy、authoring、accepted capability 和 final usage。
 
-### 扩展多 family 动态 Reduction Synthesis
+### Boolean CSP 非 dichotomy 纵向通路
+
+优先目标：
+
+- Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case02PositiveNAE4；
+- 如该 case 暴露额外库能力缺口，先使用同型 synthetic theorem 验证调度，再回到真实 case，不用 case-specific Python 分支绕过。
+
+预期 proof shape：
+
+    NativeTMNPHard target
+      <- interpretation transport theorem
+         AND source language witness
+         AND LanguageInterpretation source target
+         AND NativeTMNPHard (cspOf source)
 
 任务：
 
-- 从目标 certificate constructor 推导缺失 obligations；
-- 动态生成 job-local module；
-- 支持 helper definitions 与多个相关 lemma；
-- 组合现有 polytime/semantic theorem；
-- 最终 root certificate assembly。
+- [ ] 根目标选择通用 interpretation/path/reduction theorem；
+- [ ] source data binder 由 typed index 提供候选；
+- [ ] source hardness 通过库内已有 theorem/path 关闭；
+- [ ] interpretation 通过复用、helper authoring 或局部 synthesis 关闭；
+- [ ] parent frame 重建；
+- [ ] final artifact 通过 forbidden declaration transitive audit；
+- [ ] proof tree 不引用 dichotomy 结论；
+- [ ] 保存完整 state/action/model/Lean receipts。
 
-验收：
+硬验收：
 
-- 至少三个不同问题 family 的新归约创作；
-- 每个任务的 obligation graph 可以不同；
-- 不新增 Python family 分支也能处理新的 target presentation；
-- synthesis 失败能够回到 theorem search 或报告具体缺口；
-- 每个成功任务都以 `alongPath`/`ofCompleteAlongPath` 或等价的库 theorem 组装根 hardness。
+- 至少一个此前 BLOCKED 的真实 Boolean CSP case 变为 VERIFIED；
+- 该 case 至少包含一个 DECOMPOSED action和两个递归 child goals；
+- source hardness 与 interpretation 使用同一个 source binder；
+- 最终 proof 不是 direct dichotomy wrapper；
+- 如果调用模型，存在真实 HTTP 200 receipt；
+- 如果未调用模型，报告必须明确全部 child capability 来自库内复用。
 
-### 完成 Schaefer/Boolean CSP 旗舰纵切
+### Boolean CSP 20 题真实 API 全量回归
+
+固定禁止声明：
+
+- ComplexityReduction.Domain.BooleanCSP.Hardness.NativeTMNPHard_of_notSchaeferTractable；
+- ComplexityReduction.Domain.BooleanCSP.Hardness.NativeTMNPHard_of_notSchaeferTractable_with_oneInThree；
+- ComplexityReduction.Domain.BooleanCSP.schaefer_dichotomy。
 
 任务：
 
-- Boolean CSP finite reflection；
-- nonempty 与六类闭包 witness；
-- 完成 hard-core certificates；
-- 完成 PP interpretation polynomial compiler；
-- 移除三个领域 axiom；
-- 提供闭合 Schaefer hard-side theorem；
-- 让 Agent 仅通过 theorem discovery、premise solving 和 kernel reconstruction 完成全部案例。
-
-验收：
-
-- 新 theorem 通过默认 axiom policy；
-- Boolean CSP 20/20 通过；
-- 额外随机/生成 Gamma 通过；
-- planner 中无 Boolean relation、arity、case ID 或 scaffold 特判；
-- Schaefer 相关工作不得回溯破坏已交付的通用 theorem/path reuse 引擎或最小 NP-hard Agent MVP。
-
-### 清理旧封闭架构
-
-只有 NP-hard rule kernel、typed theorem discovery、hybrid search、最小新归约、多 family synthesis 和 Boolean CSP 纵切均稳定后，才执行破坏兼容性的清理：
-
-- 删除不再被兼容层使用的固定 Boolean CSP scaffold planner；
-- 删除默认 whole-reduction 固定 DAG；
-- 将 benchmark-only ledger/checkpoint/scorer 代码移出核心 package；
-- 更新 README 和产品 CLI 文档；
-- 将旧 exact-edge 活动报告标记为历史评测；
-- 删除强制“唯一 benchmark runner 即唯一产品入口”的测试；
-- 保留必要 benchmark regression，但与核心单测分开。
-
-验收：
-
-- `agent/reduction` 不 import `Benchmark`、`Evaluation` 或 scorer；
-- 核心测试不加载 suite；
-- 删除 benchmark 目录的副本后，NP-hard theorem-search 测试仍通过；
-- 代码搜索不存在核心 planner 的 case ID/family name 路由表。
-
-## 15. 测试体系
-
-### 15.1 核心单元测试
-
-新增：
-
-```text
-tests/test_np_hard_rule_kernel.py
-tests/test_np_hard_theorem_index.py
-tests/test_np_hard_goal_unification.py
-tests/test_np_hard_hybrid_search.py
-tests/test_np_hard_premise_solvers.py
-tests/test_np_hard_search_backtracking.py
-tests/test_np_hard_proof_reconstruction.py
-tests/test_np_hard_model_planner.py
-tests/test_np_hard_reduction_synthesis.py
-tests/test_np_hard_profiles.py
-```
-
-### 15.2 Lean regression
-
-新增 answer-independent synthetic modules，覆盖：
-
-- exact hardness 与 completeness projection；
-- 单跳/多跳 `CertifiedPath`；
-- 未注册 hardness/reduction theorem；
-- 多前提 hardness theorem；
-- dependent theorem；
-- theorem cycle；
-- 两条可行路线；
-- 一条错误近似 endpoint；
-- 一条 reverse-only reduction；
-- presentation/equivalence transport；
-- typeclass premise；
-- finite reflection；
-- helper lemma synthesis；
-- final exact `NativeTMNPHard target` artifact。
-
-### 15.3 NP-hard MVP generalization regression
-
-在 Boolean CSP 之前固定运行：
-
-- direct theorem；
-- existing seed-to-target path；
-- 参数化 reduction theorem；
-- property-premised hardness theorem；
-- 多跳 path + presentation adapter；
-- 未注册 theorem 热插拔；
-- 新 edge synthesis 后 hardness transport。
-
-CI 动态生成若干此前不存在的 theorem/endpoint，防止 planner 通过固定名称表过拟合。
-
-### 15.4 Boolean CSP regression
-
-重写现有 Boolean CSP 测试，使其检查：
-
-- theorem index 发现 Schaefer theorem；
-- planner 产生两个性质子目标；
-- reflection 提供 witness；
-- 20 题最终 proof 共享通用路径；
-- 没有 scaffold 选择；
-- 没有模型依赖；
-- 无非标准 axiom。
-
-测试不得只检查 20 个 endpoint 可以 import。
-
-### 15.5 跨 family generalization regression
-
-除运行时生成的有限 Gamma 外，至少选择图、集合系统、数值编码等三个非 Boolean CSP family，验证相同 NP-hard rule kernel 与搜索器，无 family-specific Python 分支。
-
-### 15.6 Benchmark 测试降级
-
-以下测试从核心发布门槛移到 benchmark profile：
-
-- oracle isolation；
-- exact-edge construction policy；
-- model-call ledger；
-- hidden route mutation；
-- split freeze；
-- scorer completion rate；
-- publication receipt。
-
-它们可以继续运行，但失败不代表通用 theorem search 核心不可用，除非失败暴露 kernel、类型或工作区安全问题。
-
-## 16. 可观测指标
-
-核心报告应关注能力，而不是审查流程数量：
-
-- NP-hard root closure rate；
-- existing resolver fast-path hit rate；
-- certified forward path closure rate；
-- direct theorem discovery rate；
-- schema theorem application rate；
-- 平均递归前提深度；
-- forward/backward frontier meeting rate；
-- deterministic solver closure rate；
-- route backtracking 次数；
-- model-assisted closure rate；
-- synthesis fallback rate；
-- 最终 kernel verification rate；
-- 新 theorem 热插拔成功率；
-- 未见 problem family 的迁移成功率；
-- 搜索时间、Lean checks 和模型 token 成本。
-
-对每次成功，报告实际证明树：
-
-```text
-root goal
-  applied theorem
-    premise 1 → solver / theorem
-    premise 2 → solver / theorem
-      nested premise ...
-```
-
-证明树是解释和调试信息，不是新的可信证书；最终 Lean declaration 仍是权威。
-
-## 17. 风险与控制
-
-### 17.1 搜索空间爆炸
-
-控制：
-
-- conclusion-head index；
-- NP-hard rule heads 的按需首层检索；
-- 先运行现有 resolver fast path；
-- theorem role hint；
-- 有界 best-first/beam；
-- goal memoization；
-- cycle detection；
-- premise solvability estimate；
-- 按成本和目标相关性逐步扩大候选；
-- 明确预算。
-
-### 17.2 退化成通用 Lean theorem prover
-
-控制：
-
-- 根目标只接受 `NativeTMNPHard target`；
-- 任意 theorem search 只由 NP-hard proof tree 中实际出现的 premise 触发；
-- ComplexityReduction 原生 rule kernel 始终优先于无角色 theorem；
-- 不把 `NativeTMInNP`、`NativeTMNPComplete` 或任意 `Prop` 提升为并列产品目标；
-- 确定性引擎验收和最小新归约验收都围绕 NP-hard artifact，而不是一般 theorem-proving benchmark。
-
-### 17.3 一般 theorem 产生难以解决的前提
-
-控制：
-
-- 保留多条候选路线；
-- 对前提运行快速 solvability probe；
-- 支持回溯；
-- 允许模型提出辅助 lemma；
-- 报告最小 unresolved premise。
-
-### 17.4 模型 hallucinate theorem 或错误路线
-
-控制：
-
-- theorem 必须由 environment resolve；
-- 参数实例化由 Lean unification；
-- proof body 必须 elaboration；
-- 最终 kernel check；
-- hallucination 仅损失预算，不产生错误证书。
-
-### 17.5 按需索引与 module catalog 性能
-
-控制：
-
-- suite/workspace 级共享 index；
-- environment fingerprint cache；
-- conclusion-head 倒排；
-- 增量更新；
-- import closure 分区；
-- 避免每个 goal 冷启动 Lake。
-
-### 17.6 公理与不完整理论
-
-控制：
-
-- profile 明确公理策略；
-- theorem index 标记 axiom basis；
-- forbidden axiom candidate 不进入默认成功；
-- 缺失形式化定理报告为 library gap；
-- 不用 case-specific scaffold 掩盖一般 theorem 的公理缺口。
-
-### 17.7 自动 tactic 不稳定或耗时
-
-控制：
-
-- 每个 tactic 独立 timeout；
-- 固定 tactic 配置；
-- tactic 成功后保存完整 proof artifact；
-- 不把日志中的“success”当作证明。
-
-### 17.8 benchmark 再次支配核心
-
-控制：
-
-- package 依赖测试禁止 `agent/reduction` import benchmark/scorer；
-- 核心 API 不接受 oracle、case ID、split 或 construction policy；
-- benchmark 只能调用核心公开 API；
-- 活动计划和产品 README 将通用性指标置于 benchmark 分数之前。
-
-## 18. 完成定义
-
-本计划完成时，系统必须满足以下全部条件。
-
-### 18.1 架构
-
-- 存在独立、NP-hard-first 的 `agent/reduction` 通用核心；
-- 根任务规范形是精确 `NativeTMNPHard target`；
-- ComplexityReduction 原生 NP-hard rule kernel 是证明搜索主干；
-- 现有 `NPHardResolver`/closed route search 被复用为 fast path 与 forward frontier；
-- 按需 typed theorem index 可发现未注册 theorem；
-- Lean MetaM 完成结论统一与前提提取；
-- hybrid search 支持 forward/backward 汇合、递归、回溯与循环控制；
-- route graph 是一级确定性能力，但不再是唯一 planner；
-- 每个成功结果都能重建可独立编译的 Lean proof declaration；
-- 模型可以提出并改变数学路线；
-- synthesis obligation 由目标类型动态产生；
-- benchmark/release audit 不在默认核心路径。
-
-### 18.2 扩展性
-
-- 新增一般 theorem 不需要修改 Python planner；
-- 新增 problem family 不需要添加 case ID 或源码字符串分支；
-- theorem 热插拔 regression 通过；
-- 至少三种非 Boolean CSP theorem schema 自动应用成功；
-- 至少三个不同 family 的新 reduction synthesis 成功；
-- 新 family 的成功最终复用 `CertifiedReduction`、`CertifiedPath` 和 hardness transport，而不是平行证书体系。
-
-### 18.3 Boolean CSP
-
-- Schaefer hard-side theorem 无领域 axiom；
-- 20/20 benchmark 目标通过；
-- 额外未见 Gamma 通过；
-- 无 NAE3/4/5 planner 特判；
-- 无 EXACTLY family Python 路由表；
-- 默认零模型调用即可完成有限分类和 theorem reuse。
-
-### 18.4 正确性
-
-- 最终目标类型精确为 `NativeTMNPHard target`；
-- Lean kernel 接受；
-- 无占位证明；
-- 公理策略通过；
-- certificate 的程序、复杂度和语义保持同索引；
-- 错误候选、hallucinated theorem 和错误 endpoint 均不能产生成功结果。
-
-### 18.5 独立性
-
-- 核心运行不需要 benchmark manifest；
-- 核心运行不需要 Evaluation oracle；
-- 核心成功不需要 scorer；
-- 关闭 model client 后仍可完成可确定性复用的目标；
-- 删除 optional audit 组件不影响核心 theorem-search 测试。
-
-### 18.6 可独立交付的能力边界
-
-当 NP-hard rule kernel、按需 theorem discovery、hybrid search、前提求解和 proof reconstruction 全部通过验收时，“通用 NP-hard theorem/path reuse 引擎”即可独立交付。
-
-在此基础上，再完成开放式模型规划以及至少一个“新 `CertifiedReduction` + hardness transport”纵切，才形成“通用 NP-hard 自动归约 Agent MVP”。该 MVP 的定义是：
-
-- 能复用现有 hardness/completeness/path；
-- 能自动应用未注册的一般 hardness/reduction theorem；
-- 能递归解决定理前提并回溯；
-- 能在至少一个新 target 上合成 edge 并 transport hardness；
-- 最终输出 kernel 验证的 `NativeTMNPHard target`。
-
-多 family synthesis、Schaefer/Boolean CSP 旗舰能力与旧架构清理是后续扩展任务。Boolean CSP 20/20 是完整计划的重要验收，但不再定义基础引擎是否成立。
-
-## 19. 立即执行顺序
-
-在本计划写入后，按以下顺序开展工作：
-
-1. 冻结 `NativeTMNPHard target` 根目标和 `research` profile，切断 scorer/oracle 默认依赖；
-2. 将现有 `NPHardResolver` 接入新 orchestrator 作为 fast path；
-3. 实现 ComplexityReduction 原生 NP-hard rule kernel 与根 proof reconstruction；
-4. 实现按需 typed theorem index、MetaM conclusion unification 和 premise extraction；
-5. 实现 forward certified frontier + backward theorem obligations 的 hybrid search；
-6. 完成 synthetic 未注册 theorem、参数化 reduction、property-premised hardness、多跳 adapter 回归；
-7. 接入开放式模型 strategy planner、helper lemma generation 和旧 authoring executor adapter；
-8. 完成一个不依赖 Schaefer 的“新 edge synthesis + hardness transport”纵切，交付 NP-hard Agent MVP；
-9. 将 synthesis 扩展到多个 problem family；
-10. 完成至少三个非 Boolean CSP family 的 synthesis/generalization 验收；
-11. 闭合 Schaefer theorem、PP interpretation polynomial compiler 和有限反射；
-12. 让 Boolean CSP 20 题通过同一一般 theorem 路线；
-13. 清理固定 family planner、固定 DAG 和核心中的 benchmark 审查依赖；
-14. 最后重新运行 benchmark，作为能力测量而不是架构驱动力。
-
-在 NP-hard Agent MVP 交付前，不再增加新的 Boolean CSP case-specific scaffold。在 Schaefer/Boolean CSP 旗舰纵切完成前，不再以 exact-edge 分数、模型调用次数或审查 receipt 数量作为项目主进度指标。
+- [ ] 对 20 个 case 全部运行新 recursive orchestrator；
+- [ ] model policy 使用真实 provider 配置；
+- [ ] 每个实际模型调用保存 provider、model、HTTP status 和 response hash；
+- [ ] 验证所有 case 均生成终态 report；
+- [ ] 对每个 BLOCKED 检查 frontier exhaustion receipt；
+- [ ] 对每个 FAILED_MODEL 检查不存在仍可执行的非模型 action；
+- [ ] 对每个 VERIFIED 检查完整 proof tree 和 final route audit；
+- [ ] 汇总递归深度、frame、binding、requeue 和 provider statistics；
+- [ ] 生成新的独立报告，不覆盖此前基线。
+
+建议输出：
+
+    Reports/GENERAL_AGENT_BOOLEAN_CSP_RECURSIVE_DICHOTOMY_FREE_REAL_API_REPORT.json
+
+架构验收：
+
+- 20/20 case 均完成真实全量运行；
+- 不存在 root-only authoring 路径；
+- 不存在 action 失败后仍有 alternative 却直接 BLOCKED 的 case；
+- 所有 unresolved metavariable 都停留在 Lean frame 内部，不作为孤立 OpenGoal；
+- 至少一个此前 BLOCKED case 通过递归路径 VERIFIED；
+- 真实 API 调用数与 HTTP 200 receipts 一致；
+- 0 个 forbidden declaration direct/transitive dependency。
+
+能力目标：
+
+- 尽可能提高 VERIFIED 数；
+- 20/20 VERIFIED 是后续产品目标；
+- 如果未达到 20/20，每个失败必须归因到明确的数学/library/model capability gap，而不是递归调度缺失或 premature BLOCKED。
+
+## 14. 测试矩阵
+
+### 14.1 Python unit
+
+- [ ] failure state fingerprint 与原 state 不同；
+- [ ] attempted action 不会再次执行；
+- [ ] alternative action 在失败后被选择；
+- [ ] frontier 为空前不能返回 BLOCKED；
+- [ ] data binder closure 激活全部 dependent premises；
+- [ ] sibling premises 共享同一 binder term；
+- [ ] dormant premise 不进入 select_open_goal；
+- [ ] branch-local generated module 不交叉污染；
+- [ ] self-loop theorem 被 progress guard 拒绝；
+- [ ] state/frame serialization round-trip；
+- [ ] saturated but unverified frame 不计 complete；
+- [ ] verified frame 产生 parent fragment；
+- [ ] reconstructed root tree 顺序稳定。
+
+### 14.2 Lean synthetic
+
+- [ ] 带一个 data binder 和两个 dependent premises 的 theorem；
+- [ ] 两层 dependent theorem application；
+- [ ] 普通 proposition recursive theorem；
+- [ ] typeclass dependent premise；
+- [ ] wrong binder witness；
+- [ ] wrong child proof term；
+- [ ] theorem A -> A non-progress cycle；
+- [ ] generated helper exact child closure；
+- [ ] final multi-node artifact independent replay；
+- [ ] forbidden dependency transitive rejection。
+
+### 14.3 Integration
+
+- [ ] model disabled 的纯 theorem recursion；
+- [ ] mock authoring 的 child capability generation；
+- [ ] real provider 的单 case child authoring；
+- [ ] real provider 的 action failure + backtrack；
+- [ ] resume 后继续同一个 frontier；
+- [ ] budget exhausted 与 frontier exhausted 分离；
+- [ ] closed resolver fast path 不回归；
+- [ ] synthesis-required 仍禁止直接根闭包，但允许子目标复用。
+
+### 14.4 防退化
+
+- [ ] 不增加 Boolean CSP case ID 分支；
+- [ ] 不增加 Gamma/NAE 名称判断到 generic search；
+- [ ] 不通过 Python 字符串替换 Lean binder；
+- [ ] 不创建 Reuse/Theorem/Synthesis 三个独立 ProofState frontier；
+- [ ] 不因 theorem bucket 非空禁止 synthesis；
+- [ ] 不因模型失败丢弃非模型 branch；
+- [ ] 不因 physical generated file 存在把它泄漏到其他 branch；
+- [ ] 不把 completed_state 当成最终 kernel proof；
+- [ ] 不降低 forbidden route audit；
+- [ ] 不修改旧 Boolean CSP runner 的公开协议。
+
+## 15. 预算与配置新增项
+
+如现有 Budget 尚未覆盖，增加：
+
+- max_branching_per_expansion；
+- max_application_frames；
+- max_data_witness_candidates；
+- max_dependent_reinstantiations；
+- max_action_failures_per_goal；
+- max_frame_verification_checks；
+- max_reconstruction_repairs；
+- max_requeues_per_state；
+- max_recursive_substep_plans。
+
+预算规则：
+
+- action failure requeue 消耗 search round，但不能重复消耗同一个 action；
+- binder re-instantiation 消耗 Lean check；
+- frame verification 消耗 Lean check；
+- final artifact verification 单独保留不可被前序耗尽的检查预算；
+- synthesis provider 保留既有 reserved budget；
+- 达到 budget 时返回 BUDGET_EXHAUSTED，不伪装为 BLOCKED。
+
+## 16. 完成标准
+
+本计划完成必须同时满足：
+
+1. 生产 orchestrator 真实实例化并使用 SearchCoordinator；
+2. theorem premise、data witness 和 generated capability 均能递归进入同一 GlobalProofFrontier；
+3. action 失败后 state 带 failure memory 重新入队，其他 alternative 可继续；
+4. ProofState fingerprint 能区分 attempted actions、binder substitutions 和 branch-local capabilities；
+5. OpenGoal 不保存不可恢复的 unresolved Lean metavariable；
+6. ApplicationFrame 能表达并验证 dependent theorem application；
+7. frame saturated 后经过 Lean 局部验证，整树经过最终独立验证；
+8. BLOCKED 只表示全局 frontier exhausted；
+9. 子目标 synthesis 替代根目标整体 authoring；
+10. forbidden dichotomy 的召回、源码和传递依赖审计继续生效；
+11. 至少一个此前 BLOCKED 的真实 Boolean CSP case 通过非 dichotomy 递归路径 VERIFIED；
+12. 完成 Boolean CSP 20 题真实 API 全量运行并生成独立报告；
+13. 所有未验证 case 的 blocker 能定位到具体 goal、action、frame 或 capability gap；
+14. 旧入口和旧 benchmark 协议不回归。
+
+## 17. 立即执行顺序
+
+1. 完成失败回队、attempted action 和 BLOCKED 语义；
+2. 完成 ApplicationFrame、stable binder slot 和 dependent premise 激活；
+3. 完成统一 Recursive Action Executor；
+4. 完成局部 frame 验证与整树 reconstruction；
+5. 将 SearchCoordinator 接入生产 orchestrator；
+6. 运行 model-disabled theorem recursion synthetic/integration tests；
+7. 迁移为子目标级 model synthesis；
+8. 完成一个真实 API 单 case 纵向验证；
+9. 完成 Boolean CSP 非 dichotomy 真实 case；
+10. 完成 Boolean CSP 20 题真实 API 全量回归；
+11. 根据明确 capability gap 再决定是否进入新的 library theorem、domain plugin 或模型能力计划。
+
+本轮的核心判据是：
+
+> 一个局部 action 失败后，Agent 仍能携带正确的绑定、失败记忆和已验证 fragments 返回全局搜索；只有所有 ProofState 和所有 alternative 都被真实耗尽后，才允许报告 BLOCKED。
