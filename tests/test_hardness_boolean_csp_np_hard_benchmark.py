@@ -667,6 +667,7 @@ def test_boolean_csp_backend_calls_the_orchestrator_library_directly(
     assert captured[0].problem_declaration.endswith("Case01Canonical.problem")
     assert report["cases"][0]["status"] == "VERIFIED"
     assert report["cases"][0]["endpoint_equality_audit_passed"] is True
+    assert report["profile"] == "benchmark"
 
 
 def test_scorer_requires_all_three_formal_audits(tmp_path: Path) -> None:

@@ -35,10 +35,11 @@ This module supplies the second step.  Its library-level lemmas are proved:
   languages realize the auxiliary relations used by the case analysis
   (disequality from NAE-3, both constants from 1-in-3 / 2-of-3).
 
-The final assembly of the case analysis into a primitive-positive
-interpretation of one certified hard core is the classical step packaged at
-the top of `Hardness.SchaeferHardness` as
-`interpretation_hardCore_of_not_schaefer_tractable`.
+The final assembly no longer requires a trusted leaf.  The polymorphism
+classification and canonical-database construction live in
+`Hardness.SchaeferAlgebra`, `Hardness.CanonicalDatabase`, and
+`Hardness.CanonicalHardCores`; `Hardness.SchaeferHardness` uses their explicit
+1-IN-3-or-NAE interpretation theorem.
 -/
 
 namespace ComplexityReduction

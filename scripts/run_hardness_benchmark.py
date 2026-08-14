@@ -355,6 +355,7 @@ def _run_boolean_csp_lane(
         reasoning_effort=deepseek.reasoning_effort,
         authoring_attempts=arguments.authoring_attempts,
         model_call_budget=arguments.model_call_budget,
+        profile=arguments.reduction_profile,
     )
     run_report = output_root / "run_report.json"
     payload: dict[str, Any] = {
@@ -449,6 +450,12 @@ def build_parser() -> argparse.ArgumentParser:
         choices=("disabled", "model-auto", "model-required"),
         default="model-auto",
         help="Boolean-CSP authoring policy",
+    )
+    parser.add_argument(
+        "--reduction-profile",
+        choices=("research", "strict-release", "benchmark"),
+        default="benchmark",
+        help="verification profile for the NP-hard-first Boolean-CSP core",
     )
     parser.add_argument("--authoring-attempts", type=int, default=4)
     parser.add_argument("--model-call-budget", type=int, default=None)

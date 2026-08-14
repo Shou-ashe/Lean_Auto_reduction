@@ -4,7 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 -/
 
 import ComplexityReduction.Domain.BooleanCSP.Hardness.Cores
-import ComplexityReduction.Domain.BooleanCSP.Hardness.PPDefinability
+import ComplexityReduction.Domain.BooleanCSP.Hardness.InterpretCompiler
+import ComplexityReduction.Domain.BooleanCSP.Hardness.GraphColoringToOneInThree
 import ComplexityReduction.Agent.Hardness.BooleanCSPAuthoringSources
 import ComplexityReduction.Domain.ThreeSATToThreeSATLikeStandardTM
 import ComplexityReduction.Certificate.NativeCookLevin
@@ -84,27 +85,11 @@ theorem nae3CoreNPHard : NativeTMNPHard (cspOf nae3Core) :=
     NativeCookLevin.canonicalThreeSATNativeCompleteness
     (CertifiedPath.step nae3CoreReduction)
 
-/-! ### The exactly-one and exactly-two cores -/
-
-/--
-The positive exactly-one-of-three core is NP-hard via the exact-cover route:
-the `exact-cover ≤ 1-in-3-CSP` executable of `Hardness.ExactCoverToOneInThree`
-preserves satisfiability in both directions (`executable_correct`), and the
-exact-cover endpoint is NP-hard.  This leaf closes that reduction into the
-certified `NativeTMNPHard` certificate.
--/
-axiom oneInThreeCoreNPHard : NativeTMNPHard (cspOf oneInThreeCore)
-
-/--
-The positive exactly-two-of-three core is NP-hard via the primitive-positive
-interdefinability with the exactly-one core: the dual seven-constraint gadget
-(`exactlyTwo3InterpretsOneInThree`) interprets one core in the other, so the
-certified hardness transports once the substitution carries a direct-TM
-witness.
--/
-axiom exactlyTwo3CoreNPHard : NativeTMNPHard (cspOf exactlyTwo3Core)
-
 /-! ### Exactly-one and exactly-two are pp-interdefinable -/
+
+/-- The positive exactly-one core is NP-hard by the direct fixed-three-colouring compiler. -/
+theorem oneInThreeCoreNPHard : NativeTMNPHard (cspOf oneInThreeCore) :=
+  GraphColoringToOneInThree.oneInThreeCoreNPHard
 
 /--
 The exactly-one relation is pp-definable over the exactly-two core by the
@@ -296,16 +281,37 @@ theorem exactlyTwo3_satisfiable_iff_oneInThree (formula : CSP.Formula exactlyTwo
       CSP.Formula.Satisfiable formula :=
   interpret_satisfiable_iff oneInThreeInterpretsExactlyTwo3 formula
 
+/-! ### Certified hardness transport for the exactly-one / exactly-two pair -/
+
+/--
+Once the positive exactly-one core is closed by its direct source reduction,
+the exactly-two core needs no additional machine proof: the generic
+interpretation compiler turns the fixed seven-constraint gadget above into
+the required direct-TM certified reduction automatically.
+-/
+theorem exactlyTwo3CoreNPHard_of_oneInThree
+    (oneInThreeNPHard : NativeTMNPHard (cspOf oneInThreeCore)) :
+    NativeTMNPHard (cspOf exactlyTwo3Core) :=
+  nPHard_of_interpretation_auto exactlyTwo3InterpretsOneInThree
+    oneInThreeNPHard
+
+/-- The positive exactly-two core is NP-hard, with no external hardness premise. -/
+theorem exactlyTwo3CoreNPHard : NativeTMNPHard (cspOf exactlyTwo3Core) :=
+  exactlyTwo3CoreNPHard_of_oneInThree oneInThreeCoreNPHard
+
 assert_standard_axioms
   threeSATLikeCoreNPHard,
   nae3CoreReduction,
   nae3CoreNPHard,
+  oneInThreeCoreNPHard,
   oneInThreeGadgetOfExactlyTwo3,
   exactlyTwo3GadgetOfOneInThree,
   exactlyTwo3InterpretsOneInThree,
   oneInThreeInterpretsExactlyTwo3,
   oneInThree_satisfiable_iff_exactlyTwo3,
-  exactlyTwo3_satisfiable_iff_oneInThree
+  exactlyTwo3_satisfiable_iff_oneInThree,
+  exactlyTwo3CoreNPHard_of_oneInThree,
+  exactlyTwo3CoreNPHard
 
 end Hardness
 end BooleanCSP
