@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 -/
 
 import ComplexityReduction.Domain.BooleanCSP.Classes
+import ComplexityReduction.Domain.BooleanCSP.Hardness.SchaeferAlgebra
 
 /-!
 Executable finite reflection for the proof obligations produced by Boolean-CSP
@@ -74,6 +75,15 @@ def relationAffineDecidable (relation : BoolRel) :
     holdsDecidable relation
   infer_instance
 
+/-- Executable closure test for pointwise Boolean complement. -/
+def relationPreservesComplementDecidable (relation : BoolRel) : Decidable
+    (∀ tuple : BoolTuple relation.arity,
+      relation.Holds tuple →
+        relation.Holds (fun coordinate => !(tuple coordinate))) := by
+  letI : ∀ tuple : BoolTuple relation.arity, Decidable (relation.Holds tuple) :=
+    holdsDecidable relation
+  infer_instance
+
 /-- Executable test for the six relation-level Schaefer classes. -/
 def relationSchaeferTractableDecidable (relation : BoolRel) : Decidable
     (BooleanRelation.IsZeroValid relation ∨ BooleanRelation.IsOneValid relation ∨
@@ -135,6 +145,18 @@ def gammaAffineDecidable (gamma : Gamma) : Decidable gamma.IsAffine := by
     fun symbol => relationAffineDecidable (gamma.relationOf symbol)
   infer_instance
 
+/-- Executable finite test for language closure under Boolean complement. -/
+def gammaPreservesComplementDecidable (gamma : Gamma) : Decidable
+    (Hardness.SchaeferAlgebra.PreservesComplement gamma) := by
+  unfold Hardness.SchaeferAlgebra.PreservesComplement
+  letI : ∀ symbol : gamma.Symbol, Decidable
+      (∀ tuple : BoolTuple (gamma.relationOf symbol).arity,
+        (gamma.relationOf symbol).Holds tuple →
+          (gamma.relationOf symbol).Holds
+            (fun coordinate => !(tuple coordinate))) :=
+    fun symbol => relationPreservesComplementDecidable (gamma.relationOf symbol)
+  infer_instance
+
 /-- Executable finite classifier used by the generic premise solver. -/
 def gammaSchaeferTractableDecidable (gamma : Gamma) :
     Decidable gamma.IsSchaeferTractable := by
@@ -160,6 +182,20 @@ theorem gammaNotSchaeferTractable_of_decide_eq_false (gamma : Gamma)
       (gammaSchaeferTractableDecidable gamma) = false) :
     ¬ gamma.IsSchaeferTractable :=
   of_decide_eq_false (inst := gammaSchaeferTractableDecidable gamma) checked
+
+/-- Reflect a positive complement-closure decision into a kernel proof. -/
+theorem gammaPreservesComplement_of_decide_eq_true (gamma : Gamma)
+    (checked : @decide (Hardness.SchaeferAlgebra.PreservesComplement gamma)
+      (gammaPreservesComplementDecidable gamma) = true) :
+    Hardness.SchaeferAlgebra.PreservesComplement gamma :=
+  of_decide_eq_true (inst := gammaPreservesComplementDecidable gamma) checked
+
+/-- Reflect a negative complement-closure decision into a kernel proof. -/
+theorem gammaNotPreservesComplement_of_decide_eq_false (gamma : Gamma)
+    (checked : @decide (Hardness.SchaeferAlgebra.PreservesComplement gamma)
+      (gammaPreservesComplementDecidable gamma) = false) :
+    ¬ Hardness.SchaeferAlgebra.PreservesComplement gamma :=
+  of_decide_eq_false (inst := gammaPreservesComplementDecidable gamma) checked
 
 end Reflection
 end Reduction

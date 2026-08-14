@@ -74,7 +74,27 @@ class GuidedProofPlanner:
                         ),
                         suggested_solver=(proposal.solver if proposal else None),
                         estimated_cost=(
-                            max(0.1, 1.0 - proposal.confidence)
+                            100.0
+                            if " ".join(premise.exact_type.split())
+                            == " ".join(goal.exact_type.split())
+                            else 8.0
+                            if premise.exact_type.lstrip().startswith("∀")
+                            or (
+                                goal.kind.value == "hardness"
+                                and classify_goal(
+                                    premise.exact_type,
+                                    premise_kind=premise.kind.value,
+                                ).value
+                                == "completeness"
+                            )
+                            else 6.0
+                            if premise.kind.value == "data"
+                            and " ".join(premise.exact_type.split())
+                            in {
+                                "ComplexityReduction.Encoding.PresentedProblem",
+                                "Encoding.PresentedProblem",
+                            }
+                            else max(0.1, 1.0 - proposal.confidence)
                             if proposal
                             else 1.0
                         ),
@@ -92,6 +112,13 @@ class GuidedProofPlanner:
                 "apply-existing-theorem"
                 if not candidate.premises
                 else "recursive-premise-search"
+            )
+            administrative_wrapper_penalty = (
+                8.0
+                if goal.kind.value == "hardness"
+                and len(residuals) == 1
+                and residuals[0].kind.value in {"data", "unknown", "completeness"}
+                else 0.0
             )
             plans.append(
                 ProofGuidance(
@@ -113,6 +140,7 @@ class GuidedProofPlanner:
                         0.25
                         + sum(item.estimated_cost for item in residuals)
                         + 0.1 * len(candidate.universe_parameters)
+                        + administrative_wrapper_penalty
                     ),
                     confidence=max(0.05, 1.0 - 0.15 * len(residuals)),
                     diagnostics=(),

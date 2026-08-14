@@ -99,6 +99,22 @@ class PremiseKind(StringEnum):
     DATA = "data"
 
 
+class SlotStatus(StringEnum):
+    DORMANT = "dormant"
+    READY = "ready"
+    BOUND = "bound"
+    VERIFIED = "verified"
+    FAILED = "failed"
+
+
+class FrameStatus(StringEnum):
+    WAITING_BINDINGS = "waiting-bindings"
+    ACTIVE = "active"
+    SATURATED = "saturated"
+    VERIFIED = "verified"
+    FAILED = "failed"
+
+
 def _jsonable(value: Any) -> Any:
     if isinstance(value, Enum):
         return value.value
@@ -184,8 +200,13 @@ class OpenGoal:
     normalized_fingerprint: str
     local_context: tuple[str, ...] = ()
     parent_rule: str | None = None
+    producer_frame_id: str | None = None
+    producer_slot_id: str | None = None
+    dependency_slot_ids: tuple[str, ...] = ()
+    ready: bool = True
     attempted_actions: tuple[str, ...] = ()
     last_lean_diagnostics: str | None = None
+    normalized_last_diagnostic_hash: str | None = None
     estimated_cost: float = 1.0
     kind: GoalKind = GoalKind.UNKNOWN
 
@@ -198,6 +219,10 @@ class OpenGoal:
         local_context: Sequence[str] = (),
         import_closure_fingerprint: str = "",
         parent_rule: str | None = None,
+        producer_frame_id: str | None = None,
+        producer_slot_id: str | None = None,
+        dependency_slot_ids: Sequence[str] = (),
+        ready: bool = True,
         kind: GoalKind = GoalKind.UNKNOWN,
     ) -> "OpenGoal":
         key = GoalKey.create(
@@ -212,6 +237,10 @@ class OpenGoal:
             normalized_fingerprint=key.normalized_goal_fingerprint,
             local_context=tuple(local_context),
             parent_rule=parent_rule,
+            producer_frame_id=producer_frame_id,
+            producer_slot_id=producer_slot_id,
+            dependency_slot_ids=tuple(dependency_slot_ids),
+            ready=ready,
             kind=kind,
         )
 
@@ -269,7 +298,97 @@ class ReusableFragment:
     exact_type: str
     proof_term: str
     declaration: str | None = None
+    module: str | None = None
+    imports: tuple[str, ...] = ()
     provenance: str = "environment"
+    lean_verified: bool = True
+    source_hash: str | None = None
+
+
+@dataclass(frozen=True)
+class BinderSlot:
+    slot_id: str
+    ordinal: int
+    binder_name: str
+    binder_kind: PremiseKind
+    exact_type: str
+    dependency_slot_ids: tuple[str, ...] = ()
+    bound_term: str | None = None
+    bound_declaration: str | None = None
+    module: str | None = None
+    imports: tuple[str, ...] = ()
+    provenance: str | None = None
+    attempted_actions: tuple[str, ...] = ()
+    status: SlotStatus = SlotStatus.DORMANT
+    type_template_receipt: str | None = None
+
+
+@dataclass(frozen=True)
+class PremiseSlot:
+    slot_id: str
+    ordinal: int
+    premise_kind: PremiseKind
+    type_template_receipt: str
+    dependency_slot_ids: tuple[str, ...] = ()
+    instantiated_exact_type: str | None = None
+    child_goal_id: str | None = None
+    proof_term: str | None = None
+    declaration: str | None = None
+    module: str | None = None
+    imports: tuple[str, ...] = ()
+    provenance: str | None = None
+    attempted_actions: tuple[str, ...] = ()
+    status: SlotStatus = SlotStatus.DORMANT
+
+
+@dataclass(frozen=True)
+class ApplicationFrame:
+    frame_id: str
+    parent_goal_id: str
+    parent_exact_type: str
+    parent_local_context: tuple[str, ...]
+    parent_import_closure_fingerprint: str
+    parent_kind: GoalKind
+    parent_attempted_actions: tuple[str, ...]
+    parent_depth: int
+    action_id: str
+    declaration: str
+    declaration_module: str | None
+    guidance_id: str | None
+    application_skeleton: str
+    binder_slots: tuple[BinderSlot, ...] = ()
+    premise_slots: tuple[PremiseSlot, ...] = ()
+    result_proof_term: str | None = None
+    status: FrameStatus = FrameStatus.WAITING_BINDINGS
+    lean_receipt_hash: str | None = None
+    parent_producer_frame_id: str | None = None
+    parent_producer_slot_id: str | None = None
+    failure_code: str | None = None
+    diagnostic_hash: str | None = None
+
+    @property
+    def slots(self) -> tuple[BinderSlot | PremiseSlot, ...]:
+        return tuple(sorted((*self.binder_slots, *self.premise_slots), key=lambda slot: slot.ordinal))
+
+    @property
+    def saturated(self) -> bool:
+        return bool(self.slots) and all(
+            slot.status in {SlotStatus.BOUND, SlotStatus.VERIFIED}
+            for slot in self.slots
+        )
+
+
+@dataclass(frozen=True)
+class GeneratedCapability:
+    capability_id: str
+    exact_type: str
+    declaration: str
+    namespace: str
+    implementation: str
+    source_hash: str
+    action_id: str
+    module: str | None = None
+    provenance: str = "job-local-generated"
     lean_verified: bool = True
 
 
@@ -453,6 +572,8 @@ class ModelCallRecord:
     response_sha256: str
     error: str | None = None
     proposal_id: str | None = None
+    provider: str | None = None
+    model: str | None = None
 
 
 @dataclass(frozen=True)
@@ -549,6 +670,20 @@ class GeneralNPHardResult:
     artifact_sha256: str | None = None
     input_identity: Mapping[str, Any] | None = None
     environment_snapshot: Mapping[str, Any] | None = None
+    expanded_state_count: int = 0
+    requeued_failure_state_count: int = 0
+    pruned_cycle_count: int = 0
+    max_observed_search_depth: int = 0
+    application_frame_count: int = 0
+    verified_application_frame_count: int = 0
+    data_binding_count: int = 0
+    dependent_goal_activation_count: int = 0
+    recursive_substep_plan_count: int = 0
+    generated_capability_count: int = 0
+    final_frontier_size: int = 0
+    frontier_exhaustion_receipt: Mapping[str, Any] | None = None
+    per_goal_attempted_actions: Mapping[str, tuple[str, ...]] = field(default_factory=dict)
+    final_route_audit_receipt: Mapping[str, Any] | None = None
     schema_version: str = RESULT_SCHEMA
 
     def __post_init__(self) -> None:
@@ -580,6 +715,8 @@ class GeneralNPHardResult:
 
 __all__ = [
     "ActionDisposition",
+    "ApplicationFrame",
+    "BinderSlot",
     "CandidateAction",
     "ConstructionContract",
     "ExactClosureResult",
@@ -587,12 +724,15 @@ __all__ = [
     "GeneralNPHardRequest",
     "GeneralNPHardResult",
     "GenerationEvidence",
+    "GeneratedCapability",
     "GoalKey",
     "GoalKind",
     "ModelCallRecord",
     "ModelPolicy",
     "OpenGoal",
     "PremiseKind",
+    "PremiseSlot",
+    "FrameStatus",
     "ProofGuidance",
     "ProofStatus",
     "ProofStep",
@@ -606,6 +746,7 @@ __all__ = [
     "RootGoal",
     "SolutionClassification",
     "Strategy",
+    "SlotStatus",
     "SubstepPlan",
     "TheoremIndexEntry",
     "TheoremPremise",

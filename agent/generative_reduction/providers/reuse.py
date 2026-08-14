@@ -9,22 +9,29 @@ from ..models import (
 )
 
 
+def reuse_action_id(closure: ExactClosureResult) -> str:
+    digest = stable_sha256(
+        {
+            "goal": closure.goal_key.fingerprint,
+            "identity": (
+                {"declaration": closure.declaration}
+                if closure.declaration
+                else {"proof_term": closure.proof_term}
+            ),
+        }
+    )
+    return f"reuse-{digest.removeprefix('sha256:')[:20]}"
+
+
 class ReuseActionProvider:
     kind = ProviderKind.REUSE
 
     def actions(self, closure: ExactClosureResult) -> tuple[CandidateAction, ...]:
         if not closure.closed:
             return ()
-        digest = stable_sha256(
-            {
-                "goal": closure.goal_key.fingerprint,
-                "declaration": closure.declaration,
-                "proof_term": closure.proof_term,
-            }
-        )
         return (
             CandidateAction(
-                action_id=f"reuse-{digest.removeprefix('sha256:')[:20]}",
+                action_id=reuse_action_id(closure),
                 provider=self.kind,
                 disposition=ActionDisposition.CLOSED,
                 goal_key=closure.goal_key,
@@ -37,4 +44,4 @@ class ReuseActionProvider:
         )
 
 
-__all__ = ["ReuseActionProvider"]
+__all__ = ["ReuseActionProvider", "reuse_action_id"]

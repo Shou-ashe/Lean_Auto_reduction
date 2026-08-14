@@ -9,10 +9,15 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 RUNNER = ROOT / "scripts" / "run_hardness_benchmark.py"
 PROVER = ROOT / "scripts" / "prove_np_hard.py"
+GENERAL_PROVER = ROOT / "scripts" / "prove_np_hard_general.py"
 
 
 def test_repository_has_exactly_one_benchmark_runner_script() -> None:
-    assert sorted((ROOT / "scripts").glob("*.py")) == [PROVER, RUNNER]
+    assert sorted((ROOT / "scripts").glob("*.py")) == [
+        PROVER,
+        GENERAL_PROVER,
+        RUNNER,
+    ]
     run_scripts = sorted((ROOT / "scripts").rglob("run_*.py"))
     assert run_scripts == [RUNNER]
     assert not (ROOT / "scripts" / "Legacy").exists()

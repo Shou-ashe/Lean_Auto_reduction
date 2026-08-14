@@ -14,7 +14,7 @@ from agent.hardness.lean_runner import (
     sha256_file,
     validate_declaration_name,
 )
-from agent.hardness.model_client import DeepSeekClient, DeepSeekConfig
+from agent.hardness.model_client import DeepSeekConfig
 from agent.hardness.np_hard import build_np_hard_probe_source, parse_np_hard_probe_output
 from agent.hardness.np_hard_input import (
     NPHardInputError,
@@ -24,11 +24,8 @@ from agent.hardness.np_hard_input import (
 
 from .baseline import verify_stable_entrypoints
 from .budgets import BudgetExhausted, BudgetTracker, SearchBudget
-from .capability_planner import CapabilityPlanner
-from .exact_closure_probe import ClosureCheck
 from .job import GeneralJobStore
 from .lean_bridge import run_lean_file, snapshot_environment
-from .model import propose_implementation, propose_strategy
 from .models import (
     ActionDisposition,
     GeneralNPHardRequest,
@@ -51,12 +48,13 @@ from .plugins import install_plugins
 from .premise_registry import PremiseSolution, default_registry
 from .profiles import get_profile
 from .proof_state import ProofState
+from .recursive_runtime import RecursiveSearchRuntime
 from .reconstruction import (
-    build_authored_artifact_source,
     build_resolver_artifact_source,
-    build_theorem_artifact_source,
+    build_search_artifact_source,
 )
 from .reporting import write_result
+from .search import SearchCoordinator
 from .theorem_index import project_module_catalog, query_theorem_index
 from .verification import (
     classify_generation,
@@ -158,6 +156,10 @@ class GenerativeReductionOrchestrator:
         input_identity: Mapping[str, Any] | None = None,
         environment_snapshot: Mapping[str, Any] | None = None,
         evidence: GenerationEvidence = GenerationEvidence(),
+        provider_statistics: Mapping[str, ProviderStatistics] | None = None,
+        proof_tree: Sequence[ProofStep] = (),
+        search_outcome=None,
+        final_state: ProofState | None = None,
     ) -> GeneralNPHardResult:
         store.transition(proof_status.value, details={"code": code})
         return self._write_result(
@@ -172,15 +174,64 @@ class GenerativeReductionOrchestrator:
                 output_dir=str(self.output_dir),
                 job_id=job_id,
                 theorem_candidates=tuple(candidates),
+                proof_tree=tuple(proof_tree),
                 capability_planner_decisions=self._planner_decisions(substep_plans),
                 substep_plans=tuple(substep_plans),
+                action_provider_statistics=dict(provider_statistics or {}),
                 model_calls=tuple(model_calls),
                 lean_commands=tuple(commands),
-                blocker={"code": code, "explanation": explanation},
+                blocker={
+                    "code": code,
+                    "explanation": explanation,
+                    "frontier_exhaustion_receipt": (
+                        getattr(search_outcome, "frontier_exhaustion_receipt", None)
+                    ),
+                },
                 generation_evidence=evidence,
                 generated_declarations=self._generated_declarations(evidence),
                 input_identity=input_identity,
                 environment_snapshot=environment_snapshot,
+                expanded_state_count=getattr(search_outcome, "expanded_states", 0),
+                requeued_failure_state_count=getattr(
+                    search_outcome, "requeued_failure_states", 0
+                ),
+                pruned_cycle_count=getattr(search_outcome, "pruned_cycles", 0),
+                max_observed_search_depth=getattr(
+                    search_outcome, "max_observed_depth", 0
+                ),
+                application_frame_count=(
+                    len(final_state.application_frames) if final_state else 0
+                ),
+                verified_application_frame_count=(
+                    sum(
+                        frame.status.value == "verified"
+                        for frame in final_state.application_frames
+                    )
+                    if final_state
+                    else 0
+                ),
+                data_binding_count=(final_state.data_binding_count if final_state else 0),
+                dependent_goal_activation_count=(
+                    final_state.dependent_goal_activation_count if final_state else 0
+                ),
+                recursive_substep_plan_count=(
+                    len(final_state.substep_plans) if final_state else len(tuple(substep_plans))
+                ),
+                generated_capability_count=(
+                    len(final_state.generated_capabilities) if final_state else 0
+                ),
+                final_frontier_size=getattr(search_outcome, "final_frontier_size", 0),
+                frontier_exhaustion_receipt=getattr(
+                    search_outcome, "frontier_exhaustion_receipt", None
+                ),
+                per_goal_attempted_actions=(
+                    {
+                        goal.goal_id: goal.attempted_actions
+                        for goal in final_state.open_goals
+                    }
+                    if final_state
+                    else {}
+                ),
             ),
         )
 
@@ -446,82 +497,80 @@ class GenerativeReductionOrchestrator:
             for plugin in installed_plugins
             for imported in plugin.lean_imports
         )
-        checked_sources: dict[str, str] = {}
-
-        def checker(goal, candidate, solved):
-            del goal
-            tracker.consume("lean_checks")
-            solutions = tuple(solution for _, solution in solved)
-            source = build_theorem_artifact_source(
-                input_module=reference.input_module,
-                problem_declaration=reference.problem_declaration,
-                candidate=candidate,
-                premise_solutions=solutions,
-                plugin_imports=plugin_imports,
-                forbidden_declarations=self.forbidden_declarations,
-            )
-            candidate_path = store.write_text(
-                f"work/candidates/{candidate.candidate_id.removeprefix('sha256:')}.lean",
-                source,
-            )
-            command = run_lean_file(
-                root=self.root,
-                path=candidate_path,
-                timeout_seconds=self.config.lean_timeout_seconds,
-            )
-            commands.append(self._command(command))
-            if command.ok:
-                checked_sources[candidate.declaration] = source
-                return ClosureCheck(ok=True, proof_term=candidate.declaration)
-            return ClosureCheck(
-                ok=False,
-                diagnostic=(command.stderr or command.stdout)[-4000:],
-            )
-
-        planner = CapabilityPlanner(
-            solver_registry=registry,
-            tracker=tracker,
-            checker=checker,
-        )
-        state = ProofState.initial(
+        initial_state = ProofState.initial(
             root_goal,
             import_closure_fingerprint=snapshot.import_closure_fingerprint,
         )
-        goal = state.select_open_goal()
-        store.transition("SEARCHING")
-        plan = planner.plan(
-            goal=goal,
-            candidates=candidates,
-            fragments=(),
-            environment_fingerprint=snapshot.snapshot_hash,
-            capability_fingerprint=stable_sha256(
-                {
-                    "candidates": [candidate.candidate_id for candidate in candidates],
-                    "forbidden_declarations": self.forbidden_declarations,
-                }
-            ),
-            failure_memory_fingerprint=stable_sha256(()),
-            strategy=self.config.strategy,
-            is_root=True,
-            target_handle=reference.problem_declaration,
+        runtime = RecursiveSearchRuntime(
+            root=self.root,
+            store=store,
+            input_module=reference.input_module,
+            modules=modules,
+            plugin_imports=plugin_imports,
             forbidden_declarations=self.forbidden_declarations,
+            tracker=tracker,
+            solver_registry=registry,
+            model_policy=self.config.model_policy,
+            deepseek=self.config.deepseek,
+            lean_timeout_seconds=self.config.lean_timeout_seconds,
+            commands=commands,
+            model_calls=model_calls,
+            event_sink=lambda name, details: store.append_event(name, details=details),
         )
-        store.write_json("planner/root-substep-plan.json", _as_json_mapping(plan))
-        closed_actions = tuple(
-            action
-            for action in plan.candidate_actions
-            if action.disposition == ActionDisposition.CLOSED and action.lean_verified
+        runtime.seed_candidates(initial_state, root_goal.exact_type, candidates)
+        coordinator = SearchCoordinator(
+            planner=runtime.planner,
+            tracker=tracker,
+            strategy=self.config.strategy,
+            environment_fingerprint=snapshot.snapshot_hash,
+            capability_fingerprint=lambda state: state.capability_fingerprint,
+            candidate_lookup=runtime.candidate_lookup,
+            action_executor=runtime.execute,
+            dead_end_handler=runtime.dead_end,
+            forbidden_declarations=self.forbidden_declarations,
+            event_sink=lambda name, details: store.append_event(name, details=details),
         )
-        if closed_actions:
-            declaration = plan.exact_closure_result.declaration
-            source = checked_sources.get(declaration or "")
-            if source is None:
-                raise RuntimeError("closed theorem candidate lost its checked source")
-            closed_action = closed_actions[0]
-            statistics = _provider_statistics(plan)
-            statistics[ProviderKind.REUSE.value].expanded_action_count += 1
-            statistics[ProviderKind.REUSE.value].lean_checks += tracker.usage.lean_checks
-            statistics[ProviderKind.REUSE.value].successful_closures += 1
+        store.transition("SEARCHING")
+        outcome = coordinator.run(initial_state)
+        best_state = outcome.best_state
+        store.write_json(
+            "planner/search-outcome.json",
+            {
+                "status": outcome.status,
+                "blocker": outcome.blocker,
+                "expanded_states": outcome.expanded_states,
+                "requeued_failure_states": outcome.requeued_failure_states,
+                "pruned_cycles": outcome.pruned_cycles,
+                "max_observed_depth": outcome.max_observed_depth,
+                "final_frontier_size": outcome.final_frontier_size,
+                "frontier_exhaustion_receipt": outcome.frontier_exhaustion_receipt,
+                "best_state": _as_json_mapping(best_state),
+            },
+        )
+        if outcome.completed_state is not None:
+            completed = outcome.completed_state
+            source = build_search_artifact_source(
+                completed_state=completed,
+                input_module=reference.input_module,
+                problem_declaration=reference.problem_declaration,
+                forbidden_declarations=self.forbidden_declarations,
+                extra_imports=plugin_imports,
+            )
+            evidence = (
+                evidence_from_generated_source(
+                    source=source,
+                    environment_snapshot_hash=snapshot.snapshot_hash,
+                    strategy_call_count=tracker.usage.strategy_calls,
+                    authoring_call_count=tracker.usage.authoring_calls,
+                    core_verified=True,
+                )
+                if completed.generated_capabilities
+                else GenerationEvidence(
+                    attempted=False,
+                    environment_snapshot_hash=snapshot.snapshot_hash,
+                    classification="no-generation-needed",
+                )
+            )
             return self._finalize_verified_source(
                 store=store,
                 source=source,
@@ -531,39 +580,72 @@ class GenerativeReductionOrchestrator:
                 model_calls=model_calls,
                 identity=identity.to_dict(),
                 snapshot=snapshot.to_dict(),
-                selected_route=(declaration,) if declaration else (),
-                proof_step=ProofStep(
-                    action_id=closed_action.action_id,
-                    provider=closed_action.provider,
-                    disposition=closed_action.disposition,
-                    goal_id="goal-root",
-                    exact_type=root_goal.exact_type,
-                    declaration=declaration,
+                selected_route=tuple(
+                    dict.fromkeys(
+                        frame.declaration for frame in completed.application_frames
+                    )
                 ),
+                proof_step=None,
+                proof_tree=completed.proof_skeleton,
                 candidates=candidates,
-                substep_plans=(plan,),
-                generation_evidence=GenerationEvidence(
-                    attempted=False,
-                    environment_snapshot_hash=snapshot.snapshot_hash,
-                    classification="no-generation-needed",
-                ),
-                provider_statistics=statistics,
+                substep_plans=completed.substep_plans,
+                generation_evidence=evidence,
+                provider_statistics=outcome.provider_statistics,
+                search_outcome=outcome,
+                final_state=completed,
             )
 
-        return self._attempt_open_synthesis(
+        proof_status = (
+            ProofStatus.BUDGET_EXHAUSTED
+            if outcome.status == ProofStatus.BUDGET_EXHAUSTED.value
+            else ProofStatus.BLOCKED
+        )
+        model_failure_codes = {
+            "model_provider_unavailable",
+            "strategy_model_failed",
+            "child_synthesis_not_verified",
+        }
+        failure_codes = {
+            str(item.get("blocker_code")) for item in best_state.failure_memory
+        }
+        if (
+            proof_status == ProofStatus.BLOCKED
+            and self.config.model_policy == ModelPolicy.REQUIRED
+            and failure_codes
+            and failure_codes <= model_failure_codes
+        ):
+            proof_status = ProofStatus.FAILED_MODEL
+        return self._failure_result(
             store=store,
-            reference=reference,
+            proof_status=proof_status,
             root_goal=root_goal,
             job_id=job_id,
+            code=(
+                "budget_exhausted"
+                if proof_status == ProofStatus.BUDGET_EXHAUSTED
+                else "global_frontier_exhausted"
+            ),
+            explanation=outcome.blocker or "global proof frontier exhausted",
             commands=commands,
             model_calls=model_calls,
-            identity=identity.to_dict(),
-            snapshot=snapshot.to_dict(),
-            snapshot_hash=snapshot.snapshot_hash,
             candidates=candidates,
-            plan=plan,
-            tracker=tracker,
-            plugin_imports=plugin_imports,
+            substep_plans=best_state.substep_plans,
+            input_identity=identity.to_dict(),
+            environment_snapshot=snapshot.to_dict(),
+            evidence=GenerationEvidence(
+                attempted=bool(model_calls),
+                strategy_call_count=tracker.usage.strategy_calls,
+                authoring_call_count=tracker.usage.authoring_calls,
+                generated_source_hashes=tuple(
+                    item.source_hash for item in best_state.generated_capabilities
+                ),
+                environment_snapshot_hash=snapshot.snapshot_hash,
+                classification="generation-attempted-blocked",
+            ),
+            provider_statistics=outcome.provider_statistics,
+            proof_tree=best_state.proof_skeleton,
+            search_outcome=outcome,
+            final_state=best_state,
         )
 
     def _closed_resolver_probe(self, *, store, reference):
@@ -593,222 +675,6 @@ class GenerativeReductionOrchestrator:
             command,
         )
 
-    def _attempt_open_synthesis(
-        self,
-        *,
-        store,
-        reference,
-        root_goal,
-        job_id,
-        commands,
-        model_calls,
-        identity,
-        snapshot,
-        snapshot_hash,
-        candidates,
-        plan,
-        tracker,
-        plugin_imports,
-    ) -> GeneralNPHardResult:
-        contract = plan.construction_contract
-        evidence = GenerationEvidence(
-            attempted=contract is not None,
-            environment_snapshot_hash=snapshot_hash,
-            classification=(
-                "generation-attempted-blocked" if contract is not None else "no-generation-needed"
-            ),
-        )
-        if contract is None:
-            return self._failure_result(
-                store=store,
-                proof_status=ProofStatus.BLOCKED,
-                root_goal=root_goal,
-                job_id=job_id,
-                code="no_safe_action",
-                explanation="Capability Planner returned no exact closure or construction contract",
-                commands=commands,
-                candidates=candidates,
-                substep_plans=(plan,),
-                input_identity=identity,
-                environment_snapshot=snapshot,
-                evidence=evidence,
-            )
-        if self.config.model_policy == ModelPolicy.DISABLED:
-            return self._failure_result(
-                store=store,
-                proof_status=ProofStatus.BLOCKED,
-                root_goal=root_goal,
-                job_id=job_id,
-                code="authoring_disabled",
-                explanation="typed construction contract exists but model authoring is disabled",
-                commands=commands,
-                candidates=candidates,
-                substep_plans=(plan,),
-                input_identity=identity,
-                environment_snapshot=snapshot,
-                evidence=evidence,
-            )
-        if self.config.deepseek is None or not self.config.deepseek.api_key:
-            status = (
-                ProofStatus.FAILED_MODEL
-                if self.config.model_policy == ModelPolicy.REQUIRED
-                else ProofStatus.BLOCKED
-            )
-            return self._failure_result(
-                store=store,
-                proof_status=status,
-                root_goal=root_goal,
-                job_id=job_id,
-                code="model_provider_unavailable",
-                explanation="open synthesis needs a configured model provider",
-                commands=commands,
-                candidates=candidates,
-                substep_plans=(plan,),
-                input_identity=identity,
-                environment_snapshot=snapshot,
-                evidence=evidence,
-            )
-
-        client = DeepSeekClient(self.config.deepseek)
-        tracker.consume("model_calls")
-        tracker.consume("strategy_calls")
-        proposal, strategy_record = propose_strategy(
-            model=client,
-            goal=ProofState.initial(root_goal).select_open_goal(),
-            plan=plan,
-        )
-        model_calls.append(strategy_record)
-        if not strategy_record.ok and self.config.model_policy == ModelPolicy.REQUIRED:
-            return self._failure_result(
-                store=store,
-                proof_status=ProofStatus.FAILED_MODEL,
-                root_goal=root_goal,
-                job_id=job_id,
-                code="strategy_model_failed",
-                explanation=strategy_record.error or "strategy model failed",
-                commands=commands,
-                model_calls=model_calls,
-                candidates=candidates,
-                substep_plans=(plan,),
-                input_identity=identity,
-                environment_snapshot=snapshot,
-                evidence=evidence,
-            )
-
-        store.transition("SYNTHESIZING", details={"contract": contract.contract_id})
-        diagnostics: str | None = None
-        authored_source: str | None = None
-        candidate_modules = tuple(
-            dict.fromkeys(candidate.module for candidate in candidates[:12])
-        )
-        extra_imports = (*candidate_modules, *plugin_imports)
-        attempts = min(
-            self.config.budget.max_authoring_attempts_per_stage,
-            self.config.budget.max_authoring_calls,
-        )
-        for attempt in range(attempts):
-            tracker.consume("model_calls")
-            tracker.consume("authoring_calls")
-            authoring, record = propose_implementation(
-                model=client,
-                contract=contract,
-                guidance=plan.ranked_proof_guidance,
-                diagnostics=diagnostics,
-            )
-            model_calls.append(record)
-            if authoring is None:
-                diagnostics = record.error or "authoring protocol failed"
-                continue
-            try:
-                source = build_authored_artifact_source(
-                    input_module=reference.input_module,
-                    problem_declaration=reference.problem_declaration,
-                    implementation=authoring.implementation or "",
-                    extra_imports=extra_imports,
-                    forbidden_declarations=self.forbidden_declarations,
-                )
-            except ValueError as error:
-                diagnostics = str(error)
-                continue
-            tracker.consume("lean_checks")
-            tracker.consume("generated_files")
-            path = store.write_text(f"work/Generated/Attempt{attempt + 1}.lean", source)
-            command = run_lean_file(
-                root=self.root,
-                path=path,
-                timeout_seconds=self.config.lean_timeout_seconds,
-            )
-            commands.append(self._command(command))
-            if command.ok:
-                authored_source = source
-                break
-            diagnostics = (command.stderr or command.stdout)[-4000:]
-
-        if authored_source is None:
-            attempted = GenerationEvidence(
-                attempted=True,
-                strategy_call_count=tracker.usage.strategy_calls,
-                authoring_call_count=tracker.usage.authoring_calls,
-                environment_snapshot_hash=snapshot_hash,
-                classification="generation-attempted-blocked",
-            )
-            status = (
-                ProofStatus.FAILED_MODEL
-                if model_calls and all(not record.ok for record in model_calls)
-                else ProofStatus.BLOCKED
-            )
-            return self._failure_result(
-                store=store,
-                proof_status=status,
-                root_goal=root_goal,
-                job_id=job_id,
-                code="open_synthesis_not_verified",
-                explanation=diagnostics or "no authored candidate passed Lean",
-                commands=commands,
-                model_calls=model_calls,
-                candidates=candidates,
-                substep_plans=(plan,),
-                input_identity=identity,
-                environment_snapshot=snapshot,
-                evidence=attempted,
-            )
-
-        generated_evidence = evidence_from_generated_source(
-            source=authored_source,
-            environment_snapshot_hash=snapshot_hash,
-            strategy_call_count=tracker.usage.strategy_calls,
-            authoring_call_count=tracker.usage.authoring_calls,
-            core_verified=True,
-        )
-        statistics = _provider_statistics(plan)
-        statistics[ProviderKind.SYNTHESIS.value].expanded_action_count += 1
-        statistics[ProviderKind.SYNTHESIS.value].model_calls += len(model_calls)
-        statistics[ProviderKind.SYNTHESIS.value].lean_checks += tracker.usage.lean_checks
-        statistics[ProviderKind.SYNTHESIS.value].successful_closures += 1
-        return self._finalize_verified_source(
-            store=store,
-            source=authored_source,
-            root_goal=root_goal,
-            job_id=job_id,
-            commands=commands,
-            model_calls=model_calls,
-            identity=identity,
-            snapshot=snapshot,
-            selected_route=("job-local-authored-candidate",),
-            proof_step=ProofStep(
-                action_id=(proposal.action_id if proposal and proposal.action_id else "open-synthesis"),
-                provider=ProviderKind.SYNTHESIS,
-                disposition=ActionDisposition.CLOSED,
-                goal_id="goal-root",
-                exact_type=root_goal.exact_type,
-                declaration="ComplexityReduction.Agent.GenerativeReduction.Generated.problemIsNPHard",
-            ),
-            candidates=candidates,
-            substep_plans=(plan,),
-            generation_evidence=generated_evidence,
-            provider_statistics=statistics,
-        )
-
     def _finalize_verified_source(
         self,
         *,
@@ -826,6 +692,9 @@ class GenerativeReductionOrchestrator:
         substep_plans,
         generation_evidence,
         provider_statistics,
+        proof_tree=(),
+        search_outcome=None,
+        final_state: ProofState | None = None,
     ) -> GeneralNPHardResult:
         artifact_path = store.write_text("Artifact.lean", source)
         store.transition("PROOF_RECONSTRUCTED")
@@ -854,6 +723,10 @@ class GenerativeReductionOrchestrator:
                 input_identity=identity,
                 environment_snapshot=snapshot,
                 evidence=generation_evidence,
+                provider_statistics=provider_statistics,
+                proof_tree=proof_tree or ((proof_step,) if proof_step else ()),
+                search_outcome=search_outcome,
+                final_state=final_state,
             )
         store.transition("PROOF_VERIFIED")
         classification = classify_generation(generation_evidence)
@@ -870,12 +743,24 @@ class GenerativeReductionOrchestrator:
             output_dir=str(self.output_dir),
             job_id=job_id,
             selected_proof_route=tuple(selected_route),
-            proof_tree=(proof_step,),
+            proof_tree=tuple(proof_tree or ((proof_step,) if proof_step else ())),
             capability_planner_decisions=self._planner_decisions(substep_plans),
             substep_plans=tuple(substep_plans),
             action_provider_statistics=provider_statistics,
             theorem_candidates=tuple(candidates),
-            generated_declarations=self._generated_declarations(generation_evidence),
+            generated_declarations=tuple(
+                dict.fromkeys(
+                    (
+                        *self._generated_declarations(generation_evidence),
+                        *(
+                            capability.declaration
+                            for capability in (
+                                final_state.generated_capabilities if final_state else ()
+                            )
+                        ),
+                    )
+                )
+            ),
             model_calls=tuple(model_calls),
             lean_commands=tuple(commands),
             verification=verification,
@@ -884,6 +769,52 @@ class GenerativeReductionOrchestrator:
             artifact_sha256=digest,
             input_identity=identity,
             environment_snapshot=snapshot,
+            expanded_state_count=getattr(search_outcome, "expanded_states", 0),
+            requeued_failure_state_count=getattr(
+                search_outcome, "requeued_failure_states", 0
+            ),
+            pruned_cycle_count=getattr(search_outcome, "pruned_cycles", 0),
+            max_observed_search_depth=getattr(
+                search_outcome, "max_observed_depth", 0
+            ),
+            application_frame_count=(
+                len(final_state.application_frames) if final_state else 0
+            ),
+            verified_application_frame_count=(
+                sum(
+                    frame.status.value == "verified"
+                    for frame in final_state.application_frames
+                )
+                if final_state
+                else 0
+            ),
+            data_binding_count=(final_state.data_binding_count if final_state else 0),
+            dependent_goal_activation_count=(
+                final_state.dependent_goal_activation_count if final_state else 0
+            ),
+            recursive_substep_plan_count=(
+                len(final_state.substep_plans) if final_state else len(tuple(substep_plans))
+            ),
+            generated_capability_count=(
+                len(final_state.generated_capabilities) if final_state else 0
+            ),
+            final_frontier_size=getattr(search_outcome, "final_frontier_size", 0),
+            frontier_exhaustion_receipt=getattr(
+                search_outcome, "frontier_exhaustion_receipt", None
+            ),
+            per_goal_attempted_actions=(
+                {
+                    goal.goal_id: goal.attempted_actions
+                    for goal in final_state.open_goals
+                }
+                if final_state
+                else {}
+            ),
+            final_route_audit_receipt={
+                "forbidden_declarations": list(self.forbidden_declarations),
+                "transitive_audit_emitted": bool(self.forbidden_declarations),
+                "passed": verification.kernel_verified,
+            },
         )
         store.transition("COMPLETED")
         return self._write_result(store, result)

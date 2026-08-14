@@ -19,15 +19,17 @@ class GlobalProofFrontier:
         self._counter = count()
         self._heap: list[tuple[tuple[object, ...], int, ProofState]] = []
         self._fingerprints: set[str] = set()
+        self._seen_fingerprints: set[str] = set()
 
     def __len__(self) -> int:
         return len(self._heap)
 
     def push(self, state: ProofState) -> bool:
         fingerprint = state.fingerprint
-        if fingerprint in self._fingerprints:
+        if fingerprint in self._seen_fingerprints:
             return False
         self._fingerprints.add(fingerprint)
+        self._seen_fingerprints.add(fingerprint)
         heapq.heappush(self._heap, (proof_state_cost(state), next(self._counter), state))
         if len(self._heap) > self.max_width:
             worst = max(range(len(self._heap)), key=lambda index: self._heap[index][:2])

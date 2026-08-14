@@ -13,6 +13,7 @@ from .models import (
     TheoremPremise,
 )
 from .premise_registry import PremiseSolution, PremiseSolverRegistry
+from .providers.reuse import reuse_action_id
 
 
 @dataclass(frozen=True)
@@ -57,7 +58,7 @@ class ExactClosureProbe:
                 fragment.lean_verified
                 and fragment.exact_type.strip() == goal.exact_type.strip()
             ):
-                return ExactClosureResult(
+                result = ExactClosureResult(
                     goal_key=goal.key,
                     closed=True,
                     proof_term=fragment.proof_term,
@@ -66,9 +67,26 @@ class ExactClosureProbe:
                     lean_verified=True,
                     checked_candidate_count=0,
                 )
+                if reuse_action_id(result) in goal.attempted_actions:
+                    diagnostics.append("verified fragment closure was already attempted")
+                    continue
+                return result
 
         checked = 0
         for candidate in candidates[: self.max_candidates]:
+            predicted = ExactClosureResult(
+                goal_key=goal.key,
+                closed=True,
+                proof_term=candidate.declaration,
+                declaration=candidate.declaration,
+                provenance=candidate.provenance,
+                lean_verified=True,
+            )
+            if reuse_action_id(predicted) in goal.attempted_actions:
+                diagnostics.append(
+                    f"{candidate.declaration}: exact closure action was already attempted"
+                )
+                continue
             solved, residual = self.solver_registry.coverage(
                 candidate.premises, goal.local_context
             )
@@ -85,7 +103,7 @@ class ExactClosureProbe:
                 continue
             check = self.checker(goal, candidate, solved)
             if check.ok:
-                return ExactClosureResult(
+                result = ExactClosureResult(
                     goal_key=goal.key,
                     closed=True,
                     proof_term=check.proof_term or candidate.declaration,
@@ -95,6 +113,12 @@ class ExactClosureProbe:
                     diagnostics=tuple(diagnostics),
                     checked_candidate_count=checked,
                 )
+                if reuse_action_id(result) in goal.attempted_actions:
+                    diagnostics.append(
+                        f"{candidate.declaration}: checked closure action was already attempted"
+                    )
+                    continue
+                return result
             diagnostics.append(
                 f"{candidate.declaration}: {check.diagnostic or 'Lean rejected candidate'}"
             )

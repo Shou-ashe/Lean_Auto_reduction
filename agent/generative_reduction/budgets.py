@@ -8,9 +8,9 @@ from threading import Lock
 
 @dataclass(frozen=True)
 class SearchBudget:
-    max_search_rounds: int = 16
-    max_search_depth: int = 8
-    max_expanded_states: int = 256
+    max_search_rounds: int = 96
+    max_search_depth: int = 16
+    max_expanded_states: int = 512
     max_frontier_width: int = 24
     max_capability_plans: int = 256
     max_exact_closure_candidates: int = 16
@@ -22,13 +22,22 @@ class SearchBudget:
     min_synthesis_materializations: int = 1
     synthesis_activation_deadline: int = 12
     stagnation_window: int = 8
-    max_lean_checks: int = 96
-    max_model_calls: int = 12
+    max_lean_checks: int = 256
+    max_model_calls: int = 20
     max_strategy_calls: int = 4
-    max_authoring_calls: int = 8
+    max_authoring_calls: int = 16
     max_synthesis_designs: int = 8
     max_authoring_attempts_per_stage: int = 4
     max_generated_files: int = 24
+    max_branching_per_expansion: int = 3
+    max_application_frames: int = 64
+    max_data_witness_candidates: int = 12
+    max_dependent_reinstantiations: int = 128
+    max_action_failures_per_goal: int = 32
+    max_frame_verification_checks: int = 64
+    max_reconstruction_repairs: int = 4
+    max_requeues_per_state: int = 256
+    max_recursive_substep_plans: int = 256
     wall_clock_timeout_seconds: int = 1800
 
     def validate(self) -> None:
@@ -43,6 +52,15 @@ class SearchBudget:
             "max_guidance_candidates_per_goal",
             "max_guidance_plans_per_goal",
             "max_actions_per_provider",
+            "max_branching_per_expansion",
+            "max_application_frames",
+            "max_data_witness_candidates",
+            "max_dependent_reinstantiations",
+            "max_action_failures_per_goal",
+            "max_frame_verification_checks",
+            "max_reconstruction_repairs",
+            "max_requeues_per_state",
+            "max_recursive_substep_plans",
             "wall_clock_timeout_seconds",
         )
         for name in positive:
@@ -68,6 +86,12 @@ class BudgetUsage:
     authoring_calls: int = 0
     synthesis_designs: int = 0
     generated_files: int = 0
+    application_frames: int = 0
+    dependent_reinstantiations: int = 0
+    frame_verification_checks: int = 0
+    reconstruction_repairs: int = 0
+    requeues: int = 0
+    recursive_substep_plans: int = 0
 
 
 class BudgetExhausted(RuntimeError):
@@ -89,6 +113,12 @@ class BudgetTracker:
         "authoring_calls": "max_authoring_calls",
         "synthesis_designs": "max_synthesis_designs",
         "generated_files": "max_generated_files",
+        "application_frames": "max_application_frames",
+        "dependent_reinstantiations": "max_dependent_reinstantiations",
+        "frame_verification_checks": "max_frame_verification_checks",
+        "reconstruction_repairs": "max_reconstruction_repairs",
+        "requeues": "max_requeues_per_state",
+        "recursive_substep_plans": "max_recursive_substep_plans",
     }
 
     def __init__(self, budget: SearchBudget):

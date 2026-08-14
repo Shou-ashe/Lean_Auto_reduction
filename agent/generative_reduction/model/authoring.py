@@ -17,12 +17,13 @@ def propose_implementation(
     contract: ConstructionContract,
     guidance: tuple[ProofGuidance, ...],
     diagnostics: str | None,
+    required_declaration: str = "problemIsNPHard",
 ) -> tuple[AuthoringProposal | None, ModelCallRecord]:
     prompt = json.dumps(
         {
             "expected_lean_type": contract.exact_expected_lean_type,
-            "required_root_declaration": (
-                "theorem problemIsNPHard : "
+            "required_capability_declaration": (
+                f"noncomputable def {required_declaration} : "
                 + contract.exact_expected_lean_type
                 + " := by"
             ),
@@ -49,7 +50,7 @@ def propose_implementation(
             "lean_diagnostics": (diagnostics or "")[-4000:],
             "required_output": {
                 "implementation": (
-                    "Lean helper declarations plus the exact required root declaration, "
+                    "Lean helper declarations plus the exact required capability declaration, "
                     "with no imports or namespace commands; it must not reference, alias, "
                     "or invoke a resolver that uses any forbidden declaration"
                 ),
@@ -62,6 +63,8 @@ def propose_implementation(
         system=(
             "Author Lean only for the fixed expected type and job-local editable region. "
             "Do not add axioms, sorry/admit, imports, namespace commands, or change endpoints. "
+            "The required capability must be a noncomputable def so both proposition-valued "
+            "and data-valued exact types are accepted. "
             "Do not use any forbidden declaration, directly or through an alias or resolver. "
             "Return one compact JSON object."
         ),

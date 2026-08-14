@@ -39,6 +39,16 @@ CORE_IMPORTS = (
 )
 
 
+def is_runtime_candidate_declaration(declaration: str) -> bool:
+    """Reject compiler/tactic implementation artifacts from proof search."""
+
+    return not (
+        declaration.startswith("Aesop.BuiltinRules.")
+        or "._proof_" in declaration
+        or declaration.endswith("._flat_ctor")
+    )
+
+
 def _module_for_path(root: Path, path: Path) -> str:
     reference = root.resolve() / "Lean" / "Reference"
     relative = path.resolve().relative_to(reference).with_suffix("")
@@ -142,16 +152,28 @@ def parse_probe_output(
             continue
         if kind != "candidate" or len(fields) != 14:
             raise ValueError("typed theorem index emitted an invalid candidate row")
+        try:
+            declaration = validate_declaration_name(
+                fields[4], label="theorem candidate"
+            )
+            module = validate_module_name(fields[5])
+        except ValueError:
+            # Lean and Mathlib may expose declarations whose identifiers contain
+            # Unicode subscripts or other syntax that the generated-source
+            # safety validator intentionally does not admit.  Such a declaration
+            # is unusable by this runtime, but it must not invalidate the other
+            # typed candidates emitted for the same goal.
+            continue
+        if not is_runtime_candidate_declaration(declaration):
+            continue
         premises = _parse_premises(fields[9])
         if int(fields[7]) != len(premises):
             raise ValueError("typed theorem index lost premise alignment")
         universes = tuple(item for item in fields[6].split(",") if item)
         candidates.append(
             TheoremIndexEntry(
-                declaration=validate_declaration_name(
-                    fields[4], label="theorem candidate"
-                ),
-                module=validate_module_name(fields[5]),
+                declaration=declaration,
+                module=module,
                 universe_parameters=universes,
                 declaration_type=fields[8],
                 premises=premises,
@@ -221,6 +243,7 @@ __all__ = [
     "SCHEMA",
     "build_probe_source",
     "build_typed_goal_probe_source",
+    "is_runtime_candidate_declaration",
     "parse_probe_output",
     "project_module_catalog",
     "query_theorem_index",

@@ -21,7 +21,7 @@ class SynthesisActionProvider:
         for ordinal, mode in enumerate(contract.allowed_construction_modes[:limit]):
             digest = stable_sha256(
                 {
-                    "contract": contract.contract_id,
+                    "goal": contract.goal_key.fingerprint,
                     "mode": mode,
                     "ordinal": ordinal,
                 }
