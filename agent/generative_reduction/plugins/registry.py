@@ -10,6 +10,7 @@ from dataclasses import dataclass
 from importlib import import_module
 from typing import Callable
 
+from ..finite_synthesis import FiniteSynthesisPlugin
 from ..premise_registry import PremiseSolverRegistry
 
 
@@ -19,6 +20,7 @@ class Plugin:
     register: Callable[[PremiseSolverRegistry], None]
     public_capabilities: tuple[str, ...]
     lean_imports: tuple[str, ...] = ()
+    finite_synthesis_plugins: tuple[FiniteSynthesisPlugin, ...] = ()
 
 
 PLUGIN_MODULES = {

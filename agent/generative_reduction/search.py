@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 import time
 from typing import Callable, Mapping, Sequence
 
@@ -14,6 +14,8 @@ from .models import (
     ProviderKind,
     ProviderStatistics,
     Strategy,
+    StrategyDecision,
+    StrategyEffectReceipt,
     SubstepPlan,
     TheoremIndexEntry,
     stable_sha256,
@@ -28,6 +30,10 @@ ActionExecutor = Callable[
 ]
 EventSink = Callable[[str, Mapping[str, object]], None]
 DeadEndHandler = Callable[[ProofState, OpenGoal, str], ProofState | None]
+StrategyDecider = Callable[
+    [ProofState, OpenGoal, SubstepPlan, Sequence[CandidateAction]],
+    StrategyDecision | None,
+]
 
 
 @dataclass(frozen=True)
@@ -43,6 +49,21 @@ class SearchOutcome:
     max_observed_depth: int = 0
     final_frontier_size: int = 0
     frontier_exhaustion_receipt: Mapping[str, object] | None = None
+    strategy_valid_proposals: int = 0
+    strategy_applied_decisions: int = 0
+    strategy_fallbacks: int = 0
+    strategy_rejections: int = 0
+    strategy_effect_receipts: tuple[StrategyEffectReceipt, ...] = ()
+    finite_candidate_count: int = 0
+    finite_counterexample_count: int = 0
+    finite_certificate_count: int = 0
+    generated_lean_check_count: int = 0
+    generated_lean_success_count: int = 0
+    capability_registration_count: int = 0
+    synthesis_design_count: int = 0
+    context_expansion_count: int = 0
+    duplicate_candidate_rejection_count: int = 0
+    repeated_diagnostic_count: int = 0
 
 
 class SearchCoordinator:
@@ -59,6 +80,7 @@ class SearchCoordinator:
         forbidden_declarations: Sequence[str] = (),
         event_sink: EventSink | None = None,
         dead_end_handler: DeadEndHandler | None = None,
+        strategy_decider: StrategyDecider | None = None,
     ):
         self.planner = planner
         self.tracker = tracker
@@ -70,11 +92,17 @@ class SearchCoordinator:
         self.forbidden_declarations = tuple(forbidden_declarations)
         self.event_sink = event_sink
         self.dead_end_handler = dead_end_handler
+        self.strategy_decider = strategy_decider
         self.statistics = {
             kind.value: ProviderStatistics() for kind in ProviderKind
         }
         self.requeued_failure_states = 0
         self.max_observed_depth = 0
+        self.strategy_valid_proposals = 0
+        self.strategy_applied_decisions = 0
+        self.strategy_fallbacks = 0
+        self.strategy_rejections = 0
+        self.strategy_effect_receipts: list[StrategyEffectReceipt] = []
 
     @staticmethod
     def _progress_key(state: ProofState) -> tuple[object, ...]:
@@ -100,6 +128,47 @@ class SearchCoordinator:
     def _event(self, name: str, **details: object) -> None:
         if self.event_sink is not None:
             self.event_sink(name, details)
+
+    @staticmethod
+    def _ancestor_cycle_reason(
+        state: ProofState,
+        goal: OpenGoal,
+        plan: SubstepPlan,
+        action: CandidateAction,
+    ) -> str | None:
+        """Reject an action whose open residual recreates this ancestor chain."""
+
+        if action.provider not in {ProviderKind.THEOREM, ProviderKind.STRUCTURAL}:
+            return None
+
+        def normalized(exact_type: str) -> str:
+            return " ".join(exact_type.split())
+
+        ancestor_types = {normalized(goal.exact_type): goal.goal_id}
+        frame_id = goal.producer_frame_id
+        seen: set[str] = set()
+        while frame_id and frame_id not in seen:
+            seen.add(frame_id)
+            try:
+                frame = state.frame(frame_id)
+            except KeyError:
+                break
+            ancestor_types[normalized(frame.parent_exact_type)] = frame.frame_id
+            frame_id = frame.parent_producer_frame_id
+        residual_by_id = {
+            item.obligation_id: item.exact_type for item in plan.residual_obligations
+        }
+        for obligation_id in action.residual_obligation_ids:
+            exact_type = residual_by_id.get(obligation_id)
+            if exact_type is None:
+                continue
+            owner = ancestor_types.get(normalized(exact_type))
+            if owner is not None:
+                return (
+                    f"residual obligation {obligation_id} recreates active ancestor "
+                    f"{owner}"
+                )
+        return None
 
     def run(self, initial: ProofState) -> SearchOutcome:
         frontier = GlobalProofFrontier(max_width=self.tracker.budget.max_frontier_width)
@@ -198,22 +267,189 @@ class SearchCoordinator:
                     plan_fingerprint=plan.plan_fingerprint,
                 )
                 state = state.record_plan(plan)
-                unattempted = tuple(
-                    action
-                    for action in plan.candidate_actions
-                    if action.action_id not in goal.attempted_actions
-                )
+                eligible_actions: list[CandidateAction] = []
+                for candidate in plan.candidate_actions:
+                    if candidate.action_id in goal.attempted_actions:
+                        continue
+                    if candidate.disposition.value == "BLOCKED":
+                        continue
+                    cycle_reason = self._ancestor_cycle_reason(
+                        state, goal, plan, candidate
+                    )
+                    if cycle_reason is not None:
+                        self._event(
+                            "ACTION_PRUNED_ANCESTOR_CYCLE",
+                            state_id=state.state_id,
+                            goal_id=goal.goal_id,
+                            action_id=candidate.action_id,
+                            declaration=candidate.declaration,
+                            reason=cycle_reason,
+                        )
+                        continue
+                    eligible_actions.append(candidate)
+                unattempted = tuple(eligible_actions)
                 buckets = ReadyActionBuckets(unattempted)
                 for provider, count in buckets.counts().items():
                     self.statistics[provider].candidate_count += count
                 counter = non_synthesis_expansions.get(goal.key.fingerprint, 0)
-                action = buckets.choose(
+                deterministic_action = buckets.choose(
                     strategy=self.strategy,
                     non_synthesis_expansions=counter,
                     synthesis_activation_deadline=(
                         self.tracker.budget.synthesis_activation_deadline
                     ),
                 )
+                action = deterministic_action
+                applied_decision: StrategyDecision | None = None
+                receipt_index: int | None = None
+                exact_actions = tuple(
+                    candidate
+                    for candidate in unattempted
+                    if candidate.disposition.value == "CLOSED"
+                    and candidate.lean_verified
+                )
+                if (
+                    not exact_actions
+                    and len(unattempted) >= 2
+                    and self.strategy_decider is not None
+                ):
+                    decision = self.strategy_decider(state, goal, plan, unattempted)
+                    if decision is not None:
+                        self._event(
+                            "STRATEGY_DECISION_PROPOSED",
+                            decision_id=decision.decision_id,
+                            state_id=state.state_id,
+                            goal_id=goal.goal_id,
+                            decision_kind=decision.decision_kind,
+                            selected_action_id=decision.selected_action_id,
+                            selected_design_id=decision.selected_design_id,
+                            applicable=decision.applicable,
+                        )
+                        stale_reason = None
+                        if decision.state_fingerprint != state.fingerprint:
+                            stale_reason = "strategy decision state fingerprint is stale"
+                        elif decision.goal_id != goal.goal_id:
+                            stale_reason = "strategy decision goal is stale"
+                        action_by_id = {
+                            candidate.action_id: candidate for candidate in unattempted
+                        }
+                        selected = action_by_id.get(decision.selected_action_id or "")
+                        if stale_reason is not None:
+                            self.strategy_fallbacks += 1
+                            receipt = StrategyEffectReceipt(
+                                decision_id=decision.decision_id,
+                                proposal_status="stale",
+                                proposed_action_id=decision.selected_action_id,
+                                applied_action_id=(
+                                    deterministic_action.action_id
+                                    if deterministic_action is not None
+                                    else None
+                                ),
+                                applied_design_id=None,
+                                effect="deterministic-fallback-stale-proposal",
+                                override_reason=stale_reason,
+                            )
+                            self._event(
+                                "STRATEGY_DECISION_REJECTED",
+                                decision_id=decision.decision_id,
+                                reason=stale_reason,
+                            )
+                        elif decision.applicable and decision.requested_backtrack:
+                            backtracked = (
+                                self.dead_end_handler(
+                                    state,
+                                    goal,
+                                    "strategy requested current-branch backtrack",
+                                )
+                                if self.dead_end_handler is not None
+                                else None
+                            )
+                            if backtracked is not None and frontier.push(backtracked):
+                                self.strategy_valid_proposals += 1
+                                self.strategy_applied_decisions += 1
+                                self.tracker.consume("requeues")
+                                self.requeued_failure_states += 1
+                                receipt = StrategyEffectReceipt(
+                                    decision_id=decision.decision_id,
+                                    proposal_status="valid",
+                                    proposed_action_id=None,
+                                    applied_action_id=None,
+                                    applied_design_id=None,
+                                    effect="backtracked-current-branch",
+                                    next_state_fingerprint=backtracked.fingerprint,
+                                )
+                                self.strategy_effect_receipts.append(receipt)
+                                self._event(
+                                    "STRATEGY_DECISION_APPLIED",
+                                    decision_id=decision.decision_id,
+                                    effect=receipt.effect,
+                                    next_state_fingerprint=backtracked.fingerprint,
+                                )
+                                continue
+                            self.strategy_fallbacks += 1
+                            receipt = StrategyEffectReceipt(
+                                decision_id=decision.decision_id,
+                                proposal_status="valid-but-not-applicable",
+                                proposed_action_id=None,
+                                applied_action_id=(
+                                    deterministic_action.action_id
+                                    if deterministic_action is not None
+                                    else None
+                                ),
+                                applied_design_id=None,
+                                effect="deterministic-fallback-invalid-proposal",
+                                override_reason=(
+                                    "current state has no valid parent branch to backtrack"
+                                ),
+                            )
+                        elif decision.applicable and selected is not None:
+                            self.strategy_valid_proposals += 1
+                            self.strategy_applied_decisions += 1
+                            action = selected
+                            applied_decision = decision
+                            effect = (
+                                "selected-design"
+                                if decision.selected_design_id
+                                else "selected-action"
+                            )
+                            receipt = StrategyEffectReceipt(
+                                decision_id=decision.decision_id,
+                                proposal_status="valid",
+                                proposed_action_id=decision.selected_action_id,
+                                applied_action_id=selected.action_id,
+                                applied_design_id=decision.selected_design_id,
+                                effect=effect,
+                            )
+                            self._event(
+                                "STRATEGY_DECISION_APPLIED",
+                                decision_id=decision.decision_id,
+                                applied_action_id=selected.action_id,
+                                applied_design_id=decision.selected_design_id,
+                                effect=effect,
+                            )
+                        else:
+                            self.strategy_rejections += 1
+                            reason = decision.rationale or "strategy proposal is not executable"
+                            receipt = StrategyEffectReceipt(
+                                decision_id=decision.decision_id,
+                                proposal_status="invalid",
+                                proposed_action_id=decision.selected_action_id,
+                                applied_action_id=(
+                                    deterministic_action.action_id
+                                    if deterministic_action is not None
+                                    else None
+                                ),
+                                applied_design_id=None,
+                                effect="deterministic-fallback-invalid-proposal",
+                                override_reason=reason,
+                            )
+                            self._event(
+                                "STRATEGY_DECISION_REJECTED",
+                                decision_id=decision.decision_id,
+                                reason=reason,
+                            )
+                        self.strategy_effect_receipts.append(receipt)
+                        receipt_index = len(self.strategy_effect_receipts) - 1
                 if action is None:
                     if self.dead_end_handler is not None:
                         backtracked = self.dead_end_handler(
@@ -242,6 +478,17 @@ class SearchCoordinator:
                         }
                     )
                     continue
+                if applied_decision is not None:
+                    action = replace(
+                        action,
+                        metadata={
+                            **action.metadata,
+                            "strategy_decision_id": applied_decision.decision_id,
+                            "strategy_selected_design_id": (
+                                applied_decision.selected_design_id
+                            ),
+                        },
+                    )
                 stats = self.statistics[action.provider.value]
                 stats.expanded_action_count += 1
                 self._event(
@@ -251,6 +498,9 @@ class SearchCoordinator:
                     action_id=action.action_id,
                     provider=action.provider.value,
                     declaration=action.declaration,
+                    strategy_decision_id=(
+                        applied_decision.decision_id if applied_decision else None
+                    ),
                 )
                 if action.provider == ProviderKind.SYNTHESIS:
                     self.tracker.consume("synthesis_action_expansions")
@@ -258,6 +508,11 @@ class SearchCoordinator:
                 else:
                     non_synthesis_expansions[goal.key.fingerprint] = counter + 1
                 children = tuple(self.action_executor(state, goal, plan, action))
+                if receipt_index is not None and children:
+                    self.strategy_effect_receipts[receipt_index] = replace(
+                        self.strategy_effect_receipts[receipt_index],
+                        next_state_fingerprint=children[0].fingerprint,
+                    )
                 stats.lean_checks += (
                     self.tracker.usage.lean_checks - lean_checks_before
                 )
@@ -354,6 +609,23 @@ class SearchCoordinator:
             max_observed_depth=self.max_observed_depth,
             final_frontier_size=final_frontier_size,
             frontier_exhaustion_receipt=exhaustion_receipt,
+            strategy_valid_proposals=self.strategy_valid_proposals,
+            strategy_applied_decisions=self.strategy_applied_decisions,
+            strategy_fallbacks=self.strategy_fallbacks,
+            strategy_rejections=self.strategy_rejections,
+            strategy_effect_receipts=tuple(self.strategy_effect_receipts),
+            finite_candidate_count=self.tracker.usage.finite_candidates,
+            finite_counterexample_count=self.tracker.usage.finite_counterexamples,
+            finite_certificate_count=self.tracker.usage.finite_certificates,
+            generated_lean_check_count=self.tracker.usage.generated_lean_checks,
+            generated_lean_success_count=self.tracker.usage.generated_lean_successes,
+            capability_registration_count=self.tracker.usage.capability_registrations,
+            synthesis_design_count=self.tracker.usage.synthesis_designs,
+            context_expansion_count=self.tracker.usage.context_expansions,
+            duplicate_candidate_rejection_count=(
+                self.tracker.usage.duplicate_candidate_rejections
+            ),
+            repeated_diagnostic_count=self.tracker.usage.repeated_diagnostics,
         )
 
 
@@ -363,4 +635,5 @@ __all__ = [
     "DeadEndHandler",
     "SearchCoordinator",
     "SearchOutcome",
+    "StrategyDecider",
 ]

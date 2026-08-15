@@ -36,6 +36,13 @@ class SearchBudget:
     max_action_failures_per_goal: int = 32
     max_frame_verification_checks: int = 64
     max_reconstruction_repairs: int = 4
+    max_context_expansions_per_design: int = 3
+    max_repairs_per_design: int = 3
+    max_duplicate_candidate_rejections: int = 4
+    max_same_diagnostic_repetitions: int = 2
+    max_finite_candidates: int = 64
+    max_cegis_rounds: int = 8
+    max_structural_depth: int = 8
     max_requeues_per_state: int = 256
     max_recursive_substep_plans: int = 256
     wall_clock_timeout_seconds: int = 1800
@@ -59,6 +66,13 @@ class SearchBudget:
             "max_action_failures_per_goal",
             "max_frame_verification_checks",
             "max_reconstruction_repairs",
+            "max_context_expansions_per_design",
+            "max_repairs_per_design",
+            "max_duplicate_candidate_rejections",
+            "max_same_diagnostic_repetitions",
+            "max_finite_candidates",
+            "max_cegis_rounds",
+            "max_structural_depth",
             "max_requeues_per_state",
             "max_recursive_substep_plans",
             "wall_clock_timeout_seconds",
@@ -90,6 +104,15 @@ class BudgetUsage:
     dependent_reinstantiations: int = 0
     frame_verification_checks: int = 0
     reconstruction_repairs: int = 0
+    context_expansions: int = 0
+    duplicate_candidate_rejections: int = 0
+    repeated_diagnostics: int = 0
+    finite_candidates: int = 0
+    finite_counterexamples: int = 0
+    finite_certificates: int = 0
+    generated_lean_checks: int = 0
+    generated_lean_successes: int = 0
+    capability_registrations: int = 0
     requeues: int = 0
     recursive_substep_plans: int = 0
 
@@ -117,6 +140,9 @@ class BudgetTracker:
         "dependent_reinstantiations": "max_dependent_reinstantiations",
         "frame_verification_checks": "max_frame_verification_checks",
         "reconstruction_repairs": "max_reconstruction_repairs",
+        "duplicate_candidate_rejections": "max_duplicate_candidate_rejections",
+        "finite_candidates": "max_finite_candidates",
+        "finite_counterexamples": "max_cegis_rounds",
         "requeues": "max_requeues_per_state",
         "recursive_substep_plans": "max_recursive_substep_plans",
     }

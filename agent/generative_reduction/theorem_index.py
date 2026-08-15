@@ -14,7 +14,10 @@ from .models import PremiseKind, TheoremIndexEntry, TheoremPremise
 
 
 MARKER = "GENERAL_REDUCTION_THEOREM_INDEX"
-SCHEMA = "general_reduction_theorem_index_v1"
+SCHEMA = "general_reduction_theorem_index_v2"
+SUPPORTED_SCHEMAS = frozenset(
+    {SCHEMA, "general_reduction_theorem_index_v1"}
+)
 CAPABILITY_RE = re.compile(
     r"\b(?:NativeTMNPHard|NativeTMNPComplete|CertifiedReduction|CertifiedPath|"
     r"CertifiedEquiv|CertifiedPresentationChange)\b"
@@ -135,8 +138,10 @@ def parse_probe_output(
     *, stdout: str, stderr: str, nonce: str
 ) -> tuple[TheoremIndexEntry, ...]:
     candidates: list[TheoremIndexEntry] = []
-    prefix = f"{MARKER}\t{SCHEMA}\t{nonce}\t"
+    prefix = f"{MARKER}\t"
     saw_goal = False
+    target_binders: tuple[str, ...] = ()
+    target_body: str | None = None
     for raw_line in (stdout + "\n" + stderr).splitlines():
         marker_at = raw_line.find(prefix)
         if marker_at < 0:
@@ -144,13 +149,27 @@ def parse_probe_output(
         fields = raw_line[marker_at:].split("\t")
         if len(fields) < 5:
             raise ValueError("typed theorem index emitted a truncated row")
+        if fields[1] not in SUPPORTED_SCHEMAS or fields[2] != nonce:
+            continue
         kind = fields[3]
         if kind == "goal":
-            if len(fields) != 8:
+            if fields[1] == SCHEMA and len(fields) != 11:
+                raise ValueError("typed theorem index emitted an invalid v2 goal row")
+            if fields[1] != SCHEMA and len(fields) != 8:
                 raise ValueError("typed theorem index emitted an invalid goal row")
             saw_goal = True
+            if fields[1] == SCHEMA:
+                target_binders = tuple(
+                    part.strip()
+                    for part in fields[9].split(" || ")
+                    if part.strip()
+                )
+                if int(fields[8]) != len(target_binders):
+                    raise ValueError("typed theorem index lost target binder alignment")
+                target_body = fields[10]
             continue
-        if kind != "candidate" or len(fields) != 14:
+        expected_candidate_fields = 15 if fields[1] == SCHEMA else 14
+        if kind != "candidate" or len(fields) != expected_candidate_fields:
             raise ValueError("typed theorem index emitted an invalid candidate row")
         try:
             declaration = validate_declaration_name(
@@ -181,7 +200,13 @@ def parse_probe_output(
                 result_fingerprint=fields[11],
                 conclusion_head=fields[12],
                 provenance=fields[13],
-                role_hints=("typed-unified",),
+                role_hints=(
+                    "typed-unified",
+                    *((fields[14],) if fields[1] == SCHEMA else ()),
+                ),
+                declaration_kind=(fields[14] if fields[1] == SCHEMA else None),
+                target_binders=target_binders,
+                target_body=target_body,
             )
         )
     if not saw_goal:
@@ -241,6 +266,7 @@ __all__ = [
     "CORE_IMPORTS",
     "MARKER",
     "SCHEMA",
+    "SUPPORTED_SCHEMAS",
     "build_probe_source",
     "build_typed_goal_probe_source",
     "is_runtime_candidate_declaration",

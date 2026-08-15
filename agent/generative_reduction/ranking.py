@@ -44,8 +44,10 @@ def action_cost(action: CandidateAction) -> tuple[object, ...]:
     }[action.disposition]
     provider_rank = {
         ProviderKind.REUSE: 0,
-        ProviderKind.THEOREM: 1,
-        ProviderKind.SYNTHESIS: 2,
+        ProviderKind.STRUCTURAL: 1,
+        ProviderKind.PLUGIN: 2,
+        ProviderKind.THEOREM: 3,
+        ProviderKind.SYNTHESIS: 4,
     }[action.provider]
     return (
         disposition_rank,

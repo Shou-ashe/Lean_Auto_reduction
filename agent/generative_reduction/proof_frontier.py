@@ -107,10 +107,18 @@ class ReadyActionBuckets:
             return self._take(ProviderKind.SYNTHESIS)
 
         schedule = (
-            (ProviderKind.REUSE, ProviderKind.THEOREM, ProviderKind.SYNTHESIS)
+            (
+                ProviderKind.REUSE,
+                ProviderKind.STRUCTURAL,
+                ProviderKind.PLUGIN,
+                ProviderKind.THEOREM,
+                ProviderKind.SYNTHESIS,
+            )
             if strategy == Strategy.BALANCED
             else (
                 ProviderKind.REUSE,
+                ProviderKind.STRUCTURAL,
+                ProviderKind.PLUGIN,
                 ProviderKind.THEOREM,
                 ProviderKind.THEOREM,
                 ProviderKind.SYNTHESIS,

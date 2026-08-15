@@ -1,0 +1,3967 @@
+{
+  "cases": [
+    {
+      "application_frame_count": 0,
+      "artifact": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/boolean-csp-structured-real-api-20260815-v2/cases/Case01Canonical/Artifact.lean",
+      "blocker": null,
+      "capability_registration_count": 0,
+      "case": "Case01Canonical",
+      "case_id": "q-b01-canonical-three-sat-like",
+      "context_capsule_ids": [],
+      "context_expansion_count": 0,
+      "data_binding_count": 0,
+      "dependent_goal_activation_count": 0,
+      "duplicate_candidate_rejection_count": 0,
+      "expanded_state_count": 0,
+      "final_route_audit_receipt": {
+        "forbidden_declarations": [
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.NativeTMNPHard_of_notSchaeferTractable",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.NativeTMNPHard_of_notSchaeferTractable_with_oneInThree",
+          "ComplexityReduction.Domain.BooleanCSP.schaefer_dichotomy",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.CanonicalHardCores.oneInThreeInterpretation",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.CanonicalHardCores.naeInterpretation"
+        ],
+        "passed": true,
+        "transitive_audit_emitted": true
+      },
+      "finite_candidate_count": 0,
+      "finite_certificate_count": 0,
+      "finite_counterexample_count": 0,
+      "frontier_exhaustion_receipt": null,
+      "generated_capabilities": [],
+      "generated_capability_count": 0,
+      "generated_declaration_used_by_final_artifact": false,
+      "generated_lean_check_count": 0,
+      "generated_lean_success_count": 0,
+      "max_observed_search_depth": 0,
+      "model_call_accounting_complete": true,
+      "model_calls": [],
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case01Canonical",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case01Canonical.problem",
+      "proof_status": "VERIFIED",
+      "pruned_cycle_count": 0,
+      "qualification_status": "NOT_RUN",
+      "recursive_substep_plan_count": 0,
+      "repair_authoring_count": 0,
+      "repair_lineage": [],
+      "repeated_diagnostic_count": 0,
+      "report": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/boolean-csp-structured-real-api-20260815-v2/cases/Case01Canonical/report.json",
+      "requeued_failure_state_count": 0,
+      "solution_classification": "VERIFIED_REUSE",
+      "split": "dev",
+      "strategy_applied_decision_count": 0,
+      "strategy_effect_receipts": [],
+      "strategy_fallback_count": 0,
+      "strategy_rejected_count": 0,
+      "strategy_valid_proposal_count": 0,
+      "synthesis_design_count": 0,
+      "synthesis_designs": [],
+      "unused_strategy_call_count": 0,
+      "verification": {
+        "axiom_audit_passed": true,
+        "endpoint_equality_audit_passed": true,
+        "exact_type_verified": true,
+        "independent_replay_passed": true,
+        "kernel_verified": true,
+        "placeholder_scan_passed": true,
+        "same_index_audit_passed": true
+      },
+      "verified_application_frame_count": 0,
+      "wall_seconds": 132.81034154100053
+    },
+    {
+      "application_frame_count": 2,
+      "artifact": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/boolean-csp-structured-real-api-20260815-v2/cases/Case02PositiveNAE4/Artifact.lean",
+      "blocker": null,
+      "capability_registration_count": 1,
+      "case": "Case02PositiveNAE4",
+      "case_id": "q-b02-positive-nae4",
+      "context_capsule_ids": [],
+      "context_expansion_count": 0,
+      "data_binding_count": 3,
+      "dependent_goal_activation_count": 4,
+      "duplicate_candidate_rejection_count": 0,
+      "expanded_state_count": 5,
+      "final_route_audit_receipt": {
+        "forbidden_declarations": [
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.NativeTMNPHard_of_notSchaeferTractable",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.NativeTMNPHard_of_notSchaeferTractable_with_oneInThree",
+          "ComplexityReduction.Domain.BooleanCSP.schaefer_dichotomy",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.CanonicalHardCores.oneInThreeInterpretation",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.CanonicalHardCores.naeInterpretation"
+        ],
+        "passed": true,
+        "transitive_audit_emitted": true
+      },
+      "finite_candidate_count": 1,
+      "finite_certificate_count": 1,
+      "finite_counterexample_count": 0,
+      "frontier_exhaustion_receipt": null,
+      "generated_capabilities": [
+        {
+          "action_id": "plugin-07df3d0ec3757bdd7dd1",
+          "declaration": "ComplexityReduction.Agent.GenerativeReduction.GeneratedCapabilities.C1e30b9f487e755e3b646.capability_1e30b9f487e755e3b646",
+          "exact_type": "(symbol : ComplexityReduction.Domain.BooleanCSP.Hardness.nae3Core.Symbol) →   ComplexityReduction.Domain.BooleanCSP.Hardness.Gadget     Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case02PositiveNAE4.gamma     (ComplexityReduction.Domain.BooleanCSP.Hardness.nae3Core.relationOf symbol)",
+          "source_hash": "sha256:603f309fa9ecd28074b604cd91cc2545048ad8e219d6a0a097a866866b6c2c5b"
+        }
+      ],
+      "generated_capability_count": 1,
+      "generated_declaration_used_by_final_artifact": true,
+      "generated_lean_check_count": 1,
+      "generated_lean_success_count": 1,
+      "max_observed_search_depth": 5,
+      "model_call_accounting_complete": true,
+      "model_calls": [
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 3.865,
+          "error": null,
+          "model": "deepseek-v4-flash",
+          "ok": true,
+          "proposal_id": "bcca75836d2936eb8a7c1f4c",
+          "provider": "deepseek",
+          "purpose": "strategy-proposal",
+          "response_sha256": "60e982942a40b6e9828cb92e2d57af24bc07d77609d367aa08e7344441b0b255",
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 426,
+            "completion_tokens_details": {
+              "reasoning_tokens": 317
+            },
+            "prompt_cache_hit_tokens": 3968,
+            "prompt_cache_miss_tokens": 105,
+            "prompt_tokens": 4073,
+            "prompt_tokens_details": {
+              "cached_tokens": 3968
+            },
+            "total_tokens": 4499
+          }
+        },
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 4.659,
+          "error": null,
+          "model": "deepseek-v4-flash",
+          "ok": true,
+          "proposal_id": "166e140eee9d43349b333396",
+          "provider": "deepseek",
+          "purpose": "strategy-proposal",
+          "response_sha256": "db6b8f69b851438af4b2e4259451e7d31a555bb1f64c301d903b5dab20445ed8",
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 461,
+            "completion_tokens_details": {
+              "reasoning_tokens": 385
+            },
+            "prompt_cache_hit_tokens": 640,
+            "prompt_cache_miss_tokens": 120,
+            "prompt_tokens": 760,
+            "prompt_tokens_details": {
+              "cached_tokens": 640
+            },
+            "total_tokens": 1221
+          }
+        },
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 4.818,
+          "error": null,
+          "model": "deepseek-v4-flash",
+          "ok": true,
+          "proposal_id": "92cf6aa7e2a8ec02887fe672",
+          "provider": "deepseek",
+          "purpose": "strategy-proposal",
+          "response_sha256": "8befcf26d6ba3423a61fca7a3297b3366ff6feb231af9d0c0b19ee67e3955ef9",
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 601,
+            "completion_tokens_details": {
+              "reasoning_tokens": 504
+            },
+            "prompt_cache_hit_tokens": 896,
+            "prompt_cache_miss_tokens": 80,
+            "prompt_tokens": 976,
+            "prompt_tokens_details": {
+              "cached_tokens": 896
+            },
+            "total_tokens": 1577
+          }
+        }
+      ],
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case02PositiveNAE4",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case02PositiveNAE4.problem",
+      "proof_status": "VERIFIED",
+      "pruned_cycle_count": 0,
+      "qualification_status": "NOT_RUN",
+      "recursive_substep_plan_count": 5,
+      "repair_authoring_count": 0,
+      "repair_lineage": [],
+      "repeated_diagnostic_count": 0,
+      "report": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/boolean-csp-structured-real-api-20260815-v2/cases/Case02PositiveNAE4/report.json",
+      "requeued_failure_state_count": 0,
+      "solution_classification": "VERIFIED_AUXILIARY_GENERATION",
+      "split": "dev",
+      "strategy_applied_decision_count": 3,
+      "strategy_effect_receipts": [
+        {
+          "applied_action_id": "theorem-d1a5f8be35b14050fb46",
+          "applied_design_id": null,
+          "decision_id": "strategy-861981c2856051c55416",
+          "effect": "selected-action",
+          "next_state_fingerprint": "sha256:d983c58468cc33d56672c428a8609c70f1dc9dcba0dc0392c7838b43f8f924c8",
+          "override_reason": null,
+          "proposal_status": "valid",
+          "proposed_action_id": "theorem-d1a5f8be35b14050fb46"
+        },
+        {
+          "applied_action_id": "structural-9b61b9ab3af0f20ce839",
+          "applied_design_id": null,
+          "decision_id": "strategy-a964df92b251e9bbe173",
+          "effect": "selected-action",
+          "next_state_fingerprint": "sha256:109ee7975521aa2d01fbd8f1bc4a6dcc192fa21262021c0b1cd6d3b02b21179b",
+          "override_reason": null,
+          "proposal_status": "valid",
+          "proposed_action_id": "structural-9b61b9ab3af0f20ce839"
+        },
+        {
+          "applied_action_id": "plugin-07df3d0ec3757bdd7dd1",
+          "applied_design_id": null,
+          "decision_id": "strategy-5829720fb4fc16394ef5",
+          "effect": "selected-action",
+          "next_state_fingerprint": "sha256:cc15f7ffad3988620383db347fb0b894db47965019f4408249de62d7948f9e06",
+          "override_reason": null,
+          "proposal_status": "valid",
+          "proposed_action_id": "plugin-07df3d0ec3757bdd7dd1"
+        }
+      ],
+      "strategy_fallback_count": 0,
+      "strategy_rejected_count": 0,
+      "strategy_valid_proposal_count": 3,
+      "synthesis_design_count": 1,
+      "synthesis_designs": [
+        {
+          "candidate_implementation_hashes": [],
+          "candidate_source_hashes": [],
+          "constructor_skeleton": "by\n  apply_generative_rule ComplexityReduction.Domain.BooleanCSP.Hardness.LanguageInterpretation.mk",
+          "context_capsule_id": null,
+          "contract_id": "contract-6ac6a0de84f1760279e7",
+          "counterexamples": [],
+          "declarations": [],
+          "design_id": "design-ecfe87de8c381ed6040a",
+          "design_kind": "constructor-first",
+          "diagnostic_fingerprints": [],
+          "diagnostic_history": [],
+          "diagnostics": [],
+          "estimated_cost": 5.0,
+          "exact_expected_type": "ComplexityReduction.Domain.BooleanCSP.Hardness.LanguageInterpretation   ComplexityReduction.Domain.BooleanCSP.Hardness.nae3Core   Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case02PositiveNAE4.gamma",
+          "generated_files": [],
+          "helper_declarations": [],
+          "materialization_attempts": 0,
+          "mode": "typed-witness",
+          "parent_goal_id": "goal-frame-f8924980bf682e98f996-0",
+          "previous_implementation": null,
+          "previous_source_hash": null,
+          "repair_attempts": 0,
+          "residual_obligations": [
+            "obligation-ca43d5e6d8b5e665b6c1"
+          ],
+          "stage": "verified",
+          "staged_goal_ids": [
+            "goal-frame-eeb73345a784facacf15-0"
+          ],
+          "status": "verified",
+          "strategy_decision_id": "strategy-a964df92b251e9bbe173",
+          "terminal_reason": null,
+          "verified_capabilities": [
+            "frame-eeb73345a784facacf15"
+          ]
+        }
+      ],
+      "unused_strategy_call_count": 0,
+      "verification": {
+        "axiom_audit_passed": true,
+        "endpoint_equality_audit_passed": true,
+        "exact_type_verified": true,
+        "independent_replay_passed": true,
+        "kernel_verified": true,
+        "placeholder_scan_passed": true,
+        "same_index_audit_passed": true
+      },
+      "verified_application_frame_count": 2,
+      "wall_seconds": 269.0253073749991
+    },
+    {
+      "application_frame_count": 0,
+      "artifact": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/boolean-csp-structured-real-api-20260815-v2/cases/Case03PositiveNAE3/Artifact.lean",
+      "blocker": null,
+      "capability_registration_count": 0,
+      "case": "Case03PositiveNAE3",
+      "case_id": "q-b03-positive-nae3",
+      "context_capsule_ids": [],
+      "context_expansion_count": 0,
+      "data_binding_count": 0,
+      "dependent_goal_activation_count": 0,
+      "duplicate_candidate_rejection_count": 0,
+      "expanded_state_count": 1,
+      "final_route_audit_receipt": {
+        "forbidden_declarations": [
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.NativeTMNPHard_of_notSchaeferTractable",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.NativeTMNPHard_of_notSchaeferTractable_with_oneInThree",
+          "ComplexityReduction.Domain.BooleanCSP.schaefer_dichotomy",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.CanonicalHardCores.oneInThreeInterpretation",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.CanonicalHardCores.naeInterpretation"
+        ],
+        "passed": true,
+        "transitive_audit_emitted": true
+      },
+      "finite_candidate_count": 0,
+      "finite_certificate_count": 0,
+      "finite_counterexample_count": 0,
+      "frontier_exhaustion_receipt": null,
+      "generated_capabilities": [],
+      "generated_capability_count": 0,
+      "generated_declaration_used_by_final_artifact": false,
+      "generated_lean_check_count": 0,
+      "generated_lean_success_count": 0,
+      "max_observed_search_depth": 1,
+      "model_call_accounting_complete": true,
+      "model_calls": [],
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case03PositiveNAE3",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case03PositiveNAE3.problem",
+      "proof_status": "VERIFIED",
+      "pruned_cycle_count": 0,
+      "qualification_status": "NOT_RUN",
+      "recursive_substep_plan_count": 1,
+      "repair_authoring_count": 0,
+      "repair_lineage": [],
+      "repeated_diagnostic_count": 0,
+      "report": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/boolean-csp-structured-real-api-20260815-v2/cases/Case03PositiveNAE3/report.json",
+      "requeued_failure_state_count": 0,
+      "solution_classification": "VERIFIED_REUSE",
+      "split": "dev",
+      "strategy_applied_decision_count": 0,
+      "strategy_effect_receipts": [],
+      "strategy_fallback_count": 0,
+      "strategy_rejected_count": 0,
+      "strategy_valid_proposal_count": 0,
+      "synthesis_design_count": 0,
+      "synthesis_designs": [],
+      "unused_strategy_call_count": 0,
+      "verification": {
+        "axiom_audit_passed": true,
+        "endpoint_equality_audit_passed": true,
+        "exact_type_verified": true,
+        "independent_replay_passed": true,
+        "kernel_verified": true,
+        "placeholder_scan_passed": true,
+        "same_index_audit_passed": true
+      },
+      "verified_application_frame_count": 0,
+      "wall_seconds": 146.28949974999705
+    },
+    {
+      "application_frame_count": 0,
+      "artifact": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/boolean-csp-structured-real-api-20260815-v2/cases/Case04PositiveExactlyOne3/Artifact.lean",
+      "blocker": null,
+      "capability_registration_count": 0,
+      "case": "Case04PositiveExactlyOne3",
+      "case_id": "q-b04-positive-exactly-one3",
+      "context_capsule_ids": [],
+      "context_expansion_count": 0,
+      "data_binding_count": 0,
+      "dependent_goal_activation_count": 0,
+      "duplicate_candidate_rejection_count": 0,
+      "expanded_state_count": 1,
+      "final_route_audit_receipt": {
+        "forbidden_declarations": [
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.NativeTMNPHard_of_notSchaeferTractable",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.NativeTMNPHard_of_notSchaeferTractable_with_oneInThree",
+          "ComplexityReduction.Domain.BooleanCSP.schaefer_dichotomy",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.CanonicalHardCores.oneInThreeInterpretation",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.CanonicalHardCores.naeInterpretation"
+        ],
+        "passed": true,
+        "transitive_audit_emitted": true
+      },
+      "finite_candidate_count": 0,
+      "finite_certificate_count": 0,
+      "finite_counterexample_count": 0,
+      "frontier_exhaustion_receipt": null,
+      "generated_capabilities": [],
+      "generated_capability_count": 0,
+      "generated_declaration_used_by_final_artifact": false,
+      "generated_lean_check_count": 0,
+      "generated_lean_success_count": 0,
+      "max_observed_search_depth": 1,
+      "model_call_accounting_complete": true,
+      "model_calls": [],
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case04PositiveExactlyOne3",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case04PositiveExactlyOne3.problem",
+      "proof_status": "VERIFIED",
+      "pruned_cycle_count": 0,
+      "qualification_status": "NOT_RUN",
+      "recursive_substep_plan_count": 1,
+      "repair_authoring_count": 0,
+      "repair_lineage": [],
+      "repeated_diagnostic_count": 0,
+      "report": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/boolean-csp-structured-real-api-20260815-v2/cases/Case04PositiveExactlyOne3/report.json",
+      "requeued_failure_state_count": 0,
+      "solution_classification": "VERIFIED_REUSE",
+      "split": "dev",
+      "strategy_applied_decision_count": 0,
+      "strategy_effect_receipts": [],
+      "strategy_fallback_count": 0,
+      "strategy_rejected_count": 0,
+      "strategy_valid_proposal_count": 0,
+      "synthesis_design_count": 0,
+      "synthesis_designs": [],
+      "unused_strategy_call_count": 0,
+      "verification": {
+        "axiom_audit_passed": true,
+        "endpoint_equality_audit_passed": true,
+        "exact_type_verified": true,
+        "independent_replay_passed": true,
+        "kernel_verified": true,
+        "placeholder_scan_passed": true,
+        "same_index_audit_passed": true
+      },
+      "verified_application_frame_count": 0,
+      "wall_seconds": 148.2007443340044
+    },
+    {
+      "application_frame_count": 2,
+      "artifact": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/boolean-csp-structured-real-api-20260815-v2/cases/Case05OR2EvenParity3/Artifact.lean",
+      "blocker": null,
+      "capability_registration_count": 1,
+      "case": "Case05OR2EvenParity3",
+      "case_id": "q-b05-or2-even-parity3",
+      "context_capsule_ids": [],
+      "context_expansion_count": 0,
+      "data_binding_count": 3,
+      "dependent_goal_activation_count": 4,
+      "duplicate_candidate_rejection_count": 0,
+      "expanded_state_count": 5,
+      "final_route_audit_receipt": {
+        "forbidden_declarations": [
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.NativeTMNPHard_of_notSchaeferTractable",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.NativeTMNPHard_of_notSchaeferTractable_with_oneInThree",
+          "ComplexityReduction.Domain.BooleanCSP.schaefer_dichotomy",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.CanonicalHardCores.oneInThreeInterpretation",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.CanonicalHardCores.naeInterpretation"
+        ],
+        "passed": true,
+        "transitive_audit_emitted": true
+      },
+      "finite_candidate_count": 1,
+      "finite_certificate_count": 1,
+      "finite_counterexample_count": 0,
+      "frontier_exhaustion_receipt": null,
+      "generated_capabilities": [
+        {
+          "action_id": "plugin-77a773243acf9ccd8d18",
+          "declaration": "ComplexityReduction.Agent.GenerativeReduction.GeneratedCapabilities.Cc63b3602d053b344d156.capability_c63b3602d053b344d156",
+          "exact_type": "(symbol : ComplexityReduction.Domain.BooleanCSP.Hardness.oneInThreeCore.Symbol) →   ComplexityReduction.Domain.BooleanCSP.Hardness.Gadget     Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case05OR2EvenParity3.gamma     (ComplexityReduction.Domain.BooleanCSP.Hardness.oneInThreeCore.relationOf symbol)",
+          "source_hash": "sha256:0164f32e6d4204f015b2a57e920de79144acd8a6b6e96a38b9b70cbb49ab681a"
+        }
+      ],
+      "generated_capability_count": 1,
+      "generated_declaration_used_by_final_artifact": true,
+      "generated_lean_check_count": 1,
+      "generated_lean_success_count": 1,
+      "max_observed_search_depth": 5,
+      "model_call_accounting_complete": true,
+      "model_calls": [
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 5.723,
+          "error": null,
+          "model": "deepseek-v4-flash",
+          "ok": true,
+          "proposal_id": "ba2b1bd0be1051e2ce4af9cd",
+          "provider": "deepseek",
+          "purpose": "strategy-proposal",
+          "response_sha256": "c3a80d4abc94703de7cdb5e250a7784a7f4208733f72fb495acc7f6b8fe4457a",
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 620,
+            "completion_tokens_details": {
+              "reasoning_tokens": 519
+            },
+            "prompt_cache_hit_tokens": 4096,
+            "prompt_cache_miss_tokens": 88,
+            "prompt_tokens": 4184,
+            "prompt_tokens_details": {
+              "cached_tokens": 4096
+            },
+            "total_tokens": 4804
+          }
+        },
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 6.167,
+          "error": null,
+          "model": "deepseek-v4-flash",
+          "ok": true,
+          "proposal_id": "538984c438e7b35d70c2c98b",
+          "provider": "deepseek",
+          "purpose": "strategy-proposal",
+          "response_sha256": "f1e83c5fe0b2de0ac357b3a50864d2cc69ea6900c6cba88b46e48d988b10760d",
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 771,
+            "completion_tokens_details": {
+              "reasoning_tokens": 640
+            },
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 775,
+            "prompt_tokens": 775,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            },
+            "total_tokens": 1546
+          }
+        },
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 2.848,
+          "error": null,
+          "model": "deepseek-v4-flash",
+          "ok": true,
+          "proposal_id": "f9b56ff9172679bef14be07e",
+          "provider": "deepseek",
+          "purpose": "strategy-proposal",
+          "response_sha256": "99f8df83a3366faaeb89fd02bfc403958a9db1f5e67cb4a73991f718cdc4ccfc",
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 394,
+            "completion_tokens_details": {
+              "reasoning_tokens": 301
+            },
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 1000,
+            "prompt_tokens": 1000,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            },
+            "total_tokens": 1394
+          }
+        }
+      ],
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case05OR2EvenParity3",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case05OR2EvenParity3.problem",
+      "proof_status": "VERIFIED",
+      "pruned_cycle_count": 0,
+      "qualification_status": "NOT_RUN",
+      "recursive_substep_plan_count": 5,
+      "repair_authoring_count": 0,
+      "repair_lineage": [],
+      "repeated_diagnostic_count": 0,
+      "report": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/boolean-csp-structured-real-api-20260815-v2/cases/Case05OR2EvenParity3/report.json",
+      "requeued_failure_state_count": 0,
+      "solution_classification": "VERIFIED_AUXILIARY_GENERATION",
+      "split": "validation",
+      "strategy_applied_decision_count": 3,
+      "strategy_effect_receipts": [
+        {
+          "applied_action_id": "theorem-9abe9ab536dfd98bfa32",
+          "applied_design_id": null,
+          "decision_id": "strategy-0e006ad5135af8b93e48",
+          "effect": "selected-action",
+          "next_state_fingerprint": "sha256:dd567da453e5fd552a229ef3732c21a6793e072c737da03efa4f28b4ef261373",
+          "override_reason": null,
+          "proposal_status": "valid",
+          "proposed_action_id": "theorem-9abe9ab536dfd98bfa32"
+        },
+        {
+          "applied_action_id": "structural-5f23912468334854fe65",
+          "applied_design_id": "design-e1907a1db982d0fbe786",
+          "decision_id": "strategy-3195f1bc2032c0b13445",
+          "effect": "selected-design",
+          "next_state_fingerprint": "sha256:8fed023e4dc87a34ed7807b4aae61d014f06d48200cc0f982ff06de113760b8a",
+          "override_reason": null,
+          "proposal_status": "valid",
+          "proposed_action_id": "structural-5f23912468334854fe65"
+        },
+        {
+          "applied_action_id": "plugin-77a773243acf9ccd8d18",
+          "applied_design_id": null,
+          "decision_id": "strategy-bc34f38c92c3ac89e7f3",
+          "effect": "selected-action",
+          "next_state_fingerprint": "sha256:393b7ad5ca5630b3fb137349208b8c9caade9c7129c1f20f3d25962fa99151b8",
+          "override_reason": null,
+          "proposal_status": "valid",
+          "proposed_action_id": "plugin-77a773243acf9ccd8d18"
+        }
+      ],
+      "strategy_fallback_count": 0,
+      "strategy_rejected_count": 0,
+      "strategy_valid_proposal_count": 3,
+      "synthesis_design_count": 1,
+      "synthesis_designs": [
+        {
+          "candidate_implementation_hashes": [],
+          "candidate_source_hashes": [],
+          "constructor_skeleton": "by\n  apply_generative_rule ComplexityReduction.Domain.BooleanCSP.Hardness.LanguageInterpretation.mk",
+          "context_capsule_id": null,
+          "contract_id": "contract-7deb62967518b6e78df0",
+          "counterexamples": [],
+          "declarations": [],
+          "design_id": "design-e1907a1db982d0fbe786",
+          "design_kind": "constructor-first",
+          "diagnostic_fingerprints": [],
+          "diagnostic_history": [],
+          "diagnostics": [],
+          "estimated_cost": 5.0,
+          "exact_expected_type": "ComplexityReduction.Domain.BooleanCSP.Hardness.LanguageInterpretation   ComplexityReduction.Domain.BooleanCSP.Hardness.oneInThreeCore   Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case05OR2EvenParity3.gamma",
+          "generated_files": [],
+          "helper_declarations": [],
+          "materialization_attempts": 0,
+          "mode": "typed-witness",
+          "parent_goal_id": "goal-frame-9f5eeab116c12ba26a0d-0",
+          "previous_implementation": null,
+          "previous_source_hash": null,
+          "repair_attempts": 0,
+          "residual_obligations": [
+            "obligation-0b772dd7b206f32ab743"
+          ],
+          "stage": "verified",
+          "staged_goal_ids": [
+            "goal-frame-a821bfac94b50e7e0c26-0"
+          ],
+          "status": "verified",
+          "strategy_decision_id": "strategy-3195f1bc2032c0b13445",
+          "terminal_reason": null,
+          "verified_capabilities": [
+            "frame-a821bfac94b50e7e0c26"
+          ]
+        }
+      ],
+      "unused_strategy_call_count": 0,
+      "verification": {
+        "axiom_audit_passed": true,
+        "endpoint_equality_audit_passed": true,
+        "exact_type_verified": true,
+        "independent_replay_passed": true,
+        "kernel_verified": true,
+        "placeholder_scan_passed": true,
+        "same_index_audit_passed": true
+      },
+      "verified_application_frame_count": 2,
+      "wall_seconds": 203.14693391699984
+    },
+    {
+      "application_frame_count": 2,
+      "artifact": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/boolean-csp-structured-real-api-20260815-v2/cases/Case06PositiveNAE5/Artifact.lean",
+      "blocker": null,
+      "capability_registration_count": 1,
+      "case": "Case06PositiveNAE5",
+      "case_id": "q-b06-positive-nae5",
+      "context_capsule_ids": [],
+      "context_expansion_count": 0,
+      "data_binding_count": 3,
+      "dependent_goal_activation_count": 4,
+      "duplicate_candidate_rejection_count": 0,
+      "expanded_state_count": 5,
+      "final_route_audit_receipt": {
+        "forbidden_declarations": [
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.NativeTMNPHard_of_notSchaeferTractable",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.NativeTMNPHard_of_notSchaeferTractable_with_oneInThree",
+          "ComplexityReduction.Domain.BooleanCSP.schaefer_dichotomy",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.CanonicalHardCores.oneInThreeInterpretation",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.CanonicalHardCores.naeInterpretation"
+        ],
+        "passed": true,
+        "transitive_audit_emitted": true
+      },
+      "finite_candidate_count": 1,
+      "finite_certificate_count": 1,
+      "finite_counterexample_count": 0,
+      "frontier_exhaustion_receipt": null,
+      "generated_capabilities": [
+        {
+          "action_id": "plugin-24a68947e00df82764ef",
+          "declaration": "ComplexityReduction.Agent.GenerativeReduction.GeneratedCapabilities.Cc1f080d71b397306300f.capability_c1f080d71b397306300f",
+          "exact_type": "(symbol : ComplexityReduction.Domain.BooleanCSP.Hardness.nae3Core.Symbol) →   ComplexityReduction.Domain.BooleanCSP.Hardness.Gadget     Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case06PositiveNAE5.gamma     (ComplexityReduction.Domain.BooleanCSP.Hardness.nae3Core.relationOf symbol)",
+          "source_hash": "sha256:51a12b87d8ce615bad232e03ef5c88ebacd04c1b1483148ea59f19737d010157"
+        }
+      ],
+      "generated_capability_count": 1,
+      "generated_declaration_used_by_final_artifact": true,
+      "generated_lean_check_count": 1,
+      "generated_lean_success_count": 1,
+      "max_observed_search_depth": 5,
+      "model_call_accounting_complete": true,
+      "model_calls": [
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 10.453,
+          "error": null,
+          "model": "deepseek-v4-flash",
+          "ok": true,
+          "proposal_id": "2ea47a9e1af5286f9be2594c",
+          "provider": "deepseek",
+          "purpose": "strategy-proposal",
+          "response_sha256": "170aab69098294324fb31a52c11c7b62754097cd165d3cb2e7d540d69e7fdca8",
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 1344,
+            "completion_tokens_details": {
+              "reasoning_tokens": 1243
+            },
+            "prompt_cache_hit_tokens": 3968,
+            "prompt_cache_miss_tokens": 113,
+            "prompt_tokens": 4081,
+            "prompt_tokens_details": {
+              "cached_tokens": 3968
+            },
+            "total_tokens": 5425
+          }
+        },
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 2.497,
+          "error": null,
+          "model": "deepseek-v4-flash",
+          "ok": true,
+          "proposal_id": "7852c8d04221e4a31922441a",
+          "provider": "deepseek",
+          "purpose": "strategy-proposal",
+          "response_sha256": "3c6f92abaccebc220dc08cacbabfbb8b98e97b9fda512d5bd5eec5317cbd2c1b",
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 295,
+            "completion_tokens_details": {
+              "reasoning_tokens": 164
+            },
+            "prompt_cache_hit_tokens": 640,
+            "prompt_cache_miss_tokens": 124,
+            "prompt_tokens": 764,
+            "prompt_tokens_details": {
+              "cached_tokens": 640
+            },
+            "total_tokens": 1059
+          }
+        },
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 6.087,
+          "error": null,
+          "model": "deepseek-v4-flash",
+          "ok": true,
+          "proposal_id": "23d4a1f90fb9c851b759eb2b",
+          "provider": "deepseek",
+          "purpose": "strategy-proposal",
+          "response_sha256": "ab7380d3d267035339139bc0e1b195bc93fd4aacce39fc76274687b60e833229",
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 864,
+            "completion_tokens_details": {
+              "reasoning_tokens": 767
+            },
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 973,
+            "prompt_tokens": 973,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            },
+            "total_tokens": 1837
+          }
+        }
+      ],
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case06PositiveNAE5",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case06PositiveNAE5.problem",
+      "proof_status": "VERIFIED",
+      "pruned_cycle_count": 0,
+      "qualification_status": "NOT_RUN",
+      "recursive_substep_plan_count": 5,
+      "repair_authoring_count": 0,
+      "repair_lineage": [],
+      "repeated_diagnostic_count": 0,
+      "report": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/boolean-csp-structured-real-api-20260815-v2/cases/Case06PositiveNAE5/report.json",
+      "requeued_failure_state_count": 0,
+      "solution_classification": "VERIFIED_AUXILIARY_GENERATION",
+      "split": "validation",
+      "strategy_applied_decision_count": 3,
+      "strategy_effect_receipts": [
+        {
+          "applied_action_id": "theorem-71c845732b648160970f",
+          "applied_design_id": null,
+          "decision_id": "strategy-f4a106176a64c7093ade",
+          "effect": "selected-action",
+          "next_state_fingerprint": "sha256:a949ed1b8e3bec9daa97343d25898fb464c2962b25a533245b67427b802697b6",
+          "override_reason": null,
+          "proposal_status": "valid",
+          "proposed_action_id": "theorem-71c845732b648160970f"
+        },
+        {
+          "applied_action_id": "structural-0b611f044cb9fad6eff5",
+          "applied_design_id": "design-965ca6f2ab2a300f5b24",
+          "decision_id": "strategy-dbf547ed4cee545982f8",
+          "effect": "selected-design",
+          "next_state_fingerprint": "sha256:ef00e28e7a132873c670f1eb43659cc3b72f2f8ebdadce0ea225b5b2793497e9",
+          "override_reason": null,
+          "proposal_status": "valid",
+          "proposed_action_id": "structural-0b611f044cb9fad6eff5"
+        },
+        {
+          "applied_action_id": "plugin-24a68947e00df82764ef",
+          "applied_design_id": "design-finite-24a68947e00df827",
+          "decision_id": "strategy-b1c16e89cae1811f1d4a",
+          "effect": "selected-design",
+          "next_state_fingerprint": "sha256:590952eee6350e90eac8d973265402a4b28e970bf03cc31b92088222a182651e",
+          "override_reason": null,
+          "proposal_status": "valid",
+          "proposed_action_id": "plugin-24a68947e00df82764ef"
+        }
+      ],
+      "strategy_fallback_count": 0,
+      "strategy_rejected_count": 0,
+      "strategy_valid_proposal_count": 3,
+      "synthesis_design_count": 1,
+      "synthesis_designs": [
+        {
+          "candidate_implementation_hashes": [],
+          "candidate_source_hashes": [],
+          "constructor_skeleton": "by\n  apply_generative_rule ComplexityReduction.Domain.BooleanCSP.Hardness.LanguageInterpretation.mk",
+          "context_capsule_id": null,
+          "contract_id": "contract-6e79c8fdb48e922b56bc",
+          "counterexamples": [],
+          "declarations": [],
+          "design_id": "design-965ca6f2ab2a300f5b24",
+          "design_kind": "constructor-first",
+          "diagnostic_fingerprints": [],
+          "diagnostic_history": [],
+          "diagnostics": [],
+          "estimated_cost": 5.0,
+          "exact_expected_type": "ComplexityReduction.Domain.BooleanCSP.Hardness.LanguageInterpretation   ComplexityReduction.Domain.BooleanCSP.Hardness.nae3Core   Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case06PositiveNAE5.gamma",
+          "generated_files": [],
+          "helper_declarations": [],
+          "materialization_attempts": 0,
+          "mode": "typed-witness",
+          "parent_goal_id": "goal-frame-836257eaace591509097-0",
+          "previous_implementation": null,
+          "previous_source_hash": null,
+          "repair_attempts": 0,
+          "residual_obligations": [
+            "obligation-e99fd9c5813556ecfc4b"
+          ],
+          "stage": "verified",
+          "staged_goal_ids": [
+            "goal-frame-8a4c25d8cdb09528a43a-0"
+          ],
+          "status": "verified",
+          "strategy_decision_id": "strategy-dbf547ed4cee545982f8",
+          "terminal_reason": null,
+          "verified_capabilities": [
+            "frame-8a4c25d8cdb09528a43a"
+          ]
+        }
+      ],
+      "unused_strategy_call_count": 0,
+      "verification": {
+        "axiom_audit_passed": true,
+        "endpoint_equality_audit_passed": true,
+        "exact_type_verified": true,
+        "independent_replay_passed": true,
+        "kernel_verified": true,
+        "placeholder_scan_passed": true,
+        "same_index_audit_passed": true
+      },
+      "verified_application_frame_count": 2,
+      "wall_seconds": 236.12334087499767
+    },
+    {
+      "application_frame_count": 0,
+      "artifact": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/boolean-csp-structured-real-api-20260815-v2/cases/Case07PositiveExactlyTwo3/Artifact.lean",
+      "blocker": null,
+      "capability_registration_count": 0,
+      "case": "Case07PositiveExactlyTwo3",
+      "case_id": "q-b07-positive-exactly-two3",
+      "context_capsule_ids": [],
+      "context_expansion_count": 0,
+      "data_binding_count": 0,
+      "dependent_goal_activation_count": 0,
+      "duplicate_candidate_rejection_count": 0,
+      "expanded_state_count": 1,
+      "final_route_audit_receipt": {
+        "forbidden_declarations": [
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.NativeTMNPHard_of_notSchaeferTractable",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.NativeTMNPHard_of_notSchaeferTractable_with_oneInThree",
+          "ComplexityReduction.Domain.BooleanCSP.schaefer_dichotomy",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.CanonicalHardCores.oneInThreeInterpretation",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.CanonicalHardCores.naeInterpretation"
+        ],
+        "passed": true,
+        "transitive_audit_emitted": true
+      },
+      "finite_candidate_count": 0,
+      "finite_certificate_count": 0,
+      "finite_counterexample_count": 0,
+      "frontier_exhaustion_receipt": null,
+      "generated_capabilities": [],
+      "generated_capability_count": 0,
+      "generated_declaration_used_by_final_artifact": false,
+      "generated_lean_check_count": 0,
+      "generated_lean_success_count": 0,
+      "max_observed_search_depth": 1,
+      "model_call_accounting_complete": true,
+      "model_calls": [],
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case07PositiveExactlyTwo3",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case07PositiveExactlyTwo3.problem",
+      "proof_status": "VERIFIED",
+      "pruned_cycle_count": 0,
+      "qualification_status": "NOT_RUN",
+      "recursive_substep_plan_count": 1,
+      "repair_authoring_count": 0,
+      "repair_lineage": [],
+      "repeated_diagnostic_count": 0,
+      "report": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/boolean-csp-structured-real-api-20260815-v2/cases/Case07PositiveExactlyTwo3/report.json",
+      "requeued_failure_state_count": 0,
+      "solution_classification": "VERIFIED_REUSE",
+      "split": "validation",
+      "strategy_applied_decision_count": 0,
+      "strategy_effect_receipts": [],
+      "strategy_fallback_count": 0,
+      "strategy_rejected_count": 0,
+      "strategy_valid_proposal_count": 0,
+      "synthesis_design_count": 0,
+      "synthesis_designs": [],
+      "unused_strategy_call_count": 0,
+      "verification": {
+        "axiom_audit_passed": true,
+        "endpoint_equality_audit_passed": true,
+        "exact_type_verified": true,
+        "independent_replay_passed": true,
+        "kernel_verified": true,
+        "placeholder_scan_passed": true,
+        "same_index_audit_passed": true
+      },
+      "verified_application_frame_count": 0,
+      "wall_seconds": 66.7818579589948
+    },
+    {
+      "application_frame_count": 2,
+      "artifact": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/boolean-csp-structured-real-api-20260815-v2/cases/Case08PositiveExactlyOne4/Artifact.lean",
+      "blocker": null,
+      "capability_registration_count": 1,
+      "case": "Case08PositiveExactlyOne4",
+      "case_id": "q-b08-positive-exactly-one4",
+      "context_capsule_ids": [],
+      "context_expansion_count": 0,
+      "data_binding_count": 3,
+      "dependent_goal_activation_count": 4,
+      "duplicate_candidate_rejection_count": 0,
+      "expanded_state_count": 5,
+      "final_route_audit_receipt": {
+        "forbidden_declarations": [
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.NativeTMNPHard_of_notSchaeferTractable",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.NativeTMNPHard_of_notSchaeferTractable_with_oneInThree",
+          "ComplexityReduction.Domain.BooleanCSP.schaefer_dichotomy",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.CanonicalHardCores.oneInThreeInterpretation",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.CanonicalHardCores.naeInterpretation"
+        ],
+        "passed": true,
+        "transitive_audit_emitted": true
+      },
+      "finite_candidate_count": 1,
+      "finite_certificate_count": 1,
+      "finite_counterexample_count": 0,
+      "frontier_exhaustion_receipt": null,
+      "generated_capabilities": [
+        {
+          "action_id": "plugin-01c00e3d94cb985c0986",
+          "declaration": "ComplexityReduction.Agent.GenerativeReduction.GeneratedCapabilities.C3b8b94ccd7c1c764d694.capability_3b8b94ccd7c1c764d694",
+          "exact_type": "(symbol : ComplexityReduction.Domain.BooleanCSP.Hardness.oneInThreeCore.Symbol) →   ComplexityReduction.Domain.BooleanCSP.Hardness.Gadget     Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case08PositiveExactlyOne4.gamma     (ComplexityReduction.Domain.BooleanCSP.Hardness.oneInThreeCore.relationOf symbol)",
+          "source_hash": "sha256:4cbdb79cc4b326eaca8a14b4a1eb3d98c79fce7f039863533ea2b1dc34422510"
+        }
+      ],
+      "generated_capability_count": 1,
+      "generated_declaration_used_by_final_artifact": true,
+      "generated_lean_check_count": 1,
+      "generated_lean_success_count": 1,
+      "max_observed_search_depth": 5,
+      "model_call_accounting_complete": true,
+      "model_calls": [
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 8.864,
+          "error": null,
+          "model": "deepseek-v4-flash",
+          "ok": true,
+          "proposal_id": "218d3f24a95a2392d4dead31",
+          "provider": "deepseek",
+          "purpose": "strategy-proposal",
+          "response_sha256": "1ea80217d083724c01bde5861f943fec56ac8d8b68d8c69d67f90039586e45dc",
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 1186,
+            "completion_tokens_details": {
+              "reasoning_tokens": 1094
+            },
+            "prompt_cache_hit_tokens": 3968,
+            "prompt_cache_miss_tokens": 119,
+            "prompt_tokens": 4087,
+            "prompt_tokens_details": {
+              "cached_tokens": 3968
+            },
+            "total_tokens": 5273
+          }
+        },
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 2.352,
+          "error": null,
+          "model": "deepseek-v4-flash",
+          "ok": true,
+          "proposal_id": "e2f56aa6e11fc9c36ba18dec",
+          "provider": "deepseek",
+          "purpose": "strategy-proposal",
+          "response_sha256": "f819a5d0f6c21da4b33771c362afb6fc2537c76fbea4c05c6a0e51fadd35af5e",
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 255,
+            "completion_tokens_details": {
+              "reasoning_tokens": 181
+            },
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 768,
+            "prompt_tokens": 768,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            },
+            "total_tokens": 1023
+          }
+        },
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 3.78,
+          "error": null,
+          "model": "deepseek-v4-flash",
+          "ok": true,
+          "proposal_id": "e74c5b1960e0042c16172556",
+          "provider": "deepseek",
+          "purpose": "strategy-proposal",
+          "response_sha256": "75f9792108d96f1eadc90fd86085a30fc311c76a9e93c0137f663bb8e78aed7c",
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 463,
+            "completion_tokens_details": {
+              "reasoning_tokens": 353
+            },
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 989,
+            "prompt_tokens": 989,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            },
+            "total_tokens": 1452
+          }
+        }
+      ],
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case08PositiveExactlyOne4",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case08PositiveExactlyOne4.problem",
+      "proof_status": "VERIFIED",
+      "pruned_cycle_count": 0,
+      "qualification_status": "NOT_RUN",
+      "recursive_substep_plan_count": 5,
+      "repair_authoring_count": 0,
+      "repair_lineage": [],
+      "repeated_diagnostic_count": 0,
+      "report": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/boolean-csp-structured-real-api-20260815-v2/cases/Case08PositiveExactlyOne4/report.json",
+      "requeued_failure_state_count": 0,
+      "solution_classification": "VERIFIED_AUXILIARY_GENERATION",
+      "split": "validation",
+      "strategy_applied_decision_count": 3,
+      "strategy_effect_receipts": [
+        {
+          "applied_action_id": "theorem-659398209eec7ac9dbaa",
+          "applied_design_id": null,
+          "decision_id": "strategy-27579d40d28805fbb35c",
+          "effect": "selected-action",
+          "next_state_fingerprint": "sha256:1315ae83891c8ae4b3a2186c69416292ff63a9060a75c9e9f6b5d15105c0c929",
+          "override_reason": null,
+          "proposal_status": "valid",
+          "proposed_action_id": "theorem-659398209eec7ac9dbaa"
+        },
+        {
+          "applied_action_id": "structural-9f337bbd6242884bf454",
+          "applied_design_id": null,
+          "decision_id": "strategy-e604f4b81e2ef6765875",
+          "effect": "selected-action",
+          "next_state_fingerprint": "sha256:fc99d2edd443bce9032367f471ed065da4ee446a7b7a37a5d3da5110008a8717",
+          "override_reason": null,
+          "proposal_status": "valid",
+          "proposed_action_id": "structural-9f337bbd6242884bf454"
+        },
+        {
+          "applied_action_id": "plugin-01c00e3d94cb985c0986",
+          "applied_design_id": "design-finite-01c00e3d94cb985c",
+          "decision_id": "strategy-76572644149c2aafbc77",
+          "effect": "selected-design",
+          "next_state_fingerprint": "sha256:c18679dbbe214a97da9cbc95a0d3584b83595fe3ccf336678e71ef227669e4c5",
+          "override_reason": null,
+          "proposal_status": "valid",
+          "proposed_action_id": "plugin-01c00e3d94cb985c0986"
+        }
+      ],
+      "strategy_fallback_count": 0,
+      "strategy_rejected_count": 0,
+      "strategy_valid_proposal_count": 3,
+      "synthesis_design_count": 1,
+      "synthesis_designs": [
+        {
+          "candidate_implementation_hashes": [],
+          "candidate_source_hashes": [],
+          "constructor_skeleton": "by\n  apply_generative_rule ComplexityReduction.Domain.BooleanCSP.Hardness.LanguageInterpretation.mk",
+          "context_capsule_id": null,
+          "contract_id": "contract-e66dadc9d449e84fb61f",
+          "counterexamples": [],
+          "declarations": [],
+          "design_id": "design-5e86b43617c96309816e",
+          "design_kind": "constructor-first",
+          "diagnostic_fingerprints": [],
+          "diagnostic_history": [],
+          "diagnostics": [],
+          "estimated_cost": 5.0,
+          "exact_expected_type": "ComplexityReduction.Domain.BooleanCSP.Hardness.LanguageInterpretation   ComplexityReduction.Domain.BooleanCSP.Hardness.oneInThreeCore   Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case08PositiveExactlyOne4.gamma",
+          "generated_files": [],
+          "helper_declarations": [],
+          "materialization_attempts": 0,
+          "mode": "typed-witness",
+          "parent_goal_id": "goal-frame-c7d171f27ce237a65932-0",
+          "previous_implementation": null,
+          "previous_source_hash": null,
+          "repair_attempts": 0,
+          "residual_obligations": [
+            "obligation-c191934bceb0f94bf638"
+          ],
+          "stage": "verified",
+          "staged_goal_ids": [
+            "goal-frame-2fd7b76e0ea212aaef06-0"
+          ],
+          "status": "verified",
+          "strategy_decision_id": "strategy-e604f4b81e2ef6765875",
+          "terminal_reason": null,
+          "verified_capabilities": [
+            "frame-2fd7b76e0ea212aaef06"
+          ]
+        }
+      ],
+      "unused_strategy_call_count": 0,
+      "verification": {
+        "axiom_audit_passed": true,
+        "endpoint_equality_audit_passed": true,
+        "exact_type_verified": true,
+        "independent_replay_passed": true,
+        "kernel_verified": true,
+        "placeholder_scan_passed": true,
+        "same_index_audit_passed": true
+      },
+      "verified_application_frame_count": 2,
+      "wall_seconds": 212.93585345900647
+    },
+    {
+      "application_frame_count": 2,
+      "artifact": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/boolean-csp-structured-real-api-20260815-v2/cases/Case09PositiveExactlyTwo4/Artifact.lean",
+      "blocker": null,
+      "capability_registration_count": 1,
+      "case": "Case09PositiveExactlyTwo4",
+      "case_id": "q-b09-positive-exactly-two4",
+      "context_capsule_ids": [],
+      "context_expansion_count": 0,
+      "data_binding_count": 3,
+      "dependent_goal_activation_count": 4,
+      "duplicate_candidate_rejection_count": 0,
+      "expanded_state_count": 5,
+      "final_route_audit_receipt": {
+        "forbidden_declarations": [
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.NativeTMNPHard_of_notSchaeferTractable",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.NativeTMNPHard_of_notSchaeferTractable_with_oneInThree",
+          "ComplexityReduction.Domain.BooleanCSP.schaefer_dichotomy",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.CanonicalHardCores.oneInThreeInterpretation",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.CanonicalHardCores.naeInterpretation"
+        ],
+        "passed": true,
+        "transitive_audit_emitted": true
+      },
+      "finite_candidate_count": 1,
+      "finite_certificate_count": 1,
+      "finite_counterexample_count": 0,
+      "frontier_exhaustion_receipt": null,
+      "generated_capabilities": [
+        {
+          "action_id": "plugin-96d37d6eb1327e9c7bdc",
+          "declaration": "ComplexityReduction.Agent.GenerativeReduction.GeneratedCapabilities.Cc4bcce4d18376b033736.capability_c4bcce4d18376b033736",
+          "exact_type": "(symbol : ComplexityReduction.Domain.BooleanCSP.Hardness.nae3Core.Symbol) →   ComplexityReduction.Domain.BooleanCSP.Hardness.Gadget     Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case09PositiveExactlyTwo4.gamma     (ComplexityReduction.Domain.BooleanCSP.Hardness.nae3Core.relationOf symbol)",
+          "source_hash": "sha256:3fd2cefcaa79863ee8fa421d7c5aa986d5a76b04676753c70676b6604b585584"
+        }
+      ],
+      "generated_capability_count": 1,
+      "generated_declaration_used_by_final_artifact": true,
+      "generated_lean_check_count": 1,
+      "generated_lean_success_count": 1,
+      "max_observed_search_depth": 5,
+      "model_call_accounting_complete": true,
+      "model_calls": [
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 12.483,
+          "error": null,
+          "model": "deepseek-v4-flash",
+          "ok": true,
+          "proposal_id": "9454fbd136f47063e2bf5c64",
+          "provider": "deepseek",
+          "purpose": "strategy-proposal",
+          "response_sha256": "09a884a578f65531c439a45f00ed61c6986f654da8f100dc43f03d93a36cd4d3",
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 1343,
+            "completion_tokens_details": {
+              "reasoning_tokens": 1258
+            },
+            "prompt_cache_hit_tokens": 3968,
+            "prompt_cache_miss_tokens": 124,
+            "prompt_tokens": 4092,
+            "prompt_tokens_details": {
+              "cached_tokens": 3968
+            },
+            "total_tokens": 5435
+          }
+        },
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 7.084,
+          "error": null,
+          "model": "deepseek-v4-flash",
+          "ok": true,
+          "proposal_id": "d7ae6b26ab70737f06334c69",
+          "provider": "deepseek",
+          "purpose": "strategy-proposal",
+          "response_sha256": "a748d60460bc3d91e8e0633663234fe8d91828cda0a1cc9222dec1e1d2038468",
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 910,
+            "completion_tokens_details": {
+              "reasoning_tokens": 818
+            },
+            "prompt_cache_hit_tokens": 640,
+            "prompt_cache_miss_tokens": 118,
+            "prompt_tokens": 758,
+            "prompt_tokens_details": {
+              "cached_tokens": 640
+            },
+            "total_tokens": 1668
+          }
+        },
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 4.372,
+          "error": null,
+          "model": "deepseek-v4-flash",
+          "ok": true,
+          "proposal_id": "6f230a70ef248b01c9ffc383",
+          "provider": "deepseek",
+          "purpose": "strategy-proposal",
+          "response_sha256": "61bf6f8d168188ed5e05d73d53764b56c58dff98b8fa784be7f51bcec0c1c29e",
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 422,
+            "completion_tokens_details": {
+              "reasoning_tokens": 311
+            },
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 982,
+            "prompt_tokens": 982,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            },
+            "total_tokens": 1404
+          }
+        }
+      ],
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case09PositiveExactlyTwo4",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case09PositiveExactlyTwo4.problem",
+      "proof_status": "VERIFIED",
+      "pruned_cycle_count": 0,
+      "qualification_status": "NOT_RUN",
+      "recursive_substep_plan_count": 5,
+      "repair_authoring_count": 0,
+      "repair_lineage": [],
+      "repeated_diagnostic_count": 0,
+      "report": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/boolean-csp-structured-real-api-20260815-v2/cases/Case09PositiveExactlyTwo4/report.json",
+      "requeued_failure_state_count": 0,
+      "solution_classification": "VERIFIED_AUXILIARY_GENERATION",
+      "split": "validation",
+      "strategy_applied_decision_count": 3,
+      "strategy_effect_receipts": [
+        {
+          "applied_action_id": "theorem-9608ef732363a795c23f",
+          "applied_design_id": null,
+          "decision_id": "strategy-ad74c2d7cbf22de90223",
+          "effect": "selected-action",
+          "next_state_fingerprint": "sha256:e4eaf3f2b01c4f095d48a6dbaa71dc78df642995f03574c838a6845dabf92e1c",
+          "override_reason": null,
+          "proposal_status": "valid",
+          "proposed_action_id": "theorem-9608ef732363a795c23f"
+        },
+        {
+          "applied_action_id": "structural-9c400161c99555bb549e",
+          "applied_design_id": null,
+          "decision_id": "strategy-ee4ce747a9f0ad68bbef",
+          "effect": "selected-action",
+          "next_state_fingerprint": "sha256:8b7760a8973b1c51821da93ca75d0cb1b8141d93e56453c4f835f5c0943b7cd5",
+          "override_reason": null,
+          "proposal_status": "valid",
+          "proposed_action_id": "structural-9c400161c99555bb549e"
+        },
+        {
+          "applied_action_id": "plugin-96d37d6eb1327e9c7bdc",
+          "applied_design_id": "design-finite-96d37d6eb1327e9c",
+          "decision_id": "strategy-373e265d81c0162d2f6b",
+          "effect": "selected-design",
+          "next_state_fingerprint": "sha256:ed2b57071ade23c081c040f1df0121d69de46cd83ea3298591aa1542466525d1",
+          "override_reason": null,
+          "proposal_status": "valid",
+          "proposed_action_id": "plugin-96d37d6eb1327e9c7bdc"
+        }
+      ],
+      "strategy_fallback_count": 0,
+      "strategy_rejected_count": 0,
+      "strategy_valid_proposal_count": 3,
+      "synthesis_design_count": 1,
+      "synthesis_designs": [
+        {
+          "candidate_implementation_hashes": [],
+          "candidate_source_hashes": [],
+          "constructor_skeleton": "by\n  apply_generative_rule ComplexityReduction.Domain.BooleanCSP.Hardness.LanguageInterpretation.mk",
+          "context_capsule_id": null,
+          "contract_id": "contract-aa727360decfc41008ec",
+          "counterexamples": [],
+          "declarations": [],
+          "design_id": "design-db3d79b1260f75e0deae",
+          "design_kind": "constructor-first",
+          "diagnostic_fingerprints": [],
+          "diagnostic_history": [],
+          "diagnostics": [],
+          "estimated_cost": 5.0,
+          "exact_expected_type": "ComplexityReduction.Domain.BooleanCSP.Hardness.LanguageInterpretation   ComplexityReduction.Domain.BooleanCSP.Hardness.nae3Core   Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case09PositiveExactlyTwo4.gamma",
+          "generated_files": [],
+          "helper_declarations": [],
+          "materialization_attempts": 0,
+          "mode": "typed-witness",
+          "parent_goal_id": "goal-frame-91cac7bbb9830a873803-0",
+          "previous_implementation": null,
+          "previous_source_hash": null,
+          "repair_attempts": 0,
+          "residual_obligations": [
+            "obligation-b3b7ca99fc97a01c4fa2"
+          ],
+          "stage": "verified",
+          "staged_goal_ids": [
+            "goal-frame-a036033aee410acfe57f-0"
+          ],
+          "status": "verified",
+          "strategy_decision_id": "strategy-ee4ce747a9f0ad68bbef",
+          "terminal_reason": null,
+          "verified_capabilities": [
+            "frame-a036033aee410acfe57f"
+          ]
+        }
+      ],
+      "unused_strategy_call_count": 0,
+      "verification": {
+        "axiom_audit_passed": true,
+        "endpoint_equality_audit_passed": true,
+        "exact_type_verified": true,
+        "independent_replay_passed": true,
+        "kernel_verified": true,
+        "placeholder_scan_passed": true,
+        "same_index_audit_passed": true
+      },
+      "verified_application_frame_count": 2,
+      "wall_seconds": 199.84541137499764
+    },
+    {
+      "application_frame_count": 2,
+      "artifact": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/boolean-csp-structured-real-api-20260815-v2/cases/Case10PositiveExactlyThree4/Artifact.lean",
+      "blocker": null,
+      "capability_registration_count": 1,
+      "case": "Case10PositiveExactlyThree4",
+      "case_id": "q-b10-positive-exactly-three4",
+      "context_capsule_ids": [],
+      "context_expansion_count": 0,
+      "data_binding_count": 3,
+      "dependent_goal_activation_count": 4,
+      "duplicate_candidate_rejection_count": 0,
+      "expanded_state_count": 5,
+      "final_route_audit_receipt": {
+        "forbidden_declarations": [
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.NativeTMNPHard_of_notSchaeferTractable",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.NativeTMNPHard_of_notSchaeferTractable_with_oneInThree",
+          "ComplexityReduction.Domain.BooleanCSP.schaefer_dichotomy",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.CanonicalHardCores.oneInThreeInterpretation",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.CanonicalHardCores.naeInterpretation"
+        ],
+        "passed": true,
+        "transitive_audit_emitted": true
+      },
+      "finite_candidate_count": 1,
+      "finite_certificate_count": 1,
+      "finite_counterexample_count": 0,
+      "frontier_exhaustion_receipt": null,
+      "generated_capabilities": [
+        {
+          "action_id": "plugin-ab264fe0052ef3318a7f",
+          "declaration": "ComplexityReduction.Agent.GenerativeReduction.GeneratedCapabilities.C48488efe586244c5da4b.capability_48488efe586244c5da4b",
+          "exact_type": "(symbol : ComplexityReduction.Domain.BooleanCSP.Hardness.oneInThreeCore.Symbol) →   ComplexityReduction.Domain.BooleanCSP.Hardness.Gadget     Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case10PositiveExactlyThree4.gamma     (ComplexityReduction.Domain.BooleanCSP.Hardness.oneInThreeCore.relationOf symbol)",
+          "source_hash": "sha256:6c0019feeb7e663b540a404746eae31425f7b6ba235cd1cee92c43bfe99afb82"
+        }
+      ],
+      "generated_capability_count": 1,
+      "generated_declaration_used_by_final_artifact": true,
+      "generated_lean_check_count": 1,
+      "generated_lean_success_count": 1,
+      "max_observed_search_depth": 5,
+      "model_call_accounting_complete": true,
+      "model_calls": [
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 8.467,
+          "error": null,
+          "model": "deepseek-v4-flash",
+          "ok": true,
+          "proposal_id": "c81afce5af3028755ac9ee7a",
+          "provider": "deepseek",
+          "purpose": "strategy-proposal",
+          "response_sha256": "aff3d3df69fc683416d3554e094e65e0d8cff6008a1e126e15de2d4dfd64560f",
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 1032,
+            "completion_tokens_details": {
+              "reasoning_tokens": 931
+            },
+            "prompt_cache_hit_tokens": 3968,
+            "prompt_cache_miss_tokens": 119,
+            "prompt_tokens": 4087,
+            "prompt_tokens_details": {
+              "cached_tokens": 3968
+            },
+            "total_tokens": 5119
+          }
+        },
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 6.432,
+          "error": null,
+          "model": "deepseek-v4-flash",
+          "ok": true,
+          "proposal_id": "734feb0c48a367fd4a830a26",
+          "provider": "deepseek",
+          "purpose": "strategy-proposal",
+          "response_sha256": "cd85ff1f1a36cefcaf5c436989c2f428631fed7d72f2c8b36e3ad40b43587485",
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 835,
+            "completion_tokens_details": {
+              "reasoning_tokens": 748
+            },
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 768,
+            "prompt_tokens": 768,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            },
+            "total_tokens": 1603
+          }
+        },
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 3.142,
+          "error": null,
+          "model": "deepseek-v4-flash",
+          "ok": true,
+          "proposal_id": "a41da76e3a3610dc021b730f",
+          "provider": "deepseek",
+          "purpose": "strategy-proposal",
+          "response_sha256": "68a1f028c6c00cb204a6f6348597bfe4d7957e472526f752680387a3f1d9aa05",
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 326,
+            "completion_tokens_details": {
+              "reasoning_tokens": 230
+            },
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 977,
+            "prompt_tokens": 977,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            },
+            "total_tokens": 1303
+          }
+        }
+      ],
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case10PositiveExactlyThree4",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case10PositiveExactlyThree4.problem",
+      "proof_status": "VERIFIED",
+      "pruned_cycle_count": 0,
+      "qualification_status": "NOT_RUN",
+      "recursive_substep_plan_count": 5,
+      "repair_authoring_count": 0,
+      "repair_lineage": [],
+      "repeated_diagnostic_count": 0,
+      "report": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/boolean-csp-structured-real-api-20260815-v2/cases/Case10PositiveExactlyThree4/report.json",
+      "requeued_failure_state_count": 0,
+      "solution_classification": "VERIFIED_AUXILIARY_GENERATION",
+      "split": "validation",
+      "strategy_applied_decision_count": 3,
+      "strategy_effect_receipts": [
+        {
+          "applied_action_id": "theorem-3ff8cf89b44efe98d02a",
+          "applied_design_id": null,
+          "decision_id": "strategy-f0275ad9547d1b4a1a81",
+          "effect": "selected-action",
+          "next_state_fingerprint": "sha256:280c9eb8713a9588c633e08c9cb57344984bd398314dc28bdd3fa9b0412b2b24",
+          "override_reason": null,
+          "proposal_status": "valid",
+          "proposed_action_id": "theorem-3ff8cf89b44efe98d02a"
+        },
+        {
+          "applied_action_id": "structural-eb13c4c25a4e54a22f92",
+          "applied_design_id": null,
+          "decision_id": "strategy-a8d317c879261fdf41cf",
+          "effect": "selected-action",
+          "next_state_fingerprint": "sha256:46accfba35074d37970860888597247d04133184c49da502fcecc6fc73ab4471",
+          "override_reason": null,
+          "proposal_status": "valid",
+          "proposed_action_id": "structural-eb13c4c25a4e54a22f92"
+        },
+        {
+          "applied_action_id": "plugin-ab264fe0052ef3318a7f",
+          "applied_design_id": "design-finite-ab264fe0052ef331",
+          "decision_id": "strategy-11cd0099144602140b8b",
+          "effect": "selected-design",
+          "next_state_fingerprint": "sha256:cb4b48f5d0f91deaf5d93ae017a4b25c82bf07726f3223f1d416406af4e18511",
+          "override_reason": null,
+          "proposal_status": "valid",
+          "proposed_action_id": "plugin-ab264fe0052ef3318a7f"
+        }
+      ],
+      "strategy_fallback_count": 0,
+      "strategy_rejected_count": 0,
+      "strategy_valid_proposal_count": 3,
+      "synthesis_design_count": 1,
+      "synthesis_designs": [
+        {
+          "candidate_implementation_hashes": [],
+          "candidate_source_hashes": [],
+          "constructor_skeleton": "by\n  apply_generative_rule ComplexityReduction.Domain.BooleanCSP.Hardness.LanguageInterpretation.mk",
+          "context_capsule_id": null,
+          "contract_id": "contract-0fb39f6225d2ffc364f2",
+          "counterexamples": [],
+          "declarations": [],
+          "design_id": "design-0ad9049e6795e45962f6",
+          "design_kind": "constructor-first",
+          "diagnostic_fingerprints": [],
+          "diagnostic_history": [],
+          "diagnostics": [],
+          "estimated_cost": 5.0,
+          "exact_expected_type": "ComplexityReduction.Domain.BooleanCSP.Hardness.LanguageInterpretation   ComplexityReduction.Domain.BooleanCSP.Hardness.oneInThreeCore   Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case10PositiveExactlyThree4.gamma",
+          "generated_files": [],
+          "helper_declarations": [],
+          "materialization_attempts": 0,
+          "mode": "typed-witness",
+          "parent_goal_id": "goal-frame-7a80f793446b503a3dfb-0",
+          "previous_implementation": null,
+          "previous_source_hash": null,
+          "repair_attempts": 0,
+          "residual_obligations": [
+            "obligation-6d238fa2e84c30e552ca"
+          ],
+          "stage": "verified",
+          "staged_goal_ids": [
+            "goal-frame-fad1099b5ce1918269ec-0"
+          ],
+          "status": "verified",
+          "strategy_decision_id": "strategy-a8d317c879261fdf41cf",
+          "terminal_reason": null,
+          "verified_capabilities": [
+            "frame-fad1099b5ce1918269ec"
+          ]
+        }
+      ],
+      "unused_strategy_call_count": 0,
+      "verification": {
+        "axiom_audit_passed": true,
+        "endpoint_equality_audit_passed": true,
+        "exact_type_verified": true,
+        "independent_replay_passed": true,
+        "kernel_verified": true,
+        "placeholder_scan_passed": true,
+        "same_index_audit_passed": true
+      },
+      "verified_application_frame_count": 2,
+      "wall_seconds": 200.15199445799954
+    },
+    {
+      "application_frame_count": 2,
+      "artifact": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/boolean-csp-structured-real-api-20260815-v2/cases/Case11PositiveExactlyOne5/Artifact.lean",
+      "blocker": null,
+      "capability_registration_count": 1,
+      "case": "Case11PositiveExactlyOne5",
+      "case_id": "q-b11-positive-exactly-one5",
+      "context_capsule_ids": [],
+      "context_expansion_count": 0,
+      "data_binding_count": 3,
+      "dependent_goal_activation_count": 4,
+      "duplicate_candidate_rejection_count": 0,
+      "expanded_state_count": 5,
+      "final_route_audit_receipt": {
+        "forbidden_declarations": [
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.NativeTMNPHard_of_notSchaeferTractable",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.NativeTMNPHard_of_notSchaeferTractable_with_oneInThree",
+          "ComplexityReduction.Domain.BooleanCSP.schaefer_dichotomy",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.CanonicalHardCores.oneInThreeInterpretation",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.CanonicalHardCores.naeInterpretation"
+        ],
+        "passed": true,
+        "transitive_audit_emitted": true
+      },
+      "finite_candidate_count": 1,
+      "finite_certificate_count": 1,
+      "finite_counterexample_count": 0,
+      "frontier_exhaustion_receipt": null,
+      "generated_capabilities": [
+        {
+          "action_id": "plugin-10bc805cb6e8eb29f75a",
+          "declaration": "ComplexityReduction.Agent.GenerativeReduction.GeneratedCapabilities.Ce166b5c0cd6f13848613.capability_e166b5c0cd6f13848613",
+          "exact_type": "(symbol : ComplexityReduction.Domain.BooleanCSP.Hardness.oneInThreeCore.Symbol) →   ComplexityReduction.Domain.BooleanCSP.Hardness.Gadget     Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case11PositiveExactlyOne5.gamma     (ComplexityReduction.Domain.BooleanCSP.Hardness.oneInThreeCore.relationOf symbol)",
+          "source_hash": "sha256:37fa7386b811897b2f7daa5cd1d7a630886da106dcece827c4570706f3cd83b4"
+        }
+      ],
+      "generated_capability_count": 1,
+      "generated_declaration_used_by_final_artifact": true,
+      "generated_lean_check_count": 1,
+      "generated_lean_success_count": 1,
+      "max_observed_search_depth": 5,
+      "model_call_accounting_complete": true,
+      "model_calls": [
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 11.324,
+          "error": null,
+          "model": "deepseek-v4-flash",
+          "ok": true,
+          "proposal_id": "e63b79c3cd5e63582f3ec875",
+          "provider": "deepseek",
+          "purpose": "strategy-proposal",
+          "response_sha256": "dec745f0190ca809d0b3d68700085777650c5f610fcd1472fbbb380ac1c4249c",
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 1252,
+            "completion_tokens_details": {
+              "reasoning_tokens": 1148
+            },
+            "prompt_cache_hit_tokens": 3968,
+            "prompt_cache_miss_tokens": 126,
+            "prompt_tokens": 4094,
+            "prompt_tokens_details": {
+              "cached_tokens": 3968
+            },
+            "total_tokens": 5346
+          }
+        },
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 5.425,
+          "error": null,
+          "model": "deepseek-v4-flash",
+          "ok": true,
+          "proposal_id": "d9454ebaf592220a48d92a3d",
+          "provider": "deepseek",
+          "purpose": "strategy-proposal",
+          "response_sha256": "9029eff60f589130d1b659854970477e46d05124570be0f32f698569ac012879",
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 631,
+            "completion_tokens_details": {
+              "reasoning_tokens": 536
+            },
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 772,
+            "prompt_tokens": 772,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            },
+            "total_tokens": 1403
+          }
+        },
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 4.857,
+          "error": null,
+          "model": "deepseek-v4-flash",
+          "ok": true,
+          "proposal_id": "776d4dfd495a6acffa80378d",
+          "provider": "deepseek",
+          "purpose": "strategy-proposal",
+          "response_sha256": "c04d337849c9acc9e69fca51935b7a59eebefd82587ff88622dbe278417ed37f",
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 570,
+            "completion_tokens_details": {
+              "reasoning_tokens": 483
+            },
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 983,
+            "prompt_tokens": 983,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            },
+            "total_tokens": 1553
+          }
+        }
+      ],
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case11PositiveExactlyOne5",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case11PositiveExactlyOne5.problem",
+      "proof_status": "VERIFIED",
+      "pruned_cycle_count": 0,
+      "qualification_status": "NOT_RUN",
+      "recursive_substep_plan_count": 5,
+      "repair_authoring_count": 0,
+      "repair_lineage": [],
+      "repeated_diagnostic_count": 0,
+      "report": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/boolean-csp-structured-real-api-20260815-v2/cases/Case11PositiveExactlyOne5/report.json",
+      "requeued_failure_state_count": 0,
+      "solution_classification": "VERIFIED_AUXILIARY_GENERATION",
+      "split": "heldout",
+      "strategy_applied_decision_count": 3,
+      "strategy_effect_receipts": [
+        {
+          "applied_action_id": "theorem-9e4b11c1a3ae3a1a2c4c",
+          "applied_design_id": null,
+          "decision_id": "strategy-5c289fb53790bbb69da9",
+          "effect": "selected-action",
+          "next_state_fingerprint": "sha256:b0901b632ca17c27f2fc7778851b49f92b94728d57797ed248f9808d8c2c763b",
+          "override_reason": null,
+          "proposal_status": "valid",
+          "proposed_action_id": "theorem-9e4b11c1a3ae3a1a2c4c"
+        },
+        {
+          "applied_action_id": "structural-bd8aaef2b40a24c1fe1e",
+          "applied_design_id": null,
+          "decision_id": "strategy-72d916809ac44b240470",
+          "effect": "selected-action",
+          "next_state_fingerprint": "sha256:2fd44ef94577426f76ac24968073ddf7edc6fbeffc873c265ac59f86d9d788f4",
+          "override_reason": null,
+          "proposal_status": "valid",
+          "proposed_action_id": "structural-bd8aaef2b40a24c1fe1e"
+        },
+        {
+          "applied_action_id": "plugin-10bc805cb6e8eb29f75a",
+          "applied_design_id": "design-finite-10bc805cb6e8eb29",
+          "decision_id": "strategy-314917e3200ef63dae86",
+          "effect": "selected-design",
+          "next_state_fingerprint": "sha256:7380041e23325e26de144008e55a7013c2327d888c84e90c47842a5b1f8cf168",
+          "override_reason": null,
+          "proposal_status": "valid",
+          "proposed_action_id": "plugin-10bc805cb6e8eb29f75a"
+        }
+      ],
+      "strategy_fallback_count": 0,
+      "strategy_rejected_count": 0,
+      "strategy_valid_proposal_count": 3,
+      "synthesis_design_count": 1,
+      "synthesis_designs": [
+        {
+          "candidate_implementation_hashes": [],
+          "candidate_source_hashes": [],
+          "constructor_skeleton": "by\n  apply_generative_rule ComplexityReduction.Domain.BooleanCSP.Hardness.LanguageInterpretation.mk",
+          "context_capsule_id": null,
+          "contract_id": "contract-8737febf4e2922c35fe8",
+          "counterexamples": [],
+          "declarations": [],
+          "design_id": "design-f25e75fcb7a5b7df3b53",
+          "design_kind": "constructor-first",
+          "diagnostic_fingerprints": [],
+          "diagnostic_history": [],
+          "diagnostics": [],
+          "estimated_cost": 5.0,
+          "exact_expected_type": "ComplexityReduction.Domain.BooleanCSP.Hardness.LanguageInterpretation   ComplexityReduction.Domain.BooleanCSP.Hardness.oneInThreeCore   Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case11PositiveExactlyOne5.gamma",
+          "generated_files": [],
+          "helper_declarations": [],
+          "materialization_attempts": 0,
+          "mode": "typed-witness",
+          "parent_goal_id": "goal-frame-cffe424ab619db61d522-0",
+          "previous_implementation": null,
+          "previous_source_hash": null,
+          "repair_attempts": 0,
+          "residual_obligations": [
+            "obligation-813dc66f9faab11c312f"
+          ],
+          "stage": "verified",
+          "staged_goal_ids": [
+            "goal-frame-fd833e5768cf60de6412-0"
+          ],
+          "status": "verified",
+          "strategy_decision_id": "strategy-72d916809ac44b240470",
+          "terminal_reason": null,
+          "verified_capabilities": [
+            "frame-fd833e5768cf60de6412"
+          ]
+        }
+      ],
+      "unused_strategy_call_count": 0,
+      "verification": {
+        "axiom_audit_passed": true,
+        "endpoint_equality_audit_passed": true,
+        "exact_type_verified": true,
+        "independent_replay_passed": true,
+        "kernel_verified": true,
+        "placeholder_scan_passed": true,
+        "same_index_audit_passed": true
+      },
+      "verified_application_frame_count": 2,
+      "wall_seconds": 333.0108574590049
+    },
+    {
+      "application_frame_count": 2,
+      "artifact": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/boolean-csp-structured-real-api-20260815-v2/cases/Case12PositiveExactlyTwo5/Artifact.lean",
+      "blocker": null,
+      "capability_registration_count": 1,
+      "case": "Case12PositiveExactlyTwo5",
+      "case_id": "q-b12-positive-exactly-two5",
+      "context_capsule_ids": [],
+      "context_expansion_count": 0,
+      "data_binding_count": 3,
+      "dependent_goal_activation_count": 4,
+      "duplicate_candidate_rejection_count": 0,
+      "expanded_state_count": 5,
+      "final_route_audit_receipt": {
+        "forbidden_declarations": [
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.NativeTMNPHard_of_notSchaeferTractable",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.NativeTMNPHard_of_notSchaeferTractable_with_oneInThree",
+          "ComplexityReduction.Domain.BooleanCSP.schaefer_dichotomy",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.CanonicalHardCores.oneInThreeInterpretation",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.CanonicalHardCores.naeInterpretation"
+        ],
+        "passed": true,
+        "transitive_audit_emitted": true
+      },
+      "finite_candidate_count": 1,
+      "finite_certificate_count": 1,
+      "finite_counterexample_count": 0,
+      "frontier_exhaustion_receipt": null,
+      "generated_capabilities": [
+        {
+          "action_id": "plugin-511080414551b70fd6a7",
+          "declaration": "ComplexityReduction.Agent.GenerativeReduction.GeneratedCapabilities.Cf442fd2e183062bc94af.capability_f442fd2e183062bc94af",
+          "exact_type": "(symbol : ComplexityReduction.Domain.BooleanCSP.Hardness.oneInThreeCore.Symbol) →   ComplexityReduction.Domain.BooleanCSP.Hardness.Gadget     Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case12PositiveExactlyTwo5.gamma     (ComplexityReduction.Domain.BooleanCSP.Hardness.oneInThreeCore.relationOf symbol)",
+          "source_hash": "sha256:fa01a2fa7dd1f48bf62f85f9d594fcce3e4e0081e43ab8b25adac9bf6356fb1c"
+        }
+      ],
+      "generated_capability_count": 1,
+      "generated_declaration_used_by_final_artifact": true,
+      "generated_lean_check_count": 1,
+      "generated_lean_success_count": 1,
+      "max_observed_search_depth": 5,
+      "model_call_accounting_complete": true,
+      "model_calls": [
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 7.239,
+          "error": null,
+          "model": "deepseek-v4-flash",
+          "ok": true,
+          "proposal_id": "d344b59e8d9d0f9209c81129",
+          "provider": "deepseek",
+          "purpose": "strategy-proposal",
+          "response_sha256": "0c12a0b76ba28d1c41a03e84d4df3970644ec13a39bd68452756198b2459625b",
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 707,
+            "completion_tokens_details": {
+              "reasoning_tokens": 574
+            },
+            "prompt_cache_hit_tokens": 3968,
+            "prompt_cache_miss_tokens": 116,
+            "prompt_tokens": 4084,
+            "prompt_tokens_details": {
+              "cached_tokens": 3968
+            },
+            "total_tokens": 4791
+          }
+        },
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 8.34,
+          "error": null,
+          "model": "deepseek-v4-flash",
+          "ok": true,
+          "proposal_id": "afa771bffbac9b99ca600aaa",
+          "provider": "deepseek",
+          "purpose": "strategy-proposal",
+          "response_sha256": "4c3f26bdd03d9e83291d4b1712c80e16e31d2fa881e380f26d156c8762155c29",
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 1035,
+            "completion_tokens_details": {
+              "reasoning_tokens": 928
+            },
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 773,
+            "prompt_tokens": 773,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            },
+            "total_tokens": 1808
+          }
+        },
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 4.394,
+          "error": null,
+          "model": "deepseek-v4-flash",
+          "ok": true,
+          "proposal_id": "be9cebfdd236fee130ed1338",
+          "provider": "deepseek",
+          "purpose": "strategy-proposal",
+          "response_sha256": "781ad97df9fa11f37f6ec2cbc508e272097528f798892e5e72e8014a6c6e1308",
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 476,
+            "completion_tokens_details": {
+              "reasoning_tokens": 373
+            },
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 980,
+            "prompt_tokens": 980,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            },
+            "total_tokens": 1456
+          }
+        }
+      ],
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case12PositiveExactlyTwo5",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case12PositiveExactlyTwo5.problem",
+      "proof_status": "VERIFIED",
+      "pruned_cycle_count": 0,
+      "qualification_status": "NOT_RUN",
+      "recursive_substep_plan_count": 5,
+      "repair_authoring_count": 0,
+      "repair_lineage": [],
+      "repeated_diagnostic_count": 0,
+      "report": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/boolean-csp-structured-real-api-20260815-v2/cases/Case12PositiveExactlyTwo5/report.json",
+      "requeued_failure_state_count": 0,
+      "solution_classification": "VERIFIED_AUXILIARY_GENERATION",
+      "split": "heldout",
+      "strategy_applied_decision_count": 3,
+      "strategy_effect_receipts": [
+        {
+          "applied_action_id": "theorem-f58fd25ef39a11ff2536",
+          "applied_design_id": null,
+          "decision_id": "strategy-a7962b2d6aaa3763ab58",
+          "effect": "selected-action",
+          "next_state_fingerprint": "sha256:84928c349873a09b20af51062459ed559c2d1ad93e2ca1dde7b2677fe732e400",
+          "override_reason": null,
+          "proposal_status": "valid",
+          "proposed_action_id": "theorem-f58fd25ef39a11ff2536"
+        },
+        {
+          "applied_action_id": "structural-152392d9d6d01af9bb44",
+          "applied_design_id": null,
+          "decision_id": "strategy-ffc088e55fbeb29922be",
+          "effect": "selected-action",
+          "next_state_fingerprint": "sha256:83a16d576a61614bcc2cff0cafbf6b2bb4fd6a85cdf5906040111de1bdb60a3c",
+          "override_reason": null,
+          "proposal_status": "valid",
+          "proposed_action_id": "structural-152392d9d6d01af9bb44"
+        },
+        {
+          "applied_action_id": "plugin-511080414551b70fd6a7",
+          "applied_design_id": "design-finite-511080414551b70f",
+          "decision_id": "strategy-fd1c57e9a7bcc33fa7c3",
+          "effect": "selected-design",
+          "next_state_fingerprint": "sha256:2cecc786da2c4b2a9345b969dded75aeed006a1723e364d616b74ed66ce6e36a",
+          "override_reason": null,
+          "proposal_status": "valid",
+          "proposed_action_id": "plugin-511080414551b70fd6a7"
+        }
+      ],
+      "strategy_fallback_count": 0,
+      "strategy_rejected_count": 0,
+      "strategy_valid_proposal_count": 3,
+      "synthesis_design_count": 1,
+      "synthesis_designs": [
+        {
+          "candidate_implementation_hashes": [],
+          "candidate_source_hashes": [],
+          "constructor_skeleton": "by\n  apply_generative_rule ComplexityReduction.Domain.BooleanCSP.Hardness.LanguageInterpretation.mk",
+          "context_capsule_id": null,
+          "contract_id": "contract-e2c25160e35fbc097921",
+          "counterexamples": [],
+          "declarations": [],
+          "design_id": "design-8b4c2465ad1a2d06f06b",
+          "design_kind": "constructor-first",
+          "diagnostic_fingerprints": [],
+          "diagnostic_history": [],
+          "diagnostics": [],
+          "estimated_cost": 5.0,
+          "exact_expected_type": "ComplexityReduction.Domain.BooleanCSP.Hardness.LanguageInterpretation   ComplexityReduction.Domain.BooleanCSP.Hardness.oneInThreeCore   Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case12PositiveExactlyTwo5.gamma",
+          "generated_files": [],
+          "helper_declarations": [],
+          "materialization_attempts": 0,
+          "mode": "typed-witness",
+          "parent_goal_id": "goal-frame-c1cbf5d6a1267f93d50e-0",
+          "previous_implementation": null,
+          "previous_source_hash": null,
+          "repair_attempts": 0,
+          "residual_obligations": [
+            "obligation-8fb6099347c6f81e4f66"
+          ],
+          "stage": "verified",
+          "staged_goal_ids": [
+            "goal-frame-eaa1e1d4de0db3a2bf16-0"
+          ],
+          "status": "verified",
+          "strategy_decision_id": "strategy-ffc088e55fbeb29922be",
+          "terminal_reason": null,
+          "verified_capabilities": [
+            "frame-eaa1e1d4de0db3a2bf16"
+          ]
+        }
+      ],
+      "unused_strategy_call_count": 0,
+      "verification": {
+        "axiom_audit_passed": true,
+        "endpoint_equality_audit_passed": true,
+        "exact_type_verified": true,
+        "independent_replay_passed": true,
+        "kernel_verified": true,
+        "placeholder_scan_passed": true,
+        "same_index_audit_passed": true
+      },
+      "verified_application_frame_count": 2,
+      "wall_seconds": 314.37981550000404
+    },
+    {
+      "application_frame_count": 2,
+      "artifact": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/boolean-csp-structured-real-api-20260815-v2/cases/Case13PositiveExactlyThree5/Artifact.lean",
+      "blocker": null,
+      "capability_registration_count": 1,
+      "case": "Case13PositiveExactlyThree5",
+      "case_id": "q-b13-positive-exactly-three5",
+      "context_capsule_ids": [],
+      "context_expansion_count": 0,
+      "data_binding_count": 3,
+      "dependent_goal_activation_count": 4,
+      "duplicate_candidate_rejection_count": 0,
+      "expanded_state_count": 5,
+      "final_route_audit_receipt": {
+        "forbidden_declarations": [
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.NativeTMNPHard_of_notSchaeferTractable",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.NativeTMNPHard_of_notSchaeferTractable_with_oneInThree",
+          "ComplexityReduction.Domain.BooleanCSP.schaefer_dichotomy",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.CanonicalHardCores.oneInThreeInterpretation",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.CanonicalHardCores.naeInterpretation"
+        ],
+        "passed": true,
+        "transitive_audit_emitted": true
+      },
+      "finite_candidate_count": 1,
+      "finite_certificate_count": 1,
+      "finite_counterexample_count": 0,
+      "frontier_exhaustion_receipt": null,
+      "generated_capabilities": [
+        {
+          "action_id": "plugin-41403433dd5c172d21fd",
+          "declaration": "ComplexityReduction.Agent.GenerativeReduction.GeneratedCapabilities.C3cb7c6d846111ec47635.capability_3cb7c6d846111ec47635",
+          "exact_type": "(symbol : ComplexityReduction.Domain.BooleanCSP.Hardness.oneInThreeCore.Symbol) →   ComplexityReduction.Domain.BooleanCSP.Hardness.Gadget     Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case13PositiveExactlyThree5.gamma     (ComplexityReduction.Domain.BooleanCSP.Hardness.oneInThreeCore.relationOf symbol)",
+          "source_hash": "sha256:4fa935b88f4dd479aa579fa59489678d004601ea18c278dc74e2358e7fbf5641"
+        }
+      ],
+      "generated_capability_count": 1,
+      "generated_declaration_used_by_final_artifact": true,
+      "generated_lean_check_count": 1,
+      "generated_lean_success_count": 1,
+      "max_observed_search_depth": 5,
+      "model_call_accounting_complete": true,
+      "model_calls": [
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 16.647,
+          "error": null,
+          "model": "deepseek-v4-flash",
+          "ok": true,
+          "proposal_id": "6a3950706d8544352ca00420",
+          "provider": "deepseek",
+          "purpose": "strategy-proposal",
+          "response_sha256": "f2855b525ce12b914bf049a773c37a3d9e02b92e591e060fc43bd2b01efef70d",
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 1967,
+            "completion_tokens_details": {
+              "reasoning_tokens": 1889
+            },
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 4089,
+            "prompt_tokens": 4089,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            },
+            "total_tokens": 6056
+          }
+        },
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 7.355,
+          "error": null,
+          "model": "deepseek-v4-flash",
+          "ok": true,
+          "proposal_id": "aa384791baf616a7b7c0fdef",
+          "provider": "deepseek",
+          "purpose": "strategy-proposal",
+          "response_sha256": "b732be49b9e383f73e56ae9196822d65111dd0a55d9b2ac19079ceea3667a43c",
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 939,
+            "completion_tokens_details": {
+              "reasoning_tokens": 868
+            },
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 764,
+            "prompt_tokens": 764,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            },
+            "total_tokens": 1703
+          }
+        },
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 2.971,
+          "error": null,
+          "model": "deepseek-v4-flash",
+          "ok": true,
+          "proposal_id": "8f133c8128ed802c98b30acb",
+          "provider": "deepseek",
+          "purpose": "strategy-proposal",
+          "response_sha256": "b0984c10725db77455701e31ac482be6863ee12f5dd5337880cc41c448f3f546",
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 304,
+            "completion_tokens_details": {
+              "reasoning_tokens": 206
+            },
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 986,
+            "prompt_tokens": 986,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            },
+            "total_tokens": 1290
+          }
+        }
+      ],
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case13PositiveExactlyThree5",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case13PositiveExactlyThree5.problem",
+      "proof_status": "VERIFIED",
+      "pruned_cycle_count": 0,
+      "qualification_status": "NOT_RUN",
+      "recursive_substep_plan_count": 5,
+      "repair_authoring_count": 0,
+      "repair_lineage": [],
+      "repeated_diagnostic_count": 0,
+      "report": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/boolean-csp-structured-real-api-20260815-v2/cases/Case13PositiveExactlyThree5/report.json",
+      "requeued_failure_state_count": 0,
+      "solution_classification": "VERIFIED_AUXILIARY_GENERATION",
+      "split": "heldout",
+      "strategy_applied_decision_count": 3,
+      "strategy_effect_receipts": [
+        {
+          "applied_action_id": "theorem-7496ccce820de2b087ce",
+          "applied_design_id": null,
+          "decision_id": "strategy-b405a250c7971723f36c",
+          "effect": "selected-action",
+          "next_state_fingerprint": "sha256:8ba3521ac69bb2f8e201a0c6e6302fabaaf86df0abc835bb76859046f1975ae6",
+          "override_reason": null,
+          "proposal_status": "valid",
+          "proposed_action_id": "theorem-7496ccce820de2b087ce"
+        },
+        {
+          "applied_action_id": "structural-49e6bdaa02650ce846ed",
+          "applied_design_id": null,
+          "decision_id": "strategy-b7b82190de8a1e02c3e1",
+          "effect": "selected-action",
+          "next_state_fingerprint": "sha256:e57055b953aaf8a12172f229ede636693b92b9e0e952bd1fb4c79b142c7ce058",
+          "override_reason": null,
+          "proposal_status": "valid",
+          "proposed_action_id": "structural-49e6bdaa02650ce846ed"
+        },
+        {
+          "applied_action_id": "plugin-41403433dd5c172d21fd",
+          "applied_design_id": "design-finite-41403433dd5c172d",
+          "decision_id": "strategy-76f3c83bdc67b3736f8e",
+          "effect": "selected-design",
+          "next_state_fingerprint": "sha256:d851fff52e97366348efca61c892d5e1964ab67c091067c9a8efbcf0afb205d1",
+          "override_reason": null,
+          "proposal_status": "valid",
+          "proposed_action_id": "plugin-41403433dd5c172d21fd"
+        }
+      ],
+      "strategy_fallback_count": 0,
+      "strategy_rejected_count": 0,
+      "strategy_valid_proposal_count": 3,
+      "synthesis_design_count": 1,
+      "synthesis_designs": [
+        {
+          "candidate_implementation_hashes": [],
+          "candidate_source_hashes": [],
+          "constructor_skeleton": "by\n  apply_generative_rule ComplexityReduction.Domain.BooleanCSP.Hardness.LanguageInterpretation.mk",
+          "context_capsule_id": null,
+          "contract_id": "contract-3e0f8f6ab55019870b4f",
+          "counterexamples": [],
+          "declarations": [],
+          "design_id": "design-594b03d80942a683e0d6",
+          "design_kind": "constructor-first",
+          "diagnostic_fingerprints": [],
+          "diagnostic_history": [],
+          "diagnostics": [],
+          "estimated_cost": 5.0,
+          "exact_expected_type": "ComplexityReduction.Domain.BooleanCSP.Hardness.LanguageInterpretation   ComplexityReduction.Domain.BooleanCSP.Hardness.oneInThreeCore   Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case13PositiveExactlyThree5.gamma",
+          "generated_files": [],
+          "helper_declarations": [],
+          "materialization_attempts": 0,
+          "mode": "typed-witness",
+          "parent_goal_id": "goal-frame-3608b3a08fd720ed4908-0",
+          "previous_implementation": null,
+          "previous_source_hash": null,
+          "repair_attempts": 0,
+          "residual_obligations": [
+            "obligation-07487713a08d5eb229ef"
+          ],
+          "stage": "verified",
+          "staged_goal_ids": [
+            "goal-frame-02ca32e2d7141d71ce4c-0"
+          ],
+          "status": "verified",
+          "strategy_decision_id": "strategy-b7b82190de8a1e02c3e1",
+          "terminal_reason": null,
+          "verified_capabilities": [
+            "frame-02ca32e2d7141d71ce4c"
+          ]
+        }
+      ],
+      "unused_strategy_call_count": 0,
+      "verification": {
+        "axiom_audit_passed": true,
+        "endpoint_equality_audit_passed": true,
+        "exact_type_verified": true,
+        "independent_replay_passed": true,
+        "kernel_verified": true,
+        "placeholder_scan_passed": true,
+        "same_index_audit_passed": true
+      },
+      "verified_application_frame_count": 2,
+      "wall_seconds": 289.72086433400546
+    },
+    {
+      "application_frame_count": 2,
+      "artifact": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/boolean-csp-structured-real-api-20260815-v2/cases/Case14PositiveExactlyFour5/Artifact.lean",
+      "blocker": null,
+      "capability_registration_count": 1,
+      "case": "Case14PositiveExactlyFour5",
+      "case_id": "q-b14-positive-exactly-four5",
+      "context_capsule_ids": [],
+      "context_expansion_count": 0,
+      "data_binding_count": 3,
+      "dependent_goal_activation_count": 4,
+      "duplicate_candidate_rejection_count": 0,
+      "expanded_state_count": 5,
+      "final_route_audit_receipt": {
+        "forbidden_declarations": [
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.NativeTMNPHard_of_notSchaeferTractable",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.NativeTMNPHard_of_notSchaeferTractable_with_oneInThree",
+          "ComplexityReduction.Domain.BooleanCSP.schaefer_dichotomy",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.CanonicalHardCores.oneInThreeInterpretation",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.CanonicalHardCores.naeInterpretation"
+        ],
+        "passed": true,
+        "transitive_audit_emitted": true
+      },
+      "finite_candidate_count": 1,
+      "finite_certificate_count": 1,
+      "finite_counterexample_count": 0,
+      "frontier_exhaustion_receipt": null,
+      "generated_capabilities": [
+        {
+          "action_id": "plugin-41bfa7561ead32d530ab",
+          "declaration": "ComplexityReduction.Agent.GenerativeReduction.GeneratedCapabilities.C563de776361d85c90de7.capability_563de776361d85c90de7",
+          "exact_type": "(symbol : ComplexityReduction.Domain.BooleanCSP.Hardness.oneInThreeCore.Symbol) →   ComplexityReduction.Domain.BooleanCSP.Hardness.Gadget     Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case14PositiveExactlyFour5.gamma     (ComplexityReduction.Domain.BooleanCSP.Hardness.oneInThreeCore.relationOf symbol)",
+          "source_hash": "sha256:a48d95a6a93de5699c6dbec484ba6f12347b4b44b63bab174d8dfa955e81cb8d"
+        }
+      ],
+      "generated_capability_count": 1,
+      "generated_declaration_used_by_final_artifact": true,
+      "generated_lean_check_count": 1,
+      "generated_lean_success_count": 1,
+      "max_observed_search_depth": 5,
+      "model_call_accounting_complete": true,
+      "model_calls": [
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 13.861,
+          "error": null,
+          "model": "deepseek-v4-flash",
+          "ok": true,
+          "proposal_id": "92c08347eaffc70fed0879ed",
+          "provider": "deepseek",
+          "purpose": "strategy-proposal",
+          "response_sha256": "4a5800bd2488ccd83b768e4977f6e2305aefd0742bb0d52a3f5149cd587656d8",
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 1738,
+            "completion_tokens_details": {
+              "reasoning_tokens": 1640
+            },
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 4084,
+            "prompt_tokens": 4084,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            },
+            "total_tokens": 5822
+          }
+        },
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 8.37,
+          "error": null,
+          "model": "deepseek-v4-flash",
+          "ok": true,
+          "proposal_id": "7aef395fe3abcbef6ca81e7d",
+          "provider": "deepseek",
+          "purpose": "strategy-proposal",
+          "response_sha256": "d3ba35245a2b6230e348fa04c1cd9f8bdbb9e7530ed8ceac4b4d9167308dcac2",
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 859,
+            "completion_tokens_details": {
+              "reasoning_tokens": 740
+            },
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 766,
+            "prompt_tokens": 766,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            },
+            "total_tokens": 1625
+          }
+        },
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 4.831,
+          "error": null,
+          "model": "deepseek-v4-flash",
+          "ok": true,
+          "proposal_id": "af7a9824f129d11a342074fe",
+          "provider": "deepseek",
+          "purpose": "strategy-proposal",
+          "response_sha256": "18c1a428f00c7fdfd6b5d32a8f2bf268212553e94978f196e8f3322c22b5b285",
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 585,
+            "completion_tokens_details": {
+              "reasoning_tokens": 501
+            },
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 980,
+            "prompt_tokens": 980,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            },
+            "total_tokens": 1565
+          }
+        }
+      ],
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case14PositiveExactlyFour5",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case14PositiveExactlyFour5.problem",
+      "proof_status": "VERIFIED",
+      "pruned_cycle_count": 0,
+      "qualification_status": "NOT_RUN",
+      "recursive_substep_plan_count": 5,
+      "repair_authoring_count": 0,
+      "repair_lineage": [],
+      "repeated_diagnostic_count": 0,
+      "report": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/boolean-csp-structured-real-api-20260815-v2/cases/Case14PositiveExactlyFour5/report.json",
+      "requeued_failure_state_count": 0,
+      "solution_classification": "VERIFIED_AUXILIARY_GENERATION",
+      "split": "heldout",
+      "strategy_applied_decision_count": 3,
+      "strategy_effect_receipts": [
+        {
+          "applied_action_id": "theorem-ac33addf7ff66e84b967",
+          "applied_design_id": null,
+          "decision_id": "strategy-acef01f02110f1d1ffe3",
+          "effect": "selected-action",
+          "next_state_fingerprint": "sha256:e97bd40a2563a3febd84434178048474778984562b6a7ea230dca6817972df7c",
+          "override_reason": null,
+          "proposal_status": "valid",
+          "proposed_action_id": "theorem-ac33addf7ff66e84b967"
+        },
+        {
+          "applied_action_id": "structural-e409ff674b6e6b42adf6",
+          "applied_design_id": "design-1d198980495f65cc978d",
+          "decision_id": "strategy-aeb964209d6a4e37588c",
+          "effect": "selected-design",
+          "next_state_fingerprint": "sha256:4024e241289035150fb4de758777396f98d515a21967dbe0abdf866bf343c4a4",
+          "override_reason": null,
+          "proposal_status": "valid",
+          "proposed_action_id": "structural-e409ff674b6e6b42adf6"
+        },
+        {
+          "applied_action_id": "plugin-41bfa7561ead32d530ab",
+          "applied_design_id": "design-finite-41bfa7561ead32d5",
+          "decision_id": "strategy-24d7f8706aa44699b972",
+          "effect": "selected-design",
+          "next_state_fingerprint": "sha256:a7be2b54a9f53cba24e9d87d0357a6becad1829f18b8da9263cddc12f61b3dd4",
+          "override_reason": null,
+          "proposal_status": "valid",
+          "proposed_action_id": "plugin-41bfa7561ead32d530ab"
+        }
+      ],
+      "strategy_fallback_count": 0,
+      "strategy_rejected_count": 0,
+      "strategy_valid_proposal_count": 3,
+      "synthesis_design_count": 1,
+      "synthesis_designs": [
+        {
+          "candidate_implementation_hashes": [],
+          "candidate_source_hashes": [],
+          "constructor_skeleton": "by\n  apply_generative_rule ComplexityReduction.Domain.BooleanCSP.Hardness.LanguageInterpretation.mk",
+          "context_capsule_id": null,
+          "contract_id": "contract-21f5e5ec2ace9f3646bb",
+          "counterexamples": [],
+          "declarations": [],
+          "design_id": "design-1d198980495f65cc978d",
+          "design_kind": "constructor-first",
+          "diagnostic_fingerprints": [],
+          "diagnostic_history": [],
+          "diagnostics": [],
+          "estimated_cost": 5.0,
+          "exact_expected_type": "ComplexityReduction.Domain.BooleanCSP.Hardness.LanguageInterpretation   ComplexityReduction.Domain.BooleanCSP.Hardness.oneInThreeCore   Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case14PositiveExactlyFour5.gamma",
+          "generated_files": [],
+          "helper_declarations": [],
+          "materialization_attempts": 0,
+          "mode": "typed-witness",
+          "parent_goal_id": "goal-frame-894dd2f7671769016047-0",
+          "previous_implementation": null,
+          "previous_source_hash": null,
+          "repair_attempts": 0,
+          "residual_obligations": [
+            "obligation-373842974387b42e14e2"
+          ],
+          "stage": "verified",
+          "staged_goal_ids": [
+            "goal-frame-ca42e629dcd13133b8a6-0"
+          ],
+          "status": "verified",
+          "strategy_decision_id": "strategy-aeb964209d6a4e37588c",
+          "terminal_reason": null,
+          "verified_capabilities": [
+            "frame-ca42e629dcd13133b8a6"
+          ]
+        }
+      ],
+      "unused_strategy_call_count": 0,
+      "verification": {
+        "axiom_audit_passed": true,
+        "endpoint_equality_audit_passed": true,
+        "exact_type_verified": true,
+        "independent_replay_passed": true,
+        "kernel_verified": true,
+        "placeholder_scan_passed": true,
+        "same_index_audit_passed": true
+      },
+      "verified_application_frame_count": 2,
+      "wall_seconds": 262.6107915409957
+    },
+    {
+      "application_frame_count": 2,
+      "artifact": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/boolean-csp-structured-real-api-20260815-v2/cases/Case15PositiveExactlyOne6/Artifact.lean",
+      "blocker": null,
+      "capability_registration_count": 1,
+      "case": "Case15PositiveExactlyOne6",
+      "case_id": "q-b15-positive-exactly-one6",
+      "context_capsule_ids": [],
+      "context_expansion_count": 0,
+      "data_binding_count": 3,
+      "dependent_goal_activation_count": 4,
+      "duplicate_candidate_rejection_count": 0,
+      "expanded_state_count": 5,
+      "final_route_audit_receipt": {
+        "forbidden_declarations": [
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.NativeTMNPHard_of_notSchaeferTractable",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.NativeTMNPHard_of_notSchaeferTractable_with_oneInThree",
+          "ComplexityReduction.Domain.BooleanCSP.schaefer_dichotomy",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.CanonicalHardCores.oneInThreeInterpretation",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.CanonicalHardCores.naeInterpretation"
+        ],
+        "passed": true,
+        "transitive_audit_emitted": true
+      },
+      "finite_candidate_count": 1,
+      "finite_certificate_count": 1,
+      "finite_counterexample_count": 0,
+      "frontier_exhaustion_receipt": null,
+      "generated_capabilities": [
+        {
+          "action_id": "plugin-4fa435ccb6c539b06697",
+          "declaration": "ComplexityReduction.Agent.GenerativeReduction.GeneratedCapabilities.C55d31d1770812429b7f4.capability_55d31d1770812429b7f4",
+          "exact_type": "(symbol : ComplexityReduction.Domain.BooleanCSP.Hardness.oneInThreeCore.Symbol) →   ComplexityReduction.Domain.BooleanCSP.Hardness.Gadget     Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case15PositiveExactlyOne6.gamma     (ComplexityReduction.Domain.BooleanCSP.Hardness.oneInThreeCore.relationOf symbol)",
+          "source_hash": "sha256:5eb5d5ea29e8a8a8e6a22f6aa4844f5944cb8e7c46998f8f057492f399db191b"
+        }
+      ],
+      "generated_capability_count": 1,
+      "generated_declaration_used_by_final_artifact": true,
+      "generated_lean_check_count": 1,
+      "generated_lean_success_count": 1,
+      "max_observed_search_depth": 5,
+      "model_call_accounting_complete": true,
+      "model_calls": [
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 13.164,
+          "error": null,
+          "model": "deepseek-v4-flash",
+          "ok": true,
+          "proposal_id": "edb5f0970046a67ca6d4672b",
+          "provider": "deepseek",
+          "purpose": "strategy-proposal",
+          "response_sha256": "2e91d41d5cbd1f9995c4713fe14241d6bf4a5a1c6ff23b6e1a0fe719445ffa7c",
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 1841,
+            "completion_tokens_details": {
+              "reasoning_tokens": 1753
+            },
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 4084,
+            "prompt_tokens": 4084,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            },
+            "total_tokens": 5925
+          }
+        },
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 5.614,
+          "error": null,
+          "model": "deepseek-v4-flash",
+          "ok": true,
+          "proposal_id": "136bfb273d715be41518e22c",
+          "provider": "deepseek",
+          "purpose": "strategy-proposal",
+          "response_sha256": "90e7bbd06330de3aeac6f7c36dd8105923dfa9a982ba8d6ffecb949b64bbd4d6",
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 655,
+            "completion_tokens_details": {
+              "reasoning_tokens": 544
+            },
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 770,
+            "prompt_tokens": 770,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            },
+            "total_tokens": 1425
+          }
+        },
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 3.086,
+          "error": null,
+          "model": "deepseek-v4-flash",
+          "ok": true,
+          "proposal_id": "8422ad8810c177b674716357",
+          "provider": "deepseek",
+          "purpose": "strategy-proposal",
+          "response_sha256": "e9cbf8f258db3274fc5a4eeffcfe455345737fbd8c5962403fd15134ee2848e5",
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 358,
+            "completion_tokens_details": {
+              "reasoning_tokens": 294
+            },
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 985,
+            "prompt_tokens": 985,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            },
+            "total_tokens": 1343
+          }
+        }
+      ],
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case15PositiveExactlyOne6",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case15PositiveExactlyOne6.problem",
+      "proof_status": "VERIFIED",
+      "pruned_cycle_count": 0,
+      "qualification_status": "NOT_RUN",
+      "recursive_substep_plan_count": 5,
+      "repair_authoring_count": 0,
+      "repair_lineage": [],
+      "repeated_diagnostic_count": 0,
+      "report": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/boolean-csp-structured-real-api-20260815-v2/cases/Case15PositiveExactlyOne6/report.json",
+      "requeued_failure_state_count": 0,
+      "solution_classification": "VERIFIED_AUXILIARY_GENERATION",
+      "split": "heldout",
+      "strategy_applied_decision_count": 3,
+      "strategy_effect_receipts": [
+        {
+          "applied_action_id": "theorem-c7b64537c05f979ccfda",
+          "applied_design_id": null,
+          "decision_id": "strategy-3d80ddb58dbf2789caef",
+          "effect": "selected-action",
+          "next_state_fingerprint": "sha256:dce240ca9ed513e3b4ae905087f0df83e9b5199c6ebd34260b520f8c584b52e5",
+          "override_reason": null,
+          "proposal_status": "valid",
+          "proposed_action_id": "theorem-c7b64537c05f979ccfda"
+        },
+        {
+          "applied_action_id": "structural-7cb14eae218ca963b6e2",
+          "applied_design_id": "design-d4b3119fe1d521ddeb27",
+          "decision_id": "strategy-f447832b9190492de028",
+          "effect": "selected-design",
+          "next_state_fingerprint": "sha256:d8f045d3977e9587ba8e2915f8ca003c585f14e16626ba70e48f42407a3d0cad",
+          "override_reason": null,
+          "proposal_status": "valid",
+          "proposed_action_id": "structural-7cb14eae218ca963b6e2"
+        },
+        {
+          "applied_action_id": "plugin-4fa435ccb6c539b06697",
+          "applied_design_id": "design-finite-4fa435ccb6c539b0",
+          "decision_id": "strategy-4644f2145bc3e184a436",
+          "effect": "selected-design",
+          "next_state_fingerprint": "sha256:dca6779b78dda4660c518e73d79d483b28713d41760cce81c7a262af502826d1",
+          "override_reason": null,
+          "proposal_status": "valid",
+          "proposed_action_id": "plugin-4fa435ccb6c539b06697"
+        }
+      ],
+      "strategy_fallback_count": 0,
+      "strategy_rejected_count": 0,
+      "strategy_valid_proposal_count": 3,
+      "synthesis_design_count": 1,
+      "synthesis_designs": [
+        {
+          "candidate_implementation_hashes": [],
+          "candidate_source_hashes": [],
+          "constructor_skeleton": "by\n  apply_generative_rule ComplexityReduction.Domain.BooleanCSP.Hardness.LanguageInterpretation.mk",
+          "context_capsule_id": null,
+          "contract_id": "contract-46d8dfa7b6d94fa1aabe",
+          "counterexamples": [],
+          "declarations": [],
+          "design_id": "design-d4b3119fe1d521ddeb27",
+          "design_kind": "constructor-first",
+          "diagnostic_fingerprints": [],
+          "diagnostic_history": [],
+          "diagnostics": [],
+          "estimated_cost": 5.0,
+          "exact_expected_type": "ComplexityReduction.Domain.BooleanCSP.Hardness.LanguageInterpretation   ComplexityReduction.Domain.BooleanCSP.Hardness.oneInThreeCore   Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case15PositiveExactlyOne6.gamma",
+          "generated_files": [],
+          "helper_declarations": [],
+          "materialization_attempts": 0,
+          "mode": "typed-witness",
+          "parent_goal_id": "goal-frame-a83aeebff3d0d4da42b2-0",
+          "previous_implementation": null,
+          "previous_source_hash": null,
+          "repair_attempts": 0,
+          "residual_obligations": [
+            "obligation-e1e319e7a4a1f12c3592"
+          ],
+          "stage": "verified",
+          "staged_goal_ids": [
+            "goal-frame-a64c1372dcd17ec72e26-0"
+          ],
+          "status": "verified",
+          "strategy_decision_id": "strategy-f447832b9190492de028",
+          "terminal_reason": null,
+          "verified_capabilities": [
+            "frame-a64c1372dcd17ec72e26"
+          ]
+        }
+      ],
+      "unused_strategy_call_count": 0,
+      "verification": {
+        "axiom_audit_passed": true,
+        "endpoint_equality_audit_passed": true,
+        "exact_type_verified": true,
+        "independent_replay_passed": true,
+        "kernel_verified": true,
+        "placeholder_scan_passed": true,
+        "same_index_audit_passed": true
+      },
+      "verified_application_frame_count": 2,
+      "wall_seconds": 930.2422630829969
+    },
+    {
+      "application_frame_count": 2,
+      "artifact": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/boolean-csp-structured-real-api-20260815-v2/cases/Case16PositiveExactlyTwo6/Artifact.lean",
+      "blocker": null,
+      "capability_registration_count": 1,
+      "case": "Case16PositiveExactlyTwo6",
+      "case_id": "q-b16-positive-exactly-two6",
+      "context_capsule_ids": [],
+      "context_expansion_count": 0,
+      "data_binding_count": 3,
+      "dependent_goal_activation_count": 4,
+      "duplicate_candidate_rejection_count": 0,
+      "expanded_state_count": 5,
+      "final_route_audit_receipt": {
+        "forbidden_declarations": [
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.NativeTMNPHard_of_notSchaeferTractable",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.NativeTMNPHard_of_notSchaeferTractable_with_oneInThree",
+          "ComplexityReduction.Domain.BooleanCSP.schaefer_dichotomy",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.CanonicalHardCores.oneInThreeInterpretation",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.CanonicalHardCores.naeInterpretation"
+        ],
+        "passed": true,
+        "transitive_audit_emitted": true
+      },
+      "finite_candidate_count": 1,
+      "finite_certificate_count": 1,
+      "finite_counterexample_count": 0,
+      "frontier_exhaustion_receipt": null,
+      "generated_capabilities": [
+        {
+          "action_id": "plugin-1858f824e1e7459a1ae4",
+          "declaration": "ComplexityReduction.Agent.GenerativeReduction.GeneratedCapabilities.Cf8b128853f126889de66.capability_f8b128853f126889de66",
+          "exact_type": "(symbol : ComplexityReduction.Domain.BooleanCSP.Hardness.oneInThreeCore.Symbol) →   ComplexityReduction.Domain.BooleanCSP.Hardness.Gadget     Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case16PositiveExactlyTwo6.gamma     (ComplexityReduction.Domain.BooleanCSP.Hardness.oneInThreeCore.relationOf symbol)",
+          "source_hash": "sha256:2ef6242b305248d10a66bff62869ae4698032af8f60348056b7c7b7208066d2f"
+        }
+      ],
+      "generated_capability_count": 1,
+      "generated_declaration_used_by_final_artifact": true,
+      "generated_lean_check_count": 1,
+      "generated_lean_success_count": 1,
+      "max_observed_search_depth": 5,
+      "model_call_accounting_complete": true,
+      "model_calls": [
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 4.691,
+          "error": null,
+          "model": "deepseek-v4-flash",
+          "ok": true,
+          "proposal_id": "11263e7b6bd2545944661aab",
+          "provider": "deepseek",
+          "purpose": "strategy-proposal",
+          "response_sha256": "bcf6a70443fa8c95b9bdca46fcf69e24dd9cc5acae99f770a7ae255c594ef447",
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 555,
+            "completion_tokens_details": {
+              "reasoning_tokens": 460
+            },
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 4083,
+            "prompt_tokens": 4083,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            },
+            "total_tokens": 4638
+          }
+        },
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 3.977,
+          "error": null,
+          "model": "deepseek-v4-flash",
+          "ok": true,
+          "proposal_id": "a8d34026dd958e81e5416bf9",
+          "provider": "deepseek",
+          "purpose": "strategy-proposal",
+          "response_sha256": "fb7b513c0a3b5677592edf8e819fec565ebe9370cf3c54c29e6efb4a04c0579d",
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 471,
+            "completion_tokens_details": {
+              "reasoning_tokens": 355
+            },
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 766,
+            "prompt_tokens": 766,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            },
+            "total_tokens": 1237
+          }
+        },
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 3.196,
+          "error": null,
+          "model": "deepseek-v4-flash",
+          "ok": true,
+          "proposal_id": "d88c60f8d05df908d6060ec1",
+          "provider": "deepseek",
+          "purpose": "strategy-proposal",
+          "response_sha256": "72d6ccde892c154f10ab7bdc6b5ca2524cc73fb343fde40e019bae993ef41075",
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 423,
+            "completion_tokens_details": {
+              "reasoning_tokens": 334
+            },
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 989,
+            "prompt_tokens": 989,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            },
+            "total_tokens": 1412
+          }
+        }
+      ],
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case16PositiveExactlyTwo6",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case16PositiveExactlyTwo6.problem",
+      "proof_status": "VERIFIED",
+      "pruned_cycle_count": 0,
+      "qualification_status": "NOT_RUN",
+      "recursive_substep_plan_count": 5,
+      "repair_authoring_count": 0,
+      "repair_lineage": [],
+      "repeated_diagnostic_count": 0,
+      "report": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/boolean-csp-structured-real-api-20260815-v2/cases/Case16PositiveExactlyTwo6/report.json",
+      "requeued_failure_state_count": 0,
+      "solution_classification": "VERIFIED_AUXILIARY_GENERATION",
+      "split": "heldout",
+      "strategy_applied_decision_count": 3,
+      "strategy_effect_receipts": [
+        {
+          "applied_action_id": "theorem-00d17a056f8dfbb89fc8",
+          "applied_design_id": null,
+          "decision_id": "strategy-bbf458dbe40842ef7788",
+          "effect": "selected-action",
+          "next_state_fingerprint": "sha256:8f03962590db915a515660290eab64ca55d4a57cdccc9d4fbbddebea8807744c",
+          "override_reason": null,
+          "proposal_status": "valid",
+          "proposed_action_id": "theorem-00d17a056f8dfbb89fc8"
+        },
+        {
+          "applied_action_id": "structural-99dd30b92dfc3cd1ba34",
+          "applied_design_id": "design-f26723e4b6b556cd88bb",
+          "decision_id": "strategy-6a26e6057e6ddbbcfab2",
+          "effect": "selected-design",
+          "next_state_fingerprint": "sha256:0806fef08df8758242756d747b004d0f6926f74bbba97871d44c8ac1dfbc13c0",
+          "override_reason": null,
+          "proposal_status": "valid",
+          "proposed_action_id": "structural-99dd30b92dfc3cd1ba34"
+        },
+        {
+          "applied_action_id": "plugin-1858f824e1e7459a1ae4",
+          "applied_design_id": "design-finite-1858f824e1e7459a",
+          "decision_id": "strategy-31b512107704bce073b8",
+          "effect": "selected-design",
+          "next_state_fingerprint": "sha256:cdaceae7ad560eeba406305d656ab3e1eb778b4f273fe49d8a515c5220459528",
+          "override_reason": null,
+          "proposal_status": "valid",
+          "proposed_action_id": "plugin-1858f824e1e7459a1ae4"
+        }
+      ],
+      "strategy_fallback_count": 0,
+      "strategy_rejected_count": 0,
+      "strategy_valid_proposal_count": 3,
+      "synthesis_design_count": 1,
+      "synthesis_designs": [
+        {
+          "candidate_implementation_hashes": [],
+          "candidate_source_hashes": [],
+          "constructor_skeleton": "by\n  apply_generative_rule ComplexityReduction.Domain.BooleanCSP.Hardness.LanguageInterpretation.mk",
+          "context_capsule_id": null,
+          "contract_id": "contract-78e6ea3526a4e71c91b3",
+          "counterexamples": [],
+          "declarations": [],
+          "design_id": "design-f26723e4b6b556cd88bb",
+          "design_kind": "constructor-first",
+          "diagnostic_fingerprints": [],
+          "diagnostic_history": [],
+          "diagnostics": [],
+          "estimated_cost": 5.0,
+          "exact_expected_type": "ComplexityReduction.Domain.BooleanCSP.Hardness.LanguageInterpretation   ComplexityReduction.Domain.BooleanCSP.Hardness.oneInThreeCore   Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case16PositiveExactlyTwo6.gamma",
+          "generated_files": [],
+          "helper_declarations": [],
+          "materialization_attempts": 0,
+          "mode": "typed-witness",
+          "parent_goal_id": "goal-frame-eb58200383dcd4160fc6-0",
+          "previous_implementation": null,
+          "previous_source_hash": null,
+          "repair_attempts": 0,
+          "residual_obligations": [
+            "obligation-fe65141f4123fa7f03d3"
+          ],
+          "stage": "verified",
+          "staged_goal_ids": [
+            "goal-frame-6ce67b851f069f382221-0"
+          ],
+          "status": "verified",
+          "strategy_decision_id": "strategy-6a26e6057e6ddbbcfab2",
+          "terminal_reason": null,
+          "verified_capabilities": [
+            "frame-6ce67b851f069f382221"
+          ]
+        }
+      ],
+      "unused_strategy_call_count": 0,
+      "verification": {
+        "axiom_audit_passed": true,
+        "endpoint_equality_audit_passed": true,
+        "exact_type_verified": true,
+        "independent_replay_passed": true,
+        "kernel_verified": true,
+        "placeholder_scan_passed": true,
+        "same_index_audit_passed": true
+      },
+      "verified_application_frame_count": 2,
+      "wall_seconds": 650.8340728330004
+    },
+    {
+      "application_frame_count": 2,
+      "artifact": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/boolean-csp-structured-real-api-20260815-v2/cases/Case17PositiveExactlyThree6/Artifact.lean",
+      "blocker": null,
+      "capability_registration_count": 1,
+      "case": "Case17PositiveExactlyThree6",
+      "case_id": "q-b17-positive-exactly-three6",
+      "context_capsule_ids": [],
+      "context_expansion_count": 0,
+      "data_binding_count": 3,
+      "dependent_goal_activation_count": 4,
+      "duplicate_candidate_rejection_count": 0,
+      "expanded_state_count": 5,
+      "final_route_audit_receipt": {
+        "forbidden_declarations": [
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.NativeTMNPHard_of_notSchaeferTractable",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.NativeTMNPHard_of_notSchaeferTractable_with_oneInThree",
+          "ComplexityReduction.Domain.BooleanCSP.schaefer_dichotomy",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.CanonicalHardCores.oneInThreeInterpretation",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.CanonicalHardCores.naeInterpretation"
+        ],
+        "passed": true,
+        "transitive_audit_emitted": true
+      },
+      "finite_candidate_count": 1,
+      "finite_certificate_count": 1,
+      "finite_counterexample_count": 0,
+      "frontier_exhaustion_receipt": null,
+      "generated_capabilities": [
+        {
+          "action_id": "plugin-8c26cac37627a7e4ce1b",
+          "declaration": "ComplexityReduction.Agent.GenerativeReduction.GeneratedCapabilities.C0ad591bdf4117656a9d0.capability_0ad591bdf4117656a9d0",
+          "exact_type": "(symbol : ComplexityReduction.Domain.BooleanCSP.Hardness.nae3Core.Symbol) →   ComplexityReduction.Domain.BooleanCSP.Hardness.Gadget     Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case17PositiveExactlyThree6.gamma     (ComplexityReduction.Domain.BooleanCSP.Hardness.nae3Core.relationOf symbol)",
+          "source_hash": "sha256:d2f349ff70b6f73c57f0234c2ca2578592ad82ef33320cef6fae1cfb9ec2c28e"
+        }
+      ],
+      "generated_capability_count": 1,
+      "generated_declaration_used_by_final_artifact": true,
+      "generated_lean_check_count": 1,
+      "generated_lean_success_count": 1,
+      "max_observed_search_depth": 5,
+      "model_call_accounting_complete": true,
+      "model_calls": [
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 4.897,
+          "error": null,
+          "model": "deepseek-v4-flash",
+          "ok": true,
+          "proposal_id": "3a19f1445ef5f69edbe7a6af",
+          "provider": "deepseek",
+          "purpose": "strategy-proposal",
+          "response_sha256": "20f917f96f64c28a69f4f47048ba1dea652a05d067b7825c58d47bb405c53332",
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 493,
+            "completion_tokens_details": {
+              "reasoning_tokens": 389
+            },
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 4076,
+            "prompt_tokens": 4076,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            },
+            "total_tokens": 4569
+          }
+        },
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 5.446,
+          "error": null,
+          "model": "deepseek-v4-flash",
+          "ok": true,
+          "proposal_id": "dd982bb107cdaea7a8ab78b1",
+          "provider": "deepseek",
+          "purpose": "strategy-proposal",
+          "response_sha256": "a87ef2dd995ec3c884269cddcd5f35355555e09a54904ccdab983200ca464db0",
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 607,
+            "completion_tokens_details": {
+              "reasoning_tokens": 516
+            },
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 760,
+            "prompt_tokens": 760,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            },
+            "total_tokens": 1367
+          }
+        },
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 4.537,
+          "error": null,
+          "model": "deepseek-v4-flash",
+          "ok": true,
+          "proposal_id": "202dc8e5b2d42b37743f7298",
+          "provider": "deepseek",
+          "purpose": "strategy-proposal",
+          "response_sha256": "07004e4c11b9782363ffd29e5ae835edc1a65720471ffb0ba3db71e74564a518",
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 597,
+            "completion_tokens_details": {
+              "reasoning_tokens": 523
+            },
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 985,
+            "prompt_tokens": 985,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            },
+            "total_tokens": 1582
+          }
+        }
+      ],
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case17PositiveExactlyThree6",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case17PositiveExactlyThree6.problem",
+      "proof_status": "VERIFIED",
+      "pruned_cycle_count": 0,
+      "qualification_status": "NOT_RUN",
+      "recursive_substep_plan_count": 5,
+      "repair_authoring_count": 0,
+      "repair_lineage": [],
+      "repeated_diagnostic_count": 0,
+      "report": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/boolean-csp-structured-real-api-20260815-v2/cases/Case17PositiveExactlyThree6/report.json",
+      "requeued_failure_state_count": 0,
+      "solution_classification": "VERIFIED_AUXILIARY_GENERATION",
+      "split": "heldout",
+      "strategy_applied_decision_count": 3,
+      "strategy_effect_receipts": [
+        {
+          "applied_action_id": "theorem-9651ddf18babbafd3e05",
+          "applied_design_id": null,
+          "decision_id": "strategy-76619c151a6b7ce5a120",
+          "effect": "selected-action",
+          "next_state_fingerprint": "sha256:09bccb1069940c350ad021f2b8dd917adca21d0784ba3f7267404cf05e696822",
+          "override_reason": null,
+          "proposal_status": "valid",
+          "proposed_action_id": "theorem-9651ddf18babbafd3e05"
+        },
+        {
+          "applied_action_id": "structural-d0d2bb6874e69e1722f2",
+          "applied_design_id": "design-732e250f9f38fb6207ac",
+          "decision_id": "strategy-cf896b4498d28cd78421",
+          "effect": "selected-design",
+          "next_state_fingerprint": "sha256:5c7b57f3363622269fdf9492d82f68c5f72805740d50ce2e5dc577105ae59ee9",
+          "override_reason": null,
+          "proposal_status": "valid",
+          "proposed_action_id": "structural-d0d2bb6874e69e1722f2"
+        },
+        {
+          "applied_action_id": "plugin-8c26cac37627a7e4ce1b",
+          "applied_design_id": null,
+          "decision_id": "strategy-a949b88adb0eb7da84a5",
+          "effect": "selected-action",
+          "next_state_fingerprint": "sha256:401b6e2d1e82515b61d51c5eb10a8bb74d362dcf2a0085fc16202859ff52dd67",
+          "override_reason": null,
+          "proposal_status": "valid",
+          "proposed_action_id": "plugin-8c26cac37627a7e4ce1b"
+        }
+      ],
+      "strategy_fallback_count": 0,
+      "strategy_rejected_count": 0,
+      "strategy_valid_proposal_count": 3,
+      "synthesis_design_count": 1,
+      "synthesis_designs": [
+        {
+          "candidate_implementation_hashes": [],
+          "candidate_source_hashes": [],
+          "constructor_skeleton": "by\n  apply_generative_rule ComplexityReduction.Domain.BooleanCSP.Hardness.LanguageInterpretation.mk",
+          "context_capsule_id": null,
+          "contract_id": "contract-72b711c45a22d5591e5b",
+          "counterexamples": [],
+          "declarations": [],
+          "design_id": "design-732e250f9f38fb6207ac",
+          "design_kind": "constructor-first",
+          "diagnostic_fingerprints": [],
+          "diagnostic_history": [],
+          "diagnostics": [],
+          "estimated_cost": 5.0,
+          "exact_expected_type": "ComplexityReduction.Domain.BooleanCSP.Hardness.LanguageInterpretation   ComplexityReduction.Domain.BooleanCSP.Hardness.nae3Core   Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case17PositiveExactlyThree6.gamma",
+          "generated_files": [],
+          "helper_declarations": [],
+          "materialization_attempts": 0,
+          "mode": "typed-witness",
+          "parent_goal_id": "goal-frame-107d3ce06fc2928cc57f-0",
+          "previous_implementation": null,
+          "previous_source_hash": null,
+          "repair_attempts": 0,
+          "residual_obligations": [
+            "obligation-10ef84db97691e7bdd91"
+          ],
+          "stage": "verified",
+          "staged_goal_ids": [
+            "goal-frame-a0b3e607cb32053c39fd-0"
+          ],
+          "status": "verified",
+          "strategy_decision_id": "strategy-cf896b4498d28cd78421",
+          "terminal_reason": null,
+          "verified_capabilities": [
+            "frame-a0b3e607cb32053c39fd"
+          ]
+        }
+      ],
+      "unused_strategy_call_count": 0,
+      "verification": {
+        "axiom_audit_passed": true,
+        "endpoint_equality_audit_passed": true,
+        "exact_type_verified": true,
+        "independent_replay_passed": true,
+        "kernel_verified": true,
+        "placeholder_scan_passed": true,
+        "same_index_audit_passed": true
+      },
+      "verified_application_frame_count": 2,
+      "wall_seconds": 425.5158658749933
+    },
+    {
+      "application_frame_count": 2,
+      "artifact": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/boolean-csp-structured-real-api-20260815-v2/cases/Case18PositiveExactlyFour6/Artifact.lean",
+      "blocker": null,
+      "capability_registration_count": 1,
+      "case": "Case18PositiveExactlyFour6",
+      "case_id": "q-b18-positive-exactly-four6",
+      "context_capsule_ids": [],
+      "context_expansion_count": 0,
+      "data_binding_count": 3,
+      "dependent_goal_activation_count": 4,
+      "duplicate_candidate_rejection_count": 0,
+      "expanded_state_count": 5,
+      "final_route_audit_receipt": {
+        "forbidden_declarations": [
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.NativeTMNPHard_of_notSchaeferTractable",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.NativeTMNPHard_of_notSchaeferTractable_with_oneInThree",
+          "ComplexityReduction.Domain.BooleanCSP.schaefer_dichotomy",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.CanonicalHardCores.oneInThreeInterpretation",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.CanonicalHardCores.naeInterpretation"
+        ],
+        "passed": true,
+        "transitive_audit_emitted": true
+      },
+      "finite_candidate_count": 1,
+      "finite_certificate_count": 1,
+      "finite_counterexample_count": 0,
+      "frontier_exhaustion_receipt": null,
+      "generated_capabilities": [
+        {
+          "action_id": "plugin-0aa4a3a4f3248b25af46",
+          "declaration": "ComplexityReduction.Agent.GenerativeReduction.GeneratedCapabilities.C6e5bc621e2fab781185b.capability_6e5bc621e2fab781185b",
+          "exact_type": "(symbol : ComplexityReduction.Domain.BooleanCSP.Hardness.oneInThreeCore.Symbol) →   ComplexityReduction.Domain.BooleanCSP.Hardness.Gadget     Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case18PositiveExactlyFour6.gamma     (ComplexityReduction.Domain.BooleanCSP.Hardness.oneInThreeCore.relationOf symbol)",
+          "source_hash": "sha256:d4e9af2a93ba813716a1b6024c90befd42a6bf7ea8966eab58afaf043a396863"
+        }
+      ],
+      "generated_capability_count": 1,
+      "generated_declaration_used_by_final_artifact": true,
+      "generated_lean_check_count": 1,
+      "generated_lean_success_count": 1,
+      "max_observed_search_depth": 5,
+      "model_call_accounting_complete": true,
+      "model_calls": [
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 16.311,
+          "error": null,
+          "model": "deepseek-v4-flash",
+          "ok": true,
+          "proposal_id": "b6a4c886b3aaa2ff2f0ff56c",
+          "provider": "deepseek",
+          "purpose": "strategy-proposal",
+          "response_sha256": "feacc61b6565cb3a0d1e137eefa85a9757e60140f733180361a4486d04fb46b8",
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 2019,
+            "completion_tokens_details": {
+              "reasoning_tokens": 1875
+            },
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 4095,
+            "prompt_tokens": 4095,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            },
+            "total_tokens": 6114
+          }
+        },
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 3.843,
+          "error": null,
+          "model": "deepseek-v4-flash",
+          "ok": true,
+          "proposal_id": "2b5025e5b56b8501bb6ec79a",
+          "provider": "deepseek",
+          "purpose": "strategy-proposal",
+          "response_sha256": "9d5ea5d39e6470ccfd99d9190608fe828d14aed285d938928fab13a5bc9428c4",
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 397,
+            "completion_tokens_details": {
+              "reasoning_tokens": 284
+            },
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 763,
+            "prompt_tokens": 763,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            },
+            "total_tokens": 1160
+          }
+        },
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 5.586,
+          "error": null,
+          "model": "deepseek-v4-flash",
+          "ok": true,
+          "proposal_id": "b5eca87da73512b21bc4cbd9",
+          "provider": "deepseek",
+          "purpose": "strategy-proposal",
+          "response_sha256": "00abb90cf12d6da594bc475f5891e8aa034f72f61d450592867441094d4f0fbc",
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 663,
+            "completion_tokens_details": {
+              "reasoning_tokens": 558
+            },
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 989,
+            "prompt_tokens": 989,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            },
+            "total_tokens": 1652
+          }
+        }
+      ],
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case18PositiveExactlyFour6",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case18PositiveExactlyFour6.problem",
+      "proof_status": "VERIFIED",
+      "pruned_cycle_count": 0,
+      "qualification_status": "NOT_RUN",
+      "recursive_substep_plan_count": 5,
+      "repair_authoring_count": 0,
+      "repair_lineage": [],
+      "repeated_diagnostic_count": 0,
+      "report": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/boolean-csp-structured-real-api-20260815-v2/cases/Case18PositiveExactlyFour6/report.json",
+      "requeued_failure_state_count": 0,
+      "solution_classification": "VERIFIED_AUXILIARY_GENERATION",
+      "split": "heldout",
+      "strategy_applied_decision_count": 3,
+      "strategy_effect_receipts": [
+        {
+          "applied_action_id": "theorem-2cf09cbdae4f00b65b0b",
+          "applied_design_id": null,
+          "decision_id": "strategy-fdc2827742e8e642f45c",
+          "effect": "selected-action",
+          "next_state_fingerprint": "sha256:dc20a3f6b639f36a2fc8d822c908bc26af3773b7f6a195f834f89faa58b79b98",
+          "override_reason": null,
+          "proposal_status": "valid",
+          "proposed_action_id": "theorem-2cf09cbdae4f00b65b0b"
+        },
+        {
+          "applied_action_id": "structural-b984616f39705e096471",
+          "applied_design_id": "design-2722e5267abb3c154729",
+          "decision_id": "strategy-9ea1eafe01026982ce49",
+          "effect": "selected-design",
+          "next_state_fingerprint": "sha256:e0208c3e427066a7fb35b325bca5512e95289de272d927a210f3d5374dee1527",
+          "override_reason": null,
+          "proposal_status": "valid",
+          "proposed_action_id": "structural-b984616f39705e096471"
+        },
+        {
+          "applied_action_id": "plugin-0aa4a3a4f3248b25af46",
+          "applied_design_id": "design-finite-0aa4a3a4f3248b25",
+          "decision_id": "strategy-4fad365a330fda5633cc",
+          "effect": "selected-design",
+          "next_state_fingerprint": "sha256:e3a54ce00b613c2d87bca4e12c3e9d1bee26cff7589ef2bdc400d48f760cb25b",
+          "override_reason": null,
+          "proposal_status": "valid",
+          "proposed_action_id": "plugin-0aa4a3a4f3248b25af46"
+        }
+      ],
+      "strategy_fallback_count": 0,
+      "strategy_rejected_count": 0,
+      "strategy_valid_proposal_count": 3,
+      "synthesis_design_count": 1,
+      "synthesis_designs": [
+        {
+          "candidate_implementation_hashes": [],
+          "candidate_source_hashes": [],
+          "constructor_skeleton": "by\n  apply_generative_rule ComplexityReduction.Domain.BooleanCSP.Hardness.LanguageInterpretation.mk",
+          "context_capsule_id": null,
+          "contract_id": "contract-0fdc20ba9e8a12bf20ef",
+          "counterexamples": [],
+          "declarations": [],
+          "design_id": "design-2722e5267abb3c154729",
+          "design_kind": "constructor-first",
+          "diagnostic_fingerprints": [],
+          "diagnostic_history": [],
+          "diagnostics": [],
+          "estimated_cost": 5.0,
+          "exact_expected_type": "ComplexityReduction.Domain.BooleanCSP.Hardness.LanguageInterpretation   ComplexityReduction.Domain.BooleanCSP.Hardness.oneInThreeCore   Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case18PositiveExactlyFour6.gamma",
+          "generated_files": [],
+          "helper_declarations": [],
+          "materialization_attempts": 0,
+          "mode": "typed-witness",
+          "parent_goal_id": "goal-frame-9863d9bb0e01a1402344-0",
+          "previous_implementation": null,
+          "previous_source_hash": null,
+          "repair_attempts": 0,
+          "residual_obligations": [
+            "obligation-071316467320ba24c53b"
+          ],
+          "stage": "verified",
+          "staged_goal_ids": [
+            "goal-frame-d028590b2a476fa86358-0"
+          ],
+          "status": "verified",
+          "strategy_decision_id": "strategy-9ea1eafe01026982ce49",
+          "terminal_reason": null,
+          "verified_capabilities": [
+            "frame-d028590b2a476fa86358"
+          ]
+        }
+      ],
+      "unused_strategy_call_count": 0,
+      "verification": {
+        "axiom_audit_passed": true,
+        "endpoint_equality_audit_passed": true,
+        "exact_type_verified": true,
+        "independent_replay_passed": true,
+        "kernel_verified": true,
+        "placeholder_scan_passed": true,
+        "same_index_audit_passed": true
+      },
+      "verified_application_frame_count": 2,
+      "wall_seconds": 425.27121504200477
+    },
+    {
+      "application_frame_count": 2,
+      "artifact": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/boolean-csp-structured-real-api-20260815-v2/cases/Case19PositiveExactlyFive6/Artifact.lean",
+      "blocker": null,
+      "capability_registration_count": 1,
+      "case": "Case19PositiveExactlyFive6",
+      "case_id": "q-b19-positive-exactly-five6",
+      "context_capsule_ids": [],
+      "context_expansion_count": 0,
+      "data_binding_count": 3,
+      "dependent_goal_activation_count": 4,
+      "duplicate_candidate_rejection_count": 0,
+      "expanded_state_count": 5,
+      "final_route_audit_receipt": {
+        "forbidden_declarations": [
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.NativeTMNPHard_of_notSchaeferTractable",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.NativeTMNPHard_of_notSchaeferTractable_with_oneInThree",
+          "ComplexityReduction.Domain.BooleanCSP.schaefer_dichotomy",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.CanonicalHardCores.oneInThreeInterpretation",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.CanonicalHardCores.naeInterpretation"
+        ],
+        "passed": true,
+        "transitive_audit_emitted": true
+      },
+      "finite_candidate_count": 1,
+      "finite_certificate_count": 1,
+      "finite_counterexample_count": 0,
+      "frontier_exhaustion_receipt": null,
+      "generated_capabilities": [
+        {
+          "action_id": "plugin-9ed240891e5f53d2be4a",
+          "declaration": "ComplexityReduction.Agent.GenerativeReduction.GeneratedCapabilities.Ca4bcb823d6e68a31645c.capability_a4bcb823d6e68a31645c",
+          "exact_type": "(symbol : ComplexityReduction.Domain.BooleanCSP.Hardness.oneInThreeCore.Symbol) →   ComplexityReduction.Domain.BooleanCSP.Hardness.Gadget     Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case19PositiveExactlyFive6.gamma     (ComplexityReduction.Domain.BooleanCSP.Hardness.oneInThreeCore.relationOf symbol)",
+          "source_hash": "sha256:d013e7e7a948a88393d7143693e431fdfd68e49a890048ca1942361c0bd642b6"
+        }
+      ],
+      "generated_capability_count": 1,
+      "generated_declaration_used_by_final_artifact": true,
+      "generated_lean_check_count": 1,
+      "generated_lean_success_count": 1,
+      "max_observed_search_depth": 5,
+      "model_call_accounting_complete": true,
+      "model_calls": [
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 16.746,
+          "error": null,
+          "model": "deepseek-v4-flash",
+          "ok": true,
+          "proposal_id": "3f28d40ca575469d95fb4e13",
+          "provider": "deepseek",
+          "purpose": "strategy-proposal",
+          "response_sha256": "1f5ddb4e4359275112005e3543d6ffd720d5675081d101a164f19bb8f54b5cb8",
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 1799,
+            "completion_tokens_details": {
+              "reasoning_tokens": 1687
+            },
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 4097,
+            "prompt_tokens": 4097,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            },
+            "total_tokens": 5896
+          }
+        },
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 5.341,
+          "error": null,
+          "model": "deepseek-v4-flash",
+          "ok": true,
+          "proposal_id": "594a1cfddcd161e2231bc861",
+          "provider": "deepseek",
+          "purpose": "strategy-proposal",
+          "response_sha256": "e06eb08f484bab9fad2adcd186bddc4dd9f37e4894e36cd6c37d05d19fb72af2",
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 552,
+            "completion_tokens_details": {
+              "reasoning_tokens": 455
+            },
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 776,
+            "prompt_tokens": 776,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            },
+            "total_tokens": 1328
+          }
+        },
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 4.836,
+          "error": null,
+          "model": "deepseek-v4-flash",
+          "ok": true,
+          "proposal_id": "61f2b356a595ef30baf844ea",
+          "provider": "deepseek",
+          "purpose": "strategy-proposal",
+          "response_sha256": "0d6bf4bc8188200fe06586d36abeeb89b2ff22d177ea4543a4d32db8a52fea2a",
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 583,
+            "completion_tokens_details": {
+              "reasoning_tokens": 484
+            },
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 989,
+            "prompt_tokens": 989,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            },
+            "total_tokens": 1572
+          }
+        }
+      ],
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case19PositiveExactlyFive6",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case19PositiveExactlyFive6.problem",
+      "proof_status": "VERIFIED",
+      "pruned_cycle_count": 0,
+      "qualification_status": "NOT_RUN",
+      "recursive_substep_plan_count": 5,
+      "repair_authoring_count": 0,
+      "repair_lineage": [],
+      "repeated_diagnostic_count": 0,
+      "report": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/boolean-csp-structured-real-api-20260815-v2/cases/Case19PositiveExactlyFive6/report.json",
+      "requeued_failure_state_count": 0,
+      "solution_classification": "VERIFIED_AUXILIARY_GENERATION",
+      "split": "heldout",
+      "strategy_applied_decision_count": 3,
+      "strategy_effect_receipts": [
+        {
+          "applied_action_id": "theorem-3064030ac9112f987399",
+          "applied_design_id": null,
+          "decision_id": "strategy-6f67af9f64ef02c2d951",
+          "effect": "selected-action",
+          "next_state_fingerprint": "sha256:95a49f60508a437f0f33deceadfa9f18ed370af3c66b01441b20f8692bde3bee",
+          "override_reason": null,
+          "proposal_status": "valid",
+          "proposed_action_id": "theorem-3064030ac9112f987399"
+        },
+        {
+          "applied_action_id": "structural-b83ec1d6b3677ac0b6cc",
+          "applied_design_id": "design-a7dcd3d1d0c0c50b4bff",
+          "decision_id": "strategy-f0488c5ad6c4404976cf",
+          "effect": "selected-design",
+          "next_state_fingerprint": "sha256:4280fd8e8820dfacae1a5a14d939965dd7edd3b6c8678fb6831faeb533940a78",
+          "override_reason": null,
+          "proposal_status": "valid",
+          "proposed_action_id": "structural-b83ec1d6b3677ac0b6cc"
+        },
+        {
+          "applied_action_id": "plugin-9ed240891e5f53d2be4a",
+          "applied_design_id": "design-finite-9ed240891e5f53d2",
+          "decision_id": "strategy-f70cc67224d085bbc652",
+          "effect": "selected-design",
+          "next_state_fingerprint": "sha256:0cd3eba8f6ed7e0b5daae12007e9e86f2bf11824f8d68f1eaa4b25aba98d9b6d",
+          "override_reason": null,
+          "proposal_status": "valid",
+          "proposed_action_id": "plugin-9ed240891e5f53d2be4a"
+        }
+      ],
+      "strategy_fallback_count": 0,
+      "strategy_rejected_count": 0,
+      "strategy_valid_proposal_count": 3,
+      "synthesis_design_count": 1,
+      "synthesis_designs": [
+        {
+          "candidate_implementation_hashes": [],
+          "candidate_source_hashes": [],
+          "constructor_skeleton": "by\n  apply_generative_rule ComplexityReduction.Domain.BooleanCSP.Hardness.LanguageInterpretation.mk",
+          "context_capsule_id": null,
+          "contract_id": "contract-6def250d31dc12136203",
+          "counterexamples": [],
+          "declarations": [],
+          "design_id": "design-a7dcd3d1d0c0c50b4bff",
+          "design_kind": "constructor-first",
+          "diagnostic_fingerprints": [],
+          "diagnostic_history": [],
+          "diagnostics": [],
+          "estimated_cost": 5.0,
+          "exact_expected_type": "ComplexityReduction.Domain.BooleanCSP.Hardness.LanguageInterpretation   ComplexityReduction.Domain.BooleanCSP.Hardness.oneInThreeCore   Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case19PositiveExactlyFive6.gamma",
+          "generated_files": [],
+          "helper_declarations": [],
+          "materialization_attempts": 0,
+          "mode": "typed-witness",
+          "parent_goal_id": "goal-frame-04acf7bb844af25943b2-0",
+          "previous_implementation": null,
+          "previous_source_hash": null,
+          "repair_attempts": 0,
+          "residual_obligations": [
+            "obligation-4ffaf3237d2d763f4327"
+          ],
+          "stage": "verified",
+          "staged_goal_ids": [
+            "goal-frame-4b907f0c597dd1f02b24-0"
+          ],
+          "status": "verified",
+          "strategy_decision_id": "strategy-f0488c5ad6c4404976cf",
+          "terminal_reason": null,
+          "verified_capabilities": [
+            "frame-4b907f0c597dd1f02b24"
+          ]
+        }
+      ],
+      "unused_strategy_call_count": 0,
+      "verification": {
+        "axiom_audit_passed": true,
+        "endpoint_equality_audit_passed": true,
+        "exact_type_verified": true,
+        "independent_replay_passed": true,
+        "kernel_verified": true,
+        "placeholder_scan_passed": true,
+        "same_index_audit_passed": true
+      },
+      "verified_application_frame_count": 2,
+      "wall_seconds": 377.6060669169965
+    },
+    {
+      "application_frame_count": 2,
+      "artifact": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/boolean-csp-structured-real-api-20260815-v2/cases/Case20OR3XOR2/Artifact.lean",
+      "blocker": null,
+      "capability_registration_count": 1,
+      "case": "Case20OR3XOR2",
+      "case_id": "q-b20-or3-xor2",
+      "context_capsule_ids": [],
+      "context_expansion_count": 0,
+      "data_binding_count": 3,
+      "dependent_goal_activation_count": 4,
+      "duplicate_candidate_rejection_count": 0,
+      "expanded_state_count": 5,
+      "final_route_audit_receipt": {
+        "forbidden_declarations": [
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.NativeTMNPHard_of_notSchaeferTractable",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.NativeTMNPHard_of_notSchaeferTractable_with_oneInThree",
+          "ComplexityReduction.Domain.BooleanCSP.schaefer_dichotomy",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.CanonicalHardCores.oneInThreeInterpretation",
+          "ComplexityReduction.Domain.BooleanCSP.Hardness.CanonicalHardCores.naeInterpretation"
+        ],
+        "passed": true,
+        "transitive_audit_emitted": true
+      },
+      "finite_candidate_count": 1,
+      "finite_certificate_count": 1,
+      "finite_counterexample_count": 0,
+      "frontier_exhaustion_receipt": null,
+      "generated_capabilities": [
+        {
+          "action_id": "plugin-83ca414807bd2a387bd5",
+          "declaration": "ComplexityReduction.Agent.GenerativeReduction.GeneratedCapabilities.Ca0bd8f23efedd1aa4f99.capability_a0bd8f23efedd1aa4f99",
+          "exact_type": "(symbol : ComplexityReduction.Domain.BooleanCSP.Hardness.oneInThreeCore.Symbol) →   ComplexityReduction.Domain.BooleanCSP.Hardness.Gadget Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case20OR3XOR2.gamma     (ComplexityReduction.Domain.BooleanCSP.Hardness.oneInThreeCore.relationOf symbol)",
+          "source_hash": "sha256:4858bf0e1a05927ef705b3f66d88f6cfeb0b2e325e0b4309c7bd5af406697457"
+        }
+      ],
+      "generated_capability_count": 1,
+      "generated_declaration_used_by_final_artifact": true,
+      "generated_lean_check_count": 1,
+      "generated_lean_success_count": 1,
+      "max_observed_search_depth": 5,
+      "model_call_accounting_complete": true,
+      "model_calls": [
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 6.541,
+          "error": null,
+          "model": "deepseek-v4-flash",
+          "ok": true,
+          "proposal_id": "58f74d75d5b50f8392e96c22",
+          "provider": "deepseek",
+          "purpose": "strategy-proposal",
+          "response_sha256": "4a1aebb4033f7ed291241257cb7281964bf4d862e0eaab36d1aabb57ff6e76e7",
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 684,
+            "completion_tokens_details": {
+              "reasoning_tokens": 543
+            },
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 4119,
+            "prompt_tokens": 4119,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            },
+            "total_tokens": 4803
+          }
+        },
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 5.135,
+          "error": null,
+          "model": "deepseek-v4-flash",
+          "ok": true,
+          "proposal_id": "0e8f80e385b104985d4ef442",
+          "provider": "deepseek",
+          "purpose": "strategy-proposal",
+          "response_sha256": "6452f4b09735ae161bf73e049513831bf5a886cb3eb5def8002b5b769fdc7c03",
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 564,
+            "completion_tokens_details": {
+              "reasoning_tokens": 457
+            },
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 767,
+            "prompt_tokens": 767,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            },
+            "total_tokens": 1331
+          }
+        },
+        {
+          "attempts": 1,
+          "called": true,
+          "duration_seconds": 2.852,
+          "error": null,
+          "model": "deepseek-v4-flash",
+          "ok": true,
+          "proposal_id": "0e683bbb2d527bfda652d748",
+          "provider": "deepseek",
+          "purpose": "strategy-proposal",
+          "response_sha256": "7f94f2981a6d97e5a4a0fd3435d20e3b59add9be0dbe006447730dafecbc7527",
+          "status_code": 200,
+          "usage": {
+            "completion_tokens": 271,
+            "completion_tokens_details": {
+              "reasoning_tokens": 177
+            },
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 980,
+            "prompt_tokens": 980,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            },
+            "total_tokens": 1251
+          }
+        }
+      ],
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case20OR3XOR2",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case20OR3XOR2.problem",
+      "proof_status": "VERIFIED",
+      "pruned_cycle_count": 0,
+      "qualification_status": "NOT_RUN",
+      "recursive_substep_plan_count": 5,
+      "repair_authoring_count": 0,
+      "repair_lineage": [],
+      "repeated_diagnostic_count": 0,
+      "report": "/Users/chenyuan/Project/Auto_Reduction_Agent/tmp/boolean-csp-structured-real-api-20260815-v2/cases/Case20OR3XOR2/report.json",
+      "requeued_failure_state_count": 0,
+      "solution_classification": "VERIFIED_AUXILIARY_GENERATION",
+      "split": "heldout",
+      "strategy_applied_decision_count": 3,
+      "strategy_effect_receipts": [
+        {
+          "applied_action_id": "theorem-67805fa3cc50a19864f1",
+          "applied_design_id": null,
+          "decision_id": "strategy-f4d491aea7588f293086",
+          "effect": "selected-action",
+          "next_state_fingerprint": "sha256:af0b3433a6fa5c164e6d2c3b72ca87fd90c986a5059aadd8da6dc114b7ad435f",
+          "override_reason": null,
+          "proposal_status": "valid",
+          "proposed_action_id": "theorem-67805fa3cc50a19864f1"
+        },
+        {
+          "applied_action_id": "structural-dbf967a31c2b7e643866",
+          "applied_design_id": "design-65862f7ddbbd1989b697",
+          "decision_id": "strategy-440f3fbc506bddb2919b",
+          "effect": "selected-design",
+          "next_state_fingerprint": "sha256:a308e4fdebce1a3e75386194d38a797241c8b63e2c637d8103252a4572bee6df",
+          "override_reason": null,
+          "proposal_status": "valid",
+          "proposed_action_id": "structural-dbf967a31c2b7e643866"
+        },
+        {
+          "applied_action_id": "plugin-83ca414807bd2a387bd5",
+          "applied_design_id": "design-finite-83ca414807bd2a38",
+          "decision_id": "strategy-cef2e279b9271d74c22a",
+          "effect": "selected-design",
+          "next_state_fingerprint": "sha256:e8698d4f6259c6e1fb44cdda311e237394ad3e413a66fc18b1821f2eae9c5306",
+          "override_reason": null,
+          "proposal_status": "valid",
+          "proposed_action_id": "plugin-83ca414807bd2a387bd5"
+        }
+      ],
+      "strategy_fallback_count": 0,
+      "strategy_rejected_count": 0,
+      "strategy_valid_proposal_count": 3,
+      "synthesis_design_count": 1,
+      "synthesis_designs": [
+        {
+          "candidate_implementation_hashes": [],
+          "candidate_source_hashes": [],
+          "constructor_skeleton": "by\n  apply_generative_rule ComplexityReduction.Domain.BooleanCSP.Hardness.LanguageInterpretation.mk",
+          "context_capsule_id": null,
+          "contract_id": "contract-ea452031e1612ccf4809",
+          "counterexamples": [],
+          "declarations": [],
+          "design_id": "design-65862f7ddbbd1989b697",
+          "design_kind": "constructor-first",
+          "diagnostic_fingerprints": [],
+          "diagnostic_history": [],
+          "diagnostics": [],
+          "estimated_cost": 5.0,
+          "exact_expected_type": "ComplexityReduction.Domain.BooleanCSP.Hardness.LanguageInterpretation   ComplexityReduction.Domain.BooleanCSP.Hardness.oneInThreeCore   Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case20OR3XOR2.gamma",
+          "generated_files": [],
+          "helper_declarations": [],
+          "materialization_attempts": 0,
+          "mode": "typed-witness",
+          "parent_goal_id": "goal-frame-bff224fce0b085bdea28-0",
+          "previous_implementation": null,
+          "previous_source_hash": null,
+          "repair_attempts": 0,
+          "residual_obligations": [
+            "obligation-69a12810246065630d60"
+          ],
+          "stage": "verified",
+          "staged_goal_ids": [
+            "goal-frame-4181b816c8274465e9e7-0"
+          ],
+          "status": "verified",
+          "strategy_decision_id": "strategy-440f3fbc506bddb2919b",
+          "terminal_reason": null,
+          "verified_capabilities": [
+            "frame-4181b816c8274465e9e7"
+          ]
+        }
+      ],
+      "unused_strategy_call_count": 0,
+      "verification": {
+        "axiom_audit_passed": true,
+        "endpoint_equality_audit_passed": true,
+        "exact_type_verified": true,
+        "independent_replay_passed": true,
+        "kernel_verified": true,
+        "placeholder_scan_passed": true,
+        "same_index_audit_passed": true
+      },
+      "verified_application_frame_count": 2,
+      "wall_seconds": 328.6556786250003
+    }
+  ],
+  "date": "2026-08-15",
+  "real_api": {
+    "accepted_response_count": 48,
+    "api_key_configured": true,
+    "base_url": "https://api.deepseek.com",
+    "call_accounting_complete": true,
+    "call_purposes": {
+      "strategy-proposal": 48
+    },
+    "external_payload_classes": [
+      "exact Lean child goals",
+      "candidate theorem names",
+      "Lean diagnostics",
+      "local construction contracts"
+    ],
+    "http_200_calls": 48,
+    "http_status_counts": {
+      "200": 48
+    },
+    "max_retries": 0,
+    "max_tokens": 3000,
+    "model": "deepseek-v4-flash",
+    "provider": "deepseek",
+    "reasoning_effort": "low",
+    "temperature": 0.0,
+    "timeout_seconds": 60,
+    "total_calls": 48,
+    "usage": {
+      "completion_tokens": 37143,
+      "prompt_cache_hit_tokens": 34688,
+      "prompt_cache_miss_tokens": 58834,
+      "prompt_tokens": 93522,
+      "total_tokens": 130665
+    }
+  },
+  "results": {
+    "generated_capability_case_count": 16,
+    "generated_capability_used_case_count": 16,
+    "maximum_recursive_depth": 5,
+    "status_counts": {
+      "VERIFIED": 20
+    },
+    "total_application_frames": 32,
+    "total_capability_registrations": 16,
+    "total_context_expansions": 0,
+    "total_data_bindings": 48,
+    "total_dependent_goal_activations": 64,
+    "total_duplicate_candidate_rejections": 0,
+    "total_expanded_states": 83,
+    "total_finite_candidates": 16,
+    "total_finite_certificates": 16,
+    "total_finite_counterexamples": 0,
+    "total_generated_lean_checks": 16,
+    "total_generated_lean_successes": 16,
+    "total_repair_authoring_calls": 0,
+    "total_repeated_diagnostics": 0,
+    "total_requeues": 0,
+    "total_strategy_applied_decisions": 48,
+    "total_strategy_fallbacks": 0,
+    "total_strategy_rejections": 0,
+    "total_strategy_valid_proposals": 48,
+    "total_synthesis_designs": 16,
+    "total_unused_strategy_calls": 0,
+    "total_verified_frames": 32,
+    "verified_case_count": 20
+  },
+  "route_policy": {
+    "final_transitive_dependency_audit_enabled": true,
+    "forbidden_declarations": [
+      "ComplexityReduction.Domain.BooleanCSP.Hardness.NativeTMNPHard_of_notSchaeferTractable",
+      "ComplexityReduction.Domain.BooleanCSP.Hardness.NativeTMNPHard_of_notSchaeferTractable_with_oneInThree",
+      "ComplexityReduction.Domain.BooleanCSP.schaefer_dichotomy",
+      "ComplexityReduction.Domain.BooleanCSP.Hardness.CanonicalHardCores.oneInThreeInterpretation",
+      "ComplexityReduction.Domain.BooleanCSP.Hardness.CanonicalHardCores.naeInterpretation"
+    ]
+  },
+  "schema_version": "general_agent_boolean_csp_recursive_real_api_report_v1",
+  "suite": {
+    "completed_case_count": 20,
+    "oracle_accessed_during_run": false,
+    "selected_case_count": 20,
+    "suite_id": "boolean-csp-np-hard-v1",
+    "suite_sha256": "sha256:f5127d4795a19f9f02ac18133d6dd5fdfb8d96d7c4d5a9bc76a1bcf97fea47a0"
+  },
+  "timing": {
+    "completed_at_utc": "2026-08-15T00:50:46.387890+00:00",
+    "jobs": 4,
+    "started_at_utc": "2026-08-15T00:23:20.679425+00:00",
+    "wall_seconds": 1645.680934791002
+  },
+  "validation": {
+    "all_20_cases_completed": true,
+    "all_called_requests_http_200": true,
+    "blocked_cases_missing_frontier_receipt": [],
+    "blocked_frontier_receipts_complete": true,
+    "context_capsule_receipts_present_for_authoring": true,
+    "forbidden_direct_or_transitive_dependency_count": 0,
+    "repair_prompts_have_matching_base_hash": true,
+    "strategy_accounting_complete": true,
+    "unused_strategy_call_count_is_zero": true,
+    "verified_cases_with_failed_route_audit": [],
+    "verified_route_audits_passed": true
+  }
+}

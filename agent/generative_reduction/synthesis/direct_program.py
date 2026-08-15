@@ -9,7 +9,9 @@ def direct_program_design(design: SynthesisDesign, *, declaration: str) -> Synth
     return replace(
         design,
         mode="direct-synthesis",
+        design_kind="direct-authoring",
         declarations=(*design.declarations, declaration),
+        stage="designed",
         status="designed",
         estimated_cost=design.estimated_cost + 1.0,
     )

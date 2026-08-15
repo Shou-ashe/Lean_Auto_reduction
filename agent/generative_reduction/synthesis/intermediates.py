@@ -9,7 +9,9 @@ def with_intermediate(design: SynthesisDesign, declaration: str) -> SynthesisDes
     return replace(
         design,
         mode="intermediate-first",
+        design_kind="helper-first",
         declarations=(*design.declarations, declaration),
+        stage="designed",
         status="designed",
         estimated_cost=design.estimated_cost + 2.5,
     )

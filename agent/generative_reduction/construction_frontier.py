@@ -25,17 +25,21 @@ class ConstructionFrontier:
     def _cost(design: SynthesisDesign) -> tuple[object, ...]:
         progress_rank = {
             "verified": 0,
-            "materialized": 1,
+            "materializing": 1,
+            "context-ready": 2,
             "designed": 2,
             "planned": 3,
-            "repair-required": 4,
+            "repairing": 4,
+            "lean-failed": 4,
             "failed": 5,
+            "abandoned": 6,
         }.get(design.status, 6)
         return (
             progress_rank,
             len(design.residual_obligations),
             design.estimated_cost,
             design.materialization_attempts,
+            design.repair_attempts,
             design.design_id,
         )
 
