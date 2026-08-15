@@ -9,6 +9,7 @@ from .action_providers import ActionProviders
 from .budgets import BudgetTracker
 from .construction_contract import build_construction_contract
 from .exact_closure_probe import ClosureChecker, ExactClosureProbe
+from .finite_synthesis import FiniteSynthesisPlugin
 from .goal_kind_adapters import is_generation_eligible
 from .guided_proof_planner import GuidedProofPlanner
 from .models import (
@@ -31,6 +32,7 @@ class CapabilityPlanner:
         solver_registry: PremiseSolverRegistry,
         tracker: BudgetTracker,
         checker: ClosureChecker | None = None,
+        finite_plugins: Sequence[FiniteSynthesisPlugin] = (),
     ):
         self.solver_registry = solver_registry
         self.tracker = tracker
@@ -45,7 +47,7 @@ class CapabilityPlanner:
             max_candidates=budget.max_guidance_candidates_per_goal,
             max_plans=budget.max_guidance_plans_per_goal,
         )
-        self.providers = ActionProviders()
+        self.providers = ActionProviders(tuple(finite_plugins))
         self._closure_cache: dict[str, ExactClosureResult] = {}
         self._plan_cache: dict[str, SubstepPlan] = {}
 
@@ -184,6 +186,7 @@ class CapabilityPlanner:
                 ),
             )
         actions = self.providers.collect(
+            goal=goal,
             closure=provider_closure,
             guidance=guidance,
             contract=contract,

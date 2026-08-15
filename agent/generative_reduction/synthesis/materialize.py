@@ -33,7 +33,8 @@ def materialize(
         design,
         generated_files=(*design.generated_files, str(path)),
         materialization_attempts=design.materialization_attempts + 1,
-        status="materialized",
+        stage="materializing",
+        status="materializing",
     )
 
 

@@ -29,6 +29,8 @@ FORBIDDEN_DICHOTOMY_DECLARATIONS = (
     "ComplexityReduction.Domain.BooleanCSP.Hardness.NativeTMNPHard_of_notSchaeferTractable",
     "ComplexityReduction.Domain.BooleanCSP.Hardness.NativeTMNPHard_of_notSchaeferTractable_with_oneInThree",
     "ComplexityReduction.Domain.BooleanCSP.schaefer_dichotomy",
+    "ComplexityReduction.Domain.BooleanCSP.Hardness.CanonicalHardCores.oneInThreeInterpretation",
+    "ComplexityReduction.Domain.BooleanCSP.Hardness.CanonicalHardCores.naeInterpretation",
 )
 DEFAULT_REPORT_NAME = (
     "GENERAL_AGENT_BOOLEAN_CSP_RECURSIVE_DICHOTOMY_FREE_REAL_API_REPORT.json"
@@ -98,6 +100,7 @@ def _run_case(
     deepseek: DeepSeekConfig,
     profile: str,
     lean_timeout_seconds: int,
+    forbidden_declarations: Sequence[str],
 ) -> dict[str, Any]:
     label = _case_label(case.module)
     case_output = output_root / "cases" / label
@@ -112,7 +115,7 @@ def _run_case(
             profile=profile,
             model_policy=ModelPolicy.REQUIRED,
             plugins=("boolean_csp",),
-            forbidden_declarations=FORBIDDEN_DICHOTOMY_DECLARATIONS,
+            forbidden_declarations=tuple(forbidden_declarations),
             budget=recursive_benchmark_budget(),
             lean_timeout_seconds=lean_timeout_seconds,
             deepseek=deepseek,
@@ -151,6 +154,34 @@ def _run_case(
         "dependent_goal_activation_count": result.dependent_goal_activation_count,
         "recursive_substep_plan_count": result.recursive_substep_plan_count,
         "generated_capability_count": result.generated_capability_count,
+        "strategy_valid_proposal_count": result.strategy_valid_proposal_count,
+        "strategy_applied_decision_count": result.strategy_applied_decision_count,
+        "strategy_fallback_count": result.strategy_fallback_count,
+        "strategy_rejected_count": result.strategy_rejected_count,
+        "unused_strategy_call_count": result.unused_strategy_call_count,
+        "strategy_effect_receipts": [
+            receipt.__dict__ for receipt in result.strategy_effect_receipts
+        ],
+        "finite_candidate_count": result.finite_candidate_count,
+        "finite_counterexample_count": result.finite_counterexample_count,
+        "finite_certificate_count": result.finite_certificate_count,
+        "generated_lean_check_count": result.generated_lean_check_count,
+        "generated_lean_success_count": result.generated_lean_success_count,
+        "capability_registration_count": result.capability_registration_count,
+        "synthesis_design_count": result.synthesis_design_count,
+        "context_expansion_count": result.context_expansion_count,
+        "repair_authoring_count": result.repair_authoring_count,
+        "duplicate_candidate_rejection_count": (
+            result.duplicate_candidate_rejection_count
+        ),
+        "repeated_diagnostic_count": result.repeated_diagnostic_count,
+        "synthesis_designs": list(result.synthesis_designs),
+        "context_capsule_ids": [
+            item.get("capsule_id")
+            for item in result.context_capsules
+            if isinstance(item, dict)
+        ],
+        "repair_lineage": list(result.repair_lineage),
         "frontier_exhaustion_receipt": result.frontier_exhaustion_receipt,
         "blocker": result.blocker,
         "model_calls": [
@@ -166,6 +197,7 @@ def _run_case(
                 "usage": call.usage,
                 "response_sha256": call.response_sha256,
                 "error": call.error,
+                "proposal_id": call.proposal_id,
             }
             for call in result.model_calls
         ],
@@ -188,6 +220,71 @@ def _run_case(
         ),
         "verification": result.verification.__dict__,
         "final_route_audit_receipt": result.final_route_audit_receipt,
+        "model_call_accounting_complete": True,
+    }
+
+
+def _exception_case_row(*, output_root: Path, case, error: Exception) -> dict[str, Any]:
+    label = _case_label(case.module)
+    return {
+        "case_id": case.case_id,
+        "case": label,
+        "split": case.split,
+        "module": case.module,
+        "problem": case.problem,
+        "proof_status": "INTERNAL_ERROR",
+        "solution_classification": "NONE",
+        "qualification_status": "NOT_RUN",
+        "report": str(output_root / "cases" / label / "report.json"),
+        "artifact": None,
+        "wall_seconds": 0.0,
+        "expanded_state_count": 0,
+        "requeued_failure_state_count": 0,
+        "pruned_cycle_count": 0,
+        "max_observed_search_depth": 0,
+        "application_frame_count": 0,
+        "verified_application_frame_count": 0,
+        "data_binding_count": 0,
+        "dependent_goal_activation_count": 0,
+        "recursive_substep_plan_count": 0,
+        "generated_capability_count": 0,
+        "strategy_valid_proposal_count": 0,
+        "strategy_applied_decision_count": 0,
+        "strategy_fallback_count": 0,
+        "strategy_rejected_count": 0,
+        "unused_strategy_call_count": 0,
+        "strategy_effect_receipts": [],
+        "finite_candidate_count": 0,
+        "finite_counterexample_count": 0,
+        "finite_certificate_count": 0,
+        "generated_lean_check_count": 0,
+        "generated_lean_success_count": 0,
+        "capability_registration_count": 0,
+        "synthesis_design_count": 0,
+        "context_expansion_count": 0,
+        "repair_authoring_count": 0,
+        "duplicate_candidate_rejection_count": 0,
+        "repeated_diagnostic_count": 0,
+        "synthesis_designs": [],
+        "context_capsule_ids": [],
+        "repair_lineage": [],
+        "frontier_exhaustion_receipt": None,
+        "blocker": f"{type(error).__name__}: {error}",
+        "model_calls": [],
+        "generated_capabilities": [],
+        "generated_declaration_used_by_final_artifact": False,
+        "verification": {
+            "exact_type_verified": False,
+            "kernel_verified": False,
+            "independent_replay_passed": False,
+            "axiom_audit_passed": False,
+            "placeholder_scan_passed": False,
+            "endpoint_equality_audit_passed": False,
+            "same_index_audit_passed": False,
+        },
+        "final_route_audit_receipt": None,
+        "model_call_accounting_complete": False,
+        "exception_type": type(error).__name__,
     }
 
 
@@ -218,6 +315,7 @@ def run_recursive_boolean_csp_regression(
     model_max_retries: int | None = None,
     reasoning_effort: str | None = None,
     report_path: Path | None = None,
+    extra_forbidden_declarations: Sequence[str] = (),
 ) -> dict[str, Any]:
     if jobs < 1 or jobs > 4:
         raise ValueError("jobs must be in 1..4")
@@ -242,6 +340,14 @@ def run_recursive_boolean_csp_regression(
     )
     if not deepseek.api_key:
         raise ValueError("real API regression requires DEEPSEEK_API_KEY")
+    forbidden_declarations = tuple(
+        dict.fromkeys(
+            (
+                *FORBIDDEN_DICHOTOMY_DECLARATIONS,
+                *extra_forbidden_declarations,
+            )
+        )
+    )
     output_root.mkdir(parents=True, exist_ok=True)
     started_at = datetime.now(timezone.utc)
     started = time.monotonic()
@@ -256,11 +362,21 @@ def run_recursive_boolean_csp_regression(
                 deepseek=deepseek,
                 profile=profile,
                 lean_timeout_seconds=lean_timeout_seconds,
-            ): case.case_id
+                forbidden_declarations=forbidden_declarations,
+            ): case
             for case in suite.cases
         }
         for future in as_completed(futures):
-            rows.append(future.result())
+            case = futures[future]
+            try:
+                row = future.result()
+            except Exception as error:
+                row = _exception_case_row(
+                    output_root=output_root,
+                    case=case,
+                    error=error,
+                )
+            rows.append(row)
             rows.sort(key=lambda item: item["case_id"])
             _write_json(
                 output_root / "progress.json",
@@ -290,7 +406,7 @@ def run_recursive_boolean_csp_regression(
             "oracle_accessed_during_run": False,
         },
         "route_policy": {
-            "forbidden_declarations": list(FORBIDDEN_DICHOTOMY_DECLARATIONS),
+            "forbidden_declarations": list(forbidden_declarations),
             "final_transitive_dependency_audit_enabled": True,
         },
         "real_api": {
@@ -302,6 +418,9 @@ def run_recursive_boolean_csp_regression(
             "http_status_counts": dict(http_counts),
             "call_purposes": dict(Counter(call["purpose"] for call in model_calls)),
             "usage": _usage_totals(rows),
+            "call_accounting_complete": all(
+                row.get("model_call_accounting_complete", True) for row in rows
+            ),
             "external_payload_classes": [
                 "exact Lean child goals",
                 "candidate theorem names",
@@ -327,6 +446,54 @@ def run_recursive_boolean_csp_regression(
             "total_data_bindings": sum(row["data_binding_count"] for row in rows),
             "total_dependent_goal_activations": sum(
                 row["dependent_goal_activation_count"] for row in rows
+            ),
+            "total_strategy_valid_proposals": sum(
+                row["strategy_valid_proposal_count"] for row in rows
+            ),
+            "total_strategy_applied_decisions": sum(
+                row["strategy_applied_decision_count"] for row in rows
+            ),
+            "total_strategy_fallbacks": sum(
+                row["strategy_fallback_count"] for row in rows
+            ),
+            "total_strategy_rejections": sum(
+                row["strategy_rejected_count"] for row in rows
+            ),
+            "total_unused_strategy_calls": sum(
+                row["unused_strategy_call_count"] for row in rows
+            ),
+            "total_finite_candidates": sum(
+                row["finite_candidate_count"] for row in rows
+            ),
+            "total_finite_counterexamples": sum(
+                row["finite_counterexample_count"] for row in rows
+            ),
+            "total_finite_certificates": sum(
+                row["finite_certificate_count"] for row in rows
+            ),
+            "total_generated_lean_checks": sum(
+                row["generated_lean_check_count"] for row in rows
+            ),
+            "total_generated_lean_successes": sum(
+                row["generated_lean_success_count"] for row in rows
+            ),
+            "total_capability_registrations": sum(
+                row["capability_registration_count"] for row in rows
+            ),
+            "total_synthesis_designs": sum(
+                row["synthesis_design_count"] for row in rows
+            ),
+            "total_context_expansions": sum(
+                row["context_expansion_count"] for row in rows
+            ),
+            "total_repair_authoring_calls": sum(
+                row["repair_authoring_count"] for row in rows
+            ),
+            "total_duplicate_candidate_rejections": sum(
+                row["duplicate_candidate_rejection_count"] for row in rows
+            ),
+            "total_repeated_diagnostics": sum(
+                row["repeated_diagnostic_count"] for row in rows
             ),
             "maximum_recursive_depth": max(
                 (row["max_observed_search_depth"] for row in rows), default=0
@@ -365,6 +532,36 @@ def run_recursive_boolean_csp_regression(
         "forbidden_direct_or_transitive_dependency_count": len(
             failed_verified_audits
         ),
+        "unused_strategy_call_count_is_zero": not any(
+            row["unused_strategy_call_count"] for row in rows
+        ),
+        "strategy_accounting_complete": all(
+            sum(
+                bool(call.get("called")) and call.get("purpose") == "strategy-proposal"
+                for call in row.get("model_calls", ())
+            )
+            == row["strategy_applied_decision_count"]
+            + row["strategy_fallback_count"]
+            + row["strategy_rejected_count"]
+            for row in rows
+        ),
+        "repair_prompts_have_matching_base_hash": all(
+            all(
+                item.get("kind") != "repair" or bool(item.get("base_sha256"))
+                for item in row.get("repair_lineage", ())
+                if isinstance(item, dict)
+            )
+            for row in rows
+        ),
+        "context_capsule_receipts_present_for_authoring": all(
+            not any(
+                bool(call.get("called"))
+                and call.get("purpose", "").startswith("lean-authoring-")
+                for call in row.get("model_calls", ())
+            )
+            or bool(row.get("context_capsule_ids"))
+            for row in rows
+        ),
     }
     _write_json(output_root / "summary.json", report)
     if report_path is not None:
@@ -389,6 +586,15 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--model-max-retries", type=int, default=0)
     parser.add_argument("--reasoning-effort", default="low")
     parser.add_argument(
+        "--forbid-declaration",
+        action="append",
+        default=[],
+        help=(
+            "additional fully-qualified Lean declaration forbidden from the selected "
+            "or elaborated transitive proof route; may be repeated"
+        ),
+    )
+    parser.add_argument(
         "--report-path",
         type=Path,
         default=root / "Reports" / DEFAULT_REPORT_NAME,
@@ -411,6 +617,7 @@ def main() -> int:
         model_max_retries=arguments.model_max_retries,
         reasoning_effort=arguments.reasoning_effort,
         report_path=arguments.report_path,
+        extra_forbidden_declarations=tuple(arguments.forbid_declaration),
     )
     print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
     return 0 if report["suite"]["completed_case_count"] == 20 else 2

@@ -70,6 +70,8 @@ class ActionDisposition(StringEnum):
 
 class ProviderKind(StringEnum):
     REUSE = "reuse"
+    STRUCTURAL = "structural"
+    PLUGIN = "plugin"
     THEOREM = "theorem"
     SYNTHESIS = "synthesis"
 
@@ -278,6 +280,9 @@ class TheoremIndexEntry:
     premises: tuple[TheoremPremise, ...] = ()
     provenance: str = "environment"
     role_hints: tuple[str, ...] = ()
+    declaration_kind: str | None = None
+    target_binders: tuple[str, ...] = ()
+    target_body: str | None = None
 
     @property
     def premise_count(self) -> int:
@@ -432,6 +437,9 @@ class ProofGuidance:
     confidence: float
     diagnostics: tuple[str, ...] = ()
     alternative_action_ids: tuple[str, ...] = ()
+    candidate_kind: str | None = None
+    target_binders: tuple[str, ...] = ()
+    target_body: str | None = None
 
     @classmethod
     def from_dict(cls, value: Mapping[str, Any]) -> "ProofGuidance":
@@ -483,6 +491,9 @@ class ProofGuidance:
             confidence=float(value["confidence"]),
             diagnostics=tuple(value.get("diagnostics", ())),
             alternative_action_ids=tuple(value.get("alternative_action_ids", ())),
+            candidate_kind=value.get("candidate_kind"),
+            target_binders=tuple(value.get("target_binders", ())),
+            target_body=value.get("target_body"),
         )
 
 
@@ -577,6 +588,42 @@ class ModelCallRecord:
 
 
 @dataclass(frozen=True)
+class StrategyDecision:
+    """One model proposal interpreted against an exact proof-search state.
+
+    This record is control data only.  It can select an already typed action or
+    synthesis design, or request that the current branch be abandoned; it can
+    never certify a proof or create a top-level blocker.
+    """
+
+    decision_id: str
+    goal_id: str
+    state_fingerprint: str
+    decision_kind: str
+    selected_action_id: str | None = None
+    selected_design_id: str | None = None
+    requested_backtrack: bool = False
+    rationale: str = ""
+    confidence: float = 0.0
+    proposal_hash: str = ""
+    applicable: bool = False
+
+
+@dataclass(frozen=True)
+class StrategyEffectReceipt:
+    """Auditable link from a strategy proposal to the next search effect."""
+
+    decision_id: str
+    proposal_status: str
+    proposed_action_id: str | None
+    applied_action_id: str | None
+    applied_design_id: str | None
+    effect: str
+    override_reason: str | None = None
+    next_state_fingerprint: str | None = None
+
+
+@dataclass(frozen=True)
 class GenerationEvidence:
     attempted: bool = False
     strategy_call_count: int = 0
@@ -660,6 +707,8 @@ class GeneralNPHardResult:
     theorem_candidates: tuple[TheoremIndexEntry, ...] = ()
     construction_frontiers: tuple[Mapping[str, Any], ...] = ()
     synthesis_designs: tuple[Mapping[str, Any], ...] = ()
+    context_capsules: tuple[Mapping[str, Any], ...] = ()
+    repair_lineage: tuple[Mapping[str, Any], ...] = ()
     generated_declarations: tuple[str, ...] = ()
     model_calls: tuple[ModelCallRecord, ...] = ()
     lean_commands: tuple[Mapping[str, Any], ...] = ()
@@ -684,6 +733,23 @@ class GeneralNPHardResult:
     frontier_exhaustion_receipt: Mapping[str, Any] | None = None
     per_goal_attempted_actions: Mapping[str, tuple[str, ...]] = field(default_factory=dict)
     final_route_audit_receipt: Mapping[str, Any] | None = None
+    strategy_valid_proposal_count: int = 0
+    strategy_applied_decision_count: int = 0
+    strategy_fallback_count: int = 0
+    strategy_rejected_count: int = 0
+    unused_strategy_call_count: int = 0
+    strategy_effect_receipts: tuple[StrategyEffectReceipt, ...] = ()
+    finite_candidate_count: int = 0
+    finite_counterexample_count: int = 0
+    finite_certificate_count: int = 0
+    generated_lean_check_count: int = 0
+    generated_lean_success_count: int = 0
+    capability_registration_count: int = 0
+    synthesis_design_count: int = 0
+    context_expansion_count: int = 0
+    repair_authoring_count: int = 0
+    duplicate_candidate_rejection_count: int = 0
+    repeated_diagnostic_count: int = 0
     schema_version: str = RESULT_SCHEMA
 
     def __post_init__(self) -> None:
@@ -746,6 +812,8 @@ __all__ = [
     "RootGoal",
     "SolutionClassification",
     "Strategy",
+    "StrategyDecision",
+    "StrategyEffectReceipt",
     "SlotStatus",
     "SubstepPlan",
     "TheoremIndexEntry",

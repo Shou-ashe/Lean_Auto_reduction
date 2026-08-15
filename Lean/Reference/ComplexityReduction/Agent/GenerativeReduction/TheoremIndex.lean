@@ -22,7 +22,7 @@ namespace ComplexityReduction.Agent.GenerativeReduction.TheoremIndex
 open Lean Elab Command Meta Term
 open ComplexityReduction Encoding Certificate
 
-private def schemaVersion := "general_reduction_theorem_index_v1"
+private def schemaVersion := "general_reduction_theorem_index_v2"
 private def marker := "GENERAL_REDUCTION_THEOREM_INDEX"
 private def maximumRenderedChars := 8192
 
@@ -75,6 +75,17 @@ private structure Application where
   premises : Array Premise
   result : Expr
   conclusionHead : Name
+  declarationKind : String
+
+private def declarationKind : ConstantInfo → String
+  | .axiomInfo .. => "axiom"
+  | .defnInfo .. => "definition"
+  | .thmInfo .. => "theorem"
+  | .opaqueInfo .. => "opaque"
+  | .quotInfo .. => "quotient"
+  | .inductInfo .. => "inductive"
+  | .ctorInfo .. => "constructor"
+  | .recInfo .. => "recursor"
 
 private def premiseKind (type : Expr) : MetaM String := do
   if (← isClass? type).isSome then
@@ -147,7 +158,8 @@ private def tryApplication (environment : Environment) (declaration : Name)
       universeParameters := information.levelParams,
       premises,
       result,
-      conclusionHead := head }
+      conclusionHead := head,
+      declarationKind := declarationKind information }
   catch _ =>
     state.restore
     return none
@@ -165,8 +177,15 @@ private def runTarget (environment : Environment) (nonce label : String) (target
       first.declaration.toString < second.declaration.toString
     else
       first.premises.size < second.premises.size
+  let (binderTypes, targetBody) ← forallTelescope target fun binders body => do
+    let types ← binders.mapM fun binder => do
+      renderExpr (← inferType binder)
+    pure (types, ← renderExpr body)
   emit nonce "goal" [label, ← renderExpr target,
-    toString target.hash, toString sortedApplications.size]
+    toString target.hash, toString sortedApplications.size,
+    toString binderTypes.size,
+    String.intercalate " || " binderTypes.toList,
+    targetBody]
   for application in sortedApplications do
     let applicationType ← inferType application.result
     let renderedPremises ← application.premises.toList.mapM fun premise => do
@@ -181,7 +200,8 @@ private def runTarget (environment : Environment) (nonce label : String) (target
       ← renderExpr applicationType,
       toString applicationType.hash,
       application.conclusionHead.toString,
-      application.moduleName.toString]
+      application.moduleName.toString,
+      application.declarationKind]
 
 private def run (environment : Environment) (nonce : String) (problemName : Name) : MetaM Unit := do
   let problem ← match ← ComplexityReduction.Agent.Hardness.InputGate.presented environment problemName with

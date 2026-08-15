@@ -60,7 +60,9 @@ def attach_component(
     return replace(
         design,
         mode="component-first",
+        design_kind="helper-first",
         declarations=(*design.declarations, component.component_id),
+        stage="designed",
         status="designed",
         estimated_cost=design.estimated_cost + 2.0,
     )

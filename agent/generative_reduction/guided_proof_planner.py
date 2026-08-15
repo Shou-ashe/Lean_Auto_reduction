@@ -144,6 +144,9 @@ class GuidedProofPlanner:
                     ),
                     confidence=max(0.05, 1.0 - 0.15 * len(residuals)),
                     diagnostics=(),
+                    candidate_kind=candidate.declaration_kind,
+                    target_binders=candidate.target_binders,
+                    target_body=candidate.target_body,
                 )
             )
         return tuple(sorted(plans, key=guidance_cost)[: self.max_plans])

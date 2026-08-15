@@ -160,6 +160,9 @@ class GenerativeReductionOrchestrator:
         proof_tree: Sequence[ProofStep] = (),
         search_outcome=None,
         final_state: ProofState | None = None,
+        synthesis_designs: Sequence[Mapping[str, Any]] = (),
+        context_capsules: Sequence[Mapping[str, Any]] = (),
+        repair_lineage: Sequence[Mapping[str, Any]] = (),
     ) -> GeneralNPHardResult:
         store.transition(proof_status.value, details={"code": code})
         return self._write_result(
@@ -178,6 +181,9 @@ class GenerativeReductionOrchestrator:
                 capability_planner_decisions=self._planner_decisions(substep_plans),
                 substep_plans=tuple(substep_plans),
                 action_provider_statistics=dict(provider_statistics or {}),
+                synthesis_designs=tuple(synthesis_designs),
+                context_capsules=tuple(context_capsules),
+                repair_lineage=tuple(repair_lineage),
                 model_calls=tuple(model_calls),
                 lean_commands=tuple(commands),
                 blocker={
@@ -231,6 +237,65 @@ class GenerativeReductionOrchestrator:
                     }
                     if final_state
                     else {}
+                ),
+                strategy_valid_proposal_count=getattr(
+                    search_outcome, "strategy_valid_proposals", 0
+                ),
+                strategy_applied_decision_count=getattr(
+                    search_outcome, "strategy_applied_decisions", 0
+                ),
+                strategy_fallback_count=getattr(
+                    search_outcome, "strategy_fallbacks", 0
+                ),
+                strategy_rejected_count=getattr(
+                    search_outcome, "strategy_rejections", 0
+                ),
+                unused_strategy_call_count=max(
+                    0,
+                    sum(
+                        bool(call.called) and call.purpose == "strategy-proposal"
+                        for call in model_calls
+                    )
+                    - getattr(search_outcome, "strategy_applied_decisions", 0)
+                    - getattr(search_outcome, "strategy_fallbacks", 0)
+                    - getattr(search_outcome, "strategy_rejections", 0),
+                ),
+                strategy_effect_receipts=getattr(
+                    search_outcome, "strategy_effect_receipts", ()
+                ),
+                finite_candidate_count=getattr(
+                    search_outcome, "finite_candidate_count", 0
+                ),
+                finite_counterexample_count=getattr(
+                    search_outcome, "finite_counterexample_count", 0
+                ),
+                finite_certificate_count=getattr(
+                    search_outcome, "finite_certificate_count", 0
+                ),
+                generated_lean_check_count=getattr(
+                    search_outcome, "generated_lean_check_count", 0
+                ),
+                generated_lean_success_count=getattr(
+                    search_outcome, "generated_lean_success_count", 0
+                ),
+                capability_registration_count=getattr(
+                    search_outcome, "capability_registration_count", 0
+                ),
+                synthesis_design_count=getattr(
+                    search_outcome, "synthesis_design_count", len(synthesis_designs)
+                ),
+                context_expansion_count=getattr(
+                    search_outcome, "context_expansion_count", 0
+                ),
+                repair_authoring_count=sum(
+                    bool(call.called) and call.purpose == "lean-authoring-repair"
+                    for call in model_calls
+                ),
+                duplicate_candidate_rejection_count=getattr(
+                    search_outcome, "duplicate_candidate_rejection_count", 0
+                ),
+                repeated_diagnostic_count=getattr(
+                    search_outcome, "repeated_diagnostic_count", 0
                 ),
             ),
         )
@@ -492,6 +557,11 @@ class GenerativeReductionOrchestrator:
 
         registry = default_registry()
         installed_plugins = install_plugins(registry, self.config.plugins)
+        finite_plugins = tuple(
+            finite
+            for plugin in installed_plugins
+            for finite in plugin.finite_synthesis_plugins
+        )
         plugin_imports = tuple(
             imported
             for plugin in installed_plugins
@@ -516,6 +586,7 @@ class GenerativeReductionOrchestrator:
             commands=commands,
             model_calls=model_calls,
             event_sink=lambda name, details: store.append_event(name, details=details),
+            finite_plugins=finite_plugins,
         )
         runtime.seed_candidates(initial_state, root_goal.exact_type, candidates)
         coordinator = SearchCoordinator(
@@ -527,12 +598,16 @@ class GenerativeReductionOrchestrator:
             candidate_lookup=runtime.candidate_lookup,
             action_executor=runtime.execute,
             dead_end_handler=runtime.dead_end,
+            strategy_decider=runtime.decide_strategy,
             forbidden_declarations=self.forbidden_declarations,
             event_sink=lambda name, details: store.append_event(name, details=details),
         )
         store.transition("SEARCHING")
         outcome = coordinator.run(initial_state)
         best_state = outcome.best_state
+        synthesis_designs = runtime.synthesis_design_receipts()
+        context_capsules = runtime.context_capsule_receipts()
+        repair_lineage = runtime.repair_lineage_receipts()
         store.write_json(
             "planner/search-outcome.json",
             {
@@ -544,6 +619,28 @@ class GenerativeReductionOrchestrator:
                 "max_observed_depth": outcome.max_observed_depth,
                 "final_frontier_size": outcome.final_frontier_size,
                 "frontier_exhaustion_receipt": outcome.frontier_exhaustion_receipt,
+                "strategy_valid_proposals": outcome.strategy_valid_proposals,
+                "strategy_applied_decisions": outcome.strategy_applied_decisions,
+                "strategy_fallbacks": outcome.strategy_fallbacks,
+                "strategy_rejections": outcome.strategy_rejections,
+                "strategy_effect_receipts": [
+                    asdict(receipt) for receipt in outcome.strategy_effect_receipts
+                ],
+                "finite_candidate_count": outcome.finite_candidate_count,
+                "finite_counterexample_count": outcome.finite_counterexample_count,
+                "finite_certificate_count": outcome.finite_certificate_count,
+                "generated_lean_check_count": outcome.generated_lean_check_count,
+                "generated_lean_success_count": outcome.generated_lean_success_count,
+                "capability_registration_count": outcome.capability_registration_count,
+                "synthesis_design_count": outcome.synthesis_design_count,
+                "context_expansion_count": outcome.context_expansion_count,
+                "duplicate_candidate_rejection_count": (
+                    outcome.duplicate_candidate_rejection_count
+                ),
+                "repeated_diagnostic_count": outcome.repeated_diagnostic_count,
+                "synthesis_designs": list(synthesis_designs),
+                "context_capsules": list(context_capsules),
+                "repair_lineage": list(repair_lineage),
                 "best_state": _as_json_mapping(best_state),
             },
         )
@@ -593,6 +690,9 @@ class GenerativeReductionOrchestrator:
                 provider_statistics=outcome.provider_statistics,
                 search_outcome=outcome,
                 final_state=completed,
+                synthesis_designs=synthesis_designs,
+                context_capsules=context_capsules,
+                repair_lineage=repair_lineage,
             )
 
         proof_status = (
@@ -646,6 +746,9 @@ class GenerativeReductionOrchestrator:
             proof_tree=best_state.proof_skeleton,
             search_outcome=outcome,
             final_state=best_state,
+            synthesis_designs=synthesis_designs,
+            context_capsules=context_capsules,
+            repair_lineage=repair_lineage,
         )
 
     def _closed_resolver_probe(self, *, store, reference):
@@ -695,6 +798,9 @@ class GenerativeReductionOrchestrator:
         proof_tree=(),
         search_outcome=None,
         final_state: ProofState | None = None,
+        synthesis_designs: Sequence[Mapping[str, Any]] = (),
+        context_capsules: Sequence[Mapping[str, Any]] = (),
+        repair_lineage: Sequence[Mapping[str, Any]] = (),
     ) -> GeneralNPHardResult:
         artifact_path = store.write_text("Artifact.lean", source)
         store.transition("PROOF_RECONSTRUCTED")
@@ -727,6 +833,9 @@ class GenerativeReductionOrchestrator:
                 proof_tree=proof_tree or ((proof_step,) if proof_step else ()),
                 search_outcome=search_outcome,
                 final_state=final_state,
+                synthesis_designs=synthesis_designs,
+                context_capsules=context_capsules,
+                repair_lineage=repair_lineage,
             )
         store.transition("PROOF_VERIFIED")
         classification = classify_generation(generation_evidence)
@@ -748,6 +857,9 @@ class GenerativeReductionOrchestrator:
             substep_plans=tuple(substep_plans),
             action_provider_statistics=provider_statistics,
             theorem_candidates=tuple(candidates),
+            synthesis_designs=tuple(synthesis_designs),
+            context_capsules=tuple(context_capsules),
+            repair_lineage=tuple(repair_lineage),
             generated_declarations=tuple(
                 dict.fromkeys(
                     (
@@ -815,6 +927,65 @@ class GenerativeReductionOrchestrator:
                 "transitive_audit_emitted": bool(self.forbidden_declarations),
                 "passed": verification.kernel_verified,
             },
+            strategy_valid_proposal_count=getattr(
+                search_outcome, "strategy_valid_proposals", 0
+            ),
+            strategy_applied_decision_count=getattr(
+                search_outcome, "strategy_applied_decisions", 0
+            ),
+            strategy_fallback_count=getattr(
+                search_outcome, "strategy_fallbacks", 0
+            ),
+            strategy_rejected_count=getattr(
+                search_outcome, "strategy_rejections", 0
+            ),
+            unused_strategy_call_count=max(
+                0,
+                sum(
+                    bool(call.called) and call.purpose == "strategy-proposal"
+                    for call in model_calls
+                )
+                - getattr(search_outcome, "strategy_applied_decisions", 0)
+                - getattr(search_outcome, "strategy_fallbacks", 0)
+                - getattr(search_outcome, "strategy_rejections", 0),
+            ),
+            strategy_effect_receipts=getattr(
+                search_outcome, "strategy_effect_receipts", ()
+            ),
+            finite_candidate_count=getattr(
+                search_outcome, "finite_candidate_count", 0
+            ),
+            finite_counterexample_count=getattr(
+                search_outcome, "finite_counterexample_count", 0
+            ),
+            finite_certificate_count=getattr(
+                search_outcome, "finite_certificate_count", 0
+            ),
+            generated_lean_check_count=getattr(
+                search_outcome, "generated_lean_check_count", 0
+            ),
+            generated_lean_success_count=getattr(
+                search_outcome, "generated_lean_success_count", 0
+            ),
+            capability_registration_count=getattr(
+                search_outcome, "capability_registration_count", 0
+            ),
+            synthesis_design_count=getattr(
+                search_outcome, "synthesis_design_count", len(synthesis_designs)
+            ),
+            context_expansion_count=getattr(
+                search_outcome, "context_expansion_count", 0
+            ),
+            repair_authoring_count=sum(
+                bool(call.called) and call.purpose == "lean-authoring-repair"
+                for call in model_calls
+            ),
+            duplicate_candidate_rejection_count=getattr(
+                search_outcome, "duplicate_candidate_rejection_count", 0
+            ),
+            repeated_diagnostic_count=getattr(
+                search_outcome, "repeated_diagnostic_count", 0
+            ),
         )
         store.transition("COMPLETED")
         return self._write_result(store, result)

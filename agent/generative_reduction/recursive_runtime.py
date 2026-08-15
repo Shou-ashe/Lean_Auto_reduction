@@ -7,7 +7,7 @@ between proof states.
 
 from __future__ import annotations
 
-from dataclasses import replace
+from dataclasses import asdict, replace
 from pathlib import Path
 from typing import Callable, Mapping, MutableSequence, Sequence
 
@@ -15,7 +15,9 @@ from agent.hardness.model_client import DeepSeekClient, DeepSeekConfig
 
 from .budgets import BudgetTracker
 from .capability_planner import CapabilityPlanner
+from .context_capsule import ContextCapsule, build_context_capsule
 from .exact_closure_probe import ClosureCheck
+from .finite_synthesis import FiniteSynthesisPlugin
 from .goal_kind_adapters import classify_goal
 from .job import GeneralJobStore
 from .lean_bridge import (
@@ -24,7 +26,13 @@ from .lean_bridge import (
     run_lean_file,
     run_rule_instantiation_probe,
 )
-from .model import propose_implementation, propose_strategy
+from .model import (
+    implementation_sha256,
+    propose_initial_implementation,
+    propose_repair,
+    propose_strategy,
+    validate_strategy_proposal,
+)
 from .models import (
     ActionDisposition,
     ApplicationFrame,
@@ -43,6 +51,7 @@ from .models import (
     ProviderKind,
     ReusableFragment,
     SlotStatus,
+    StrategyDecision,
     SubstepPlan,
     TheoremIndexEntry,
     stable_sha256,
@@ -53,6 +62,12 @@ from .reconstruction import (
     build_authored_capability_source,
     build_frame_check_source,
     build_goal_fragment_check_source,
+)
+from .synthesis import (
+    SynthesisDesign,
+    classify_lean_diagnostic,
+    record_diagnostic,
+    source_window,
 )
 from .theorem_index import is_runtime_candidate_declaration, query_typed_goal_index
 
@@ -88,6 +103,7 @@ class RecursiveSearchRuntime:
         commands: MutableSequence[Mapping[str, object]],
         model_calls: MutableSequence[ModelCallRecord],
         event_sink: EventSink | None = None,
+        finite_plugins: Sequence[FiniteSynthesisPlugin] = (),
     ):
         self.root = root.resolve()
         self.store = store
@@ -102,14 +118,20 @@ class RecursiveSearchRuntime:
         self.commands = commands
         self.model_calls = model_calls
         self.event_sink = event_sink
+        self._finite_plugins = {plugin.name: plugin for plugin in finite_plugins}
         self._candidate_cache: dict[str, tuple[TheoremIndexEntry, ...]] = {}
         self._data_witness_rank_cache: dict[str, tuple[str, ...]] = {}
         self._lookahead_closure_cache: dict[str, bool] = {}
+        self._finite_lookahead_cache: dict[str, bool] = {}
         self._candidate_entries: dict[str, TheoremIndexEntry] = {}
         self._planning_state: ProofState | None = None
         self._last_candidates_by_goal: dict[str, tuple[TheoremIndexEntry, ...]] = {}
         self._frame_actions: dict[str, CandidateAction] = {}
-        self._strategy_plans: set[str] = set()
+        self._strategy_decisions: dict[str, StrategyDecision] = {}
+        self._candidate_source_hashes: set[str] = set()
+        self._synthesis_designs: dict[str, SynthesisDesign] = {}
+        self._context_capsules: dict[str, ContextCapsule] = {}
+        self._repair_lineage: list[Mapping[str, object]] = []
         self._client = (
             DeepSeekClient(deepseek)
             if deepseek is not None and bool(deepseek.api_key)
@@ -119,6 +141,7 @@ class RecursiveSearchRuntime:
             solver_registry=solver_registry,
             tracker=tracker,
             checker=self.check_closure,
+            finite_plugins=finite_plugins,
         )
 
     def _event(self, name: str, **details: object) -> None:
@@ -136,6 +159,112 @@ class RecursiveSearchRuntime:
         )
         self.model_calls.append(enriched)
         return enriched
+
+    def synthesis_design_receipts(self) -> tuple[Mapping[str, object], ...]:
+        return tuple(asdict(item) for item in self._synthesis_designs.values())
+
+    def context_capsule_receipts(self) -> tuple[Mapping[str, object], ...]:
+        return tuple(capsule.to_dict() for capsule in self._context_capsules.values())
+
+    def repair_lineage_receipts(self) -> tuple[Mapping[str, object], ...]:
+        return tuple(self._repair_lineage)
+
+    def _store_design(self, design: SynthesisDesign) -> SynthesisDesign:
+        previous = self._synthesis_designs.get(design.design_id)
+        self._synthesis_designs[design.design_id] = design
+        if previous is None:
+            self.tracker.consume("synthesis_designs")
+            self._event(
+                "SYNTHESIS_DESIGN_CREATED",
+                design_id=design.design_id,
+                contract_id=design.contract_id,
+                parent_goal_id=design.parent_goal_id,
+                design_kind=design.design_kind,
+                mode=design.mode,
+            )
+        elif previous.stage != design.stage or previous.status != design.status:
+            self._event(
+                "SYNTHESIS_DESIGN_TRANSITION",
+                design_id=design.design_id,
+                from_stage=previous.stage,
+                to_stage=design.stage,
+                status=design.status,
+                terminal_reason=design.terminal_reason,
+            )
+        return design
+
+    def _design_for_action(
+        self,
+        *,
+        goal: OpenGoal,
+        contract,
+        action: CandidateAction,
+    ) -> SynthesisDesign:
+        design_id = str(action.metadata.get("design_id") or "")
+        existing = self._synthesis_designs.get(design_id)
+        if existing is not None:
+            return existing
+        mode = str(action.metadata.get("construction_mode") or "direct-authoring")
+        design = SynthesisDesign.for_contract(
+            contract,
+            mode=mode,
+            parent_goal_id=goal.goal_id,
+        )
+        if design_id and design.design_id != design_id:
+            design = replace(design, design_id=design_id)
+        design = replace(
+            design,
+            constructor_skeleton=(
+                str(action.metadata["constructor_skeleton"])
+                if action.metadata.get("constructor_skeleton")
+                else None
+            ),
+            strategy_decision_id=(
+                str(action.metadata["strategy_decision_id"])
+                if action.metadata.get("strategy_decision_id")
+                else None
+            ),
+        )
+        return self._store_design(design)
+
+    def _build_context_capsule(
+        self,
+        *,
+        state: ProofState,
+        goal: OpenGoal,
+        plan: SubstepPlan,
+        diagnostics: str | None,
+        expansion_ordinal: int,
+    ) -> ContextCapsule:
+        capsule = build_context_capsule(
+            goal=goal,
+            candidates=self._last_candidates_by_goal.get(goal.goal_id, ()),
+            guidance=plan.ranked_proof_guidance,
+            generated_capabilities=state.generated_capabilities,
+            imports=(*self.modules, *self.plugin_imports, *state.imports),
+            environment_fingerprint=stable_sha256(
+                {
+                    "imports": goal.key.import_closure_fingerprint,
+                    "capabilities": state.capability_fingerprint,
+                }
+            ),
+            diagnostics=diagnostics,
+            expansion_ordinal=expansion_ordinal,
+        )
+        if capsule.capsule_id not in self._context_capsules:
+            self._context_capsules[capsule.capsule_id] = capsule
+            self.store.write_json(
+                f"work/context/{capsule.capsule_id}.json", capsule.to_dict()
+            )
+            self._event(
+                "CONTEXT_CAPSULE_READY",
+                capsule_id=capsule.capsule_id,
+                goal_id=goal.goal_id,
+                token_estimate=capsule.token_estimate,
+                diagnostic_fingerprint=capsule.diagnostic_fingerprint,
+                expansion_ordinal=expansion_ordinal,
+            )
+        return capsule
 
     def _query_index(
         self, state: ProofState, exact_type: str, *, purpose: str
@@ -182,6 +311,12 @@ class RecursiveSearchRuntime:
                 dependent_slot_id=goal.producer_slot_id,
             )
             if rebound is not None:
+                rebound_frame = rebound.frame(frame.frame_id)
+                ready_binder_slot_ids = {
+                    slot.slot_id
+                    for slot in rebound_frame.binder_slots
+                    if slot.status == SlotStatus.READY
+                }
                 rebind_action = CandidateAction(
                     action_id=(
                         "dependent-data-rebind-"
@@ -200,25 +335,35 @@ class RecursiveSearchRuntime:
                     declaration=frame.declaration,
                 )
                 restored_goal = next(
-                    item
-                    for item in rebound.open_goals
-                    if item.producer_frame_id == frame.frame_id
-                    and item.producer_slot_id in goal.dependency_slot_ids
+                    (
+                        item
+                        for item in rebound.open_goals
+                        if item.producer_frame_id == frame.frame_id
+                        and item.producer_slot_id in ready_binder_slot_ids
+                    ),
+                    None,
                 )
-                rebound = rebound.remember_failure(
-                    action=rebind_action,
-                    diagnostic=reason,
-                    blocker_code="dependent_branch_exhausted_rebind",
-                    goal_id=restored_goal.goal_id,
-                )
+                if restored_goal is not None:
+                    rebound = rebound.remember_failure(
+                        action=rebind_action,
+                        diagnostic=reason,
+                        blocker_code="dependent_branch_exhausted_rebind",
+                        goal_id=restored_goal.goal_id,
+                    )
+                    self._event(
+                        "DATA_BINDING_REOPENED",
+                        frame_id=frame.frame_id,
+                        failed_slot_id=goal.producer_slot_id,
+                        restored_goal_id=restored_goal.goal_id,
+                        attempted_actions=restored_goal.attempted_actions,
+                    )
+                    return rebound
                 self._event(
-                    "DATA_BINDING_REOPENED",
+                    "DATA_BINDING_REOPEN_FAILED",
                     frame_id=frame.frame_id,
                     failed_slot_id=goal.producer_slot_id,
-                    restored_goal_id=restored_goal.goal_id,
-                    attempted_actions=restored_goal.attempted_actions,
+                    ready_binder_slot_ids=sorted(ready_binder_slot_ids),
                 )
-                return rebound
         action = self._frame_actions.get(frame.frame_id)
         if action is None:
             action = CandidateAction(
@@ -253,22 +398,90 @@ class RecursiveSearchRuntime:
         *,
         state: ProofState,
         goal: OpenGoal,
-        action: CandidateAction,
-        contract_id: str,
-        mode: str,
+        actions: Sequence[CandidateAction],
+        plan: SubstepPlan,
+        remaining_model_calls: int | None = None,
     ) -> str:
-        # Failure memory changes a plan fingerprint on every repair.  Strategy
-        # selection is observational here, so reuse it for the same typed
-        # synthesis action until branch-local capabilities actually change.
+        design_ids = sorted(
+            str(action.metadata["design_id"])
+            for action in actions
+            if action.metadata.get("design_id")
+        )
         return stable_sha256(
             {
+                "state": state.fingerprint,
                 "goal": goal.key.fingerprint,
-                "action": action.action_id,
-                "contract": contract_id,
-                "mode": mode,
+                "goal_id": goal.goal_id,
+                "actions": sorted(action.action_id for action in actions),
+                "designs": design_ids,
+                "plan": plan.plan_fingerprint,
+                "failures": state.normalized_failure_fingerprints,
                 "capabilities": state.capability_fingerprint,
+                "bindings": [
+                    (
+                        frame.frame_id,
+                        tuple(
+                            (
+                                slot.slot_id,
+                                slot.status.value,
+                                getattr(slot, "bound_declaration", None),
+                            )
+                            for slot in frame.binder_slots
+                        ),
+                    )
+                    for frame in state.application_frames
+                ],
+                "remaining_model_calls_bucket": (
+                    None
+                    if remaining_model_calls is None
+                    else remaining_model_calls // 2
+                ),
             }
         )
+
+    def decide_strategy(
+        self,
+        state: ProofState,
+        goal: OpenGoal,
+        plan: SubstepPlan,
+        actions: Sequence[CandidateAction],
+    ) -> StrategyDecision | None:
+        """Call the strategy model only when its result can control execution."""
+
+        if self.model_policy == ModelPolicy.DISABLED or self._client is None:
+            return None
+        if self.tracker.remaining("strategy_calls") == 0:
+            return None
+        if self.tracker.remaining("model_calls") == 0:
+            return None
+        key = self._strategy_cache_key(
+            state=state,
+            goal=goal,
+            actions=actions,
+            plan=plan,
+            remaining_model_calls=self.tracker.remaining("model_calls"),
+        )
+        cached = self._strategy_decisions.get(key)
+        if cached is not None:
+            return cached
+        self.tracker.consume("strategy_calls")
+        self.tracker.consume("model_calls")
+        proposal, record = propose_strategy(
+            model=self._client,
+            goal=goal,
+            plan=plan,
+            actions=actions,
+        )
+        record = self._record_model_call(record)
+        decision = validate_strategy_proposal(
+            proposal=proposal,
+            state_fingerprint=state.fingerprint,
+            goal=goal,
+            actions=actions,
+            error=record.error,
+        )
+        self._strategy_decisions[key] = decision
+        return decision
 
     def seed_candidates(
         self,
@@ -343,6 +556,7 @@ class RecursiveSearchRuntime:
             downstream_candidates = 0
             self_loop = 0
             evaluated_siblings = 0
+            finite_supported_siblings = 0
             try:
                 receipt = self._probe_with_temporary_binding(
                     state=state,
@@ -364,6 +578,59 @@ class RecursiveSearchRuntime:
                         self_loop += 1
                         continue
                     evaluated_siblings += 1
+                    if self._finite_plugins:
+                        lookahead_goal = OpenGoal.create(
+                            goal_id=(
+                                "finite-lookahead-"
+                                + stable_sha256(
+                                    {
+                                        "slot": slot.exact_type,
+                                        "candidate": entry.candidate_id,
+                                    }
+                                ).removeprefix("sha256:")[:16]
+                            ),
+                            exact_type=slot.exact_type,
+                            local_context=goal.local_context,
+                            import_closure_fingerprint=(
+                                goal.key.import_closure_fingerprint
+                            ),
+                            kind=classify_goal(
+                                slot.exact_type, premise_kind=slot.kind.value
+                            ),
+                        )
+                        supported_plugins = tuple(
+                            plugin
+                            for plugin in self._finite_plugins.values()
+                            if plugin.supports(lookahead_goal).supported
+                        )
+                        supported_by = tuple(
+                            plugin.name for plugin in supported_plugins
+                        )
+                        if supported_by:
+                            self._event(
+                                "data_witness_lookahead_finite_support",
+                                exact_type=slot.exact_type,
+                                declaration=entry.declaration,
+                                plugins=supported_by,
+                            )
+                            verified_by = tuple(
+                                plugin.name
+                                for plugin in supported_plugins
+                                if self._finite_lookahead_closes(
+                                    state=state,
+                                    parent_goal=goal,
+                                    goal=lookahead_goal,
+                                    plugin=plugin,
+                                )
+                            )
+                            if verified_by:
+                                direct_closures += 1
+                                finite_supported_siblings += 1
+                                downstream_candidates += len(verified_by)
+                            continue
+                        # Unsupported witnesses stay in the candidate tail and
+                        # remain available after verified finite branches fail.
+                        continue
                     sibling = self._query_index(
                         state,
                         slot.exact_type,
@@ -384,8 +651,11 @@ class RecursiveSearchRuntime:
                 self_loop += 4
             full_downstream_closure = int(
                 evaluated_siblings > 0
-                and direct_closures == evaluated_siblings
                 and self_loop == 0
+                and (
+                    finite_supported_siblings > 0
+                    or direct_closures == evaluated_siblings
+                )
             )
             input_module_penalty = int(entry.module == self.input_module)
             score = (
@@ -407,6 +677,115 @@ class RecursiveSearchRuntime:
             entry.candidate_id for entry in result
         )
         return result
+
+    def _finite_lookahead_closes(
+        self,
+        *,
+        state: ProofState,
+        parent_goal: OpenGoal,
+        goal: OpenGoal,
+        plugin: FiniteSynthesisPlugin,
+    ) -> bool:
+        """Lean-check one finite candidate before promoting a data witness.
+
+        A plugin's ``supports`` receipt is intentionally only a typed-shape
+        claim.  Data-witness ordering must not treat that claim as proof that
+        the concrete candidate works for the current dependent goal.  This
+        preflight uses the same source fences and independent Lean checker as
+        normal capability materialization, without registering the temporary
+        declaration as a reusable capability.
+        """
+
+        cache_key = stable_sha256(
+            {
+                "goal": goal.key.fingerprint,
+                "parent_goal": parent_goal.key.fingerprint,
+                "plugin": plugin.name,
+                "imports": state.imports,
+                "capabilities": state.capability_fingerprint,
+                "forbidden": self.forbidden_declarations,
+            }
+        )
+        cached = self._finite_lookahead_cache.get(cache_key)
+        if cached is not None:
+            return cached
+
+        digest = cache_key.removeprefix("sha256:")[:20]
+        declaration_name = f"capability_{digest}"
+        namespace = (
+            "ComplexityReduction.Agent.GenerativeReduction.FiniteLookahead."
+            f"C{digest}"
+        )
+        verified = False
+        diagnostic = "finite synthesis plugin emitted no lookahead candidate"
+        source_hash: str | None = None
+        try:
+            candidates = tuple(
+                plugin.enumerate(
+                    goal,
+                    declaration_name=declaration_name,
+                    limit=1,
+                    counterexamples=(),
+                )
+            )
+        except (RuntimeError, TypeError, ValueError) as error:
+            candidates = ()
+            diagnostic = str(error)
+
+        for ordinal, candidate in enumerate(candidates, start=1):
+            if candidate.counterexample is not None:
+                diagnostic = "finite lookahead candidate failed executable semantics"
+                continue
+            try:
+                source, _ = build_authored_capability_source(
+                    input_module=self.input_module,
+                    exact_type=goal.exact_type,
+                    namespace=namespace,
+                    declaration_name=declaration_name,
+                    implementation=candidate.implementation,
+                    extra_imports=(
+                        *candidate.imports,
+                        *self.plugin_imports,
+                        *state.imports,
+                    ),
+                    generated_capabilities=state.generated_capabilities,
+                    forbidden_declarations=self.forbidden_declarations,
+                )
+            except ValueError as error:
+                diagnostic = str(error)
+                continue
+            source_hash = stable_sha256(source)
+            self.tracker.consume("lean_checks")
+            path = self.store.write_text(
+                f"work/lookahead/finite-{digest}-{ordinal}.lean",
+                source,
+            )
+            command = run_lean_file(
+                root=self.root,
+                path=path,
+                timeout_seconds=self.lean_timeout_seconds,
+            )
+            self._record_command(command)
+            if command.ok:
+                verified = True
+                diagnostic = ""
+                break
+            diagnostic = (command.stderr or command.stdout)[-4000:]
+
+        self._finite_lookahead_cache[cache_key] = verified
+        classified = classify_lean_diagnostic(diagnostic) if diagnostic else None
+        self._event(
+            "data_witness_lookahead_finite_check",
+            exact_type=goal.exact_type,
+            plugin=plugin.name,
+            verified=verified,
+            source_hash=source_hash,
+            diagnostic_class=(classified.code if classified is not None else None),
+            diagnostic_fingerprint=(
+                classified.fingerprint if classified is not None else None
+            ),
+        )
+        return verified
 
     def _lookahead_candidate_closes(
         self,
@@ -504,6 +883,10 @@ class RecursiveSearchRuntime:
     ) -> Sequence[ProofState]:
         if action.action_id in goal.attempted_actions:
             return ()
+        if action.provider == ProviderKind.PLUGIN:
+            return (self._execute_plugin(state, goal, action),)
+        if action.provider == ProviderKind.STRUCTURAL:
+            return (self._execute_structural(state, goal, plan, action),)
         if action.disposition == ActionDisposition.CLOSED:
             return (self._execute_closed(state, goal, action),)
         if action.disposition == ActionDisposition.DECOMPOSED:
@@ -519,6 +902,65 @@ class RecursiveSearchRuntime:
                 "blocked_action",
             ),
         )
+
+    def _execute_structural(
+        self,
+        state: ProofState,
+        goal: OpenGoal,
+        plan: SubstepPlan,
+        action: CandidateAction,
+    ) -> ProofState:
+        if state.depth >= self.tracker.budget.max_structural_depth:
+            return self._fail_action(
+                state,
+                goal,
+                action,
+                "maximum structural decomposition depth reached",
+                "structural_depth_exhausted",
+            )
+        contract = plan.construction_contract
+        design = None
+        if contract is not None:
+            design = self._design_for_action(
+                goal=goal, contract=contract, action=action
+            )
+            design = self._store_design(
+                design.transition(
+                    "materializing",
+                    status="materializing",
+                    constructor_skeleton=(
+                        str(action.metadata["constructor_skeleton"])
+                        if action.metadata.get("constructor_skeleton")
+                        else design.constructor_skeleton
+                    ),
+                )
+            )
+        failures_before = len(state.failure_memory)
+        child = self._execute_decomposed(state, goal, plan, action)
+        if design is not None:
+            if len(child.failure_memory) > failures_before:
+                self._store_design(
+                    design.transition(
+                        "lean-failed",
+                        status="abandoned",
+                        terminal_reason="typed structural rule instantiation failed",
+                    )
+                )
+            else:
+                staged = tuple(
+                    item.goal_id
+                    for item in child.open_goals
+                    if item.producer_frame_id
+                    and item.parent_rule == action.declaration
+                )
+                self._store_design(
+                    design.transition(
+                        "materializing",
+                        status="materializing",
+                        staged_goal_ids=staged,
+                    )
+                )
+        return child
 
     def _fail_action(
         self,
@@ -1110,6 +1552,19 @@ class RecursiveSearchRuntime:
         self._record_command(command)
         action = self._frame_actions.get(frame.frame_id)
         if not command.ok:
+            if action is not None and action.metadata.get("design_id"):
+                design = self._synthesis_designs.get(str(action.metadata["design_id"]))
+                if design is not None:
+                    classified = classify_lean_diagnostic(
+                        command.stderr or command.stdout
+                    )
+                    self._store_design(
+                        record_diagnostic(design, classified).transition(
+                            "lean-failed",
+                            status="abandoned",
+                            terminal_reason="structural frame failed final Lean verification",
+                        )
+                    )
             if action is None:
                 raise RuntimeError(command.stderr or command.stdout)
             return state.rollback_application_frame(
@@ -1143,6 +1598,19 @@ class RecursiveSearchRuntime:
             lean_receipt_hash=stable_sha256(command.to_dict()),
         )
         state = state.add_verified_frame_fragment(frame=verified, fragment=fragment)
+        if action is not None and action.metadata.get("design_id"):
+            design = self._synthesis_designs.get(str(action.metadata["design_id"]))
+            if design is not None:
+                self._store_design(
+                    design.transition(
+                        "verified",
+                        status="verified",
+                        verified_capabilities=(
+                            *design.verified_capabilities,
+                            frame.frame_id,
+                        ),
+                    )
+                )
         self._event("FRAME_VERIFIED", frame_id=frame.frame_id)
         if frame.parent_producer_frame_id and frame.parent_producer_slot_id:
             return self._fill_frame_slot(
@@ -1153,6 +1621,197 @@ class RecursiveSearchRuntime:
                 attempted_actions=frame.parent_attempted_actions,
             )
         return state
+
+    def _execute_plugin(
+        self,
+        state: ProofState,
+        goal: OpenGoal,
+        action: CandidateAction,
+    ) -> ProofState:
+        state = state.mark_action_attempted(goal.goal_id, action.action_id)
+        plugin_name = str(action.metadata.get("plugin_name") or "")
+        plugin = self._finite_plugins.get(plugin_name)
+        if plugin is None:
+            return state.remember_failure(
+                action=action,
+                diagnostic=f"finite synthesis plugin is unavailable: {plugin_name}",
+                blocker_code="finite_plugin_unavailable",
+                goal_id=goal.goal_id,
+            )
+        support = plugin.supports(goal)
+        if not support.supported:
+            return state.remember_failure(
+                action=action,
+                diagnostic=support.reason,
+                blocker_code="finite_plugin_support_stale",
+                goal_id=goal.goal_id,
+            )
+        digest = stable_sha256(
+            {
+                "goal": goal.key.fingerprint,
+                "action": action.action_id,
+                "plugin": plugin_name,
+                "capabilities": state.capability_fingerprint,
+            }
+        ).removeprefix("sha256:")[:20]
+        declaration_name = f"capability_{digest}"
+        namespace = (
+            "ComplexityReduction.Agent.GenerativeReduction.GeneratedCapabilities."
+            f"C{digest}"
+        )
+        remaining = self.tracker.remaining("finite_candidates")
+        limit = min(
+            self.tracker.budget.max_finite_candidates,
+            remaining if remaining is not None else self.tracker.budget.max_finite_candidates,
+        )
+        candidates = tuple(
+            plugin.enumerate(
+                goal,
+                declaration_name=declaration_name,
+                limit=limit,
+                counterexamples=(),
+            )
+        )
+        diagnostics = "finite synthesis plugin emitted no candidate"
+        for ordinal, candidate in enumerate(candidates, start=1):
+            self.tracker.consume("finite_candidates")
+            self._event(
+                "FINITE_CANDIDATE_CHECKED",
+                goal_id=goal.goal_id,
+                action_id=action.action_id,
+                plugin=plugin_name,
+                witness_id=candidate.witness_id,
+                executable_status=candidate.executable_status,
+                check_receipt=dict(candidate.check_receipt),
+            )
+            if candidate.counterexample is not None:
+                self.tracker.consume("finite_counterexamples")
+                self._event(
+                    "FINITE_COUNTEREXAMPLE_FOUND",
+                    goal_id=goal.goal_id,
+                    witness_id=candidate.witness_id,
+                    counterexample=dict(candidate.counterexample),
+                )
+                diagnostics = "finite candidate was rejected by executable semantics"
+                continue
+            try:
+                source, declaration = build_authored_capability_source(
+                    input_module=self.input_module,
+                    exact_type=goal.exact_type,
+                    namespace=namespace,
+                    declaration_name=declaration_name,
+                    implementation=candidate.implementation,
+                    extra_imports=(
+                        *candidate.imports,
+                        *self.plugin_imports,
+                        *state.imports,
+                    ),
+                    generated_capabilities=state.generated_capabilities,
+                    forbidden_declarations=self.forbidden_declarations,
+                )
+            except ValueError as error:
+                diagnostics = str(error)
+                continue
+            source_hash = stable_sha256(source)
+            if source_hash in self._candidate_source_hashes:
+                self.tracker.consume("duplicate_candidate_rejections")
+                self._event(
+                    "CANDIDATE_DEDUPLICATED",
+                    goal_id=goal.goal_id,
+                    source_hash=source_hash,
+                    witness_id=candidate.witness_id,
+                )
+                diagnostics = "finite plugin repeated a previously checked source"
+                continue
+            self._candidate_source_hashes.add(source_hash)
+            self.tracker.consume("lean_checks")
+            self.tracker.consume("generated_lean_checks")
+            self.tracker.consume("generated_files")
+            self.tracker.consume("synthesis_materializations")
+            path = self.store.write_text(
+                "work/generated/"
+                f"{digest}-finite-{ordinal}-{source_hash.removeprefix('sha256:')[:12]}.lean",
+                source,
+            )
+            command = run_lean_file(
+                root=self.root,
+                path=path,
+                timeout_seconds=self.lean_timeout_seconds,
+            )
+            self._record_command(command)
+            if not command.ok:
+                diagnostics = (command.stderr or command.stdout)[-4000:]
+                continue
+            self.tracker.consume("generated_lean_successes")
+            self.tracker.consume("finite_certificates")
+            self.tracker.consume("capability_registrations")
+            implementation = candidate.implementation.strip()
+            capability = GeneratedCapability(
+                capability_id=f"capability-{digest}",
+                exact_type=goal.exact_type,
+                declaration=declaration,
+                namespace=namespace,
+                implementation=implementation,
+                source_hash=source_hash,
+                action_id=action.action_id,
+                provenance=f"finite-synthesis-plugin:{plugin_name}",
+            )
+            fragment = ReusableFragment(
+                exact_type=goal.exact_type,
+                proof_term=declaration,
+                declaration=declaration,
+                imports=tuple(candidate.imports),
+                provenance=f"finite-synthesis-plugin:{plugin_name}",
+                lean_verified=True,
+                source_hash=source_hash,
+            )
+            state = state.add_generated_capability(capability, fragment)
+            self.planner.invalidate_for_new_capability(state.capability_fingerprint)
+            state = state.close_goal(
+                goal_id=goal.goal_id,
+                action=action,
+                fragment=fragment,
+                step=ProofStep(
+                    action_id=action.action_id,
+                    provider=ProviderKind.PLUGIN,
+                    disposition=ActionDisposition.CLOSED,
+                    goal_id=goal.goal_id,
+                    exact_type=goal.exact_type,
+                    declaration=declaration,
+                    solver=plugin_name,
+                ),
+            )
+            self._event(
+                "FINITE_CERTIFICATE_MATERIALIZED",
+                goal_id=goal.goal_id,
+                witness_id=candidate.witness_id,
+                declaration=declaration,
+                source_hash=source_hash,
+            )
+            self._event(
+                "GENERATED_CAPABILITY_REGISTERED",
+                goal_id=goal.goal_id,
+                declaration=declaration,
+                source_hash=source_hash,
+                provider=plugin_name,
+            )
+            if goal.producer_frame_id and goal.producer_slot_id:
+                return self._fill_frame_slot(
+                    state,
+                    frame_id=goal.producer_frame_id,
+                    slot_id=goal.producer_slot_id,
+                    fragment=fragment,
+                    attempted_actions=tuple(
+                        dict.fromkeys((*goal.attempted_actions, action.action_id))
+                    ),
+                )
+            return state
+        return state.remember_failure(
+            action=action,
+            diagnostic=diagnostics,
+            blocker_code="finite_synthesis_not_verified",
+            goal_id=goal.goal_id,
+        )
 
     def _execute_synthesis(
         self,
@@ -1184,63 +1843,199 @@ class RecursiveSearchRuntime:
                 blocker_code="model_provider_unavailable",
                 goal_id=goal.goal_id,
             )
-        mode = str(action.metadata.get("construction_mode") or "child-capability")
-        strategy_key = self._strategy_cache_key(
-            state=state,
-            goal=goal,
-            action=action,
-            contract_id=contract.contract_id,
-            mode=mode,
+        design = self._design_for_action(goal=goal, contract=contract, action=action)
+        if design.design_kind == "constructor-first":
+            design = self._store_design(
+                design.transition(
+                    "abandoned",
+                    status="abandoned",
+                    terminal_reason=(
+                        "constructor-first is executable only through a Lean-typed "
+                        "structural action"
+                    ),
+                )
+            )
+            return state.remember_failure(
+                action=action,
+                diagnostic=design.terminal_reason or "structural design unavailable",
+                blocker_code="structural_design_unavailable",
+                goal_id=goal.goal_id,
+            )
+
+        mode = design.mode
+        helper_obligation = (
+            min(contract.residual_obligations, key=lambda item: item.estimated_cost)
+            if design.design_kind in {"helper-first", "theorem-composition"}
+            and contract.residual_obligations
+            else None
         )
-        if strategy_key not in self._strategy_plans:
-            self.tracker.consume("strategy_calls")
-            self.tracker.consume("model_calls")
-            _, record = propose_strategy(model=self._client, goal=goal, plan=plan)
-            self._record_model_call(record)
-            self._strategy_plans.add(strategy_key)
-        selected_contract = replace(contract, allowed_construction_modes=(mode,))
+        if design.design_kind in {"helper-first", "theorem-composition"} and helper_obligation is None:
+            design = self._store_design(
+                design.transition(
+                    "abandoned",
+                    status="abandoned",
+                    terminal_reason="helper-first design has no exact residual helper goal",
+                )
+            )
+            return state.remember_failure(
+                action=action,
+                diagnostic=design.terminal_reason or "helper design unavailable",
+                blocker_code="helper_design_unavailable",
+                goal_id=goal.goal_id,
+            )
+
+        authored_type = (
+            helper_obligation.exact_type if helper_obligation is not None else goal.exact_type
+        )
+        selected_contract = replace(
+            contract,
+            exact_expected_lean_type=authored_type,
+            allowed_construction_modes=(mode,),
+            residual_obligations=(
+                () if helper_obligation is not None else contract.residual_obligations
+            ),
+        )
         digest = stable_sha256(
             {
                 "goal": goal.key.fingerprint,
                 "action": action.action_id,
                 "mode": mode,
+                "design": design.design_id,
+                "authored_type": authored_type,
                 "capabilities": state.capability_fingerprint,
             }
         ).removeprefix("sha256:")[:20]
-        declaration_name = f"capability_{digest}"
+        declaration_name = (
+            f"helper_{digest}" if helper_obligation is not None else f"capability_{digest}"
+        )
         namespace = (
             "ComplexityReduction.Agent.GenerativeReduction.GeneratedCapabilities."
             f"C{digest}"
         )
         diagnostics: str | None = None
-        attempts = self.tracker.budget.max_authoring_attempts_per_stage
+        classified = None
+        previous_implementation: str | None = None
+        previous_source: str | None = None
+        previous_implementation_hash: str | None = None
+        failed_source_hashes: list[str] = []
+        attempts = min(
+            self.tracker.budget.max_authoring_attempts_per_stage,
+            1 + self.tracker.budget.max_repairs_per_design,
+        )
         candidate_modules = tuple(
             dict.fromkeys(
                 entry.module
                 for entry in self._last_candidates_by_goal.get(goal.goal_id, ())
             )
         )
+        authored_goal = goal
+        if helper_obligation is not None:
+            authored_goal = OpenGoal.create(
+                goal_id=f"{goal.goal_id}:{design.design_id}:helper",
+                exact_type=authored_type,
+                local_context=goal.local_context,
+                import_closure_fingerprint=goal.key.import_closure_fingerprint,
+                parent_rule=goal.parent_rule,
+                kind=classify_goal(authored_type),
+            )
+            helper_candidates = self._query_index(
+                state, authored_type, purpose="helper-context"
+            )
+            self._last_candidates_by_goal[authored_goal.goal_id] = helper_candidates
+            candidate_modules = tuple(
+                dict.fromkeys((*candidate_modules, *(item.module for item in helper_candidates)))
+        )
+
         for attempt in range(attempts):
+            if attempt > self.tracker.budget.max_context_expansions_per_design:
+                design = self._store_design(
+                    design.transition(
+                        "abandoned",
+                        status="abandoned",
+                        terminal_reason="context expansion budget exhausted for design",
+                    )
+                )
+                break
+            if attempt > 0:
+                self.tracker.consume("context_expansions")
+            capsule = self._build_context_capsule(
+                state=state,
+                goal=authored_goal,
+                plan=plan,
+                diagnostics=diagnostics,
+                expansion_ordinal=attempt,
+            )
+            design = self._store_design(
+                design.transition(
+                    "context-ready",
+                    status="context-ready",
+                    context_capsule_id=capsule.capsule_id,
+                    staged_goal_ids=(
+                        (authored_goal.goal_id,)
+                        if helper_obligation is not None
+                        else design.staged_goal_ids
+                    ),
+                )
+            )
             self.tracker.consume("authoring_calls")
             self.tracker.consume("model_calls")
-            proposal, record = propose_implementation(
-                model=self._client,
-                contract=selected_contract,
-                guidance=plan.ranked_proof_guidance,
-                diagnostics=diagnostics,
-                required_declaration=declaration_name,
+            design = self._store_design(
+                design.transition("materializing", status="materializing")
             )
+            if previous_implementation is None:
+                proposal, record = propose_initial_implementation(
+                    model=self._client,
+                    contract=selected_contract,
+                    guidance=plan.ranked_proof_guidance,
+                    context_capsule=capsule,
+                    required_declaration=declaration_name,
+                    design=asdict(design),
+                )
+            else:
+                if previous_implementation_hash is None or classified is None:
+                    raise RuntimeError("repair state lost its base implementation receipt")
+                proposal, record = propose_repair(
+                    model=self._client,
+                    contract=selected_contract,
+                    guidance=plan.ranked_proof_guidance,
+                    context_capsule=capsule,
+                    required_declaration=declaration_name,
+                    design=asdict(design),
+                    previous_implementation=previous_implementation,
+                    base_sha256=previous_implementation_hash,
+                    diagnostic_classification=classified.code,
+                    normalized_diagnostics=classified.normalized,
+                    source_window=source_window(previous_source or "", classified),
+                    failed_source_hashes=tuple(failed_source_hashes),
+                )
             record = self._record_model_call(record)
             if proposal is None:
                 diagnostics = record.error or "authoring protocol failed"
                 continue
+            implementation = (proposal.implementation or "").strip()
+            implementation_hash = implementation_sha256(implementation)
+            if implementation_hash in design.candidate_implementation_hashes:
+                self.tracker.consume("duplicate_candidate_rejections")
+                diagnostics = "repair repeated an already rejected implementation hash"
+                self._repair_lineage.append(
+                    {
+                        "design_id": design.design_id,
+                        "attempt": attempt + 1,
+                        "kind": "repair" if previous_implementation is not None else "initial",
+                        "capsule_id": capsule.capsule_id,
+                        "implementation_hash": implementation_hash,
+                        "status": "duplicate-implementation-rejected-before-lean",
+                        "base_sha256": proposal.base_sha256,
+                    }
+                )
+                continue
             try:
                 source, declaration = build_authored_capability_source(
                     input_module=self.input_module,
-                    exact_type=goal.exact_type,
+                    exact_type=authored_type,
                     namespace=namespace,
                     declaration_name=declaration_name,
-                    implementation=proposal.implementation or "",
+                    implementation=implementation,
                     extra_imports=(
                         *candidate_modules,
                         *self.plugin_imports,
@@ -1251,11 +2046,69 @@ class RecursiveSearchRuntime:
                 )
             except ValueError as error:
                 diagnostics = str(error)
+                classified = classify_lean_diagnostic(diagnostics)
+                previous_implementation = implementation
+                previous_implementation_hash = implementation_hash
+                previous_source = implementation
+                design = record_diagnostic(
+                    replace(
+                        design,
+                        previous_implementation=implementation,
+                        candidate_implementation_hashes=(
+                            *design.candidate_implementation_hashes,
+                            implementation_hash,
+                        ),
+                        repair_attempts=design.repair_attempts + int(attempt > 0),
+                    ),
+                    classified,
+                )
+                design = self._store_design(design)
+                self._repair_lineage.append(
+                    {
+                        "design_id": design.design_id,
+                        "attempt": attempt + 1,
+                        "kind": "repair" if attempt > 0 else "initial",
+                        "capsule_id": capsule.capsule_id,
+                        "implementation_hash": implementation_hash,
+                        "status": "authoring-fence-rejected",
+                        "diagnostic_code": classified.code,
+                        "diagnostic_fingerprint": classified.fingerprint,
+                        "base_sha256": proposal.base_sha256,
+                    }
+                )
                 continue
+            source_hash = stable_sha256(source)
+            if (
+                source_hash in design.candidate_source_hashes
+                or source_hash in self._candidate_source_hashes
+            ):
+                self.tracker.consume("duplicate_candidate_rejections")
+                diagnostics = "candidate source hash was already Lean-checked"
+                self._repair_lineage.append(
+                    {
+                        "design_id": design.design_id,
+                        "attempt": attempt + 1,
+                        "kind": "repair" if attempt > 0 else "initial",
+                        "capsule_id": capsule.capsule_id,
+                        "implementation_hash": implementation_hash,
+                        "source_hash": source_hash,
+                        "status": "duplicate-source-rejected-before-lean",
+                        "base_sha256": proposal.base_sha256,
+                    }
+                )
+                continue
+            self._candidate_source_hashes.add(source_hash)
             self.tracker.consume("lean_checks")
+            self.tracker.consume("generated_lean_checks")
             self.tracker.consume("generated_files")
+            self.tracker.consume("synthesis_materializations")
+            file_stem = (
+                f"{design.design_id}-attempt-{attempt + 1}-"
+                f"{implementation_hash.removeprefix('sha256:')[:10]}-"
+                f"{source_hash.removeprefix('sha256:')[:10]}"
+            )
             path = self.store.write_text(
-                f"work/generated/{digest}-attempt-{attempt + 1}.lean", source
+                f"work/generated/{file_stem}.lean", source
             )
             command = run_lean_file(
                 root=self.root,
@@ -1263,14 +2116,66 @@ class RecursiveSearchRuntime:
                 timeout_seconds=self.lean_timeout_seconds,
             )
             self._record_command(command)
+            design = replace(
+                design,
+                previous_implementation=implementation,
+                previous_source_hash=source_hash,
+                candidate_implementation_hashes=(
+                    *design.candidate_implementation_hashes,
+                    implementation_hash,
+                ),
+                candidate_source_hashes=(
+                    *design.candidate_source_hashes,
+                    source_hash,
+                ),
+                generated_files=(*design.generated_files, str(path)),
+                materialization_attempts=design.materialization_attempts + 1,
+                repair_attempts=design.repair_attempts + int(attempt > 0),
+            )
             if not command.ok:
                 diagnostics = (command.stderr or command.stdout)[-4000:]
+                classified = classify_lean_diagnostic(diagnostics)
+                previous_implementation = implementation
+                previous_implementation_hash = implementation_hash
+                previous_source = source
+                failed_source_hashes.append(source_hash)
+                design = self._store_design(record_diagnostic(design, classified))
+                repetition_count = design.diagnostic_fingerprints.count(
+                    classified.fingerprint
+                )
+                self._repair_lineage.append(
+                    {
+                        "design_id": design.design_id,
+                        "attempt": attempt + 1,
+                        "kind": "repair" if attempt > 0 else "initial",
+                        "capsule_id": capsule.capsule_id,
+                        "implementation_hash": implementation_hash,
+                        "source_hash": source_hash,
+                        "file": str(path),
+                        "status": "lean-failed",
+                        "diagnostic_code": classified.code,
+                        "diagnostic_fingerprint": classified.fingerprint,
+                        "base_sha256": proposal.base_sha256,
+                    }
+                )
+                if repetition_count >= self.tracker.budget.max_same_diagnostic_repetitions:
+                    self.tracker.consume("repeated_diagnostics")
+                    design = self._store_design(
+                        design.transition(
+                            "abandoned",
+                            status="abandoned",
+                            terminal_reason=(
+                                "same Lean diagnostic fingerprint repeated beyond policy"
+                            ),
+                        )
+                    )
+                    break
                 continue
-            implementation = (proposal.implementation or "").strip()
-            source_hash = stable_sha256(source)
+            self.tracker.consume("generated_lean_successes")
+            self.tracker.consume("capability_registrations")
             capability = GeneratedCapability(
                 capability_id=f"capability-{digest}",
-                exact_type=goal.exact_type,
+                exact_type=authored_type,
                 declaration=declaration,
                 namespace=namespace,
                 implementation=implementation,
@@ -1278,7 +2183,7 @@ class RecursiveSearchRuntime:
                 action_id=action.action_id,
             )
             fragment = ReusableFragment(
-                exact_type=goal.exact_type,
+                exact_type=authored_type,
                 proof_term=declaration,
                 declaration=declaration,
                 imports=candidate_modules,
@@ -1288,6 +2193,50 @@ class RecursiveSearchRuntime:
             )
             state = state.add_generated_capability(capability, fragment)
             self.planner.invalidate_for_new_capability(state.capability_fingerprint)
+            design = self._store_design(
+                design.transition(
+                    "verified",
+                    status="verified",
+                    helper_declarations=(
+                        (*design.helper_declarations, declaration)
+                        if helper_obligation is not None
+                        else design.helper_declarations
+                    ),
+                    declarations=(*design.declarations, declaration),
+                    verified_capabilities=(
+                        *design.verified_capabilities,
+                        declaration,
+                    ),
+                )
+            )
+            self._repair_lineage.append(
+                {
+                    "design_id": design.design_id,
+                    "attempt": attempt + 1,
+                    "kind": "repair" if attempt > 0 else "initial",
+                    "capsule_id": capsule.capsule_id,
+                    "implementation_hash": implementation_hash,
+                    "source_hash": source_hash,
+                    "file": str(path),
+                    "status": "lean-verified",
+                    "declaration": declaration,
+                    "base_sha256": proposal.base_sha256,
+                    "addressed_diagnostic_codes": list(
+                        proposal.addressed_diagnostic_codes
+                    ),
+                }
+            )
+            if helper_obligation is not None:
+                self._event(
+                    "HELPER_CAPABILITY_REGISTERED",
+                    goal_id=goal.goal_id,
+                    helper_goal_id=authored_goal.goal_id,
+                    design_id=design.design_id,
+                    declaration=declaration,
+                    exact_type=authored_type,
+                    source_hash=source_hash,
+                )
+                return state
             state = state.close_goal(
                 goal_id=goal.goal_id,
                 action=action,
@@ -1306,6 +2255,8 @@ class RecursiveSearchRuntime:
                 goal_id=goal.goal_id,
                 declaration=declaration,
                 source_hash=source_hash,
+                design_id=design.design_id,
+                context_capsule_id=capsule.capsule_id,
             )
             if goal.producer_frame_id and goal.producer_slot_id:
                 return self._fill_frame_slot(
@@ -1318,9 +2269,23 @@ class RecursiveSearchRuntime:
                     ),
                 )
             return state
+        if design.status != "abandoned":
+            design = self._store_design(
+                design.transition(
+                    "abandoned",
+                    status="abandoned",
+                    terminal_reason=(
+                        diagnostics or "no child capability candidate passed Lean"
+                    )[-1000:],
+                )
+            )
         return state.remember_failure(
             action=action,
-            diagnostic=diagnostics or "no child capability candidate passed Lean",
+            diagnostic=(
+                design.terminal_reason
+                or diagnostics
+                or "no child capability candidate passed Lean"
+            ),
             blocker_code="child_synthesis_not_verified",
             goal_id=goal.goal_id,
         )
