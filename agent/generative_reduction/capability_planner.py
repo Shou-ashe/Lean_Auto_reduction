@@ -13,8 +13,13 @@ from .finite_synthesis import FiniteSynthesisPlugin
 from .goal_kind_adapters import is_generation_eligible
 from .guided_proof_planner import GuidedProofPlanner
 from .models import (
+    ActionDisposition,
+    CandidateReceipt,
+    CandidateRole,
     ExactClosureResult,
+    GoalKind,
     OpenGoal,
+    ProviderKind,
     ReusableFragment,
     Strategy,
     SubstepPlan,
@@ -23,6 +28,7 @@ from .models import (
 )
 from .premise_registry import PremiseSolverRegistry
 from .ranking import action_cost
+from .synthesis.designs import design_kind_for_mode
 
 
 class CapabilityPlanner:
@@ -192,6 +198,86 @@ class CapabilityPlanner:
             contract=contract,
             max_actions_per_provider=self.tracker.budget.max_actions_per_provider,
         )
+        # A root hardness goal with a Lean-typed scaffold is already
+        # decomposable into exact child capabilities.  Keep monolithic/helper
+        # synthesis as a genuine fallback instead of exposing it alongside an
+        # untried scaffold, where a model may author an arbitrary data binder
+        # (for example a bare source language) that says nothing about whether
+        # the downstream DAG closes.  Explicit synthesis-required research
+        # mode intentionally retains the synthesis actions.
+        if (
+            is_root
+            and goal.kind == GoalKind.HARDNESS
+            and strategy != Strategy.SYNTHESIS_REQUIRED
+            and any(
+                action.provider == ProviderKind.THEOREM
+                and action.disposition == ActionDisposition.DECOMPOSED
+                and action.action_id not in goal.attempted_actions
+                for action in actions
+            )
+        ):
+            actions = tuple(
+                action
+                for action in actions
+                if action.provider != ProviderKind.SYNTHESIS
+            )
+        if contract is not None:
+            structural_available = any(
+                action.provider == ProviderKind.STRUCTURAL for action in actions
+            )
+            rejected_nonexecutable = 0
+            for mode in contract.allowed_construction_modes:
+                kind = design_kind_for_mode(mode)
+                if kind == "constructor-first" and not structural_available:
+                    rejected_nonexecutable += 1
+                elif (
+                    kind in {"helper-first", "theorem-composition"}
+                    and not contract.residual_obligations
+                ):
+                    rejected_nonexecutable += 1
+                elif kind == "theorem-composition" and not contract.reusable_declarations:
+                    rejected_nonexecutable += 1
+            if rejected_nonexecutable:
+                self.tracker.consume(
+                    "rejected_nonexecutable_designs", rejected_nonexecutable
+                )
+        entries_by_declaration = {entry.declaration: entry for entry in candidates}
+        receipts: list[CandidateReceipt] = []
+        if closure.closed and closure.declaration in entries_by_declaration:
+            entry = entries_by_declaration[closure.declaration]
+            receipts.append(
+                CandidateReceipt.create(
+                    entry=entry,
+                    role=CandidateRole.EXACT_CLOSURE,
+                    exact_closure=True,
+                    application_skeleton=closure.proof_term,
+                    estimated_cost=0.1,
+                )
+            )
+        recorded = {receipt.candidate_id for receipt in receipts}
+        for item in guidance:
+            entry = entries_by_declaration.get(item.candidate_declaration)
+            if entry is None or entry.candidate_id in recorded:
+                continue
+            residual_types = tuple(
+                obligation.exact_type for obligation in item.residual_obligations
+            )
+            if not residual_types:
+                role = CandidateRole.EXACT_CLOSURE
+            elif entry.declaration_kind == "constructor":
+                role = CandidateRole.CONSTRUCTOR
+            else:
+                role = CandidateRole.CONDITIONAL_CLOSURE
+            receipt = CandidateReceipt.create(
+                entry=entry,
+                role=role,
+                exact_closure=not residual_types,
+                residual_obligations=residual_types,
+                application_skeleton=item.application_skeleton,
+                estimated_cost=item.estimated_cost,
+            )
+            receipts.append(receipt)
+            recorded.add(receipt.candidate_id)
         recommended = min(actions, key=action_cost).action_id if actions else None
         fingerprint = stable_sha256(
             {
@@ -200,6 +286,7 @@ class CapabilityPlanner:
                 "guidance": guidance,
                 "contract": contract,
                 "actions": actions,
+                "candidate_receipts": receipts,
             }
         )
         plan = SubstepPlan(
@@ -213,6 +300,7 @@ class CapabilityPlanner:
             recommended_action_id=recommended,
             cache_key=cache_key,
             plan_fingerprint=fingerprint,
+            candidate_receipts=tuple(receipts),
         )
         self._plan_cache[cache_key] = plan
         return plan

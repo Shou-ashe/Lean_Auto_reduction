@@ -22,10 +22,25 @@ class SynthesisActionProvider:
     ) -> tuple[CandidateAction, ...]:
         if contract is None:
             return ()
+        del structural_available
         actions: list[CandidateAction] = []
         for ordinal, mode in enumerate(contract.allowed_construction_modes[:limit]):
             design_kind = design_kind_for_mode(mode)
-            if design_kind == "constructor-first" and structural_available:
+            # Constructor designs are executable only through the typed
+            # structural provider.  If that provider emitted an action it will
+            # be collected separately; otherwise no constructor has been
+            # confirmed and this synthesis design must not consume budget.
+            if design_kind == "constructor-first":
+                continue
+            if (
+                design_kind in {"helper-first", "theorem-composition"}
+                and not contract.residual_obligations
+            ):
+                continue
+            if (
+                design_kind == "theorem-composition"
+                and not contract.reusable_declarations
+            ):
                 continue
             design_digest = stable_sha256(
                 {

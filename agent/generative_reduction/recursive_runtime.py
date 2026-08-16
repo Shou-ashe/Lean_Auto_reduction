@@ -13,18 +13,37 @@ from typing import Callable, Mapping, MutableSequence, Sequence
 
 from agent.hardness.model_client import DeepSeekClient, DeepSeekConfig
 
-from .budgets import BudgetTracker
+from .budgets import BudgetExhausted, BudgetTracker
 from .capability_planner import CapabilityPlanner
 from .context_capsule import ContextCapsule, build_context_capsule
+from .construction_basis import (
+    ConstructionBasisReceipt,
+    query_construction_basis,
+    query_named_declarations,
+)
 from .exact_closure_probe import ClosureCheck
-from .finite_synthesis import FiniteSynthesisPlugin
+from .finite_synthesis import (
+    FiniteSynthesisPlugin,
+    parse_finite_counterexample_output,
+)
 from .goal_kind_adapters import classify_goal
+from .generator_protocol import (
+    build_capability_plan,
+    build_generator_brief,
+    contribution_from_verified_generation,
+    generator_result_from_proposal,
+)
 from .job import GeneralJobStore
 from .lean_bridge import (
+    RECURSIVE_ELABORATION_OPTIONS,
     RuleInstantiationReceipt,
     RuleSlotReceipt,
+    build_type_defeq_probe_source,
+    contains_rule_instantiation_probe,
     run_lean_file,
     run_rule_instantiation_probe,
+    render_generated_capabilities,
+    stable_binding_declaration,
 )
 from .model import (
     implementation_sha256,
@@ -37,15 +56,22 @@ from .models import (
     ActionDisposition,
     ApplicationFrame,
     BinderSlot,
+    CapabilityPlan,
     CandidateAction,
+    ContributionClass,
+    ContributionReceipt,
     FrameStatus,
     GeneratedCapability,
+    GeneratorBrief,
+    GeneratorResult,
+    GeneratorStatus,
     GoalKind,
     ModelCallRecord,
     ModelPolicy,
     OpenGoal,
     PremiseKind,
     PremiseSlot,
+    PlannerEffectReceipt,
     ProofGuidance,
     ProofStep,
     ProviderKind,
@@ -53,6 +79,7 @@ from .models import (
     SlotStatus,
     StrategyDecision,
     SubstepPlan,
+    TheoremApplicationPlan,
     TheoremIndexEntry,
     stable_sha256,
 )
@@ -95,6 +122,7 @@ class RecursiveSearchRuntime:
         modules: Sequence[str],
         plugin_imports: Sequence[str],
         forbidden_declarations: Sequence[str],
+        excluded_candidate_declarations: Sequence[str] = (),
         tracker: BudgetTracker,
         solver_registry: PremiseSolverRegistry,
         model_policy: ModelPolicy,
@@ -111,6 +139,9 @@ class RecursiveSearchRuntime:
         self.modules = tuple(dict.fromkeys((*modules, input_module)))
         self.plugin_imports = tuple(plugin_imports)
         self.forbidden_declarations = tuple(forbidden_declarations)
+        self.excluded_candidate_declarations = tuple(
+            excluded_candidate_declarations
+        )
         self.tracker = tracker
         self.model_policy = model_policy
         self.deepseek = deepseek
@@ -120,18 +151,30 @@ class RecursiveSearchRuntime:
         self.event_sink = event_sink
         self._finite_plugins = {plugin.name: plugin for plugin in finite_plugins}
         self._candidate_cache: dict[str, tuple[TheoremIndexEntry, ...]] = {}
+        self._construction_basis_cache: dict[str, ConstructionBasisReceipt] = {}
+        self._requested_lookup_entries_by_goal: dict[str, tuple] = {}
         self._data_witness_rank_cache: dict[str, tuple[str, ...]] = {}
         self._lookahead_closure_cache: dict[str, bool] = {}
         self._finite_lookahead_cache: dict[str, bool] = {}
+        self._type_defeq_cache: dict[str, bool] = {}
         self._candidate_entries: dict[str, TheoremIndexEntry] = {}
         self._planning_state: ProofState | None = None
         self._last_candidates_by_goal: dict[str, tuple[TheoremIndexEntry, ...]] = {}
         self._frame_actions: dict[str, CandidateAction] = {}
         self._strategy_decisions: dict[str, StrategyDecision] = {}
         self._candidate_source_hashes: set[str] = set()
+        self._verified_plugin_stage_sources: set[str] = set()
         self._synthesis_designs: dict[str, SynthesisDesign] = {}
+        self._counted_synthesis_design_ids: set[str] = set()
         self._context_capsules: dict[str, ContextCapsule] = {}
         self._repair_lineage: list[Mapping[str, object]] = []
+        self._capability_plans: dict[str, CapabilityPlan] = {}
+        self._theorem_application_plans: dict[str, TheoremApplicationPlan] = {}
+        self._generator_briefs: dict[str, GeneratorBrief] = {}
+        self._generator_results: dict[str, GeneratorResult] = {}
+        self._contribution_receipts: list[ContributionReceipt] = []
+        self._planner_effect_receipts: dict[str, PlannerEffectReceipt] = {}
+        self._typed_plan_receipts: dict[str, Mapping[str, object]] = {}
         self._client = (
             DeepSeekClient(deepseek)
             if deepseek is not None and bool(deepseek.api_key)
@@ -169,11 +212,195 @@ class RecursiveSearchRuntime:
     def repair_lineage_receipts(self) -> tuple[Mapping[str, object], ...]:
         return tuple(self._repair_lineage)
 
+    def capability_plan_receipts(self) -> tuple[CapabilityPlan, ...]:
+        return tuple(self._capability_plans.values())
+
+    def theorem_application_plan_receipts(
+        self,
+    ) -> tuple[TheoremApplicationPlan, ...]:
+        return tuple(self._theorem_application_plans.values())
+
+    def generator_brief_receipts(self) -> tuple[GeneratorBrief, ...]:
+        return tuple(self._generator_briefs.values())
+
+    def generator_result_receipts(self) -> tuple[GeneratorResult, ...]:
+        return tuple(self._generator_results.values())
+
+    def contribution_receipts(self) -> tuple[ContributionReceipt, ...]:
+        return tuple(self._contribution_receipts)
+
+    def planner_effect_receipts(self) -> tuple[PlannerEffectReceipt, ...]:
+        return tuple(self._planner_effect_receipts.values())
+
+    def typed_plan_receipts(self) -> tuple[Mapping[str, object], ...]:
+        return tuple(self._typed_plan_receipts.values())
+
+    def finalize_contribution_receipts(
+        self, *, artifact_source: str, independent_lean_passed: bool
+    ) -> tuple[ContributionReceipt, ...]:
+        finalized = tuple(
+            replace(
+                receipt,
+                final_artifact_used=(
+                    receipt.capability_declaration in artifact_source
+                ),
+                independent_lean_passed=(
+                    receipt.independent_lean_passed and independent_lean_passed
+                ),
+            )
+            for receipt in self._contribution_receipts
+        )
+        self._contribution_receipts[:] = finalized
+        return finalized
+
+    def _record_plugin_protocol(
+        self, *, candidate, action: CandidateAction
+    ) -> None:
+        plan = candidate.capability_plan
+        brief = candidate.generator_brief
+        result = candidate.generator_result
+        if plan is not None:
+            self._capability_plans.setdefault(plan.plan_id, plan)
+        if brief is not None:
+            self._generator_briefs.setdefault(brief.brief_id, brief)
+        if result is not None:
+            self._generator_results.setdefault(result.result_id, result)
+        typed = candidate.typed_plan_receipt
+        if isinstance(typed, Mapping):
+            typed_id = str(
+                typed.get("plan_id")
+                or stable_sha256(typed).removeprefix("sha256:")[:24]
+            )
+            self._typed_plan_receipts.setdefault(typed_id, dict(typed))
+        if plan is not None:
+            effect = PlannerEffectReceipt(
+                plan_id=plan.plan_id,
+                selected_action_id=action.action_id,
+                selected_candidate_ids=plan.selected_candidate_ids,
+                selected_design_id=plan.selected_design_id,
+                generated_brief_id=(brief.brief_id if brief is not None else None),
+                applied_effect="materialized-capability-specific-generator-brief",
+            )
+            key = stable_sha256(
+                {
+                    "plan": plan.plan_id,
+                    "action": action.action_id,
+                    "brief": effect.generated_brief_id,
+                }
+            )
+            self._planner_effect_receipts.setdefault(key, effect)
+            self._event(
+                "CAPABILITY_PLAN_APPLIED",
+                plan_id=plan.plan_id,
+                capability_kind=plan.capability_kind.value,
+                action_id=action.action_id,
+                brief_id=effect.generated_brief_id,
+            )
+        for stage in candidate.stages:
+            stage_plan = stage.capability_plan
+            stage_brief = stage.generator_brief
+            stage_result = stage.generator_result
+            if stage_plan is not None:
+                self._capability_plans.setdefault(stage_plan.plan_id, stage_plan)
+            if stage_brief is not None:
+                self._generator_briefs.setdefault(stage_brief.brief_id, stage_brief)
+            if stage_result is not None:
+                self._generator_results.setdefault(stage_result.result_id, stage_result)
+            if stage_plan is None:
+                continue
+            stage_effect = PlannerEffectReceipt(
+                plan_id=stage_plan.plan_id,
+                selected_action_id=action.action_id,
+                selected_candidate_ids=stage_plan.selected_candidate_ids,
+                selected_design_id=stage_plan.selected_design_id,
+                generated_brief_id=(
+                    stage_brief.brief_id if stage_brief is not None else None
+                ),
+                applied_effect="materialized-capability-dag-stage-brief",
+            )
+            stage_key = stable_sha256(
+                {
+                    "plan": stage_plan.plan_id,
+                    "action": action.action_id,
+                    "stage": stage.stage_id,
+                    "brief": stage_effect.generated_brief_id,
+                }
+            )
+            self._planner_effect_receipts.setdefault(stage_key, stage_effect)
+            self._event(
+                "CAPABILITY_STAGE_PLAN_APPLIED",
+                plan_id=stage_plan.plan_id,
+                stage_id=stage.stage_id,
+                capability_kind=stage_plan.capability_kind.value,
+                action_id=action.action_id,
+                brief_id=stage_effect.generated_brief_id,
+            )
+
+    def _record_generator_plan(
+        self,
+        *,
+        plan: CapabilityPlan,
+        brief: GeneratorBrief,
+        action: CandidateAction,
+        effect: str = "issued-independent-generator-brief",
+    ) -> None:
+        self._capability_plans.setdefault(plan.plan_id, plan)
+        self._generator_briefs.setdefault(brief.brief_id, brief)
+        receipt = PlannerEffectReceipt(
+            plan_id=plan.plan_id,
+            selected_action_id=action.action_id,
+            selected_candidate_ids=plan.selected_candidate_ids,
+            selected_design_id=plan.selected_design_id,
+            generated_brief_id=brief.brief_id,
+            applied_effect=effect,
+        )
+        key = stable_sha256(
+            {
+                "plan": plan.plan_id,
+                "brief": brief.brief_id,
+                "action": action.action_id,
+                "effect": effect,
+            }
+        )
+        self._planner_effect_receipts.setdefault(key, receipt)
+        self._event(
+            "GENERATOR_BRIEF_ISSUED",
+            plan_id=plan.plan_id,
+            brief_id=brief.brief_id,
+            capability_kind=plan.capability_kind.value,
+            action_id=action.action_id,
+        )
+
+    def _record_generator_result(self, result: GeneratorResult) -> None:
+        self._generator_results.setdefault(result.result_id, result)
+        self._event(
+            "GENERATOR_RESULT_RECORDED",
+            result_id=result.result_id,
+            brief_id=result.brief_id,
+            status=result.status.value,
+            requested_replan=result.requested_replan,
+            requested_lookup=list(result.requested_lookup),
+        )
+
     def _store_design(self, design: SynthesisDesign) -> SynthesisDesign:
         previous = self._synthesis_designs.get(design.design_id)
+        materializable = (
+            design.stage in {"context-ready", "materializing", "lean-failed", "verified"}
+            and design.status != "abandoned"
+        )
+        if materializable and design.design_id not in self._counted_synthesis_design_ids:
+            # Consume before publishing the transition so an over-budget N+1
+            # design cannot leak into reports or resume state.
+            self.tracker.consume("synthesis_designs")
+            self._counted_synthesis_design_ids.add(design.design_id)
+            self._event(
+                "SYNTHESIS_DESIGN_MATERIALIZABLE",
+                design_id=design.design_id,
+                contract_id=design.contract_id,
+                design_kind=design.design_kind,
+            )
         self._synthesis_designs[design.design_id] = design
         if previous is None:
-            self.tracker.consume("synthesis_designs")
             self._event(
                 "SYNTHESIS_DESIGN_CREATED",
                 design_id=design.design_id,
@@ -192,6 +419,40 @@ class RecursiveSearchRuntime:
                 terminal_reason=design.terminal_reason,
             )
         return design
+
+    def _reserve_capability_budget(
+        self,
+        *,
+        scope_id: str,
+        hierarchy: tuple[str, ...],
+        requirements: Mapping[str, int],
+        goal_id: str,
+        action_id: str,
+    ) -> bool:
+        try:
+            receipt = self.tracker.reserve_capacity(
+                scope_id=scope_id,
+                hierarchy=hierarchy,
+                requirements=dict(requirements),
+            )
+        except BudgetExhausted as error:
+            self._event(
+                "CAPABILITY_BUDGET_UNAVAILABLE",
+                scope_id=scope_id,
+                hierarchy=list(hierarchy),
+                requirements=dict(requirements),
+                exhausted_resource=error.resource,
+                goal_id=goal_id,
+                action_id=action_id,
+            )
+            return False
+        self._event(
+            "CAPABILITY_BUDGET_RESERVED",
+            **receipt,
+            goal_id=goal_id,
+            action_id=action_id,
+        )
+        return True
 
     def _design_for_action(
         self,
@@ -236,12 +497,14 @@ class RecursiveSearchRuntime:
         diagnostics: str | None,
         expansion_ordinal: int,
     ) -> ContextCapsule:
+        basis = self._construction_basis(state=state, goal=goal)
+        context_modules = self._context_probe_modules(state=state, goal=goal)
         capsule = build_context_capsule(
             goal=goal,
             candidates=self._last_candidates_by_goal.get(goal.goal_id, ()),
             guidance=plan.ranked_proof_guidance,
             generated_capabilities=state.generated_capabilities,
-            imports=(*self.modules, *self.plugin_imports, *state.imports),
+            imports=context_modules,
             environment_fingerprint=stable_sha256(
                 {
                     "imports": goal.key.import_closure_fingerprint,
@@ -249,6 +512,7 @@ class RecursiveSearchRuntime:
                 }
             ),
             diagnostics=diagnostics,
+            construction_basis=basis,
             expansion_ordinal=expansion_ordinal,
         )
         if capsule.capsule_id not in self._context_capsules:
@@ -266,6 +530,243 @@ class RecursiveSearchRuntime:
             )
         return capsule
 
+    def _context_probe_modules(
+        self,
+        *,
+        state: ProofState,
+        goal: OpenGoal,
+        declarations: Sequence[str] = (),
+    ) -> tuple[str, ...]:
+        """Return the exact proof-state import envelope for generator context.
+
+        The global theorem-index closure is intentionally excluded.  A context
+        probe only needs the benchmark input, modules that own candidates or
+        declarations actually selected for this goal, and imports already
+        carried by the live proof state.
+        """
+
+        declaration_set = set(declarations)
+        candidate_modules = tuple(
+            entry.module
+            for entry in self._last_candidates_by_goal.get(goal.goal_id, ())
+            if entry.module
+        )
+        requested_entries = self._requested_lookup_entries_by_goal.get(
+            goal.goal_id, ()
+        )
+        requested_modules = tuple(
+            entry.module for entry in requested_entries if entry.module
+        )
+        declaration_modules = tuple(
+            entry.module
+            for declaration in declarations
+            if (entry := self._candidate_entries.get(declaration)) is not None
+            and entry.module
+        )
+        cached_basis_modules = tuple(
+            entry.module
+            for receipt in self._construction_basis_cache.values()
+            for entry in receipt.entries
+            if entry.module and entry.declaration in declaration_set
+        )
+        frame_modules = tuple(
+            module
+            for frame in state.application_frames
+            for module in (
+                *((frame.declaration_module,) if frame.declaration_module else ()),
+                *(
+                    module
+                    for slot in frame.slots
+                    for module in (
+                        *((slot.module,) if slot.module else ()),
+                        *slot.imports,
+                    )
+                ),
+            )
+        )
+        fragment_modules = tuple(
+            module
+            for fragment in (
+                *state.completed_fragments,
+                *state.verified_frame_fragments,
+                *((state.root_fragment,) if state.root_fragment is not None else ()),
+            )
+            for module in (
+                *((fragment.module,) if fragment.module else ()),
+                *fragment.imports,
+            )
+        )
+        generated_modules = tuple(
+            capability.module
+            for capability in state.generated_capabilities
+            if capability.module
+        )
+        return tuple(
+            dict.fromkeys(
+                (
+                    self.input_module,
+                    *candidate_modules,
+                    *requested_modules,
+                    *declaration_modules,
+                    *cached_basis_modules,
+                    *frame_modules,
+                    *fragment_modules,
+                    *generated_modules,
+                    *state.imports,
+                    *self.plugin_imports,
+                )
+            )
+        )
+
+    def _construction_basis(
+        self, *, state: ProofState, goal: OpenGoal
+    ) -> ConstructionBasisReceipt | None:
+        requested_entries = self._requested_lookup_entries_by_goal.get(
+            goal.goal_id, ()
+        )
+        context_modules = self._context_probe_modules(state=state, goal=goal)
+        cache_key = stable_sha256(
+            {
+                "goal": goal.key.fingerprint,
+                "capabilities": state.capability_fingerprint,
+                "imports": context_modules,
+                "requested_lookup_entries": tuple(
+                    (item.declaration, item.exact_type) for item in requested_entries
+                ),
+            }
+        )
+        cached = self._construction_basis_cache.get(cache_key)
+        if cached is not None:
+            return cached
+        digest = cache_key.removeprefix("sha256:")[:20]
+        try:
+            self.tracker.consume("lean_checks")
+            receipt, command = query_construction_basis(
+                root=self.root,
+                exact_goal=goal.exact_type,
+                modules=context_modules,
+                output_path=self.store.path(
+                    f"work/context/construction-basis-{digest}.lean"
+                ),
+                timeout_seconds=self.lean_timeout_seconds,
+                generated_capabilities=state.generated_capabilities,
+            )
+            self._record_command(command)
+        except (RuntimeError, TypeError, ValueError) as error:
+            self._event(
+                "CONSTRUCTION_BASIS_FAILED",
+                goal_id=goal.goal_id,
+                diagnostic=str(error)[-2000:],
+            )
+            return None
+        excluded = set(self.forbidden_declarations) | set(
+            self.excluded_candidate_declarations
+        )
+        filtered = tuple(
+            entry for entry in receipt.entries if entry.declaration not in excluded
+        )
+        filtered = tuple(
+            {
+                entry.declaration: entry
+                for entry in (*filtered, *requested_entries)
+                if entry.declaration not in excluded
+            }.values()
+        )
+        if filtered != receipt.entries:
+            receipt = replace(
+                receipt,
+                entries=filtered,
+                receipt_hash=stable_sha256(
+                    {
+                        "goal_head": receipt.goal_head,
+                        "goal_head_type": receipt.goal_head_type,
+                        "goal_head_definition": receipt.goal_head_definition,
+                        "entries": filtered,
+                    }
+                ),
+            )
+        self._construction_basis_cache[cache_key] = receipt
+        self.store.write_json(
+            f"work/context/construction-basis-{digest}.json", receipt.to_dict()
+        )
+        self._event(
+            "CONSTRUCTION_BASIS_READY",
+            goal_id=goal.goal_id,
+            receipt_hash=receipt.receipt_hash,
+            entry_count=len(receipt.entries),
+        )
+        return receipt
+
+    def _expand_requested_lookup(
+        self,
+        *,
+        state: ProofState,
+        goal: OpenGoal,
+        declarations: Sequence[str],
+    ) -> bool:
+        requested = tuple(
+            item
+            for item in dict.fromkeys(declarations)
+            if item not in self.forbidden_declarations
+            and item not in self.excluded_candidate_declarations
+        )
+        if not requested:
+            return False
+        context_modules = self._context_probe_modules(
+            state=state,
+            goal=goal,
+            declarations=requested,
+        )
+        digest = stable_sha256(
+            {
+                "goal": goal.key.fingerprint,
+                "requested": requested,
+                "imports": context_modules,
+            }
+        ).removeprefix("sha256:")[:20]
+        try:
+            self.tracker.consume("lean_checks")
+            entries, command = query_named_declarations(
+                root=self.root,
+                declarations=requested,
+                modules=context_modules,
+                output_path=self.store.path(
+                    f"work/context/requested-lookup-{digest}.lean"
+                ),
+                timeout_seconds=self.lean_timeout_seconds,
+                generated_capabilities=state.generated_capabilities,
+            )
+            self._record_command(command)
+        except (RuntimeError, TypeError, ValueError) as error:
+            self._event(
+                "GENERATOR_LOOKUP_FAILED",
+                goal_id=goal.goal_id,
+                declarations=list(requested),
+                diagnostic=str(error)[-2000:],
+            )
+            return False
+        previous = self._requested_lookup_entries_by_goal.get(goal.goal_id, ())
+        merged = tuple(
+            {
+                item.declaration: item for item in (*previous, *entries)
+            }.values()
+        )
+        self._requested_lookup_entries_by_goal[goal.goal_id] = merged
+        self.store.write_json(
+            f"work/context/requested-lookup-{digest}.json",
+            {
+                "requested": list(requested),
+                "resolved": [asdict(item) for item in entries],
+            },
+        )
+        self._event(
+            "GENERATOR_LOOKUP_RESOLVED",
+            goal_id=goal.goal_id,
+            declarations=list(requested),
+            resolved_count=len(entries),
+        )
+        return bool(entries)
+
     def _query_index(
         self, state: ProofState, exact_type: str, *, purpose: str
     ) -> tuple[TheoremIndexEntry, ...]:
@@ -282,6 +783,7 @@ class RecursiveSearchRuntime:
                 modules=(*self.modules, *state.imports, *self.plugin_imports),
                 output_path=self.store.path(f"work/index/{purpose}-{digest}.lean"),
                 timeout_seconds=self.lean_timeout_seconds,
+                generated_capabilities=state.generated_capabilities,
             )
         except RuntimeError:
             self._candidate_cache[cache_key] = ()
@@ -291,6 +793,7 @@ class RecursiveSearchRuntime:
             entry
             for entry in entries
             if entry.declaration not in self.forbidden_declarations
+            and entry.declaration not in self.excluded_candidate_declarations
             and is_runtime_candidate_declaration(entry.declaration)
         )
         self.seed_candidates(state, exact_type, filtered)
@@ -493,6 +996,7 @@ class RecursiveSearchRuntime:
             entry
             for entry in entries
             if entry.declaration not in self.forbidden_declarations
+            and entry.declaration not in self.excluded_candidate_declarations
             and is_runtime_candidate_declaration(entry.declaration)
         )
         self._candidate_cache[self._candidate_cache_key(state, exact_type)] = filtered
@@ -556,7 +1060,6 @@ class RecursiveSearchRuntime:
             downstream_candidates = 0
             self_loop = 0
             evaluated_siblings = 0
-            finite_supported_siblings = 0
             try:
                 receipt = self._probe_with_temporary_binding(
                     state=state,
@@ -621,16 +1124,18 @@ class RecursiveSearchRuntime:
                                     parent_goal=goal,
                                     goal=lookahead_goal,
                                     plugin=plugin,
+                                    extra_imports=(entry.module,),
                                 )
                             )
                             if verified_by:
                                 direct_closures += 1
-                                finite_supported_siblings += 1
                                 downstream_candidates += len(verified_by)
-                            continue
-                        # Unsupported witnesses stay in the candidate tail and
-                        # remain available after verified finite branches fail.
-                        continue
+                                continue
+                        # A finite plugin may be inapplicable or may reject its
+                        # concrete candidate while an ordinary theorem still
+                        # closes the same sibling.  Fall through to the typed
+                        # theorem index instead of treating plugin presence as
+                        # proof of (or a veto on) downstream solvability.
                     sibling = self._query_index(
                         state,
                         slot.exact_type,
@@ -652,10 +1157,7 @@ class RecursiveSearchRuntime:
             full_downstream_closure = int(
                 evaluated_siblings > 0
                 and self_loop == 0
-                and (
-                    finite_supported_siblings > 0
-                    or direct_closures == evaluated_siblings
-                )
+                and direct_closures == evaluated_siblings
             )
             input_module_penalty = int(entry.module == self.input_module)
             score = (
@@ -685,8 +1187,9 @@ class RecursiveSearchRuntime:
         parent_goal: OpenGoal,
         goal: OpenGoal,
         plugin: FiniteSynthesisPlugin,
+        extra_imports: Sequence[str] = (),
     ) -> bool:
-        """Lean-check one finite candidate before promoting a data witness.
+        """Lean-check a bounded finite-candidate family before promoting a data witness.
 
         A plugin's ``supports`` receipt is intentionally only a typed-shape
         claim.  Data-witness ordering must not treat that claim as proof that
@@ -702,6 +1205,7 @@ class RecursiveSearchRuntime:
                 "parent_goal": parent_goal.key.fingerprint,
                 "plugin": plugin.name,
                 "imports": state.imports,
+                "extra_imports": tuple(extra_imports),
                 "capabilities": state.capability_fingerprint,
                 "forbidden": self.forbidden_declarations,
             }
@@ -724,7 +1228,7 @@ class RecursiveSearchRuntime:
                 plugin.enumerate(
                     goal,
                     declaration_name=declaration_name,
-                    limit=1,
+                    limit=4,
                     counterexamples=(),
                 )
             )
@@ -745,6 +1249,7 @@ class RecursiveSearchRuntime:
                     implementation=candidate.implementation,
                     extra_imports=(
                         *candidate.imports,
+                        *extra_imports,
                         *self.plugin_imports,
                         *state.imports,
                     ),
@@ -884,11 +1389,11 @@ class RecursiveSearchRuntime:
         if action.action_id in goal.attempted_actions:
             return ()
         if action.provider == ProviderKind.PLUGIN:
-            return (self._execute_plugin(state, goal, action),)
+            return (self._execute_plugin(state, goal, plan, action),)
         if action.provider == ProviderKind.STRUCTURAL:
             return (self._execute_structural(state, goal, plan, action),)
         if action.disposition == ActionDisposition.CLOSED:
-            return (self._execute_closed(state, goal, action),)
+            return (self._execute_closed(state, goal, plan, action),)
         if action.disposition == ActionDisposition.DECOMPOSED:
             return (self._execute_decomposed(state, goal, plan, action),)
         if action.disposition == ActionDisposition.SYNTHESIS_REQUIRED:
@@ -978,8 +1483,62 @@ class RecursiveSearchRuntime:
             goal_id=goal.goal_id,
         )
 
+    def _record_theorem_application_plan(
+        self,
+        *,
+        goal: OpenGoal,
+        plan: SubstepPlan,
+        action: CandidateAction,
+        application_skeleton: str,
+        solved_premises: Sequence[str],
+        residual_obligations: Sequence[str],
+    ) -> TheoremApplicationPlan | None:
+        if action.provider not in {ProviderKind.REUSE, ProviderKind.THEOREM}:
+            return None
+        candidate = next(
+            (
+                receipt
+                for receipt in plan.candidate_receipts
+                if receipt.declaration == action.declaration
+            ),
+            None,
+        )
+        if candidate is None:
+            return None
+        theorem_plan = TheoremApplicationPlan.create(
+            candidate_id=candidate.candidate_id,
+            exact_instantiation=(action.proof_term or application_skeleton),
+            application_skeleton=application_skeleton,
+            solved_premises=solved_premises,
+            residual_obligations=residual_obligations,
+            expected_result_type=goal.exact_type,
+            contribution_class=(
+                ContributionClass.THEOREM_REUSE
+                if not residual_obligations
+                else ContributionClass.THEOREM_COMPOSITION
+            ),
+            forbidden_receipt=(
+                "forbidden"
+                if action.declaration in self.forbidden_declarations
+                else "allowed"
+            ),
+        )
+        self._theorem_application_plans.setdefault(theorem_plan.plan_id, theorem_plan)
+        self._event(
+            "THEOREM_APPLICATION_PLAN_APPLIED",
+            theorem_plan_id=theorem_plan.plan_id,
+            candidate_id=theorem_plan.candidate_id,
+            action_id=action.action_id,
+            residual_obligation_count=len(theorem_plan.residual_obligations),
+        )
+        return theorem_plan
+
     def _execute_closed(
-        self, state: ProofState, goal: OpenGoal, action: CandidateAction
+        self,
+        state: ProofState,
+        goal: OpenGoal,
+        plan: SubstepPlan,
+        action: CandidateAction,
     ) -> ProofState:
         if not action.lean_verified or not action.proof_term:
             return self._fail_action(
@@ -989,6 +1548,14 @@ class RecursiveSearchRuntime:
                 "closed action lacks a Lean-verified proof term",
                 "unverified_closed_action",
             )
+        self._record_theorem_application_plan(
+            goal=goal,
+            plan=plan,
+            action=action,
+            application_skeleton=action.proof_term,
+            solved_premises=(),
+            residual_obligations=(),
+        )
         state = state.mark_action_attempted(goal.goal_id, action.action_id)
         entry = self._candidate_entries.get(action.declaration or "")
         existing = next(
@@ -1097,6 +1664,20 @@ class RecursiveSearchRuntime:
                     action=action,
                     reason="Lean rule instantiation made no typed progress",
                 )
+            self._record_theorem_application_plan(
+                goal=goal,
+                plan=plan,
+                action=action,
+                application_skeleton=guidance.application_skeleton,
+                solved_premises=tuple(
+                    fragment.exact_type
+                    for fragment in guidance.already_closed_premises
+                ),
+                residual_obligations=tuple(
+                    obligation.exact_type
+                    for obligation in guidance.residual_obligations
+                ),
+            )
             self._frame_actions[frame.frame_id] = action
             state = state.add_application_frame(
                 goal_id=goal.goal_id,
@@ -1159,9 +1740,29 @@ class RecursiveSearchRuntime:
                 "capabilities": state.capability_fingerprint,
             }
         ).removeprefix("sha256:")[:20]
+        entry = self._candidate_entries.get(declaration)
+        assignment_modules = tuple(
+            module
+            for fragment in assignments.values()
+            for module in (
+                *((fragment.module,) if fragment.module else ()),
+                *fragment.imports,
+            )
+        )
+        modules = tuple(
+            dict.fromkeys(
+                (
+                    self.input_module,
+                    *((entry.module,) if entry is not None and entry.module else ()),
+                    *assignment_modules,
+                    *state.imports,
+                    *self.plugin_imports,
+                )
+            )
+        )
         return run_rule_instantiation_probe(
             root=self.root,
-            modules=(*self.modules, *state.imports, *self.plugin_imports),
+            modules=modules,
             declaration=declaration,
             exact_target=exact_target,
             assignments=assignments,
@@ -1300,6 +1901,11 @@ class RecursiveSearchRuntime:
             exact_type = _slot_exact_type(slot)
             if not exact_type or contains_unresolved_metavariable(exact_type):
                 raise ValueError("ready frame slot contains an unresolved Lean metavariable")
+            if contains_rule_instantiation_probe(exact_type):
+                self.tracker.consume("unresolved_probe_handles")
+                raise ValueError(
+                    "ready frame slot contains an unresolved RuleInstantiationProbe handle"
+                )
             existing = previous_by_slot.get(slot.slot_id)
             if existing is not None and _same_type(existing.exact_type, exact_type):
                 goals.append(existing)
@@ -1471,15 +2077,43 @@ class RecursiveSearchRuntime:
         exact_type = _slot_exact_type(slot)
         if exact_type is None or not _same_type(exact_type, fragment.exact_type):
             raise ValueError("child fragment does not match its producer frame slot")
+        if any(
+            slot.slot_id in dependent.dependency_slot_ids
+            for dependent in frame.slots
+            if dependent.slot_id != slot.slot_id
+        ):
+            state, fragment = self._stabilize_dependent_fragment(
+                state=state,
+                fragment=fragment,
+                parent_action_id=frame.action_id,
+            )
         assignments = self._frame_assignments(frame)
         assignments[slot.ordinal] = fragment
-        receipt, command = self._run_rule_probe(
-            state=state,
-            declaration=frame.declaration,
-            exact_target=frame.parent_exact_type,
-            assignments=assignments,
-            purpose="refresh",
-        )
+        try:
+            receipt, command = self._run_rule_probe(
+                state=state,
+                declaration=frame.declaration,
+                exact_target=frame.parent_exact_type,
+                assignments=assignments,
+                purpose="refresh",
+            )
+        except RuntimeError as error:
+            diagnostic = str(error) or "Lean frame refresh failed without diagnostics"
+            action = self._frame_actions.get(frame_id)
+            self._event(
+                "FRAME_REFRESH_FAILED",
+                frame_id=frame_id,
+                slot_id=slot_id,
+                diagnostic=diagnostic[-4000:],
+            )
+            if action is None:
+                raise RuntimeError(diagnostic) from error
+            return state.rollback_application_frame(
+                frame_id=frame_id,
+                action=action,
+                diagnostic=diagnostic,
+                blocker_code="frame_refresh_failed",
+            )
         self._record_command(command)
         refreshed = self._refresh_frame(
             frame,
@@ -1509,6 +2143,31 @@ class RecursiveSearchRuntime:
             activated_goal_count=activated,
             data_binding_delta=int(isinstance(slot, BinderSlot)),
         )
+        if isinstance(slot, BinderSlot):
+            cycle_goal = self._dependent_ancestor_cycle_goal(
+                state=state,
+                frame=refreshed,
+                goals=tuple(
+                    goal
+                    for goal in frame_goals
+                    if goal.producer_slot_id in new_ready - old_ready
+                ),
+            )
+            if cycle_goal is not None and cycle_goal.producer_slot_id is not None:
+                rebound = state.reopen_dependent_data_slot(
+                    frame_id=frame_id,
+                    dependent_slot_id=cycle_goal.producer_slot_id,
+                )
+                if rebound is not None:
+                    self._event(
+                        "DATA_BINDING_REOPENED_ANCESTOR_CYCLE",
+                        frame_id=frame_id,
+                        binder_slot_id=slot_id,
+                        dependent_slot_id=cycle_goal.producer_slot_id,
+                        repeated_exact_type=cycle_goal.exact_type,
+                        attempted_actions=attempted_actions,
+                    )
+                    return rebound
         self._event(
             "BINDER_BOUND" if isinstance(slot, BinderSlot) else "GOAL_CLOSED",
             frame_id=frame_id,
@@ -1527,6 +2186,259 @@ class RecursiveSearchRuntime:
             self._event("FRAME_SATURATED", frame_id=frame_id)
             return self._verify_frame(state, refreshed)
         return state
+
+    def _dependent_ancestor_cycle_goal(
+        self,
+        *,
+        state: ProofState,
+        frame: ApplicationFrame,
+        goals: Sequence[OpenGoal],
+    ) -> OpenGoal | None:
+        """Find a newly activated dependent goal that recreates an ancestor."""
+
+        def normalized(exact_type: str) -> str:
+            return " ".join(exact_type.split())
+
+        ancestor_types = [frame.parent_exact_type]
+        frame_id = frame.parent_producer_frame_id
+        seen: set[str] = set()
+        while frame_id and frame_id not in seen:
+            seen.add(frame_id)
+            try:
+                ancestor = state.frame(frame_id)
+            except KeyError:
+                break
+            ancestor_types.append(ancestor.parent_exact_type)
+            frame_id = ancestor.parent_producer_frame_id
+        for goal in goals:
+            for ancestor_type in ancestor_types:
+                if normalized(goal.exact_type) == normalized(ancestor_type):
+                    return goal
+                if self._types_definitionally_equal(
+                    state=state,
+                    first_type=goal.exact_type,
+                    second_type=ancestor_type,
+                ):
+                    return goal
+        return None
+
+    def _types_definitionally_equal(
+        self,
+        *,
+        state: ProofState,
+        first_type: str,
+        second_type: str,
+    ) -> bool:
+        """Ask Lean whether two closed goal types are definitionally equal."""
+
+        def head(exact_type: str) -> str:
+            compact = " ".join(exact_type.split()).lstrip("(")
+            return compact.split(" ", 1)[0]
+
+        if head(first_type) != head(second_type):
+            return False
+        cache_key = stable_sha256(
+            {
+                "first": first_type,
+                "second": second_type,
+                "capabilities": state.capability_fingerprint,
+            }
+        )
+        cached = self._type_defeq_cache.get(cache_key)
+        if cached is not None:
+            return cached
+        digest = cache_key.removeprefix("sha256:")[:20]
+        try:
+            source = build_type_defeq_probe_source(
+                modules=(
+                    self.input_module,
+                    *self.plugin_imports,
+                    *state.imports,
+                ),
+                first_type=first_type,
+                second_type=second_type,
+                generated_capabilities=state.generated_capabilities,
+            )
+        except ValueError:
+            self._type_defeq_cache[cache_key] = False
+            return False
+        self.tracker.consume("lean_checks")
+        path = self.store.write_text(f"work/defeq/{digest}.lean", source)
+        command = run_lean_file(
+            root=self.root,
+            path=path,
+            timeout_seconds=self.lean_timeout_seconds,
+        )
+        self._record_command(command)
+        self._type_defeq_cache[cache_key] = command.ok
+        return command.ok
+
+    def _stabilize_dependent_fragment(
+        self,
+        *,
+        state: ProofState,
+        fragment: ReusableFragment,
+        parent_action_id: str,
+    ) -> tuple[ProofState, ReusableFragment]:
+        """Give a dependent binder a job-stable declaration before re-elaboration."""
+
+        direct = stable_binding_declaration(fragment)
+        if direct is not None:
+            return state, replace(fragment, proof_term=direct, declaration=direct)
+        if contains_rule_instantiation_probe(fragment.exact_type) or contains_rule_instantiation_probe(
+            fragment.proof_term
+        ):
+            raise ValueError("cannot stabilize a fragment that already contains a probe handle")
+        if fragment.declaration:
+            indexed = self._candidate_entries.get(fragment.declaration)
+            declared_exact_type = (
+                indexed.declaration_type if indexed is not None else None
+            )
+            if declared_exact_type is None:
+                generated = next(
+                    (
+                        item
+                        for item in state.generated_capabilities
+                        if item.declaration == fragment.declaration
+                    ),
+                    None,
+                )
+                declared_exact_type = (
+                    generated.exact_type if generated is not None else None
+                )
+            if declared_exact_type is not None and (
+                _same_type(declared_exact_type, fragment.exact_type)
+                or self._types_definitionally_equal(
+                    state=state,
+                    first_type=declared_exact_type,
+                    second_type=fragment.exact_type,
+                )
+            ):
+                declaration = stable_binding_declaration(
+                    replace(fragment, proof_term=fragment.declaration)
+                )
+                if declaration is not None:
+                    self._event(
+                        "DEPENDENT_BINDING_REUSED",
+                        declaration=declaration,
+                        exact_type=fragment.exact_type,
+                        reason="verified-declaration-exact-type-match",
+                    )
+                    return state, replace(
+                        fragment,
+                        proof_term=declaration,
+                        declaration=declaration,
+                    )
+        digest = stable_sha256(
+            {
+                "exact_type": fragment.exact_type,
+                "proof_term": fragment.proof_term,
+                "source_hash": fragment.source_hash,
+            }
+        ).removeprefix("sha256:")[:20]
+        capability_id = f"stable-binding-{digest}"
+        existing = next(
+            (
+                item
+                for item in state.generated_capabilities
+                if item.capability_id == capability_id
+            ),
+            None,
+        )
+        if existing is not None:
+            stable = ReusableFragment(
+                exact_type=existing.exact_type,
+                proof_term=existing.declaration,
+                declaration=existing.declaration,
+                imports=fragment.imports,
+                module=fragment.module,
+                provenance="job-local-stable-binding",
+                lean_verified=True,
+                source_hash=existing.source_hash,
+            )
+            return state, stable
+
+        namespace = (
+            "ComplexityReduction.Agent.GenerativeReduction.GeneratedBindings."
+            f"B{digest}"
+        )
+        declaration_name = f"stable_binding_{digest}"
+        proof = fragment.proof_term.strip()
+        if proof.startswith("by"):
+            implementation = (
+                f"noncomputable def {declaration_name} : {fragment.exact_type.strip()} := "
+                + proof
+            )
+        else:
+            implementation = (
+                f"noncomputable def {declaration_name} : {fragment.exact_type.strip()} := by\n"
+                f"  exact ({proof})"
+            )
+        source, declaration = build_authored_capability_source(
+            input_module=self.input_module,
+            exact_type=fragment.exact_type,
+            namespace=namespace,
+            declaration_name=declaration_name,
+            implementation=implementation,
+            extra_imports=tuple(
+                dict.fromkeys(
+                    (
+                        *((fragment.module,) if fragment.module else ()),
+                        *fragment.imports,
+                        *self.plugin_imports,
+                        *state.imports,
+                    )
+                )
+            ),
+            generated_capabilities=state.generated_capabilities,
+            forbidden_declarations=self.forbidden_declarations,
+        )
+        source_hash = stable_sha256(source)
+        self.tracker.consume("lean_checks")
+        self.tracker.consume("generated_lean_checks")
+        self.tracker.consume("generated_files")
+        path = self.store.write_text(
+            f"work/bindings/{capability_id}.lean", source
+        )
+        command = run_lean_file(
+            root=self.root,
+            path=path,
+            timeout_seconds=self.lean_timeout_seconds,
+        )
+        self._record_command(command)
+        if not command.ok:
+            raise RuntimeError(command.stderr or command.stdout)
+        self.tracker.consume("generated_lean_successes")
+        self.tracker.consume("capability_registrations")
+        capability = GeneratedCapability(
+            capability_id=capability_id,
+            exact_type=fragment.exact_type,
+            declaration=declaration,
+            namespace=namespace,
+            implementation=implementation,
+            source_hash=source_hash,
+            action_id=parent_action_id,
+            provenance="job-local-stable-binding",
+        )
+        stable = ReusableFragment(
+            exact_type=fragment.exact_type,
+            proof_term=declaration,
+            declaration=declaration,
+            module=fragment.module,
+            imports=fragment.imports,
+            provenance="job-local-stable-binding",
+            lean_verified=True,
+            source_hash=source_hash,
+        )
+        state = state.add_generated_capability(capability, stable)
+        self.planner.invalidate_for_new_capability(state.capability_fingerprint)
+        self._event(
+            "DEPENDENT_BINDING_STABILIZED",
+            declaration=declaration,
+            exact_type=fragment.exact_type,
+            source_hash=source_hash,
+        )
+        return state, stable
 
     def _verify_frame(
         self, state: ProofState, frame: ApplicationFrame
@@ -1622,10 +2534,106 @@ class RecursiveSearchRuntime:
             )
         return state
 
+    def _extract_finite_counterexample(
+        self,
+        *,
+        state: ProofState,
+        goal: OpenGoal,
+        action: CandidateAction,
+        candidate,
+        round_index: int,
+    ) -> Mapping[str, object] | None:
+        term = candidate.check_receipt.get("counterexample_probe_term")
+        schema = candidate.check_receipt.get("counterexample_probe_schema")
+        if not isinstance(term, str) or not term.strip() or not isinstance(schema, str):
+            return None
+        lowered = term.lower()
+        if "\n" in term or "\r" in term or "import " in lowered or "#" in term:
+            return None
+        imports = tuple(
+            dict.fromkeys(
+                (
+                    self.input_module,
+                    *candidate.imports,
+                    *self.plugin_imports,
+                    *state.imports,
+                )
+            )
+        )
+        source = (
+            "".join(f"import {module}\n" for module in imports)
+            + "\n"
+            + RECURSIVE_ELABORATION_OPTIONS
+            + "\n"
+            + render_generated_capabilities(state.generated_capabilities)
+            + "\n#reduce "
+            + term.strip()
+            + "\n"
+        )
+        digest = stable_sha256(
+            {
+                "goal": goal.key.fingerprint,
+                "action": action.action_id,
+                "witness": candidate.witness_id,
+                "round": round_index + 1,
+                "term": term,
+                "capabilities": state.capability_fingerprint,
+            }
+        ).removeprefix("sha256:")[:20]
+        try:
+            self.tracker.consume("lean_checks")
+        except BudgetExhausted:
+            self._event(
+                "FINITE_COUNTEREXAMPLE_PROBE_SKIPPED",
+                goal_id=goal.goal_id,
+                witness_id=candidate.witness_id,
+                reason="lean check budget exhausted",
+            )
+            return None
+        path = self.store.write_text(
+            f"work/counterexamples/{digest}.lean", source
+        )
+        command = run_lean_file(
+            root=self.root,
+            path=path,
+            timeout_seconds=self.lean_timeout_seconds,
+        )
+        self._record_command(command)
+        if not command.ok:
+            diagnostic = command.stderr or command.stdout
+            if not diagnostic:
+                diagnostic = (
+                    "Lean finite-counterexample probe failed without output "
+                    f"(exit_code={command.exit_code}, timed_out={command.timed_out}, "
+                    f"duration_seconds={command.duration_seconds:.3f}, path={path})"
+                )
+            self._event(
+                "FINITE_COUNTEREXAMPLE_PROBE_FAILED",
+                goal_id=goal.goal_id,
+                witness_id=candidate.witness_id,
+                diagnostic=diagnostic[-2000:],
+            )
+            return None
+        parsed = parse_finite_counterexample_output(
+            stdout=command.stdout,
+            stderr=command.stderr,
+            schema=schema,
+        )
+        if parsed is None:
+            return None
+        return {
+            **parsed,
+            "round": round_index + 1,
+            "witness_id": candidate.witness_id,
+            "executable_check": "lean-kernel-reduction",
+            "proof_authority": False,
+        }
+
     def _execute_plugin(
         self,
         state: ProofState,
         goal: OpenGoal,
+        plan: SubstepPlan,
         action: CandidateAction,
     ) -> ProofState:
         state = state.mark_action_attempted(goal.goal_id, action.action_id)
@@ -1659,49 +2667,403 @@ class RecursiveSearchRuntime:
             "ComplexityReduction.Agent.GenerativeReduction.GeneratedCapabilities."
             f"C{digest}"
         )
-        remaining = self.tracker.remaining("finite_candidates")
-        limit = min(
-            self.tracker.budget.max_finite_candidates,
-            remaining if remaining is not None else self.tracker.budget.max_finite_candidates,
+        candidate_class = str(
+            getattr(plugin, "candidate_class", "finite-enumeration")
         )
-        candidates = tuple(
-            plugin.enumerate(
-                goal,
-                declaration_name=declaration_name,
-                limit=limit,
-                counterexamples=(),
-            )
+        # Capability-specific deterministic generators are still generators:
+        # record the same Lean-grounded construction context that a model
+        # authoring call would receive.  This prevents typed compiler success
+        # from appearing as an empty-context shortcut in gate reports.
+        capsule = self._build_context_capsule(
+            state=state,
+            goal=goal,
+            plan=plan,
+            diagnostics=goal.last_lean_diagnostics,
+            expansion_ordinal=0,
         )
-        diagnostics = "finite synthesis plugin emitted no candidate"
-        for ordinal, candidate in enumerate(candidates, start=1):
-            self.tracker.consume("finite_candidates")
+        self._event(
+            "PLUGIN_GENERATOR_CONTEXT_BOUND",
+            goal_id=goal.goal_id,
+            action_id=action.action_id,
+            plugin=plugin_name,
+            capsule_id=capsule.capsule_id,
+            generation_context_ready=capsule.generation_context_ready,
+        )
+        if not capsule.generation_context_ready:
+            self.tracker.consume("context_insufficient")
             self._event(
-                "FINITE_CANDIDATE_CHECKED",
+                "CONTEXT_INSUFFICIENT",
                 goal_id=goal.goal_id,
                 action_id=action.action_id,
                 plugin=plugin_name,
-                witness_id=candidate.witness_id,
-                executable_status=candidate.executable_status,
-                check_receipt=dict(candidate.check_receipt),
+                capsule_id=capsule.capsule_id,
+                blocker=capsule.context_blocker,
             )
-            if candidate.counterexample is not None:
-                self.tracker.consume("finite_counterexamples")
+            return state.remember_failure(
+                action=action,
+                diagnostic=(
+                    capsule.context_blocker
+                    or "capability-specific generator context is insufficient"
+                ),
+                blocker_code="context_insufficient",
+                goal_id=goal.goal_id,
+            )
+        candidate_resource = (
+            "capability_compiler_candidates"
+            if candidate_class == "typed-compiler"
+            else "finite_candidates"
+        )
+        remaining = self.tracker.remaining(candidate_resource)
+        limit = min(
+            (
+                self.tracker.budget.max_capability_compiler_candidates
+                if candidate_class == "typed-compiler"
+                else self.tracker.budget.max_finite_candidates
+            ),
+            remaining
+            if remaining is not None
+            else self.tracker.budget.max_finite_candidates,
+        )
+        diagnostics = "finite synthesis plugin emitted no candidate"
+        counterexamples: list[Mapping[str, object]] = []
+        checked_candidate_count = 0
+        maximum_rounds = (
+            1
+            if candidate_class == "typed-compiler"
+            else self.tracker.budget.max_cegis_rounds
+        )
+        for round_index in range(maximum_rounds):
+            remaining = self.tracker.remaining(candidate_resource)
+            if remaining == 0 or checked_candidate_count >= limit:
+                break
+            round_limit = min(limit - checked_candidate_count, remaining or limit)
+            candidates = tuple(
+                plugin.enumerate(
+                    goal,
+                    declaration_name=declaration_name,
+                    limit=round_limit,
+                    counterexamples=tuple(counterexamples),
+                )
+            )
+            if round_index > 0:
                 self._event(
-                    "FINITE_COUNTEREXAMPLE_FOUND",
+                    "FINITE_CEGIS_ROUND_STARTED",
+                    goal_id=goal.goal_id,
+                    action_id=action.action_id,
+                    plugin=plugin_name,
+                    round=round_index + 1,
+                    counterexample_count=len(counterexamples),
+                )
+            if not candidates:
+                diagnostics = "finite synthesis plugin emitted no candidate"
+                break
+            counterexamples_before = len(counterexamples)
+            for candidate in candidates:
+                capability_plan_id = (
+                    candidate.capability_plan.plan_id
+                    if candidate.capability_plan is not None
+                    else f"untyped-{candidate.witness_id}"
+                )
+                typed_plan_id = (
+                    str(candidate.typed_plan_receipt.get("plan_id") or "")
+                    if isinstance(candidate.typed_plan_receipt, Mapping)
+                    else ""
+                )
+                reservation_capability_id = typed_plan_id or capability_plan_id
+                reservation_scope = stable_sha256(
+                    {
+                        "goal": goal.key.fingerprint,
+                        "action": action.action_id,
+                        "capability_plan": capability_plan_id,
+                        "typed_plan": typed_plan_id,
+                        "witness": candidate.witness_id,
+                        "round": round_index + 1,
+                    }
+                )
+                required_materializations = len(candidate.stages) + 1
+                if not self._reserve_capability_budget(
+                    scope_id=reservation_scope,
+                    hierarchy=(
+                        f"case:{self.input_module}",
+                        f"route:plugin:{plugin_name}",
+                        f"capability:{reservation_capability_id}",
+                        f"design:{candidate.witness_id}",
+                        f"repair:round-{round_index + 1}",
+                    ),
+                    requirements={
+                        candidate_resource: 1,
+                        "lean_checks": required_materializations,
+                        "generated_files": required_materializations,
+                    },
+                    goal_id=goal.goal_id,
+                    action_id=action.action_id,
+                ):
+                    diagnostics = (
+                        "capability-scoped budget cannot cover one complete "
+                        "candidate materialization"
+                    )
+                    break
+                checked_candidate_count += 1
+                ordinal = checked_candidate_count
+                self.tracker.consume(candidate_resource)
+                self._record_plugin_protocol(candidate=candidate, action=action)
+                self._event(
+                    "FINITE_CANDIDATE_CHECKED",
+                    goal_id=goal.goal_id,
+                    action_id=action.action_id,
+                    plugin=plugin_name,
+                    witness_id=candidate.witness_id,
+                    executable_status=candidate.executable_status,
+                    candidate_class=candidate.candidate_class,
+                    cegis_round=round_index + 1,
+                    check_receipt=dict(candidate.check_receipt),
+                )
+                if candidate.counterexample is not None:
+                    counterexample = dict(candidate.counterexample)
+                    counterexamples.append(counterexample)
+                    self.tracker.consume("finite_counterexamples")
+                    self._event(
+                        "FINITE_COUNTEREXAMPLE_FOUND",
+                        goal_id=goal.goal_id,
+                        witness_id=candidate.witness_id,
+                        counterexample=counterexample,
+                    )
+                    diagnostics = "finite candidate was rejected by executable semantics"
+                    continue
+                state, stage_diagnostic = self._materialize_plugin_stages(
+                    state=state,
+                    goal=goal,
+                    action=action,
+                    candidate=candidate,
+                    namespace=namespace,
+                    digest=digest,
+                    plugin_name=plugin_name,
+                )
+                if stage_diagnostic is not None:
+                    diagnostics = stage_diagnostic
+                    continue
+                try:
+                    source, declaration = build_authored_capability_source(
+                        input_module=self.input_module,
+                        exact_type=goal.exact_type,
+                        namespace=namespace,
+                        declaration_name=declaration_name,
+                        implementation=candidate.implementation,
+                        extra_imports=(
+                            *candidate.imports,
+                            *self.plugin_imports,
+                            *state.imports,
+                        ),
+                        generated_capabilities=state.generated_capabilities,
+                        forbidden_declarations=self.forbidden_declarations,
+                    )
+                except ValueError as error:
+                    diagnostics = str(error)
+                    continue
+                source_hash = stable_sha256(source)
+                if source_hash in self._candidate_source_hashes:
+                    self.tracker.consume("duplicate_candidate_rejections")
+                    self._event(
+                        "CANDIDATE_DEDUPLICATED",
+                        goal_id=goal.goal_id,
+                        source_hash=source_hash,
+                        witness_id=candidate.witness_id,
+                    )
+                    diagnostics = "finite plugin repeated a previously checked source"
+                    continue
+                self._candidate_source_hashes.add(source_hash)
+                self.tracker.consume("lean_checks")
+                self.tracker.consume("generated_lean_checks")
+                self.tracker.consume("generated_files")
+                self.tracker.consume("synthesis_materializations")
+                path = self.store.write_text(
+                    "work/generated/"
+                    f"{digest}-finite-{ordinal}-{source_hash.removeprefix('sha256:')[:12]}.lean",
+                    source,
+                )
+                command = run_lean_file(
+                    root=self.root,
+                    path=path,
+                    timeout_seconds=self.lean_timeout_seconds,
+                )
+                self._record_command(command)
+                if not command.ok:
+                    diagnostics = (command.stderr or command.stdout)[-4000:]
+                    if candidate_class != "typed-compiler":
+                        classified = classify_lean_diagnostic(diagnostics)
+                        exact_counterexample = self._extract_finite_counterexample(
+                            state=state,
+                            goal=goal,
+                            action=action,
+                            candidate=candidate,
+                            round_index=round_index,
+                        )
+                        if exact_counterexample is None:
+                            self._event(
+                                "FINITE_COUNTEREXAMPLE_UNAVAILABLE",
+                                goal_id=goal.goal_id,
+                                witness_id=candidate.witness_id,
+                                source_hash=source_hash,
+                                diagnostic_class=classified.code,
+                                diagnostic_fingerprint=classified.fingerprint,
+                                effect="planner-replan-without-fabricated-counterexample",
+                            )
+                            continue
+                        counterexample = {
+                            **exact_counterexample,
+                            "source_hash": source_hash,
+                            "diagnostic_class": classified.code,
+                            "diagnostic_fingerprint": classified.fingerprint,
+                        }
+                        if counterexample not in counterexamples:
+                            counterexamples.append(counterexample)
+                            self.tracker.consume("finite_counterexamples")
+                            self._event(
+                                "FINITE_COUNTEREXAMPLE_FOUND",
+                                goal_id=goal.goal_id,
+                                witness_id=candidate.witness_id,
+                                counterexample=counterexample,
+                            )
+                    continue
+                self.tracker.consume("generated_lean_successes")
+                if candidate_class == "typed-compiler":
+                    self.tracker.consume("capability_compiler_certificates")
+                else:
+                    self.tracker.consume("finite_certificates")
+                self.tracker.consume("capability_registrations")
+                implementation = candidate.implementation.strip()
+                capability = GeneratedCapability(
+                    capability_id=f"capability-{digest}",
+                    exact_type=goal.exact_type,
+                    declaration=declaration,
+                    namespace=namespace,
+                    implementation=implementation,
+                    source_hash=source_hash,
+                    action_id=action.action_id,
+                    provenance=f"capability-synthesis-plugin:{plugin_name}",
+                )
+                fragment = ReusableFragment(
+                    exact_type=goal.exact_type,
+                    proof_term=declaration,
+                    declaration=declaration,
+                    imports=tuple(candidate.imports),
+                    provenance=f"capability-synthesis-plugin:{plugin_name}",
+                    lean_verified=True,
+                    source_hash=source_hash,
+                )
+                state = state.add_generated_capability(capability, fragment)
+                if candidate.contribution_receipt is not None:
+                    local_helpers = candidate.contribution_receipt.generated_helpers
+                    qualified_helpers = tuple(
+                        helper
+                        if "." in helper
+                        else f"{namespace}.{helper}"
+                        for helper in local_helpers
+                    )
+                    self._contribution_receipts.append(
+                        replace(
+                            candidate.contribution_receipt,
+                            capability_declaration=declaration,
+                            generated_helpers=qualified_helpers,
+                            forbidden_audit_passed=True,
+                            independent_lean_passed=True,
+                        )
+                    )
+                self.planner.invalidate_for_new_capability(state.capability_fingerprint)
+                state = state.close_goal(
+                    goal_id=goal.goal_id,
+                    action=action,
+                    fragment=fragment,
+                    step=ProofStep(
+                        action_id=action.action_id,
+                        provider=ProviderKind.PLUGIN,
+                        disposition=ActionDisposition.CLOSED,
+                        goal_id=goal.goal_id,
+                        exact_type=goal.exact_type,
+                        declaration=declaration,
+                        solver=plugin_name,
+                    ),
+                )
+                self._event(
+                    "FINITE_CERTIFICATE_MATERIALIZED",
                     goal_id=goal.goal_id,
                     witness_id=candidate.witness_id,
-                    counterexample=dict(candidate.counterexample),
+                    declaration=declaration,
+                    source_hash=source_hash,
+                    cegis_round=round_index + 1,
                 )
-                diagnostics = "finite candidate was rejected by executable semantics"
+                self._event(
+                    "GENERATED_CAPABILITY_REGISTERED",
+                    goal_id=goal.goal_id,
+                    declaration=declaration,
+                    source_hash=source_hash,
+                    provider=plugin_name,
+                )
+                if goal.producer_frame_id and goal.producer_slot_id:
+                    return self._fill_frame_slot(
+                        state,
+                        frame_id=goal.producer_frame_id,
+                        slot_id=goal.producer_slot_id,
+                        fragment=fragment,
+                        attempted_actions=tuple(
+                            dict.fromkeys((*goal.attempted_actions, action.action_id))
+                        ),
+                    )
+                return state
+            if candidate_class == "typed-compiler" or len(counterexamples) == counterexamples_before:
+                break
+        return state.remember_failure(
+            action=action,
+            diagnostic=diagnostics,
+            blocker_code="finite_synthesis_not_verified",
+            goal_id=goal.goal_id,
+        )
+
+    def _materialize_plugin_stages(
+        self,
+        *,
+        state: ProofState,
+        goal: OpenGoal,
+        action: CandidateAction,
+        candidate,
+        namespace: str,
+        digest: str,
+        plugin_name: str,
+    ) -> tuple[ProofState, str | None]:
+        completed_stage_ids: set[str] = set()
+        for ordinal, stage in enumerate(candidate.stages, start=1):
+            declaration = f"{namespace}.{stage.declaration_name}"
+            existing = next(
+                (
+                    capability
+                    for capability in state.generated_capabilities
+                    if capability.declaration == declaration
+                    and _same_type(capability.exact_type, stage.exact_type)
+                ),
+                None,
+            )
+            if existing is not None:
+                completed_stage_ids.add(stage.stage_id)
                 continue
+            missing_dependencies = tuple(
+                dependency
+                for dependency in stage.dependency_stage_ids
+                if dependency not in completed_stage_ids
+            )
+            if missing_dependencies:
+                return state, (
+                    "capability stage has unmaterialized dependencies: "
+                    + ", ".join(missing_dependencies)
+                )
             try:
                 source, declaration = build_authored_capability_source(
                     input_module=self.input_module,
-                    exact_type=goal.exact_type,
+                    exact_type=stage.exact_type,
                     namespace=namespace,
-                    declaration_name=declaration_name,
-                    implementation=candidate.implementation,
+                    declaration_name=stage.declaration_name,
+                    implementation=stage.implementation,
                     extra_imports=(
+                        *stage.imports,
                         *candidate.imports,
                         *self.plugin_imports,
                         *state.imports,
@@ -1710,108 +3072,76 @@ class RecursiveSearchRuntime:
                     forbidden_declarations=self.forbidden_declarations,
                 )
             except ValueError as error:
-                diagnostics = str(error)
-                continue
+                return state, str(error)
             source_hash = stable_sha256(source)
-            if source_hash in self._candidate_source_hashes:
-                self.tracker.consume("duplicate_candidate_rejections")
-                self._event(
-                    "CANDIDATE_DEDUPLICATED",
-                    goal_id=goal.goal_id,
-                    source_hash=source_hash,
-                    witness_id=candidate.witness_id,
+            already_verified = source_hash in self._verified_plugin_stage_sources
+            if not already_verified:
+                self.tracker.consume("lean_checks")
+                self.tracker.consume("generated_lean_checks")
+                self.tracker.consume("generated_files")
+                self.tracker.consume("synthesis_materializations")
+                path = self.store.write_text(
+                    "work/generated/"
+                    f"{digest}-stage-{ordinal}-{source_hash.removeprefix('sha256:')[:12]}.lean",
+                    source,
                 )
-                diagnostics = "finite plugin repeated a previously checked source"
-                continue
-            self._candidate_source_hashes.add(source_hash)
-            self.tracker.consume("lean_checks")
-            self.tracker.consume("generated_lean_checks")
-            self.tracker.consume("generated_files")
-            self.tracker.consume("synthesis_materializations")
-            path = self.store.write_text(
-                "work/generated/"
-                f"{digest}-finite-{ordinal}-{source_hash.removeprefix('sha256:')[:12]}.lean",
-                source,
-            )
-            command = run_lean_file(
-                root=self.root,
-                path=path,
-                timeout_seconds=self.lean_timeout_seconds,
-            )
-            self._record_command(command)
-            if not command.ok:
-                diagnostics = (command.stderr or command.stdout)[-4000:]
-                continue
-            self.tracker.consume("generated_lean_successes")
-            self.tracker.consume("finite_certificates")
+                command = run_lean_file(
+                    root=self.root,
+                    path=path,
+                    timeout_seconds=self.lean_timeout_seconds,
+                )
+                self._record_command(command)
+                if not command.ok:
+                    diagnostic = (command.stderr or command.stdout)[-4000:]
+                    self._event(
+                        "CAPABILITY_STAGE_FAILED",
+                        goal_id=goal.goal_id,
+                        action_id=action.action_id,
+                        plugin=plugin_name,
+                        stage_id=stage.stage_id,
+                        declaration=declaration,
+                        diagnostic=diagnostic,
+                    )
+                    return state, diagnostic
+                self._verified_plugin_stage_sources.add(source_hash)
+                self.tracker.consume("generated_lean_successes")
             self.tracker.consume("capability_registrations")
-            implementation = candidate.implementation.strip()
             capability = GeneratedCapability(
-                capability_id=f"capability-{digest}",
-                exact_type=goal.exact_type,
+                capability_id=(
+                    f"capability-{digest}-stage-"
+                    + stable_sha256(stage.stage_id).removeprefix("sha256:")[:12]
+                ),
+                exact_type=stage.exact_type,
                 declaration=declaration,
                 namespace=namespace,
-                implementation=implementation,
+                implementation=stage.implementation.strip(),
                 source_hash=source_hash,
                 action_id=action.action_id,
-                provenance=f"finite-synthesis-plugin:{plugin_name}",
+                provenance=f"capability-stage:{plugin_name}:{stage.stage_id}",
             )
             fragment = ReusableFragment(
-                exact_type=goal.exact_type,
+                exact_type=stage.exact_type,
                 proof_term=declaration,
                 declaration=declaration,
-                imports=tuple(candidate.imports),
-                provenance=f"finite-synthesis-plugin:{plugin_name}",
+                imports=tuple(dict.fromkeys((*stage.imports, *candidate.imports))),
+                provenance=f"capability-stage:{plugin_name}:{stage.stage_id}",
                 lean_verified=True,
                 source_hash=source_hash,
             )
             state = state.add_generated_capability(capability, fragment)
+            completed_stage_ids.add(stage.stage_id)
             self.planner.invalidate_for_new_capability(state.capability_fingerprint)
-            state = state.close_goal(
-                goal_id=goal.goal_id,
-                action=action,
-                fragment=fragment,
-                step=ProofStep(
-                    action_id=action.action_id,
-                    provider=ProviderKind.PLUGIN,
-                    disposition=ActionDisposition.CLOSED,
-                    goal_id=goal.goal_id,
-                    exact_type=goal.exact_type,
-                    declaration=declaration,
-                    solver=plugin_name,
-                ),
-            )
             self._event(
-                "FINITE_CERTIFICATE_MATERIALIZED",
+                "CAPABILITY_STAGE_REGISTERED",
                 goal_id=goal.goal_id,
-                witness_id=candidate.witness_id,
+                action_id=action.action_id,
+                plugin=plugin_name,
+                stage_id=stage.stage_id,
                 declaration=declaration,
                 source_hash=source_hash,
+                reused_verified_source=already_verified,
             )
-            self._event(
-                "GENERATED_CAPABILITY_REGISTERED",
-                goal_id=goal.goal_id,
-                declaration=declaration,
-                source_hash=source_hash,
-                provider=plugin_name,
-            )
-            if goal.producer_frame_id and goal.producer_slot_id:
-                return self._fill_frame_slot(
-                    state,
-                    frame_id=goal.producer_frame_id,
-                    slot_id=goal.producer_slot_id,
-                    fragment=fragment,
-                    attempted_actions=tuple(
-                        dict.fromkeys((*goal.attempted_actions, action.action_id))
-                    ),
-                )
-            return state
-        return state.remember_failure(
-            action=action,
-            diagnostic=diagnostics,
-            blocker_code="finite_synthesis_not_verified",
-            goal_id=goal.goal_id,
-        )
+        return state, None
 
     def _execute_synthesis(
         self,
@@ -1841,6 +3171,17 @@ class RecursiveSearchRuntime:
                 action=action,
                 diagnostic="configured model provider is unavailable",
                 blocker_code="model_provider_unavailable",
+                goal_id=goal.goal_id,
+            )
+        if contains_rule_instantiation_probe(goal.exact_type):
+            self.tracker.consume("unresolved_probe_handles")
+            return state.remember_failure(
+                action=action,
+                diagnostic=(
+                    "authoring rejected an exact goal containing a transient "
+                    "RuleInstantiationProbe handle"
+                ),
+                blocker_code="unresolved_probe_handle",
                 goal_id=goal.goal_id,
             )
         design = self._design_for_action(goal=goal, contract=contract, action=action)
@@ -1912,7 +3253,7 @@ class RecursiveSearchRuntime:
             "ComplexityReduction.Agent.GenerativeReduction.GeneratedCapabilities."
             f"C{digest}"
         )
-        diagnostics: str | None = None
+        diagnostics: str | None = goal.last_lean_diagnostics
         classified = None
         previous_implementation: str | None = None
         previous_source: str | None = None
@@ -1965,6 +3306,25 @@ class RecursiveSearchRuntime:
                 diagnostics=diagnostics,
                 expansion_ordinal=attempt,
             )
+            if not capsule.generation_context_ready:
+                self.tracker.consume("context_insufficient")
+                diagnostics = capsule.context_blocker or "generation context is insufficient"
+                design = self._store_design(
+                    design.transition(
+                        "context-insufficient",
+                        status="context-insufficient",
+                        context_capsule_id=capsule.capsule_id,
+                        terminal_reason=None,
+                    )
+                )
+                self._event(
+                    "CONTEXT_INSUFFICIENT",
+                    goal_id=authored_goal.goal_id,
+                    design_id=design.design_id,
+                    capsule_id=capsule.capsule_id,
+                    expansion_ordinal=attempt,
+                )
+                continue
             design = self._store_design(
                 design.transition(
                     "context-ready",
@@ -1976,6 +3336,73 @@ class RecursiveSearchRuntime:
                         else design.staged_goal_ids
                     ),
                 )
+            )
+            capability_plan = build_capability_plan(
+                goal=authored_goal,
+                substep_plan=plan,
+                action=action,
+                design=asdict(design),
+                capsule=capsule,
+                forbidden_declarations=self.forbidden_declarations,
+                prior_diagnostics=diagnostics,
+            )
+            generator_brief = build_generator_brief(
+                capability_plan=capability_plan,
+                substep_plan=plan,
+                capsule=capsule,
+                declaration_name=declaration_name,
+                exact_type=authored_type,
+                design=asdict(design),
+                prior_diagnostics=diagnostics,
+                failed_source_hashes=tuple(failed_source_hashes),
+            )
+            reservation_scope = stable_sha256(
+                {
+                    "goal": authored_goal.key.fingerprint,
+                    "action": action.action_id,
+                    "capability_plan": capability_plan.plan_id,
+                    "design": design.design_id,
+                    "attempt": attempt + 1,
+                }
+            )
+            if not self._reserve_capability_budget(
+                scope_id=reservation_scope,
+                hierarchy=(
+                    f"case:{self.input_module}",
+                    f"route:model-authoring:{mode}",
+                    f"capability:{capability_plan.plan_id}",
+                    f"design:{design.design_id}",
+                    f"repair:attempt-{attempt + 1}",
+                ),
+                requirements={
+                    "authoring_calls": 1,
+                    "model_calls": 1,
+                    "lean_checks": 1,
+                    "generated_files": 1,
+                },
+                goal_id=authored_goal.goal_id,
+                action_id=action.action_id,
+            ):
+                design = self._store_design(
+                    design.transition(
+                        "abandoned",
+                        status="abandoned",
+                        terminal_reason=(
+                            "capability-scoped budget cannot cover one complete "
+                            "Generator/Lean attempt"
+                        ),
+                    )
+                )
+                return state.remember_failure(
+                    action=action,
+                    diagnostic=design.terminal_reason or "capability budget unavailable",
+                    blocker_code="capability_budget_unavailable",
+                    goal_id=goal.goal_id,
+                )
+            self._record_generator_plan(
+                plan=capability_plan,
+                brief=generator_brief,
+                action=action,
             )
             self.tracker.consume("authoring_calls")
             self.tracker.consume("model_calls")
@@ -1990,6 +3417,7 @@ class RecursiveSearchRuntime:
                     context_capsule=capsule,
                     required_declaration=declaration_name,
                     design=asdict(design),
+                    generator_brief=generator_brief,
                 )
             else:
                 if previous_implementation_hash is None or classified is None:
@@ -2007,11 +3435,84 @@ class RecursiveSearchRuntime:
                     normalized_diagnostics=classified.normalized,
                     source_window=source_window(previous_source or "", classified),
                     failed_source_hashes=tuple(failed_source_hashes),
+                    generator_brief=generator_brief,
                 )
             record = self._record_model_call(record)
             if proposal is None:
                 diagnostics = record.error or "authoring protocol failed"
                 continue
+            generator_result = generator_result_from_proposal(
+                brief=generator_brief,
+                proposal=proposal,
+                substep_plan=plan,
+                generated_capabilities=state.generated_capabilities,
+            )
+            self._record_generator_result(generator_result)
+            if generator_result.status == GeneratorStatus.NEEDS_LOOKUP:
+                diagnostics = (
+                    "generator requested construction lookup: "
+                    + ", ".join(generator_result.requested_lookup)
+                )
+                self._event(
+                    "GENERATOR_LOOKUP_REQUESTED",
+                    plan_id=capability_plan.plan_id,
+                    brief_id=generator_brief.brief_id,
+                    identifiers=list(generator_result.requested_lookup),
+                )
+                self._expand_requested_lookup(
+                    state=state,
+                    goal=authored_goal,
+                    declarations=generator_result.requested_lookup,
+                )
+                continue
+            if generator_result.status in {
+                GeneratorStatus.NEEDS_REPLAN,
+                GeneratorStatus.PLAN_INFEASIBLE,
+            }:
+                replan_reason = (
+                    generator_result.rejection_reason
+                    or "generator requested a new capability plan"
+                )
+                effect = PlannerEffectReceipt(
+                    plan_id=capability_plan.plan_id,
+                    selected_action_id=action.action_id,
+                    selected_candidate_ids=capability_plan.selected_candidate_ids,
+                    selected_design_id=capability_plan.selected_design_id,
+                    generated_brief_id=generator_brief.brief_id,
+                    applied_effect="generator-returned-to-planner",
+                    override_reason=replan_reason,
+                )
+                self._planner_effect_receipts[stable_sha256(effect)] = effect
+                if len(design.counterexamples) >= self.tracker.budget.max_repairs_per_design:
+                    return state.remember_failure(
+                        action=action,
+                        diagnostic=(
+                            "generator replan budget exhausted: " + replan_reason
+                        ),
+                        blocker_code="generator_replan_budget_exhausted",
+                        goal_id=goal.goal_id,
+                    )
+                design = self._store_design(
+                    design.transition(
+                        "replanning",
+                        status="replanning",
+                        counterexamples=(*design.counterexamples, replan_reason),
+                        terminal_reason=None,
+                    )
+                )
+                self._event(
+                    "GENERATOR_REPLAN_REQUESTED",
+                    goal_id=goal.goal_id,
+                    action_id=action.action_id,
+                    plan_id=capability_plan.plan_id,
+                    brief_id=generator_brief.brief_id,
+                    replan_ordinal=len(design.counterexamples),
+                )
+                return state.release_action_for_replan(
+                    goal_id=goal.goal_id,
+                    action_id=action.action_id,
+                    diagnostic=replan_reason,
+                )
             implementation = (proposal.implementation or "").strip()
             implementation_hash = implementation_sha256(implementation)
             if implementation_hash in design.candidate_implementation_hashes:
@@ -2192,6 +3693,17 @@ class RecursiveSearchRuntime:
                 source_hash=source_hash,
             )
             state = state.add_generated_capability(capability, fragment)
+            self._contribution_receipts.append(
+                contribution_from_verified_generation(
+                    capability_plan=capability_plan,
+                    brief=generator_brief,
+                    generator_result=generator_result,
+                    substep_plan=plan,
+                    declaration=declaration,
+                    implementation=implementation,
+                    source_hash=source_hash,
+                )
+            )
             self.planner.invalidate_for_new_capability(state.capability_fingerprint)
             design = self._store_design(
                 design.transition(

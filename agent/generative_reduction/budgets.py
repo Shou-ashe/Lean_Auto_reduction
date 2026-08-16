@@ -41,6 +41,7 @@ class SearchBudget:
     max_duplicate_candidate_rejections: int = 4
     max_same_diagnostic_repetitions: int = 2
     max_finite_candidates: int = 64
+    max_capability_compiler_candidates: int = 32
     max_cegis_rounds: int = 8
     max_structural_depth: int = 8
     max_requeues_per_state: int = 256
@@ -71,6 +72,7 @@ class SearchBudget:
             "max_duplicate_candidate_rejections",
             "max_same_diagnostic_repetitions",
             "max_finite_candidates",
+            "max_capability_compiler_candidates",
             "max_cegis_rounds",
             "max_structural_depth",
             "max_requeues_per_state",
@@ -107,9 +109,14 @@ class BudgetUsage:
     context_expansions: int = 0
     duplicate_candidate_rejections: int = 0
     repeated_diagnostics: int = 0
+    context_insufficient: int = 0
+    unresolved_probe_handles: int = 0
+    rejected_nonexecutable_designs: int = 0
     finite_candidates: int = 0
     finite_counterexamples: int = 0
     finite_certificates: int = 0
+    capability_compiler_candidates: int = 0
+    capability_compiler_certificates: int = 0
     generated_lean_checks: int = 0
     generated_lean_successes: int = 0
     capability_registrations: int = 0
@@ -143,6 +150,7 @@ class BudgetTracker:
         "duplicate_candidate_rejections": "max_duplicate_candidate_rejections",
         "finite_candidates": "max_finite_candidates",
         "finite_counterexamples": "max_cegis_rounds",
+        "capability_compiler_candidates": "max_capability_compiler_candidates",
         "requeues": "max_requeues_per_state",
         "recursive_substep_plans": "max_recursive_substep_plans",
     }
@@ -152,6 +160,7 @@ class BudgetTracker:
         self.budget = budget
         self.usage = BudgetUsage()
         self._lock = Lock()
+        self._capacity_reservations: dict[str, dict[str, object]] = {}
 
     def remaining(self, resource: str) -> int | None:
         limit_name = self._LIMITS.get(resource)
@@ -169,6 +178,66 @@ class BudgetTracker:
                 raise BudgetExhausted(resource)
             setattr(self.usage, resource, current + amount)
 
+    def reserve_capacity(
+        self,
+        *,
+        scope_id: str,
+        hierarchy: tuple[str, ...],
+        requirements: dict[str, int],
+    ) -> dict[str, object]:
+        """Prove that one complete capability attempt can run before starting it.
+
+        Search inside one proof case is deliberately single-frontier and
+        sequential.  Consequently this preflight reservation is made
+        immediately before the selected design executes; no sibling branch can
+        consume the checked capacity between this receipt and the attempt.
+        """
+
+        if not scope_id or not hierarchy or any(not item for item in hierarchy):
+            raise ValueError("budget reservation requires a non-empty scope hierarchy")
+        normalized: dict[str, int] = {}
+        for resource, amount in requirements.items():
+            if resource not in self._LIMITS:
+                raise ValueError(f"unknown reservable budget resource: {resource}")
+            if not isinstance(amount, int) or amount <= 0:
+                raise ValueError("budget reservation amounts must be positive integers")
+            normalized[resource] = amount
+        if not normalized:
+            raise ValueError("budget reservation requires at least one resource")
+        with self._lock:
+            existing = self._capacity_reservations.get(scope_id)
+            if existing is not None:
+                if (
+                    existing["hierarchy"] != hierarchy
+                    or existing["requirements"] != normalized
+                ):
+                    raise ValueError("budget reservation scope was reused inconsistently")
+                return existing
+            remaining_before: dict[str, int] = {}
+            for resource, amount in normalized.items():
+                limit_name = self._LIMITS[resource]
+                remaining = max(
+                    0,
+                    getattr(self.budget, limit_name)
+                    - getattr(self.usage, resource),
+                )
+                if remaining < amount:
+                    raise BudgetExhausted(resource)
+                remaining_before[resource] = remaining
+            receipt: dict[str, object] = {
+                "scope_id": scope_id,
+                "hierarchy": hierarchy,
+                "requirements": normalized,
+                "remaining_before": remaining_before,
+                "status": "reserved-for-immediate-sequential-execution",
+            }
+            self._capacity_reservations[scope_id] = receipt
+            return receipt
+
+    def capacity_reservations(self) -> tuple[dict[str, object], ...]:
+        with self._lock:
+            return tuple(dict(item) for item in self._capacity_reservations.values())
+
     def to_dict(self) -> dict[str, object]:
         return {
             "budget": asdict(self.budget),
@@ -176,6 +245,7 @@ class BudgetTracker:
             "remaining": {
                 resource: self.remaining(resource) for resource in self._LIMITS
             },
+            "capacity_reservations": self.capacity_reservations(),
         }
 
 

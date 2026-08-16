@@ -39,7 +39,13 @@ class PluginActionProvider:
                 }
             )
             design_id = (
-                "design-finite-" + digest.removeprefix("sha256:")[:16]
+                "design-plugin-" + digest.removeprefix("sha256:")[:16]
+            )
+            candidate_class = str(
+                getattr(plugin, "candidate_class", "finite-enumeration")
+            )
+            authoritative = bool(
+                getattr(plugin, "authoritative_typed_compiler", False)
             )
             actions.append(
                 CandidateAction(
@@ -49,11 +55,13 @@ class PluginActionProvider:
                     goal_key=goal.key,
                     estimated_cost=max(0.25, 1.25 - receipt.confidence),
                     contract_id=(contract.contract_id if contract else None),
-                    provenance=f"finite-synthesis-plugin:{plugin.name}",
+                    provenance=f"capability-synthesis-plugin:{plugin.name}",
                     metadata={
                         "plugin_name": plugin.name,
                         "design_id": design_id,
-                        "design_kind": "finite-enumeration",
+                        "design_kind": candidate_class,
+                        "candidate_class": candidate_class,
+                        "authoritative_typed_compiler": authoritative,
                         "constructibility_score": receipt.confidence,
                         "support_receipt": {
                             "plugin": receipt.plugin,

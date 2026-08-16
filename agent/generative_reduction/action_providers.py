@@ -49,6 +49,22 @@ class ActionProviders:
                 goal, contract, limit=max_actions_per_provider
             )
         )
+        authoritative_plugin = tuple(
+            action
+            for action in plugin
+            if action.metadata.get("authoritative_typed_compiler")
+        )
+        if authoritative_plugin:
+            # A capability-specific compiler has already produced a typed,
+            # target-specific plan.  Keep any independently checked exact
+            # closure, otherwise avoid spending theorem/model design budgets on
+            # less structured alternatives for this same capability goal.
+            actions = (
+                *self.reuse.actions(closure)[:max_actions_per_provider],
+                *authoritative_plugin,
+            )
+            unique = {action.action_id: action for action in actions}
+            return tuple(sorted(unique.values(), key=action_cost))
         actions = (
             *self.reuse.actions(closure)[:max_actions_per_provider],
             *structural,

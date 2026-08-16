@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections import Counter
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, replace
 import secrets
 from pathlib import Path
 from typing import Any, Mapping, Sequence
@@ -75,6 +75,7 @@ class GenerativeReductionConfig:
     model_policy: ModelPolicy = ModelPolicy.AUTO
     plugins: tuple[str, ...] = ()
     forbidden_declarations: tuple[str, ...] = ()
+    excluded_candidate_declarations: tuple[str, ...] = ()
     budget: SearchBudget = SearchBudget()
     lean_timeout_seconds: int = 600
     deepseek: DeepSeekConfig | None = None
@@ -94,6 +95,12 @@ class GenerativeReductionOrchestrator:
             dict.fromkeys(
                 validate_declaration_name(item, label="forbidden declaration")
                 for item in config.forbidden_declarations
+            )
+        )
+        self.excluded_candidate_declarations = tuple(
+            dict.fromkeys(
+                validate_declaration_name(item, label="excluded candidate declaration")
+                for item in config.excluded_candidate_declarations
             )
         )
 
@@ -126,6 +133,43 @@ class GenerativeReductionOrchestrator:
                 )
             )
         )
+
+    @staticmethod
+    def _reachable_generated_declarations(
+        final_state: ProofState | None,
+    ) -> frozenset[str]:
+        """Follow the generated-declaration graph from the verified root proof.
+
+        The final artifact intentionally contains every preserved capability, so
+        source-file membership alone would incorrectly classify an abandoned
+        branch helper as final-used.  This bounded graph walk starts from the
+        actual root proof term and follows only referenced generated bodies.
+        """
+
+        if final_state is None or final_state.root_fragment is None:
+            return frozenset()
+        by_declaration = {
+            capability.declaration: capability
+            for capability in final_state.generated_capabilities
+        }
+        pending = [
+            declaration
+            for declaration in by_declaration
+            if declaration in final_state.root_fragment.proof_term
+        ]
+        reachable: set[str] = set()
+        while pending:
+            declaration = pending.pop()
+            if declaration in reachable:
+                continue
+            reachable.add(declaration)
+            implementation = by_declaration[declaration].implementation
+            pending.extend(
+                dependency
+                for dependency in by_declaration
+                if dependency not in reachable and dependency in implementation
+            )
+        return frozenset(reachable)
 
     def _write_result(
         self, store: GeneralJobStore, result: GeneralNPHardResult
@@ -163,6 +207,13 @@ class GenerativeReductionOrchestrator:
         synthesis_designs: Sequence[Mapping[str, Any]] = (),
         context_capsules: Sequence[Mapping[str, Any]] = (),
         repair_lineage: Sequence[Mapping[str, Any]] = (),
+        capability_plans=(),
+        theorem_application_plans=(),
+        generator_briefs=(),
+        generator_results=(),
+        contribution_receipts=(),
+        planner_effect_receipts=(),
+        typed_capability_plans: Sequence[Mapping[str, Any]] = (),
     ) -> GeneralNPHardResult:
         store.transition(proof_status.value, details={"code": code})
         return self._write_result(
@@ -184,6 +235,13 @@ class GenerativeReductionOrchestrator:
                 synthesis_designs=tuple(synthesis_designs),
                 context_capsules=tuple(context_capsules),
                 repair_lineage=tuple(repair_lineage),
+                capability_plans=tuple(capability_plans),
+                theorem_application_plans=tuple(theorem_application_plans),
+                generator_briefs=tuple(generator_briefs),
+                generator_results=tuple(generator_results),
+                contribution_receipts=tuple(contribution_receipts),
+                planner_effect_receipts=tuple(planner_effect_receipts),
+                typed_capability_plans=tuple(typed_capability_plans),
                 model_calls=tuple(model_calls),
                 lean_commands=tuple(commands),
                 blocker={
@@ -272,6 +330,12 @@ class GenerativeReductionOrchestrator:
                 finite_certificate_count=getattr(
                     search_outcome, "finite_certificate_count", 0
                 ),
+                capability_compiler_candidate_count=getattr(
+                    search_outcome, "capability_compiler_candidate_count", 0
+                ),
+                capability_compiler_certificate_count=getattr(
+                    search_outcome, "capability_compiler_certificate_count", 0
+                ),
                 generated_lean_check_count=getattr(
                     search_outcome, "generated_lean_check_count", 0
                 ),
@@ -297,6 +361,15 @@ class GenerativeReductionOrchestrator:
                 repeated_diagnostic_count=getattr(
                     search_outcome, "repeated_diagnostic_count", 0
                 ),
+                context_insufficient_count=getattr(
+                    search_outcome, "context_insufficient_count", 0
+                ),
+                unresolved_probe_handle_count=getattr(
+                    search_outcome, "unresolved_probe_handle_count", 0
+                ),
+                rejected_nonexecutable_design_count=getattr(
+                    search_outcome, "rejected_nonexecutable_design_count", 0
+                ),
             ),
         )
 
@@ -310,6 +383,7 @@ class GenerativeReductionOrchestrator:
             model_policy=self.config.model_policy,
             plugins=self.config.plugins,
             forbidden_declarations=self.forbidden_declarations,
+            excluded_candidate_declarations=self.excluded_candidate_declarations,
         )
         provisional_job_id = request.fingerprint
         with store.exclusive_run():
@@ -451,11 +525,20 @@ class GenerativeReductionOrchestrator:
         forbidden_fast_path_hits = tuple(
             item for item in fast_route_declarations if item in self.forbidden_declarations
         )
+        excluded_fast_path_hits = tuple(
+            item
+            for item in fast_route_declarations
+            if item in self.excluded_candidate_declarations
+        )
         closed_resolver_payload = deterministic.to_dict()
         closed_resolver_payload["route_policy"] = {
             "forbidden_declarations": list(self.forbidden_declarations),
             "forbidden_hits": list(forbidden_fast_path_hits),
-            "eligible": not forbidden_fast_path_hits,
+            "excluded_candidate_declarations": list(
+                self.excluded_candidate_declarations
+            ),
+            "excluded_candidate_hits": list(excluded_fast_path_hits),
+            "eligible": not forbidden_fast_path_hits and not excluded_fast_path_hits,
         }
         store.write_json("planner/closed-resolver.json", closed_resolver_payload)
         store.transition(
@@ -463,11 +546,13 @@ class GenerativeReductionOrchestrator:
             details={
                 "closed": resolution is not None,
                 "forbidden_hit_count": len(forbidden_fast_path_hits),
+                "excluded_candidate_hit_count": len(excluded_fast_path_hits),
             },
         )
         if (
             resolution is not None
             and not forbidden_fast_path_hits
+            and not excluded_fast_path_hits
             and self.config.strategy != Strategy.SYNTHESIS_REQUIRED
         ):
             source = build_resolver_artifact_source(
@@ -526,11 +611,13 @@ class GenerativeReductionOrchestrator:
             candidate
             for candidate in indexed_candidates
             if candidate.declaration not in self.forbidden_declarations
+            and candidate.declaration not in self.excluded_candidate_declarations
         )
         excluded_candidates = tuple(
             candidate
             for candidate in indexed_candidates
             if candidate.declaration in self.forbidden_declarations
+            or candidate.declaration in self.excluded_candidate_declarations
         )
         store.write_json(
             "planner/theorem-index.json",
@@ -539,6 +626,9 @@ class GenerativeReductionOrchestrator:
                 "candidates": [_as_json_mapping(candidate) for candidate in candidates],
                 "route_policy": {
                     "forbidden_declarations": list(self.forbidden_declarations),
+                    "excluded_candidate_declarations": list(
+                        self.excluded_candidate_declarations
+                    ),
                     "excluded_candidates": [
                         candidate.declaration for candidate in excluded_candidates
                     ],
@@ -578,6 +668,7 @@ class GenerativeReductionOrchestrator:
             modules=modules,
             plugin_imports=plugin_imports,
             forbidden_declarations=self.forbidden_declarations,
+            excluded_candidate_declarations=self.excluded_candidate_declarations,
             tracker=tracker,
             solver_registry=registry,
             model_policy=self.config.model_policy,
@@ -608,6 +699,13 @@ class GenerativeReductionOrchestrator:
         synthesis_designs = runtime.synthesis_design_receipts()
         context_capsules = runtime.context_capsule_receipts()
         repair_lineage = runtime.repair_lineage_receipts()
+        capability_plans = runtime.capability_plan_receipts()
+        theorem_application_plans = runtime.theorem_application_plan_receipts()
+        generator_briefs = runtime.generator_brief_receipts()
+        generator_results = runtime.generator_result_receipts()
+        contribution_receipts = runtime.contribution_receipts()
+        planner_effect_receipts = runtime.planner_effect_receipts()
+        typed_capability_plans = runtime.typed_plan_receipts()
         store.write_json(
             "planner/search-outcome.json",
             {
@@ -629,6 +727,12 @@ class GenerativeReductionOrchestrator:
                 "finite_candidate_count": outcome.finite_candidate_count,
                 "finite_counterexample_count": outcome.finite_counterexample_count,
                 "finite_certificate_count": outcome.finite_certificate_count,
+                "capability_compiler_candidate_count": (
+                    outcome.capability_compiler_candidate_count
+                ),
+                "capability_compiler_certificate_count": (
+                    outcome.capability_compiler_certificate_count
+                ),
                 "generated_lean_check_count": outcome.generated_lean_check_count,
                 "generated_lean_success_count": outcome.generated_lean_success_count,
                 "capability_registration_count": outcome.capability_registration_count,
@@ -641,6 +745,20 @@ class GenerativeReductionOrchestrator:
                 "synthesis_designs": list(synthesis_designs),
                 "context_capsules": list(context_capsules),
                 "repair_lineage": list(repair_lineage),
+                "capability_plans": [asdict(item) for item in capability_plans],
+                "theorem_application_plans": [
+                    asdict(item) for item in theorem_application_plans
+                ],
+                "generator_briefs": [asdict(item) for item in generator_briefs],
+                "generator_results": [asdict(item) for item in generator_results],
+                "contribution_receipts": [
+                    asdict(item) for item in contribution_receipts
+                ],
+                "planner_effect_receipts": [
+                    asdict(item) for item in planner_effect_receipts
+                ],
+                "typed_capability_plans": list(typed_capability_plans),
+                "budget": tracker.to_dict(),
                 "best_state": _as_json_mapping(best_state),
             },
         )
@@ -693,6 +811,13 @@ class GenerativeReductionOrchestrator:
                 synthesis_designs=synthesis_designs,
                 context_capsules=context_capsules,
                 repair_lineage=repair_lineage,
+                capability_plans=capability_plans,
+                theorem_application_plans=theorem_application_plans,
+                generator_briefs=generator_briefs,
+                generator_results=generator_results,
+                contribution_receipts=contribution_receipts,
+                planner_effect_receipts=planner_effect_receipts,
+                typed_capability_plans=typed_capability_plans,
             )
 
         proof_status = (
@@ -749,6 +874,13 @@ class GenerativeReductionOrchestrator:
             synthesis_designs=synthesis_designs,
             context_capsules=context_capsules,
             repair_lineage=repair_lineage,
+            capability_plans=capability_plans,
+            theorem_application_plans=theorem_application_plans,
+            generator_briefs=generator_briefs,
+            generator_results=generator_results,
+            contribution_receipts=contribution_receipts,
+            planner_effect_receipts=planner_effect_receipts,
+            typed_capability_plans=typed_capability_plans,
         )
 
     def _closed_resolver_probe(self, *, store, reference):
@@ -801,6 +933,13 @@ class GenerativeReductionOrchestrator:
         synthesis_designs: Sequence[Mapping[str, Any]] = (),
         context_capsules: Sequence[Mapping[str, Any]] = (),
         repair_lineage: Sequence[Mapping[str, Any]] = (),
+        capability_plans=(),
+        theorem_application_plans=(),
+        generator_briefs=(),
+        generator_results=(),
+        contribution_receipts=(),
+        planner_effect_receipts=(),
+        typed_capability_plans: Sequence[Mapping[str, Any]] = (),
     ) -> GeneralNPHardResult:
         artifact_path = store.write_text("Artifact.lean", source)
         store.transition("PROOF_RECONSTRUCTED")
@@ -836,12 +975,33 @@ class GenerativeReductionOrchestrator:
                 synthesis_designs=synthesis_designs,
                 context_capsules=context_capsules,
                 repair_lineage=repair_lineage,
+                capability_plans=capability_plans,
+                theorem_application_plans=theorem_application_plans,
+                generator_briefs=generator_briefs,
+                generator_results=generator_results,
+                contribution_receipts=contribution_receipts,
+                planner_effect_receipts=planner_effect_receipts,
+                typed_capability_plans=typed_capability_plans,
             )
         store.transition("PROOF_VERIFIED")
         classification = classify_generation(generation_evidence)
         store.transition("GENERATION_CLASSIFIED", details={"classification": classification.value})
         qualification = initial_qualification_status(self.profile)
         store.transition("PROFILE_EVALUATED", details={"qualification": qualification.value})
+        reachable_generated = self._reachable_generated_declarations(final_state)
+        finalized_contributions = tuple(
+            replace(
+                receipt,
+                final_artifact_used=(
+                    receipt.capability_declaration in reachable_generated
+                ),
+                independent_lean_passed=(
+                    receipt.independent_lean_passed
+                    and verification.independent_replay_passed
+                ),
+            )
+            for receipt in contribution_receipts
+        )
         result = GeneralNPHardResult(
             proof_status=ProofStatus.VERIFIED,
             solution_classification=classification,
@@ -860,6 +1020,13 @@ class GenerativeReductionOrchestrator:
             synthesis_designs=tuple(synthesis_designs),
             context_capsules=tuple(context_capsules),
             repair_lineage=tuple(repair_lineage),
+            capability_plans=tuple(capability_plans),
+            theorem_application_plans=tuple(theorem_application_plans),
+            generator_briefs=tuple(generator_briefs),
+            generator_results=tuple(generator_results),
+            contribution_receipts=finalized_contributions,
+            planner_effect_receipts=tuple(planner_effect_receipts),
+            typed_capability_plans=tuple(typed_capability_plans),
             generated_declarations=tuple(
                 dict.fromkeys(
                     (
@@ -961,6 +1128,12 @@ class GenerativeReductionOrchestrator:
             finite_certificate_count=getattr(
                 search_outcome, "finite_certificate_count", 0
             ),
+            capability_compiler_candidate_count=getattr(
+                search_outcome, "capability_compiler_candidate_count", 0
+            ),
+            capability_compiler_certificate_count=getattr(
+                search_outcome, "capability_compiler_certificate_count", 0
+            ),
             generated_lean_check_count=getattr(
                 search_outcome, "generated_lean_check_count", 0
             ),
@@ -985,6 +1158,15 @@ class GenerativeReductionOrchestrator:
             ),
             repeated_diagnostic_count=getattr(
                 search_outcome, "repeated_diagnostic_count", 0
+            ),
+            context_insufficient_count=getattr(
+                search_outcome, "context_insufficient_count", 0
+            ),
+            unresolved_probe_handle_count=getattr(
+                search_outcome, "unresolved_probe_handle_count", 0
+            ),
+            rejected_nonexecutable_design_count=getattr(
+                search_outcome, "rejected_nonexecutable_design_count", 0
             ),
         )
         store.transition("COMPLETED")

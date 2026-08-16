@@ -19,6 +19,9 @@ from .models import GeneratedCapability, PremiseKind, ReusableFragment, stable_s
 
 RULE_MARKER = "GENERAL_REDUCTION_RULE_INSTANTIATION"
 RULE_SCHEMA = "general_reduction_rule_instantiation_v1"
+RULE_PROBE_NAMESPACE = (
+    "ComplexityReduction.Agent.GenerativeReduction.RuleInstantiationProbe."
+)
 RECURSIVE_ELABORATION_OPTIONS = (
     "set_option maxRecDepth 100000\n"
     "set_option maxHeartbeats 10000000\n"
@@ -94,9 +97,40 @@ def run_lean_file(
     )
 
 
+def build_type_defeq_probe_source(
+    *,
+    modules: Iterable[str],
+    first_type: str,
+    second_type: str,
+    generated_capabilities: Sequence[GeneratedCapability] = (),
+) -> str:
+    """Build a proof-only bidirectional definitional-equality check."""
+
+    imports = tuple(dict.fromkeys(validate_module_name(item) for item in modules))
+    first = _safe_exact_type(first_type)
+    second = _safe_exact_type(second_type)
+    source = "".join(f"import {module}\n" for module in imports) + f"""
+
+{RECURSIVE_ELABORATION_OPTIONS}
+{render_generated_capabilities(generated_capabilities)}
+
+namespace ComplexityReduction.Agent.GenerativeReduction.TypeDefeqProbe
+
+example (value : {first}) : {second} := value
+example (value : {second}) : {first} := value
+
+end ComplexityReduction.Agent.GenerativeReduction.TypeDefeqProbe
+"""
+    return source
+
+
 def _safe_exact_type(exact_type: str) -> str:
-    value = exact_type.strip()
-    if not value or any(marker in value for marker in ("\n", "\r", ";", "#", "import ")):
+    # Pretty-printed dependent goals routinely span several lines.  Treat
+    # whitespace as layout, while retaining the command-level fence against
+    # tokens that could escape the parenthesized term supplied by callers.
+    value = " ".join(exact_type.split())
+    lowered = value.lower()
+    if not value or any(marker in value for marker in (";", "#")) or "import " in lowered:
         raise ValueError("exact Lean type must be one safe term")
     return value
 
@@ -115,7 +149,11 @@ def render_generated_capabilities(
     return "\n".join(rendered)
 
 
-def _direct_binding_declaration(fragment: ReusableFragment) -> str | None:
+def contains_rule_instantiation_probe(value: str) -> bool:
+    return RULE_PROBE_NAMESPACE in value
+
+
+def stable_binding_declaration(fragment: ReusableFragment) -> str | None:
     """Return a stable declaration only when the proof is exactly that declaration."""
 
     if not fragment.declaration:
@@ -127,7 +165,6 @@ def _direct_binding_declaration(fragment: ReusableFragment) -> str | None:
     if normalized in {
         declaration,
         f"by exact {declaration}",
-        f"by apply_generative_rule {declaration}",
     }:
         return declaration
     return None
@@ -162,16 +199,13 @@ def build_rule_instantiation_probe_source(
             )
         )
     )
-    namespace = (
-        "ComplexityReduction.Agent.GenerativeReduction.RuleInstantiationProbe."
-        f"N{nonce}"
-    )
+    namespace = RULE_PROBE_NAMESPACE + f"N{nonce}"
     definitions: list[str] = []
     assignment_rows: list[str] = []
     for ordinal, fragment in sorted(assignments.items()):
         if not fragment.lean_verified:
             raise ValueError("rule binding requires a Lean-verified fragment")
-        direct_declaration = _direct_binding_declaration(fragment)
+        direct_declaration = stable_binding_declaration(fragment)
         if direct_declaration:
             assignment_rows.append(
                 f"{ordinal}=" + direct_declaration
@@ -282,7 +316,15 @@ def run_rule_instantiation_probe(
     output_path.write_text(source, encoding="utf-8")
     command = run_lean_file(root=root, path=output_path, timeout_seconds=timeout_seconds)
     if not command.ok:
-        raise RuntimeError(command.stderr or command.stdout)
+        diagnostic = command.stderr or command.stdout
+        if not diagnostic:
+            diagnostic = (
+                "Lean rule instantiation probe failed without output "
+                f"(exit_code={command.exit_code}, timed_out={command.timed_out}, "
+                f"duration_seconds={command.duration_seconds:.3f}, "
+                f"path={output_path})"
+            )
+        raise RuntimeError(diagnostic)
     return (
         parse_rule_instantiation_output(
             stdout=command.stdout, stderr=command.stderr, nonce=nonce
@@ -296,12 +338,16 @@ __all__ = [
     "RULE_MARKER",
     "RULE_SCHEMA",
     "RECURSIVE_ELABORATION_OPTIONS",
+    "RULE_PROBE_NAMESPACE",
     "RuleInstantiationReceipt",
     "RuleSlotReceipt",
     "build_rule_instantiation_probe_source",
+    "build_type_defeq_probe_source",
+    "contains_rule_instantiation_probe",
     "parse_rule_instantiation_output",
     "render_generated_capabilities",
     "run_lean_file",
     "run_rule_instantiation_probe",
     "snapshot_environment",
+    "stable_binding_declaration",
 ]

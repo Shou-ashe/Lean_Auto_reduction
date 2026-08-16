@@ -67,8 +67,9 @@ def _assert_authored_source_avoids_forbidden(
 
 
 def _safe_exact_type(exact_type: str) -> str:
-    value = exact_type.strip()
-    if not value or any(marker in value for marker in ("\n", "\r", ";", "#", "import ")):
+    value = " ".join(exact_type.split())
+    lowered = value.lower()
+    if not value or any(marker in value for marker in (";", "#")) or "import " in lowered:
         raise ValueError("exact Lean type must be one safe term")
     return value
 

@@ -12,6 +12,7 @@ from dataclasses import asdict, dataclass
 import re
 from typing import Any, Mapping, Sequence
 
+from .construction_basis import ConstructionBasisReceipt
 from .models import (
     GeneratedCapability,
     OpenGoal,
@@ -66,6 +67,9 @@ class DeclarationSignature:
     exact_type: str
     role: str
     source: str = "lean-typed-index"
+    definition: str | None = None
+    dependency_distance: int = 0
+    basis_id: str | None = None
 
 
 @dataclass(frozen=True)
@@ -98,6 +102,9 @@ class ContextCapsule:
     omitted_item_receipts: tuple[OmittedContextItem, ...]
     token_estimate: int
     environment_fingerprint: str
+    allowed_identifier_manifest: tuple[str, ...] = ()
+    generation_context_ready: bool = False
+    context_blocker: str | None = None
     expansion_ordinal: int = 0
 
     def to_dict(self) -> dict[str, Any]:
@@ -118,6 +125,7 @@ def build_context_capsule(
     imports: Sequence[str],
     environment_fingerprint: str,
     diagnostics: str | None = None,
+    construction_basis: ConstructionBasisReceipt | None = None,
     expansion_ordinal: int = 0,
     max_rendered_chars: int = 24000,
 ) -> ContextCapsule:
@@ -126,7 +134,15 @@ def build_context_capsule(
     clean_goal = _redact(goal.exact_type.strip())
     clean_context = tuple(_redact(item.strip()) for item in goal.local_context)
     clean_diagnostics = _redact((diagnostics or "")[-6000:])
-    goal_head = next((entry.conclusion_head for entry in candidates), None)
+    goal_identifiers = tuple(dict.fromkeys(_IDENTIFIER_RE.findall(clean_goal)))
+    goal_head = next(
+        (entry.conclusion_head for entry in candidates),
+        (
+            construction_basis.goal_head
+            if construction_basis is not None
+            else (goal_identifiers[0] if goal_identifiers else None)
+        ),
+    )
 
     signatures = tuple(
         DeclarationSignature(
@@ -156,12 +172,28 @@ def build_context_capsule(
     )
 
     diagnostic_names = frozenset(_IDENTIFIER_RE.findall(clean_diagnostics))
+    goal_names = frozenset(
+        (*goal_identifiers, *(_IDENTIFIER_RE.findall(" ".join(clean_context))))
+    )
     relevant = tuple(
         signature
         for signature in signatures
         if signature.declaration in diagnostic_names
+        or signature.declaration in goal_names
         or signature.declaration.rsplit(".", 1)[-1]
-        in {name.rsplit(".", 1)[-1] for name in diagnostic_names}
+        in {
+            name.rsplit(".", 1)[-1]
+            for name in (*diagnostic_names, *goal_names)
+        }
+        or next(
+            (
+                entry.declaration_kind
+                in {"definition", "opaque", "inductive", "recursor"}
+                for entry in candidates
+                if entry.declaration == signature.declaration
+            ),
+            False,
+        )
     )
     relevant_ids = {item.declaration for item in relevant}
     lemmas = tuple(
@@ -193,6 +225,21 @@ def build_context_capsule(
             for obligation in item.residual_obligations
         )
     )
+    basis_signatures = tuple(
+        DeclarationSignature(
+            declaration=item.declaration,
+            module=item.module,
+            exact_type=_redact(item.exact_type),
+            role=item.role,
+            source="lean-construction-basis",
+            definition=(
+                _redact(item.definition) if item.definition is not None else None
+            ),
+            dependency_distance=item.dependency_distance,
+            basis_id=item.basis_id,
+        )
+        for item in (construction_basis.entries if construction_basis else ())
+    )
 
     # Exact signatures are never silently truncated.  Lower-value candidates
     # are omitted as complete records with explicit receipts.
@@ -221,10 +268,89 @@ def build_context_capsule(
                 )
             )
 
+    selected_basis: list[DeclarationSignature] = []
+    for item in basis_signatures:
+        size = (
+            len(item.declaration)
+            + len(item.exact_type)
+            + len(item.module or "")
+            + len(item.definition or "")
+        )
+        if rendered_chars + size <= max_rendered_chars:
+            selected_basis.append(item)
+            rendered_chars += size
+        else:
+            omitted.append(
+                OmittedContextItem(
+                    item=item.declaration,
+                    reason="context-token-budget-construction-basis",
+                )
+            )
+
+    constructors = tuple(
+        {
+            item.declaration: item
+            for item in (
+                *constructors,
+                *(item for item in selected_basis if item.role == "constructor"),
+            )
+        }.values()
+    )
+    relevant = tuple(
+        {
+            item.declaration: item
+            for item in (
+                *relevant,
+                *(
+                    item
+                    for item in selected_basis
+                    if item.role in {"goal-constant", "definition"}
+                ),
+            )
+        }.values()
+    )
+    lemmas = tuple(
+        {
+            item.declaration: item
+            for item in (
+                *lemmas,
+                *(item for item in selected_basis if item.role == "lemma"),
+            )
+        }.values()
+    )
+    allowed_identifiers = tuple(
+        dict.fromkeys(
+            (
+                *goal_identifiers,
+                *(
+                    identifier
+                    for item in clean_context
+                    for identifier in _IDENTIFIER_RE.findall(item)
+                ),
+                *(item.declaration for item in signatures),
+                *(item.declaration for item in generated),
+                *(item.declaration for item in selected_basis),
+                *(
+                    identifier
+                    for item in (*signatures, *generated, *selected_basis)
+                    for identifier in _IDENTIFIER_RE.findall(
+                        item.exact_type + " " + (item.definition or "")
+                    )
+                ),
+            )
+        )
+    )
+
     payload_without_id = {
         "exact_goal": clean_goal,
         "local_context": clean_context,
         "goal_head": goal_head,
+        "goal_head_type": (
+            construction_basis.goal_head_type if construction_basis else None
+        ),
+        "goal_head_definition": (
+            construction_basis.goal_head_definition if construction_basis else None
+        ),
         "pi_binders": next(
             (entry.target_binders for entry in candidates if entry.target_binders),
             (),
@@ -245,6 +371,10 @@ def build_context_capsule(
         "environment": environment_fingerprint,
         "expansion": expansion_ordinal,
         "omitted": omitted,
+        "allowed_identifier_manifest": allowed_identifiers,
+        "construction_basis_receipt": (
+            construction_basis.receipt_hash if construction_basis else None
+        ),
     }
     digest = stable_sha256(payload_without_id)
     diagnostic_fingerprint = (
@@ -252,13 +382,31 @@ def build_context_capsule(
         if clean_diagnostics
         else None
     )
+    generation_context_ready = bool(
+        selected
+        or relevant
+        or lemmas
+        or constructors
+        or skeletons
+        or (construction_basis and construction_basis.goal_head_definition)
+    )
+    context_blocker = (
+        None
+        if generation_context_ready
+        else (
+            "context-insufficient: no typed candidates, goal-head definition, "
+            "relevant definitions or lemmas, constructors, or application skeletons"
+        )
+    )
     return ContextCapsule(
         capsule_id=f"capsule-{digest.removeprefix('sha256:')[:24]}",
         exact_goal=clean_goal,
         local_context=clean_context,
         goal_head=goal_head,
-        goal_head_type=None,
-        goal_head_definition=None,
+        goal_head_type=(construction_basis.goal_head_type if construction_basis else None),
+        goal_head_definition=(
+            construction_basis.goal_head_definition if construction_basis else None
+        ),
         pi_binders=payload_without_id["pi_binders"],
         goal_body=payload_without_id["goal_body"],
         constructors=constructors,
@@ -275,6 +423,9 @@ def build_context_capsule(
         omitted_item_receipts=tuple(omitted),
         token_estimate=max(1, rendered_chars // 4),
         environment_fingerprint=environment_fingerprint,
+        allowed_identifier_manifest=allowed_identifiers,
+        generation_context_ready=generation_context_ready,
+        context_blocker=context_blocker,
         expansion_ordinal=expansion_ordinal,
     )
 
