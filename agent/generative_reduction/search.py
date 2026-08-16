@@ -57,6 +57,8 @@ class SearchOutcome:
     finite_candidate_count: int = 0
     finite_counterexample_count: int = 0
     finite_certificate_count: int = 0
+    capability_compiler_candidate_count: int = 0
+    capability_compiler_certificate_count: int = 0
     generated_lean_check_count: int = 0
     generated_lean_success_count: int = 0
     capability_registration_count: int = 0
@@ -64,6 +66,9 @@ class SearchOutcome:
     context_expansion_count: int = 0
     duplicate_candidate_rejection_count: int = 0
     repeated_diagnostic_count: int = 0
+    context_insufficient_count: int = 0
+    unresolved_probe_handle_count: int = 0
+    rejected_nonexecutable_design_count: int = 0
 
 
 class SearchCoordinator:
@@ -617,6 +622,12 @@ class SearchCoordinator:
             finite_candidate_count=self.tracker.usage.finite_candidates,
             finite_counterexample_count=self.tracker.usage.finite_counterexamples,
             finite_certificate_count=self.tracker.usage.finite_certificates,
+            capability_compiler_candidate_count=(
+                self.tracker.usage.capability_compiler_candidates
+            ),
+            capability_compiler_certificate_count=(
+                self.tracker.usage.capability_compiler_certificates
+            ),
             generated_lean_check_count=self.tracker.usage.generated_lean_checks,
             generated_lean_success_count=self.tracker.usage.generated_lean_successes,
             capability_registration_count=self.tracker.usage.capability_registrations,
@@ -626,6 +637,11 @@ class SearchCoordinator:
                 self.tracker.usage.duplicate_candidate_rejections
             ),
             repeated_diagnostic_count=self.tracker.usage.repeated_diagnostics,
+            context_insufficient_count=self.tracker.usage.context_insufficient,
+            unresolved_probe_handle_count=self.tracker.usage.unresolved_probe_handles,
+            rejected_nonexecutable_design_count=(
+                self.tracker.usage.rejected_nonexecutable_designs
+            ),
         )
 
 

@@ -461,6 +461,54 @@ theorem interpret_satisfiable_iff {Γ' Γ : Gamma} (interpretation : LanguageInt
 /-! ### Certified reduction and hardness transport -/
 
 /--
+Package an interpretation when both proof-relevant boundaries are supplied
+explicitly.  Unlike `certifiedReduction_of_interpretation`, this constructor
+does not obtain semantic correctness from the library.  It is useful for
+auditing direct-TM and semantic synthesis independently: either premise may be
+withheld while the other is reused.
+-/
+noncomputable def certifiedReduction_of_interpretation_explicit
+    {Γ' Γ : Gamma}
+    (interpretation : LanguageInterpretation Γ' Γ)
+    (interpretTM : ComplexityReduction.TMPolyTimeMap
+      (Presentation.FiniteDomainCSPTable.encodedType Γ')
+      (Presentation.FiniteDomainCSPTable.encodedType Γ)
+      (interpret interpretation))
+    (semantic : ∀ formula : CSP.Formula Γ',
+      CSP.Formula.Satisfiable (interpret interpretation formula) ↔
+        CSP.Formula.Satisfiable formula) :
+    ComplexityReduction.Certificate.CertifiedReduction (cspOf Γ') (cspOf Γ) := by
+  let program : ComplexityReduction.Program.PolyProg
+      (cspOf Γ').representation (cspOf Γ).representation :=
+    .atom (ComplexityReduction.Program.Primitive.ofTMPolyTime
+      (interpret interpretation) interpretTM)
+  refine ⟨program, ?_⟩
+  intro formula
+  have hrun : program.run formula = interpret interpretation formula := rfl
+  simpa [cspOf_accepts, hrun] using (semantic formula).symm
+
+/--
+Transport NP-hardness through an interpretation while exposing direct-TM and
+bidirectional semantic correctness as separate, independently synthesizable
+premises.
+-/
+theorem nPHard_of_interpretation_explicit {Γ' Γ : Gamma}
+    (interpretation : LanguageInterpretation Γ' Γ)
+    (interpretTM : ComplexityReduction.TMPolyTimeMap
+      (Presentation.FiniteDomainCSPTable.encodedType Γ')
+      (Presentation.FiniteDomainCSPTable.encodedType Γ)
+      (interpret interpretation))
+    (semantic : ∀ formula : CSP.Formula Γ',
+      CSP.Formula.Satisfiable (interpret interpretation formula) ↔
+        CSP.Formula.Satisfiable formula)
+    (coreNPHard : ComplexityReduction.Certificate.NativeTMNPHard (cspOf Γ')) :
+    ComplexityReduction.Certificate.NativeTMNPHard (cspOf Γ) :=
+  ComplexityReduction.Certificate.NativeTMNPHard.alongPath coreNPHard
+    (ComplexityReduction.Certificate.CertifiedPath.step
+      (certifiedReduction_of_interpretation_explicit
+        interpretation interpretTM semantic))
+
+/--
 The substitution is a `CertifiedReduction (cspOf Γ') (cspOf Γ)` once the
 interpretation carries a direct-TM witness.
 -/

@@ -28,7 +28,11 @@ def evidence_from_generated_source(
     declarations = tuple(dict.fromkeys(DECLARATION_RE.findall(source)))
     reductions = tuple(dict.fromkeys(REDUCTION_RE.findall(source)))
     helpers = tuple(
-        name for name in declarations if name != "problemIsNPHard" and name not in reductions
+        name
+        for name in declarations
+        if name != "problemIsNPHard"
+        and name not in reductions
+        and not name.startswith("stable_binding_")
     )
     programs = tuple(
         name
@@ -58,6 +62,7 @@ def evidence_from_generated_source(
         name
         for name in declarations
         if name not in {"problemIsNPHard", *reductions}
+        and not name.startswith("stable_binding_")
     )
     if reductions and used_reductions and substantive and core_verified:
         classification = "verified-generative-success"

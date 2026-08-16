@@ -10,7 +10,7 @@ from __future__ import annotations
 import argparse
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from dataclasses import replace
+from dataclasses import asdict, replace
 from datetime import datetime, timezone
 import json
 from pathlib import Path
@@ -31,6 +31,9 @@ FORBIDDEN_DICHOTOMY_DECLARATIONS = (
     "ComplexityReduction.Domain.BooleanCSP.schaefer_dichotomy",
     "ComplexityReduction.Domain.BooleanCSP.Hardness.CanonicalHardCores.oneInThreeInterpretation",
     "ComplexityReduction.Domain.BooleanCSP.Hardness.CanonicalHardCores.naeInterpretation",
+    "ComplexityReduction.Domain.BooleanCSP.Hardness.CanonicalDatabase.gadget",
+    "ComplexityReduction.Domain.BooleanCSP.Hardness.CanonicalHardCores.exactlyOne_closed_of_notSchaeferTractable",
+    "ComplexityReduction.Domain.BooleanCSP.Hardness.CanonicalHardCores.nae_closed_of_notSchaeferTractable",
 )
 DEFAULT_REPORT_NAME = (
     "GENERAL_AGENT_BOOLEAN_CSP_RECURSIVE_DICHOTOMY_FREE_REAL_API_REPORT.json"
@@ -101,6 +104,7 @@ def _run_case(
     profile: str,
     lean_timeout_seconds: int,
     forbidden_declarations: Sequence[str],
+    excluded_candidate_declarations: Sequence[str],
 ) -> dict[str, Any]:
     label = _case_label(case.module)
     case_output = output_root / "cases" / label
@@ -116,6 +120,9 @@ def _run_case(
             model_policy=ModelPolicy.REQUIRED,
             plugins=("boolean_csp",),
             forbidden_declarations=tuple(forbidden_declarations),
+            excluded_candidate_declarations=tuple(
+                excluded_candidate_declarations
+            ),
             budget=recursive_benchmark_budget(),
             lean_timeout_seconds=lean_timeout_seconds,
             deepseek=deepseek,
@@ -132,6 +139,7 @@ def _run_case(
         if isinstance(best_state, dict)
         else ()
     )
+    capability_metrics = result.capability_metrics()
     return {
         "case_id": case.case_id,
         "case": label,
@@ -165,6 +173,12 @@ def _run_case(
         "finite_candidate_count": result.finite_candidate_count,
         "finite_counterexample_count": result.finite_counterexample_count,
         "finite_certificate_count": result.finite_certificate_count,
+        "capability_compiler_candidate_count": (
+            result.capability_compiler_candidate_count
+        ),
+        "capability_compiler_certificate_count": (
+            result.capability_compiler_certificate_count
+        ),
         "generated_lean_check_count": result.generated_lean_check_count,
         "generated_lean_success_count": result.generated_lean_success_count,
         "capability_registration_count": result.capability_registration_count,
@@ -175,13 +189,42 @@ def _run_case(
             result.duplicate_candidate_rejection_count
         ),
         "repeated_diagnostic_count": result.repeated_diagnostic_count,
+        "context_insufficient_count": result.context_insufficient_count,
+        "unresolved_probe_handle_count": result.unresolved_probe_handle_count,
+        "rejected_nonexecutable_design_count": (
+            result.rejected_nonexecutable_design_count
+        ),
         "synthesis_designs": list(result.synthesis_designs),
         "context_capsule_ids": [
             item.get("capsule_id")
             for item in result.context_capsules
             if isinstance(item, dict)
         ],
+        "context_capsules": list(result.context_capsules),
+        "generation_context_ready_count": sum(
+            bool(item.get("generation_context_ready"))
+            for item in result.context_capsules
+            if isinstance(item, dict)
+        ),
         "repair_lineage": list(result.repair_lineage),
+        "capability_plans": [asdict(item) for item in result.capability_plans],
+        "theorem_application_plans": [
+            asdict(item) for item in result.theorem_application_plans
+        ],
+        "generator_briefs": [asdict(item) for item in result.generator_briefs],
+        "generator_results": [asdict(item) for item in result.generator_results],
+        "contribution_receipts": [
+            asdict(item) for item in result.contribution_receipts
+        ],
+        "planner_effect_receipts": [
+            asdict(item) for item in result.planner_effect_receipts
+        ],
+        "typed_capability_plans": list(result.typed_capability_plans),
+        "capability_budget_reservations": list(
+            ((search.get("budget") or {}).get("capacity_reservations") or ())
+            if isinstance(search.get("budget"), dict)
+            else ()
+        ),
         "frontier_exhaustion_receipt": result.frontier_exhaustion_receipt,
         "blocker": result.blocker,
         "model_calls": [
@@ -220,6 +263,8 @@ def _run_case(
         ),
         "verification": result.verification.__dict__,
         "final_route_audit_receipt": result.final_route_audit_receipt,
+        "capability_metrics": capability_metrics,
+        **capability_metrics,
         "model_call_accounting_complete": True,
     }
 
@@ -257,6 +302,8 @@ def _exception_case_row(*, output_root: Path, case, error: Exception) -> dict[st
         "finite_candidate_count": 0,
         "finite_counterexample_count": 0,
         "finite_certificate_count": 0,
+        "capability_compiler_candidate_count": 0,
+        "capability_compiler_certificate_count": 0,
         "generated_lean_check_count": 0,
         "generated_lean_success_count": 0,
         "capability_registration_count": 0,
@@ -265,9 +312,22 @@ def _exception_case_row(*, output_root: Path, case, error: Exception) -> dict[st
         "repair_authoring_count": 0,
         "duplicate_candidate_rejection_count": 0,
         "repeated_diagnostic_count": 0,
+        "context_insufficient_count": 0,
+        "unresolved_probe_handle_count": 0,
+        "rejected_nonexecutable_design_count": 0,
         "synthesis_designs": [],
         "context_capsule_ids": [],
+        "context_capsules": [],
+        "generation_context_ready_count": 0,
         "repair_lineage": [],
+        "capability_plans": [],
+        "theorem_application_plans": [],
+        "generator_briefs": [],
+        "generator_results": [],
+        "contribution_receipts": [],
+        "planner_effect_receipts": [],
+        "typed_capability_plans": [],
+        "capability_budget_reservations": [],
         "frontier_exhaustion_receipt": None,
         "blocker": f"{type(error).__name__}: {error}",
         "model_calls": [],
@@ -283,6 +343,7 @@ def _exception_case_row(*, output_root: Path, case, error: Exception) -> dict[st
             "same_index_audit_passed": False,
         },
         "final_route_audit_receipt": None,
+        "capability_metrics": {},
         "model_call_accounting_complete": False,
         "exception_type": type(error).__name__,
     }
@@ -316,6 +377,7 @@ def run_recursive_boolean_csp_regression(
     reasoning_effort: str | None = None,
     report_path: Path | None = None,
     extra_forbidden_declarations: Sequence[str] = (),
+    excluded_candidate_declarations: Sequence[str] = (),
 ) -> dict[str, Any]:
     if jobs < 1 or jobs > 4:
         raise ValueError("jobs must be in 1..4")
@@ -363,6 +425,7 @@ def run_recursive_boolean_csp_regression(
                 profile=profile,
                 lean_timeout_seconds=lean_timeout_seconds,
                 forbidden_declarations=forbidden_declarations,
+                excluded_candidate_declarations=excluded_candidate_declarations,
             ): case
             for case in suite.cases
         }
@@ -407,6 +470,9 @@ def run_recursive_boolean_csp_regression(
         },
         "route_policy": {
             "forbidden_declarations": list(forbidden_declarations),
+            "excluded_candidate_declarations": list(
+                excluded_candidate_declarations
+            ),
             "final_transitive_dependency_audit_enabled": True,
         },
         "real_api": {
@@ -471,6 +537,12 @@ def run_recursive_boolean_csp_regression(
             "total_finite_certificates": sum(
                 row["finite_certificate_count"] for row in rows
             ),
+            "total_capability_compiler_candidates": sum(
+                row["capability_compiler_candidate_count"] for row in rows
+            ),
+            "total_capability_compiler_certificates": sum(
+                row["capability_compiler_certificate_count"] for row in rows
+            ),
             "total_generated_lean_checks": sum(
                 row["generated_lean_check_count"] for row in rows
             ),
@@ -494,6 +566,15 @@ def run_recursive_boolean_csp_regression(
             ),
             "total_repeated_diagnostics": sum(
                 row["repeated_diagnostic_count"] for row in rows
+            ),
+            "total_context_insufficient_events": sum(
+                row["context_insufficient_count"] for row in rows
+            ),
+            "total_unresolved_probe_handles": sum(
+                row["unresolved_probe_handle_count"] for row in rows
+            ),
+            "total_rejected_nonexecutable_designs": sum(
+                row["rejected_nonexecutable_design_count"] for row in rows
             ),
             "maximum_recursive_depth": max(
                 (row["max_observed_search_depth"] for row in rows), default=0
@@ -562,6 +643,45 @@ def run_recursive_boolean_csp_regression(
             or bool(row.get("context_capsule_ids"))
             for row in rows
         ),
+        "unresolved_probe_handle_count_is_zero": not any(
+            row["unresolved_probe_handle_count"] for row in rows
+        ),
+        "empty_context_generator_call_count_is_zero": not any(
+            row["context_insufficient_count"]
+            and any(
+                call.get("purpose", "").startswith("lean-authoring-")
+                for call in row.get("model_calls", ())
+            )
+            for row in rows
+        ),
+        "planner_effect_receipts_cover_generator_briefs": all(
+            {
+                item.get("brief_id")
+                for item in row.get("generator_briefs", ())
+                if isinstance(item, dict)
+            }
+            <= {
+                item.get("generated_brief_id")
+                for item in row.get("planner_effect_receipts", ())
+                if isinstance(item, dict)
+            }
+            for row in rows
+        ),
+        "planner_accounting_consistent": all(
+            bool(row.get("planner_accounting_consistent", True)) for row in rows
+        ),
+        "generated_capability_accounting_consistent": all(
+            bool(row.get("generated_capability_accounting_consistent", True))
+            for row in rows
+        ),
+    }
+    metric_names = tuple(
+        key
+        for key, value in (rows[0].get("capability_metrics", {}) if rows else {}).items()
+        if isinstance(value, int) and not isinstance(value, bool)
+    )
+    report["capability_metrics"] = {
+        key: sum(int(row.get(key, 0)) for row in rows) for key in metric_names
     }
     _write_json(output_root / "summary.json", report)
     if report_path is not None:
@@ -595,6 +715,15 @@ def build_parser() -> argparse.ArgumentParser:
         ),
     )
     parser.add_argument(
+        "--exclude-candidate-declaration",
+        action="append",
+        default=[],
+        help=(
+            "additional declaration excluded only from proof-search choices; "
+            "may be repeated"
+        ),
+    )
+    parser.add_argument(
         "--report-path",
         type=Path,
         default=root / "Reports" / DEFAULT_REPORT_NAME,
@@ -618,6 +747,9 @@ def main() -> int:
         reasoning_effort=arguments.reasoning_effort,
         report_path=arguments.report_path,
         extra_forbidden_declarations=tuple(arguments.forbid_declaration),
+        excluded_candidate_declarations=tuple(
+            arguments.exclude_candidate_declaration
+        ),
     )
     print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
     return 0 if report["suite"]["completed_case_count"] == 20 else 2

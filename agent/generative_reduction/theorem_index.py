@@ -5,12 +5,16 @@ from __future__ import annotations
 import re
 import secrets
 from pathlib import Path
-from typing import Iterable
+from typing import Iterable, Sequence
 
 from agent.hardness.lean_runner import validate_declaration_name, validate_module_name
 
-from .lean_bridge import run_lean_file
-from .models import PremiseKind, TheoremIndexEntry, TheoremPremise
+from .lean_bridge import (
+    RECURSIVE_ELABORATION_OPTIONS,
+    render_generated_capabilities,
+    run_lean_file,
+)
+from .models import GeneratedCapability, PremiseKind, TheoremIndexEntry, TheoremPremise
 
 
 MARKER = "GENERAL_REDUCTION_THEOREM_INDEX"
@@ -100,16 +104,26 @@ def build_probe_source(
 
 
 def build_typed_goal_probe_source(
-    *, modules: Iterable[str], exact_goal: str, nonce: str
+    *,
+    modules: Iterable[str],
+    exact_goal: str,
+    nonce: str,
+    generated_capabilities: Sequence[GeneratedCapability] = (),
 ) -> str:
-    goal = exact_goal.strip()
-    if not goal or any(marker in goal for marker in ("\n", "\r", ";", "#", "import ")):
+    goal = " ".join(exact_goal.split())
+    lowered = goal.lower()
+    if not goal or any(marker in goal for marker in (";", "#")) or "import " in lowered:
         raise ValueError("typed goal must be one safe Lean term")
     imports = tuple(
         dict.fromkeys([*CORE_IMPORTS, *map(validate_module_name, modules)])
     )
-    return "".join(f"import {module}\n" for module in imports) + (
-        "\n#generative_reduction_probe_typed_goal "
+    return (
+        "".join(f"import {module}\n" for module in imports)
+        + "\n"
+        + RECURSIVE_ELABORATION_OPTIONS
+        + "\n"
+        + render_generated_capabilities(generated_capabilities)
+        + "\n#generative_reduction_probe_typed_goal "
         f'"{nonce}" ({goal})\n'
     )
 
@@ -247,10 +261,14 @@ def query_typed_goal_index(
     modules: Iterable[str],
     output_path: Path,
     timeout_seconds: int,
+    generated_capabilities: Sequence[GeneratedCapability] = (),
 ):
     nonce = secrets.token_hex(16)
     source = build_typed_goal_probe_source(
-        modules=modules, exact_goal=exact_goal, nonce=nonce
+        modules=modules,
+        exact_goal=exact_goal,
+        nonce=nonce,
+        generated_capabilities=generated_capabilities,
     )
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(source, encoding="utf-8")

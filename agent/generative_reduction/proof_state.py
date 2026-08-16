@@ -399,6 +399,47 @@ class ProofState:
         goals = tuple(updated if item.goal_id == goal_id else item for item in self.open_goals)
         return self._evolve("mark-action-attempted", open_goals=goals)
 
+    def release_action_for_replan(
+        self, *, goal_id: str, action_id: str, diagnostic: str
+    ) -> "ProofState":
+        """Requeue one generator action after an explicit typed replan request."""
+
+        goal = self.goal(goal_id)
+        fingerprint = _diagnostic_fingerprint(
+            diagnostic, "generator_requested_replan"
+        )
+        updated = replace(
+            goal,
+            attempted_actions=tuple(
+                item for item in goal.attempted_actions if item != action_id
+            ),
+            last_lean_diagnostics=diagnostic[-4000:],
+            normalized_last_diagnostic_hash=fingerprint,
+        )
+        goals = tuple(
+            updated if item.goal_id == goal_id else item for item in self.open_goals
+        )
+        return self._evolve(
+            "release-action-for-replan",
+            open_goals=goals,
+            failure_memory=(
+                *self.failure_memory,
+                {
+                    "goal_id": goal_id,
+                    "action_id": action_id,
+                    "declaration": None,
+                    "blocker_code": "generator_requested_replan",
+                    "diagnostic_hash": fingerprint,
+                    "diagnostic": diagnostic[-4000:],
+                },
+            ),
+            normalized_failure_fingerprints=(
+                *self.normalized_failure_fingerprints,
+                fingerprint,
+            ),
+            requeue_count=self.requeue_count + 1,
+        )
+
     def replace_frame(self, frame: ApplicationFrame) -> "ProofState":
         if not any(item.frame_id == frame.frame_id for item in self.application_frames):
             raise KeyError(frame.frame_id)
@@ -481,11 +522,21 @@ class ProofState:
             for item in completed_fragments
         ):
             completed_fragments = (*completed_fragments, fragment)
+        imports = tuple(
+            dict.fromkeys(
+                (
+                    *self.imports,
+                    *((fragment.module,) if fragment.module else ()),
+                    *fragment.imports,
+                )
+            )
+        )
         return self._evolve(
             "close-goal",
             open_goals=remaining,
             proof_skeleton=(*self.proof_skeleton, step),
             completed_fragments=completed_fragments,
+            imports=imports,
             root_fragment=root_fragment,
             depth=self.depth + 1,
             total_cost=self.total_cost + action.estimated_cost,

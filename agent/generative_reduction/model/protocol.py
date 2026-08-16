@@ -29,9 +29,15 @@ class AuthoringProposal:
     implementation: str | None
     reason: str
     raw: Mapping[str, Any]
+    implementation_body: str | None = None
+    helper_declarations: tuple[str, ...] = ()
     base_sha256: str | None = None
     changed_reason: str | None = None
     addressed_diagnostic_codes: tuple[str, ...] = ()
+    status: str = "proposed"
+    requested_lookup: tuple[str, ...] = ()
+    requested_replan: bool = False
+    rejection_reason: str | None = None
 
 
 __all__ = ["AuthoringProposal", "JSONModel", "StrategyProposal"]

@@ -61,6 +61,15 @@ def build_parser() -> argparse.ArgumentParser:
             "or elaborated transitive proof route; may be repeated"
         ),
     )
+    parser.add_argument(
+        "--exclude-candidate-declaration",
+        action="append",
+        default=[],
+        help=(
+            "fully-qualified Lean declaration excluded from proof-search choices "
+            "without making it a forbidden transitive dependency; may be repeated"
+        ),
+    )
     parser.add_argument("--output-dir", type=Path, default=None)
     parser.add_argument("--env-file", type=Path, default=ROOT / ".env")
     parser.add_argument("--model", default=None)
@@ -109,6 +118,9 @@ def main() -> int:
         model_policy=ModelPolicy(arguments.model_policy),
         plugins=plugins,
         forbidden_declarations=tuple(arguments.forbid_declaration),
+        excluded_candidate_declarations=tuple(
+            arguments.exclude_candidate_declaration
+        ),
     )
     output_dir = arguments.output_dir or (
         ROOT
@@ -134,6 +146,9 @@ def main() -> int:
                 model_policy=ModelPolicy(arguments.model_policy),
                 plugins=plugins,
                 forbidden_declarations=tuple(arguments.forbid_declaration),
+                excluded_candidate_declarations=tuple(
+                    arguments.exclude_candidate_declaration
+                ),
                 budget=budget,
                 lean_timeout_seconds=arguments.lean_timeout,
                 deepseek=_model_config(arguments),
