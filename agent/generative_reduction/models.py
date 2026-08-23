@@ -981,6 +981,51 @@ class GeneratorResult:
 
 
 @dataclass(frozen=True)
+class AuthorshipEvidence:
+    semantic_payload_schema: str
+    semantic_payload_sha256: str
+    model_response_sha256: str
+    origin: str
+    renderer_name: str
+    renderer_version: str
+    renderer_added_semantic_atom_count: int
+    validation_only_steps: tuple[str, ...]
+    variable_count: int | None
+    constraint_count: int | None
+    output_mapping: tuple[int, ...]
+    relation_symbols_used: tuple[str, ...]
+    repair_payload_hashes: tuple[str, ...]
+
+    @classmethod
+    def from_dict(cls, value: Mapping[str, Any]) -> "AuthorshipEvidence":
+        return cls(
+            semantic_payload_schema=str(value["semantic_payload_schema"]),
+            semantic_payload_sha256=str(value["semantic_payload_sha256"]),
+            model_response_sha256=str(value["model_response_sha256"]),
+            origin=str(value["origin"]),
+            renderer_name=str(value["renderer_name"]),
+            renderer_version=str(value["renderer_version"]),
+            renderer_added_semantic_atom_count=int(
+                value["renderer_added_semantic_atom_count"]
+            ),
+            validation_only_steps=tuple(value.get("validation_only_steps", ())),
+            variable_count=(
+                int(value["variable_count"])
+                if value.get("variable_count") is not None
+                else None
+            ),
+            constraint_count=(
+                int(value["constraint_count"])
+                if value.get("constraint_count") is not None
+                else None
+            ),
+            output_mapping=tuple(int(item) for item in value.get("output_mapping", ())),
+            relation_symbols_used=tuple(value.get("relation_symbols_used", ())),
+            repair_payload_hashes=tuple(value.get("repair_payload_hashes", ())),
+        )
+
+
+@dataclass(frozen=True)
 class ContributionReceipt:
     capability_declaration: str
     contribution_class: ContributionClass
@@ -996,6 +1041,7 @@ class ContributionReceipt:
     generated_data_objects: tuple[str, ...] = ()
     deterministic_solver_steps: tuple[str, ...] = ()
     model_generated_source_hashes: tuple[str, ...] = ()
+    authorship_evidence: AuthorshipEvidence | None = None
     final_artifact_used: bool = False
     forbidden_audit_passed: bool = False
     independent_lean_passed: bool = False
@@ -1003,6 +1049,7 @@ class ContributionReceipt:
     @classmethod
     def from_dict(cls, value: Mapping[str, Any]) -> "ContributionReceipt":
         kind = value.get("capability_kind")
+        authorship = value.get("authorship_evidence")
         return cls(
             capability_declaration=str(value["capability_declaration"]),
             contribution_class=ContributionClass(value["contribution_class"]),
@@ -1023,6 +1070,11 @@ class ContributionReceipt:
             ),
             model_generated_source_hashes=tuple(
                 value.get("model_generated_source_hashes", ())
+            ),
+            authorship_evidence=(
+                AuthorshipEvidence.from_dict(authorship)
+                if isinstance(authorship, Mapping)
+                else None
             ),
             final_artifact_used=bool(value.get("final_artifact_used", False)),
             forbidden_audit_passed=bool(value.get("forbidden_audit_passed", False)),
@@ -1542,6 +1594,16 @@ class ModelCallRecord:
     proposal_id: str | None = None
     provider: str | None = None
     model: str | None = None
+    finish_reason: str | None = None
+    token_profile: str | None = None
+    requested_max_tokens: int | None = None
+    reasoning_effort: str | None = None
+    request_payload_sha256: str | None = None
+    authoring_context_key: str | None = None
+    source_core: str | None = None
+    logical_attempt: int | None = None
+    transport_attempt: int | None = None
+    escalation_of_response_sha256: str | None = None
 
 
 @dataclass(frozen=True)
@@ -1986,6 +2048,7 @@ class GeneralNPHardResult:
 __all__ = [
     "ActionDisposition",
     "ApplicationFrame",
+    "AuthorshipEvidence",
     "BinderSlot",
     "CandidateReceipt",
     "CandidateRole",

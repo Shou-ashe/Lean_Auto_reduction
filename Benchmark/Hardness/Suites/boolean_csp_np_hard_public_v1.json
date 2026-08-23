@@ -143,6 +143,76 @@
       "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case20OR3XOR2",
       "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case20OR3XOR2.problem",
       "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b21-random-table-a",
+      "split": "heldout",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case21RandomTableA",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case21RandomTableA.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b22-random-table-b",
+      "split": "heldout",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case22RandomTableB",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case22RandomTableB.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b23-random-table-c",
+      "split": "heldout",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case23RandomTableC",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case23RandomTableC.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b24-random-table-d",
+      "split": "heldout",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case24RandomTableD",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case24RandomTableD.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b25-random-table-e",
+      "split": "heldout",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case25RandomTableE",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case25RandomTableE.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b26-random-table-f",
+      "split": "heldout",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case26RandomTableF",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case26RandomTableF.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b27-random-table-g",
+      "split": "heldout",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case27RandomTableG",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case27RandomTableG.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b28-random-table-h",
+      "split": "heldout",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case28RandomTableH",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case28RandomTableH.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b29-random-table-i",
+      "split": "heldout",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case29RandomTableI",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case29RandomTableI.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b30-random-table-j",
+      "split": "heldout",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case30RandomTableJ",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case30RandomTableJ.problem",
+      "budget_profile": "formal-default"
     }
   ]
 }

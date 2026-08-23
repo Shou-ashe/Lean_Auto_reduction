@@ -22,6 +22,16 @@
     {"case_id":"q-b17-positive-exactly-three6","expected_public_status":"VERIFIED","mathematical_class":"NP-complete","embedding_kind":"schaefer_exactly_3_of_6","requires_model":true},
     {"case_id":"q-b18-positive-exactly-four6","expected_public_status":"VERIFIED","mathematical_class":"NP-complete","embedding_kind":"schaefer_exactly_4_of_6","requires_model":true},
     {"case_id":"q-b19-positive-exactly-five6","expected_public_status":"VERIFIED","mathematical_class":"NP-complete","embedding_kind":"schaefer_exactly_5_of_6","requires_model":true},
-    {"case_id":"q-b20-or3-xor2","expected_public_status":"VERIFIED","mathematical_class":"NP-complete","embedding_kind":"schaefer_or3_xor2","requires_model":true}
+    {"case_id":"q-b20-or3-xor2","expected_public_status":"VERIFIED","mathematical_class":"NP-complete","embedding_kind":"schaefer_or3_xor2","requires_model":true},
+    {"case_id":"q-b21-random-table-a","expected_public_status":"VERIFIED","mathematical_class":"NP-complete","embedding_kind":"schaefer_random_truth_table_singleton","requires_model":false},
+    {"case_id":"q-b22-random-table-b","expected_public_status":"VERIFIED","mathematical_class":"NP-complete","embedding_kind":"schaefer_random_truth_table_singleton","requires_model":false},
+    {"case_id":"q-b23-random-table-c","expected_public_status":"VERIFIED","mathematical_class":"NP-complete","embedding_kind":"schaefer_random_truth_table_singleton","requires_model":false},
+    {"case_id":"q-b24-random-table-d","expected_public_status":"VERIFIED","mathematical_class":"NP-complete","embedding_kind":"schaefer_random_truth_table_singleton","requires_model":false},
+    {"case_id":"q-b25-random-table-e","expected_public_status":"VERIFIED","mathematical_class":"NP-complete","embedding_kind":"schaefer_random_truth_table_singleton","requires_model":false},
+    {"case_id":"q-b26-random-table-f","expected_public_status":"VERIFIED","mathematical_class":"NP-complete","embedding_kind":"schaefer_random_truth_table_pair","requires_model":false},
+    {"case_id":"q-b27-random-table-g","expected_public_status":"VERIFIED","mathematical_class":"NP-complete","embedding_kind":"schaefer_random_truth_table_pair","requires_model":false},
+    {"case_id":"q-b28-random-table-h","expected_public_status":"VERIFIED","mathematical_class":"NP-complete","embedding_kind":"schaefer_random_truth_table_pair","requires_model":false},
+    {"case_id":"q-b29-random-table-i","expected_public_status":"VERIFIED","mathematical_class":"NP-complete","embedding_kind":"schaefer_random_truth_table_pair","requires_model":false},
+    {"case_id":"q-b30-random-table-j","expected_public_status":"VERIFIED","mathematical_class":"NP-complete","embedding_kind":"schaefer_random_truth_table_pair","requires_model":false}
   ]
 }

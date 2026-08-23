@@ -13,12 +13,12 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def test_blackbox_loader_matches_frozen_registry() -> None:
     cases = load_archon_benchmark_cases(root=ROOT)
-    assert len(cases) == 78
+    assert len(cases) == 88
     assert sum(case.kind == "capability" for case in cases) == 32
     assert sum(case.kind == "frontier" for case in cases) == 2
     assert sum(case.kind == "exact_edge" for case in cases) == 24
-    assert sum(case.kind == "boolean_csp" for case in cases) == 20
-    assert len({case.case_id for case in cases}) == 78
+    assert sum(case.kind == "boolean_csp" for case in cases) == 30
+    assert len({case.case_id for case in cases}) == 88
 
 
 def test_blackbox_public_input_has_no_benchmark_solution_fields() -> None:

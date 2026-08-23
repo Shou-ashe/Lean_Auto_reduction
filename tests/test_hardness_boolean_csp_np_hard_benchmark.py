@@ -17,6 +17,13 @@ SUITE = (
     / "Suites"
     / "boolean_csp_np_hard_public_v1.json"
 )
+GADGET_AUTHORING_DEV_SUITE = (
+    ROOT
+    / "Benchmark"
+    / "Hardness"
+    / "Development"
+    / "boolean_csp_gadget_authoring_dev_v1.json"
+)
 ORACLE = ROOT / "Evaluation" / "boolean_csp_np_hard_oracle_v1.json"
 LEAN_ROOT = (
     ROOT
@@ -27,9 +34,19 @@ LEAN_ROOT = (
     / "Inputs"
     / "BooleanCSPNPHard"
 )
+RANDOM_AUDIT = ROOT / "Evaluation" / "boolean_csp_random_supplement_v1.json"
+RANDOM_LEAN_AUDIT = ROOT / "Evaluation" / "BooleanCSPRandomSupplementAudit.lean"
+GADGET_AUTHORING_DEV_AUDIT = (
+    ROOT / "Evaluation" / "BooleanCSPGadgetAuthoringDevAudit.lean"
+)
+GADGET_AUTHORING_DEV_MODULES = (
+    "Benchmark.Hardness.Inputs.BooleanCSPNPHard.GadgetAuthoringDevRandomHard4",
+    "Benchmark.Hardness.Inputs.BooleanCSPNPHard.GadgetAuthoringDevDualExactlyFive7",
+    "Benchmark.Hardness.Inputs.BooleanCSPNPHard.GadgetAuthoringDevMixedNAND2OR3",
+)
 
 
-def test_public_suite_has_twenty_isolated_answer_free_cases() -> None:
+def test_public_suite_has_thirty_isolated_answer_free_cases() -> None:
     from agent.hardness.boolean_csp_np_hard_benchmark import load_suite
 
     suite = load_suite(SUITE)
@@ -37,11 +54,11 @@ def test_public_suite_has_twenty_isolated_answer_free_cases() -> None:
     assert not (
         ROOT / "Benchmark" / "Hardness" / "Experimental" / "BooleanCSP"
     ).exists()
-    assert len(suite.cases) == 20
+    assert len(suite.cases) == 30
     assert {case.split for case in suite.cases} == {"dev", "validation", "heldout"}
     assert sum(case.split == "dev" for case in suite.cases) == 4
     assert sum(case.split == "validation" for case in suite.cases) == 6
-    assert sum(case.split == "heldout" for case in suite.cases) == 10
+    assert sum(case.split == "heldout" for case in suite.cases) == 20
     raw = json.loads(SUITE.read_text(encoding="utf-8"))
     forbidden = {
         "answer",
@@ -73,6 +90,38 @@ def test_each_case_owns_one_closed_lean_problem_module() -> None:
         assert "complexity_reduction_ir_typed_edge" not in source
 
 
+def test_gadget_authoring_dev_suite_is_non_scoring_and_answer_free() -> None:
+    from agent.hardness.boolean_csp_gadget_authoring_dev import (
+        load_gadget_authoring_dev_suite,
+    )
+
+    suite = load_gadget_authoring_dev_suite(GADGET_AUTHORING_DEV_SUITE)
+    assert suite.suite_id == "boolean-csp-gadget-authoring-dev-v1"
+    assert [case.case_id for case in suite.cases] == [
+        "q-b02-positive-nae4",
+        "ga-dev-random-hard4",
+        "ga-dev-dual-exactly-five7",
+        "ga-dev-mixed-nand2-or3",
+    ]
+    assert all(case.split == "dev" for case in suite.cases)
+    raw = json.loads(GADGET_AUTHORING_DEV_SUITE.read_text(encoding="utf-8"))
+    forbidden = {
+        "answer",
+        "expected",
+        "gold",
+        "hint",
+        "oracle",
+        "route",
+        "solution",
+    }
+    assert all(forbidden.isdisjoint(case) for case in raw["cases"])
+    for case in suite.cases[1:]:
+        leaf = case.module.rsplit(".", 1)[-1]
+        source = (LEAN_ROOT / f"{leaf}.lean").read_text(encoding="utf-8")
+        assert "def problem : Encoding.PresentedProblem" in source
+        assert "NativeTMNPHard" not in source
+
+
 def test_authored_cases_do_not_import_the_canonical_hard_endpoint() -> None:
     from agent.hardness.boolean_csp_np_hard_benchmark import load_suite
 
@@ -95,10 +144,66 @@ def test_oracle_matches_public_case_set_and_all_targets_are_np_complete() -> Non
         case.case_id for case in suite.cases
     }
     assert all(case["mathematical_class"] == "NP-complete" for case in oracle["cases"])
-    assert sum(not case["requires_model"] for case in oracle["cases"]) == 1
+    assert sum(not case["requires_model"] for case in oracle["cases"]) == 11
 
 
-def test_only_runner_lists_boolean_csp_inside_the_78_case_registry() -> None:
+def test_random_supplement_is_reproducible_and_on_the_schaefer_hard_side() -> None:
+    from agent.hardness.boolean_csp_random import (
+        CLASS_NAMES,
+        analyze_language,
+        build_audit_payload,
+        sample_hard_languages,
+        validate_workspace,
+    )
+
+    cases = sample_hard_languages()
+    assert len(cases) == 10
+    assert [case.profile.ordinal for case in cases] == list(range(21, 31))
+    assert sum(case.profile.kind == "singleton" for case in cases) == 5
+    assert sum(case.profile.kind == "mixed_pair" for case in cases) == 5
+    for case in cases:
+        analysis = analyze_language(case.relations)
+        assert analysis["relations_nonempty"] is True
+        assert analysis["hard_side"] is True
+        assert analysis["classes"] == {name: False for name in CLASS_NAMES}
+        assert set(analysis["failures"]) == set(CLASS_NAMES)
+
+    committed = json.loads(RANDOM_AUDIT.read_text(encoding="utf-8"))
+    assert committed == build_audit_payload(cases)
+    assert validate_workspace(ROOT) == ()
+
+
+def test_random_supplement_hard_side_is_lean_kernel_audited() -> None:
+    completed = subprocess.run(
+        ["lake", "env", "lean", str(RANDOM_LEAN_AUDIT)],
+        cwd=ROOT / "Lean",
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert completed.returncode == 0, completed.stdout + completed.stderr
+
+
+def test_gadget_authoring_dev_fixtures_are_lean_audited_hard_side() -> None:
+    built = subprocess.run(
+        ["lake", "build", *GADGET_AUTHORING_DEV_MODULES],
+        cwd=ROOT / "Lean",
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert built.returncode == 0, built.stdout + built.stderr
+    completed = subprocess.run(
+        ["lake", "env", "lean", str(GADGET_AUTHORING_DEV_AUDIT)],
+        cwd=ROOT / "Lean",
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert completed.returncode == 0, completed.stdout + completed.stderr
+
+
+def test_only_runner_lists_boolean_csp_inside_the_88_case_registry() -> None:
     completed = subprocess.run(
         [
             sys.executable,
@@ -112,9 +217,9 @@ def test_only_runner_lists_boolean_csp_inside_the_78_case_registry() -> None:
     )
     assert completed.returncode == 0, completed.stderr
     value = json.loads(completed.stdout)
-    assert value["case_count"]["boolean_csp"] == 20
-    assert value["case_count"]["total"] == 78
-    assert len(value["lanes"]["boolean_csp"]) == 20
+    assert value["case_count"]["boolean_csp"] == 30
+    assert value["case_count"]["total"] == 88
+    assert len(value["lanes"]["boolean_csp"]) == 30
 
 
 def test_case_without_preinstalled_route_reaches_whole_reduction_generation(

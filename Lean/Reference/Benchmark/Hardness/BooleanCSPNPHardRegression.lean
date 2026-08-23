@@ -23,8 +23,18 @@ import Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case17PositiveExactlyThree6
 import Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case18PositiveExactlyFour6
 import Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case19PositiveExactlyFive6
 import Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case20OR3XOR2
+import Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case21RandomTableA
+import Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case22RandomTableB
+import Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case23RandomTableC
+import Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case24RandomTableD
+import Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case25RandomTableE
+import Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case26RandomTableF
+import Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case27RandomTableG
+import Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case28RandomTableH
+import Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case29RandomTableI
+import Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case30RandomTableJ
 
-/-! Compile-time surface check for the twenty closed Boolean-CSP benchmark endpoints. -/
+/-! Compile-time surface check for the thirty closed Boolean-CSP benchmark endpoints. -/
 
 namespace Benchmark.Hardness.BooleanCSPNPHardRegression
 
@@ -51,8 +61,18 @@ noncomputable def endpoints : List PresentedProblem :=
   , Inputs.BooleanCSPNPHard.Case18PositiveExactlyFour6.problem
   , Inputs.BooleanCSPNPHard.Case19PositiveExactlyFive6.problem
   , Inputs.BooleanCSPNPHard.Case20OR3XOR2.problem
+  , Inputs.BooleanCSPNPHard.Case21RandomTableA.problem
+  , Inputs.BooleanCSPNPHard.Case22RandomTableB.problem
+  , Inputs.BooleanCSPNPHard.Case23RandomTableC.problem
+  , Inputs.BooleanCSPNPHard.Case24RandomTableD.problem
+  , Inputs.BooleanCSPNPHard.Case25RandomTableE.problem
+  , Inputs.BooleanCSPNPHard.Case26RandomTableF.problem
+  , Inputs.BooleanCSPNPHard.Case27RandomTableG.problem
+  , Inputs.BooleanCSPNPHard.Case28RandomTableH.problem
+  , Inputs.BooleanCSPNPHard.Case29RandomTableI.problem
+  , Inputs.BooleanCSPNPHard.Case30RandomTableJ.problem
   ]
 
-theorem endpoint_count : endpoints.length = 20 := by decide
+theorem endpoint_count : endpoints.length = 30 := by decide
 
 end Benchmark.Hardness.BooleanCSPNPHardRegression

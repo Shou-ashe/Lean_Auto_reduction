@@ -34,6 +34,9 @@ StrategyDecider = Callable[
     [ProofState, OpenGoal, SubstepPlan, Sequence[CandidateAction]],
     StrategyDecision | None,
 ]
+ActionEligibility = Callable[
+    [ProofState, OpenGoal, SubstepPlan, CandidateAction], str | None
+]
 
 
 @dataclass(frozen=True)
@@ -86,6 +89,7 @@ class SearchCoordinator:
         event_sink: EventSink | None = None,
         dead_end_handler: DeadEndHandler | None = None,
         strategy_decider: StrategyDecider | None = None,
+        action_eligibility: ActionEligibility | None = None,
     ):
         self.planner = planner
         self.tracker = tracker
@@ -98,6 +102,7 @@ class SearchCoordinator:
         self.event_sink = event_sink
         self.dead_end_handler = dead_end_handler
         self.strategy_decider = strategy_decider
+        self.action_eligibility = action_eligibility
         self.statistics = {
             kind.value: ProviderStatistics() for kind in ProviderKind
         }
@@ -277,6 +282,21 @@ class SearchCoordinator:
                     if candidate.action_id in goal.attempted_actions:
                         continue
                     if candidate.disposition.value == "BLOCKED":
+                        continue
+                    eligibility_reason = (
+                        self.action_eligibility(state, goal, plan, candidate)
+                        if self.action_eligibility is not None
+                        else None
+                    )
+                    if eligibility_reason is not None:
+                        self._event(
+                            "ACTION_PRUNED_GATE_POLICY",
+                            state_id=state.state_id,
+                            goal_id=goal.goal_id,
+                            action_id=candidate.action_id,
+                            declaration=candidate.declaration,
+                            reason=eligibility_reason,
+                        )
                         continue
                     cycle_reason = self._ancestor_cycle_reason(
                         state, goal, plan, candidate
@@ -646,6 +666,7 @@ class SearchCoordinator:
 
 
 __all__ = [
+    "ActionEligibility",
     "ActionExecutor",
     "CandidateLookup",
     "DeadEndHandler",

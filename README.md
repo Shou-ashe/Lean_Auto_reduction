@@ -82,12 +82,12 @@ scripts/run_hardness_benchmark.py
 ```
 
 It directly imports library APIs and never starts another Python runner. The frozen benchmark is
-the complete 78-case inventory under `Benchmark/Hardness/Suites`:
+the complete 88-case inventory under `Benchmark/Hardness/Suites`:
 
 - 32 capability cases;
 - 2 unscored frontier cases;
 - 24 exact-reduction-edge cases;
-- 20 Boolean-CSP cases.
+- 30 Boolean-CSP cases, including 10 fixed-seed random truth-table languages.
 
 Validate and list all cases without Lean or API calls:
 
@@ -95,7 +95,7 @@ Validate and list all cases without Lean or API calls:
 python3 scripts/run_hardness_benchmark.py --list
 ```
 
-Run and score all 78 cases:
+Run and score all 88 cases:
 
 ```bash
 python3 scripts/run_hardness_benchmark.py \
@@ -123,11 +123,11 @@ output layout, and scoring contract.
 
 - `Lean/Reference/ComplexityReduction`: trusted problem, reduction, certificate, and agent code.
 - `Lean/Reference/Benchmark/Hardness/Inputs`: answer-free Lean benchmark inputs.
-- `Benchmark/Hardness/Suites`: the public 78-case suites.
+- `Benchmark/Hardness/Suites`: the public 88-case suites.
 - `Evaluation`: isolated scorer/oracle material.
 - `agent/hardness`: reusable runner, authoring, verification, and scoring libraries.
 - `scripts/run_hardness_benchmark.py`: the only benchmark runner.
 - `scripts/prove_np_hard.py`: single-problem proof CLI.
 
 Repository structure is enforced by `tests/test_hardness_single_benchmark_runner.py`; adding a
-second `run_*.py`, delegating to a Python script, or drifting from 78 unique suite cases fails CI.
+second `run_*.py`, delegating to a Python script, or drifting from 88 unique suite cases fails CI.

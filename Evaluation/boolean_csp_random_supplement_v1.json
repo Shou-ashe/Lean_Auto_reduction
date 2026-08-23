@@ -1,0 +1,862 @@
+{
+  "schema_version": "boolean_csp_random_supplement_v1",
+  "sampler_version": "splitmix64-conditional-hard-side-v1",
+  "seed": 20260820,
+  "selection_rule": {
+    "all_relations_nonempty": true,
+    "accepted_density_interval": "[1/4, 3/4] with a two-row margin",
+    "language_schaefer_class_intersection": [],
+    "singleton_endpoints_rejected": [
+      "all-zero",
+      "all-one"
+    ],
+    "mixed_pair_condition": "first is 0-valid and not 1-valid; second is 1-valid and not 0-valid"
+  },
+  "cases": [
+    {
+      "case_id": "q-b21-random-table-a",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case21RandomTableA",
+      "kind": "singleton",
+      "sampling_attempts": 8,
+      "relations": [
+        {
+          "arity": 4,
+          "mask": "0x14E4",
+          "accepted_count": 6,
+          "classes": {
+            "zero_valid": false,
+            "one_valid": false,
+            "horn": false,
+            "dual_horn": false,
+            "bijunctive": false,
+            "affine": false
+          }
+        }
+      ],
+      "language_classes": {
+        "zero_valid": false,
+        "one_valid": false,
+        "horn": false,
+        "dual_horn": false,
+        "bijunctive": false,
+        "affine": false
+      },
+      "relations_nonempty": true,
+      "schaefer_hard_side": true,
+      "mathematical_class": "NP-complete",
+      "failure_witnesses": {
+        "zero_valid": {
+          "relation_index": 0,
+          "inputs": [],
+          "output": "0000"
+        },
+        "one_valid": {
+          "relation_index": 0,
+          "inputs": [],
+          "output": "1111"
+        },
+        "horn": {
+          "relation_index": 0,
+          "inputs": [
+            "0010",
+            "0101"
+          ],
+          "output": "0000"
+        },
+        "dual_horn": {
+          "relation_index": 0,
+          "inputs": [
+            "0010",
+            "1100"
+          ],
+          "output": "1110"
+        },
+        "bijunctive": {
+          "relation_index": 0,
+          "inputs": [
+            "0010",
+            "0101",
+            "1100"
+          ],
+          "output": "0100"
+        },
+        "affine": {
+          "relation_index": 0,
+          "inputs": [
+            "0010",
+            "0101",
+            "0110"
+          ],
+          "output": "0001"
+        }
+      }
+    },
+    {
+      "case_id": "q-b22-random-table-b",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case22RandomTableB",
+      "kind": "singleton",
+      "sampling_attempts": 5,
+      "relations": [
+        {
+          "arity": 5,
+          "mask": "0x5AE4ED46",
+          "accepted_count": 17,
+          "classes": {
+            "zero_valid": false,
+            "one_valid": false,
+            "horn": false,
+            "dual_horn": false,
+            "bijunctive": false,
+            "affine": false
+          }
+        }
+      ],
+      "language_classes": {
+        "zero_valid": false,
+        "one_valid": false,
+        "horn": false,
+        "dual_horn": false,
+        "bijunctive": false,
+        "affine": false
+      },
+      "relations_nonempty": true,
+      "schaefer_hard_side": true,
+      "mathematical_class": "NP-complete",
+      "failure_witnesses": {
+        "zero_valid": {
+          "relation_index": 0,
+          "inputs": [],
+          "output": "00000"
+        },
+        "one_valid": {
+          "relation_index": 0,
+          "inputs": [],
+          "output": "11111"
+        },
+        "horn": {
+          "relation_index": 0,
+          "inputs": [
+            "00001",
+            "00010"
+          ],
+          "output": "00000"
+        },
+        "dual_horn": {
+          "relation_index": 0,
+          "inputs": [
+            "00001",
+            "00010"
+          ],
+          "output": "00011"
+        },
+        "bijunctive": {
+          "relation_index": 0,
+          "inputs": [
+            "00001",
+            "00010",
+            "01000"
+          ],
+          "output": "00000"
+        },
+        "affine": {
+          "relation_index": 0,
+          "inputs": [
+            "00001",
+            "00010",
+            "00110"
+          ],
+          "output": "00101"
+        }
+      }
+    },
+    {
+      "case_id": "q-b23-random-table-c",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case23RandomTableC",
+      "kind": "singleton",
+      "sampling_attempts": 4,
+      "relations": [
+        {
+          "arity": 4,
+          "mask": "0x6890",
+          "accepted_count": 5,
+          "classes": {
+            "zero_valid": false,
+            "one_valid": false,
+            "horn": false,
+            "dual_horn": false,
+            "bijunctive": false,
+            "affine": false
+          }
+        }
+      ],
+      "language_classes": {
+        "zero_valid": false,
+        "one_valid": false,
+        "horn": false,
+        "dual_horn": false,
+        "bijunctive": false,
+        "affine": false
+      },
+      "relations_nonempty": true,
+      "schaefer_hard_side": true,
+      "mathematical_class": "NP-complete",
+      "failure_witnesses": {
+        "zero_valid": {
+          "relation_index": 0,
+          "inputs": [],
+          "output": "0000"
+        },
+        "one_valid": {
+          "relation_index": 0,
+          "inputs": [],
+          "output": "1111"
+        },
+        "horn": {
+          "relation_index": 0,
+          "inputs": [
+            "0100",
+            "1011"
+          ],
+          "output": "0000"
+        },
+        "dual_horn": {
+          "relation_index": 0,
+          "inputs": [
+            "0100",
+            "1011"
+          ],
+          "output": "1111"
+        },
+        "bijunctive": {
+          "relation_index": 0,
+          "inputs": [
+            "0100",
+            "0111",
+            "1101"
+          ],
+          "output": "0101"
+        },
+        "affine": {
+          "relation_index": 0,
+          "inputs": [
+            "0100",
+            "0111",
+            "1011"
+          ],
+          "output": "1000"
+        }
+      }
+    },
+    {
+      "case_id": "q-b24-random-table-d",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case24RandomTableD",
+      "kind": "singleton",
+      "sampling_attempts": 15,
+      "relations": [
+        {
+          "arity": 5,
+          "mask": "0x6C2A2F22",
+          "accepted_count": 14,
+          "classes": {
+            "zero_valid": false,
+            "one_valid": false,
+            "horn": false,
+            "dual_horn": false,
+            "bijunctive": false,
+            "affine": false
+          }
+        }
+      ],
+      "language_classes": {
+        "zero_valid": false,
+        "one_valid": false,
+        "horn": false,
+        "dual_horn": false,
+        "bijunctive": false,
+        "affine": false
+      },
+      "relations_nonempty": true,
+      "schaefer_hard_side": true,
+      "mathematical_class": "NP-complete",
+      "failure_witnesses": {
+        "zero_valid": {
+          "relation_index": 0,
+          "inputs": [],
+          "output": "00000"
+        },
+        "one_valid": {
+          "relation_index": 0,
+          "inputs": [],
+          "output": "11111"
+        },
+        "horn": {
+          "relation_index": 0,
+          "inputs": [
+            "00001",
+            "01000"
+          ],
+          "output": "00000"
+        },
+        "dual_horn": {
+          "relation_index": 0,
+          "inputs": [
+            "00001",
+            "11110"
+          ],
+          "output": "11111"
+        },
+        "bijunctive": {
+          "relation_index": 0,
+          "inputs": [
+            "00001",
+            "01010",
+            "10011"
+          ],
+          "output": "00011"
+        },
+        "affine": {
+          "relation_index": 0,
+          "inputs": [
+            "00001",
+            "00101",
+            "01000"
+          ],
+          "output": "01100"
+        }
+      }
+    },
+    {
+      "case_id": "q-b25-random-table-e",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case25RandomTableE",
+      "kind": "singleton",
+      "sampling_attempts": 4,
+      "relations": [
+        {
+          "arity": 4,
+          "mask": "0x69C6",
+          "accepted_count": 8,
+          "classes": {
+            "zero_valid": false,
+            "one_valid": false,
+            "horn": false,
+            "dual_horn": false,
+            "bijunctive": false,
+            "affine": false
+          }
+        }
+      ],
+      "language_classes": {
+        "zero_valid": false,
+        "one_valid": false,
+        "horn": false,
+        "dual_horn": false,
+        "bijunctive": false,
+        "affine": false
+      },
+      "relations_nonempty": true,
+      "schaefer_hard_side": true,
+      "mathematical_class": "NP-complete",
+      "failure_witnesses": {
+        "zero_valid": {
+          "relation_index": 0,
+          "inputs": [],
+          "output": "0000"
+        },
+        "one_valid": {
+          "relation_index": 0,
+          "inputs": [],
+          "output": "1111"
+        },
+        "horn": {
+          "relation_index": 0,
+          "inputs": [
+            "0001",
+            "0010"
+          ],
+          "output": "0000"
+        },
+        "dual_horn": {
+          "relation_index": 0,
+          "inputs": [
+            "0001",
+            "0010"
+          ],
+          "output": "0011"
+        },
+        "bijunctive": {
+          "relation_index": 0,
+          "inputs": [
+            "0001",
+            "0010",
+            "0111"
+          ],
+          "output": "0011"
+        },
+        "affine": {
+          "relation_index": 0,
+          "inputs": [
+            "0001",
+            "0010",
+            "0110"
+          ],
+          "output": "0101"
+        }
+      }
+    },
+    {
+      "case_id": "q-b26-random-table-f",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case26RandomTableF",
+      "kind": "mixed_pair",
+      "sampling_attempts": 16,
+      "relations": [
+        {
+          "arity": 3,
+          "mask": "0x21",
+          "accepted_count": 2,
+          "classes": {
+            "zero_valid": true,
+            "one_valid": false,
+            "horn": true,
+            "dual_horn": true,
+            "bijunctive": true,
+            "affine": true
+          }
+        },
+        {
+          "arity": 3,
+          "mask": "0xE6",
+          "accepted_count": 5,
+          "classes": {
+            "zero_valid": false,
+            "one_valid": true,
+            "horn": false,
+            "dual_horn": false,
+            "bijunctive": false,
+            "affine": false
+          }
+        }
+      ],
+      "language_classes": {
+        "zero_valid": false,
+        "one_valid": false,
+        "horn": false,
+        "dual_horn": false,
+        "bijunctive": false,
+        "affine": false
+      },
+      "relations_nonempty": true,
+      "schaefer_hard_side": true,
+      "mathematical_class": "NP-complete",
+      "failure_witnesses": {
+        "zero_valid": {
+          "relation_index": 1,
+          "inputs": [],
+          "output": "000"
+        },
+        "one_valid": {
+          "relation_index": 0,
+          "inputs": [],
+          "output": "111"
+        },
+        "horn": {
+          "relation_index": 1,
+          "inputs": [
+            "001",
+            "010"
+          ],
+          "output": "000"
+        },
+        "dual_horn": {
+          "relation_index": 1,
+          "inputs": [
+            "001",
+            "010"
+          ],
+          "output": "011"
+        },
+        "bijunctive": {
+          "relation_index": 1,
+          "inputs": [
+            "001",
+            "010",
+            "111"
+          ],
+          "output": "011"
+        },
+        "affine": {
+          "relation_index": 1,
+          "inputs": [
+            "001",
+            "010",
+            "111"
+          ],
+          "output": "100"
+        }
+      }
+    },
+    {
+      "case_id": "q-b27-random-table-g",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case27RandomTableG",
+      "kind": "mixed_pair",
+      "sampling_attempts": 24,
+      "relations": [
+        {
+          "arity": 3,
+          "mask": "0x71",
+          "accepted_count": 4,
+          "classes": {
+            "zero_valid": true,
+            "one_valid": false,
+            "horn": true,
+            "dual_horn": false,
+            "bijunctive": true,
+            "affine": false
+          }
+        },
+        {
+          "arity": 4,
+          "mask": "0x8CF8",
+          "accepted_count": 8,
+          "classes": {
+            "zero_valid": false,
+            "one_valid": true,
+            "horn": false,
+            "dual_horn": false,
+            "bijunctive": false,
+            "affine": false
+          }
+        }
+      ],
+      "language_classes": {
+        "zero_valid": false,
+        "one_valid": false,
+        "horn": false,
+        "dual_horn": false,
+        "bijunctive": false,
+        "affine": false
+      },
+      "relations_nonempty": true,
+      "schaefer_hard_side": true,
+      "mathematical_class": "NP-complete",
+      "failure_witnesses": {
+        "zero_valid": {
+          "relation_index": 1,
+          "inputs": [],
+          "output": "0000"
+        },
+        "one_valid": {
+          "relation_index": 0,
+          "inputs": [],
+          "output": "111"
+        },
+        "horn": {
+          "relation_index": 1,
+          "inputs": [
+            "0011",
+            "0100"
+          ],
+          "output": "0000"
+        },
+        "dual_horn": {
+          "relation_index": 0,
+          "inputs": [
+            "101",
+            "110"
+          ],
+          "output": "111"
+        },
+        "bijunctive": {
+          "relation_index": 1,
+          "inputs": [
+            "0011",
+            "0100",
+            "1010"
+          ],
+          "output": "0010"
+        },
+        "affine": {
+          "relation_index": 0,
+          "inputs": [
+            "000",
+            "100",
+            "101"
+          ],
+          "output": "001"
+        }
+      }
+    },
+    {
+      "case_id": "q-b28-random-table-h",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case28RandomTableH",
+      "kind": "mixed_pair",
+      "sampling_attempts": 12,
+      "relations": [
+        {
+          "arity": 4,
+          "mask": "0x6AC7",
+          "accepted_count": 9,
+          "classes": {
+            "zero_valid": true,
+            "one_valid": false,
+            "horn": false,
+            "dual_horn": false,
+            "bijunctive": false,
+            "affine": false
+          }
+        },
+        {
+          "arity": 4,
+          "mask": "0x96E2",
+          "accepted_count": 8,
+          "classes": {
+            "zero_valid": false,
+            "one_valid": true,
+            "horn": false,
+            "dual_horn": false,
+            "bijunctive": false,
+            "affine": false
+          }
+        }
+      ],
+      "language_classes": {
+        "zero_valid": false,
+        "one_valid": false,
+        "horn": false,
+        "dual_horn": false,
+        "bijunctive": false,
+        "affine": false
+      },
+      "relations_nonempty": true,
+      "schaefer_hard_side": true,
+      "mathematical_class": "NP-complete",
+      "failure_witnesses": {
+        "zero_valid": {
+          "relation_index": 1,
+          "inputs": [],
+          "output": "0000"
+        },
+        "one_valid": {
+          "relation_index": 0,
+          "inputs": [],
+          "output": "1111"
+        },
+        "horn": {
+          "relation_index": 0,
+          "inputs": [
+            "0110",
+            "1101"
+          ],
+          "output": "0100"
+        },
+        "dual_horn": {
+          "relation_index": 0,
+          "inputs": [
+            "0001",
+            "0010"
+          ],
+          "output": "0011"
+        },
+        "bijunctive": {
+          "relation_index": 0,
+          "inputs": [
+            "0000",
+            "0110",
+            "1101"
+          ],
+          "output": "0100"
+        },
+        "affine": {
+          "relation_index": 0,
+          "inputs": [
+            "0000",
+            "0001",
+            "0010"
+          ],
+          "output": "0011"
+        }
+      }
+    },
+    {
+      "case_id": "q-b29-random-table-i",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case29RandomTableI",
+      "kind": "mixed_pair",
+      "sampling_attempts": 4,
+      "relations": [
+        {
+          "arity": 4,
+          "mask": "0x0C39",
+          "accepted_count": 6,
+          "classes": {
+            "zero_valid": true,
+            "one_valid": false,
+            "horn": false,
+            "dual_horn": false,
+            "bijunctive": false,
+            "affine": false
+          }
+        },
+        {
+          "arity": 5,
+          "mask": "0x8DF51404",
+          "accepted_count": 13,
+          "classes": {
+            "zero_valid": false,
+            "one_valid": true,
+            "horn": false,
+            "dual_horn": false,
+            "bijunctive": false,
+            "affine": false
+          }
+        }
+      ],
+      "language_classes": {
+        "zero_valid": false,
+        "one_valid": false,
+        "horn": false,
+        "dual_horn": false,
+        "bijunctive": false,
+        "affine": false
+      },
+      "relations_nonempty": true,
+      "schaefer_hard_side": true,
+      "mathematical_class": "NP-complete",
+      "failure_witnesses": {
+        "zero_valid": {
+          "relation_index": 1,
+          "inputs": [],
+          "output": "00000"
+        },
+        "one_valid": {
+          "relation_index": 0,
+          "inputs": [],
+          "output": "1111"
+        },
+        "horn": {
+          "relation_index": 0,
+          "inputs": [
+            "0011",
+            "0101"
+          ],
+          "output": "0001"
+        },
+        "dual_horn": {
+          "relation_index": 0,
+          "inputs": [
+            "0011",
+            "0100"
+          ],
+          "output": "0111"
+        },
+        "bijunctive": {
+          "relation_index": 0,
+          "inputs": [
+            "0000",
+            "0011",
+            "0101"
+          ],
+          "output": "0001"
+        },
+        "affine": {
+          "relation_index": 0,
+          "inputs": [
+            "0000",
+            "0011",
+            "0100"
+          ],
+          "output": "0111"
+        }
+      }
+    },
+    {
+      "case_id": "q-b30-random-table-j",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case30RandomTableJ",
+      "kind": "mixed_pair",
+      "sampling_attempts": 7,
+      "relations": [
+        {
+          "arity": 5,
+          "mask": "0x64ADBF05",
+          "accepted_count": 17,
+          "classes": {
+            "zero_valid": true,
+            "one_valid": false,
+            "horn": false,
+            "dual_horn": false,
+            "bijunctive": false,
+            "affine": false
+          }
+        },
+        {
+          "arity": 3,
+          "mask": "0xCA",
+          "accepted_count": 4,
+          "classes": {
+            "zero_valid": false,
+            "one_valid": true,
+            "horn": false,
+            "dual_horn": true,
+            "bijunctive": true,
+            "affine": false
+          }
+        }
+      ],
+      "language_classes": {
+        "zero_valid": false,
+        "one_valid": false,
+        "horn": false,
+        "dual_horn": false,
+        "bijunctive": false,
+        "affine": false
+      },
+      "relations_nonempty": true,
+      "schaefer_hard_side": true,
+      "mathematical_class": "NP-complete",
+      "failure_witnesses": {
+        "zero_valid": {
+          "relation_index": 1,
+          "inputs": [],
+          "output": "000"
+        },
+        "one_valid": {
+          "relation_index": 0,
+          "inputs": [],
+          "output": "11111"
+        },
+        "horn": {
+          "relation_index": 0,
+          "inputs": [
+            "01001",
+            "10011"
+          ],
+          "output": "00001"
+        },
+        "dual_horn": {
+          "relation_index": 0,
+          "inputs": [
+            "00010",
+            "01100"
+          ],
+          "output": "01110"
+        },
+        "bijunctive": {
+          "relation_index": 0,
+          "inputs": [
+            "00000",
+            "01001",
+            "10011"
+          ],
+          "output": "00001"
+        },
+        "affine": {
+          "relation_index": 0,
+          "inputs": [
+            "00000",
+            "00010",
+            "01100"
+          ],
+          "output": "01110"
+        }
+      }
+    }
+  ]
+}

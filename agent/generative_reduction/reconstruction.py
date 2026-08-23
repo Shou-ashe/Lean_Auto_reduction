@@ -38,15 +38,50 @@ def _validated_forbidden_declarations(
     )
 
 
+def _validated_required_declarations(
+    required_declarations: Sequence[str],
+) -> tuple[str, ...]:
+    return tuple(
+        dict.fromkeys(
+            validate_declaration_name(item, label="required declaration")
+            for item in required_declarations
+        )
+    )
+
+
 def _route_audit_commands(
-    *, root_declaration: str, forbidden_declarations: Sequence[str]
+    *,
+    root_declaration: str,
+    forbidden_declarations: Sequence[str],
+    required_declarations: Sequence[str] = (),
+    forbidden_theorem_namespace_prefixes: Sequence[str] = (),
+    allowed_authored_theorem_namespace_prefixes: Sequence[str] = (),
 ) -> str:
     forbidden = _validated_forbidden_declarations(forbidden_declarations)
-    return "".join(
+    required = _validated_required_declarations(required_declarations)
+    forbidden_theorem_prefixes = _validated_forbidden_declarations(
+        forbidden_theorem_namespace_prefixes
+    )
+    allowed_authored_prefixes = _validated_required_declarations(
+        allowed_authored_theorem_namespace_prefixes
+    )
+    required_commands = "".join(
+        "#generative_reduction_assert_transitive_dependency "
+        f'{root_declaration} "{declaration}"\n'
+        for declaration in required
+    )
+    forbidden_commands = "".join(
         "#generative_reduction_assert_not_transitive_dependency "
         f'{root_declaration} "{declaration}"\n'
         for declaration in forbidden
     )
+    allowed_prefixes = ",".join(allowed_authored_prefixes)
+    theorem_namespace_commands = "".join(
+        "#generative_reduction_assert_no_transitive_theorems_in_namespace "
+        f'{root_declaration} "{prefix}" "{allowed_prefixes}"\n'
+        for prefix in forbidden_theorem_prefixes
+    )
+    return required_commands + forbidden_commands + theorem_namespace_commands
 
 
 def _assert_authored_source_avoids_forbidden(
@@ -191,6 +226,9 @@ def build_search_artifact_source(
     input_module: str,
     problem_declaration: str,
     forbidden_declarations: Sequence[str] = (),
+    required_declarations: Sequence[str] = (),
+    forbidden_theorem_namespace_prefixes: Sequence[str] = (),
+    allowed_authored_theorem_namespace_prefixes: Sequence[str] = (),
     extra_imports: Sequence[str] = (),
 ) -> str:
     if not completed_state.complete or completed_state.root_fragment is None:
@@ -245,6 +283,11 @@ end ComplexityReduction.Agent.GenerativeReduction.Generated
 {_route_audit_commands(
     root_declaration="ComplexityReduction.Agent.GenerativeReduction.Generated.problemIsNPHard",
     forbidden_declarations=forbidden_declarations,
+    required_declarations=required_declarations,
+    forbidden_theorem_namespace_prefixes=forbidden_theorem_namespace_prefixes,
+    allowed_authored_theorem_namespace_prefixes=(
+        allowed_authored_theorem_namespace_prefixes
+    ),
 )}
 assert_standard_axioms
   ComplexityReduction.Agent.GenerativeReduction.Generated.problemIsNPHard
@@ -259,6 +302,8 @@ def build_resolver_artifact_source(
     input_module: str,
     problem_declaration: str,
     forbidden_declarations: Sequence[str] = (),
+    forbidden_theorem_namespace_prefixes: Sequence[str] = (),
+    allowed_authored_theorem_namespace_prefixes: Sequence[str] = (),
 ) -> str:
     module = validate_module_name(input_module)
     problem = validate_declaration_name(problem_declaration, label="problem")
@@ -288,6 +333,10 @@ end ComplexityReduction.Agent.GenerativeReduction.Generated
 {_route_audit_commands(
     root_declaration="ComplexityReduction.Agent.GenerativeReduction.Generated.problemIsNPHard",
     forbidden_declarations=forbidden_declarations,
+    forbidden_theorem_namespace_prefixes=forbidden_theorem_namespace_prefixes,
+    allowed_authored_theorem_namespace_prefixes=(
+        allowed_authored_theorem_namespace_prefixes
+    ),
 )}
 assert_standard_axioms
   ComplexityReduction.Agent.GenerativeReduction.Generated.result,
@@ -305,6 +354,8 @@ def build_theorem_artifact_source(
     premise_solutions: Sequence[PremiseSolution],
     plugin_imports: Sequence[str] = (),
     forbidden_declarations: Sequence[str] = (),
+    forbidden_theorem_namespace_prefixes: Sequence[str] = (),
+    allowed_authored_theorem_namespace_prefixes: Sequence[str] = (),
 ) -> str:
     module = validate_module_name(input_module)
     problem = validate_declaration_name(problem_declaration, label="problem")
@@ -344,6 +395,10 @@ end ComplexityReduction.Agent.GenerativeReduction.Generated
 {_route_audit_commands(
     root_declaration="ComplexityReduction.Agent.GenerativeReduction.Generated.problemIsNPHard",
     forbidden_declarations=forbidden_declarations,
+    forbidden_theorem_namespace_prefixes=forbidden_theorem_namespace_prefixes,
+    allowed_authored_theorem_namespace_prefixes=(
+        allowed_authored_theorem_namespace_prefixes
+    ),
 )}
 assert_standard_axioms
   ComplexityReduction.Agent.GenerativeReduction.Generated.problemIsNPHard
@@ -359,6 +414,8 @@ def build_authored_artifact_source(
     implementation: str,
     extra_imports: Sequence[str] = (),
     forbidden_declarations: Sequence[str] = (),
+    forbidden_theorem_namespace_prefixes: Sequence[str] = (),
+    allowed_authored_theorem_namespace_prefixes: Sequence[str] = (),
 ) -> str:
     module = validate_module_name(input_module)
     problem = validate_declaration_name(problem_declaration, label="problem")
@@ -411,6 +468,10 @@ end ComplexityReduction.Agent.GenerativeReduction.Generated
 {_route_audit_commands(
     root_declaration="ComplexityReduction.Agent.GenerativeReduction.Generated.problemIsNPHard",
     forbidden_declarations=forbidden_declarations,
+    forbidden_theorem_namespace_prefixes=forbidden_theorem_namespace_prefixes,
+    allowed_authored_theorem_namespace_prefixes=(
+        allowed_authored_theorem_namespace_prefixes
+    ),
 )}
 assert_standard_axioms
   ComplexityReduction.Agent.GenerativeReduction.Generated.problemIsNPHard
@@ -429,6 +490,8 @@ def build_authored_capability_source(
     extra_imports: Sequence[str] = (),
     generated_capabilities: Sequence[GeneratedCapability] = (),
     forbidden_declarations: Sequence[str] = (),
+    forbidden_theorem_namespace_prefixes: Sequence[str] = (),
+    allowed_authored_theorem_namespace_prefixes: Sequence[str] = (),
 ) -> tuple[str, str]:
     module = validate_module_name(input_module)
     namespace = validate_declaration_name(namespace, label="generated namespace")
@@ -485,6 +548,10 @@ end {namespace}
 {_route_audit_commands(
     root_declaration=full_declaration,
     forbidden_declarations=forbidden_declarations,
+    forbidden_theorem_namespace_prefixes=forbidden_theorem_namespace_prefixes,
+    allowed_authored_theorem_namespace_prefixes=(
+        allowed_authored_theorem_namespace_prefixes
+    ),
 )}
 assert_standard_axioms {full_declaration}
 """

@@ -1,2028 +1,3395 @@
-# 通用自动归约 Agent：Planner-Guided Capability Generation 实施计划
+# Boolean CSP Agent“真实数学生成”门禁实施计划
 
 > 状态：Active
 >
-> 更新日期：2026-08-15
+> 更新日期：2026-08-20
 >
-> 当前唯一实施主线：保留并强化 LLM Planner 对 theorem、action、design 和证明路线的判断能力，同时建立独立的 Gadget、direct-TM、semantic Generator，使 Agent 能在库内缺失相应 capability 时生成新的 Lean 定义、程序、witness、invariant 和证明，而不是退化为只会召回现有定理的搜索器。
+> 当前唯一实施主线：显式 pp-gadget 作者化门禁。
+>
+> 命名约束：本文及后续实现只使用描述能力的语义名称；文件名、目录名、CLI 值、
+> policy key、报告名和测试名不得使用“单字母加序号”的阶段代号。
+>
+> 本文件已完整取代此前的 Agent improvement plan。旧计划不再作为当前实施依据。
 
-## 0. 文档范围
+## 0. 执行结论
 
-本文件取代此前以 Strategy 接线、StructuralActionProvider、ContextCapsule、stateful repair 和 finite gadget 插件为主要待办的旧计划。
+### 稳定命名约定
 
-这些基础设施目前已经全部或部分进入生产路径：
+门禁名称必须描述被测试的能力，执行先后只通过依赖关系和 rollout 顺序表达，不能编码进
+名称。实现中优先使用以下稳定 slug：
 
-- 全局递归搜索和 GlobalProofFrontier 已经工作；
-- theorem application 可以形成 ApplicationFrame；
-- dependent data binder 可以绑定、重新实例化和回溯；
-- StrategyDecision 已经能够映射到 action 或 design；
-- stateful initial authoring 和 repair 协议已经存在；
-- generated capability 可以通过 Lean 后回注 ProofState；
-- proof-producing Boolean CSP finite gadget 插件已经存在；
-- final artifact 继续经过独立 Lean、kernel、axiom、endpoint 和 forbidden dependency 审计；
-- direct-TM 与 semantic 已经具有可复现的独立能力门禁和 20 题真实 API 报告。
+- `gadget-authoring`
+- `gadget-correctness-proof`
+- `formula-semantics`
+- `assignment-witness-authoring`
+- `direct-tm-program-dag`
+- `direct-tm-low-level-compiler`
+- `three-sat-to-nae3`
+- `three-sat-to-one-in-three`
+- `certificate-assembly`
 
-因此，下一阶段不再重复建设上述接线，而是解决以下核心问题：
+schema 名中的版本后缀只表示数据格式版本，不表示门禁层级或项目阶段。
+
+下一步不应继续通过“多删几个定理”来测试模型，也不应禁掉整个
+`BooleanCSPFiniteGadget` 模块。
 
-1. Planner 目前只能选择 action 或 design，不能输出面向独立 Generator 的完整能力构造方案；
-2. ContextCapsule 声明了环境 grounding 结构，但 direct-TM 和 semantic 目标实际得到的构造知识为空；
-3. 临时 RuleInstantiationProbe 声明会泄漏到后续独立生成文件；
-4. synthesis budget 会被不可执行 design 和上游子步骤耗尽；
-5. Gadget Generator 仍依赖有限的命名识别和固定模板集合；
-6. direct-TM 尚无程序 DAG、primitive coverage 和节点级生成器；
-7. semantic 尚无 witness transformation、invariant 和方向级 helper DAG；
-8. 报告虽然能区分 reuse 和 generated capability，但还不能精确说明 Planner、Generator、deterministic solver 和已有 theorem 各自贡献了什么。
+当前应实现一个独立的 `gadget-authoring` 门禁：
 
-本计划的目标不是禁止现有 theorem，而是建立清晰的混合能力：
+1. 禁止所有会搜索、枚举、选择或套用现成 gadget 的路径；
+2. 保留 `FiniteConstraint`、`FiniteFormula`、`Spec`、`Spec.Correct`
+   和 `Spec.toGadget` 等中性证书与验证基础设施；
+3. 要求模型明确给出：
+   - 选择的源 hard core；
+   - 辅助变量数；
+   - 每一个目标约束及其变量映射；
+   - 输出变量映射；
+4. 确定性程序只能忠实序列化模型给出的对象、检查真值表并反馈反例，不能增加、
+   删除、替换或搜索任何约束；
+5. 最终 30 题中的非锚点题必须实际使用本次运行中模型生成的 gadget；
+6. 只有 `MODEL_GENERATED_CAPABILITY` 且 final-used 的贡献才计入作者化成功。
 
-- 库内已有 theorem 时，Planner 可以直接选择并快速结束子步骤；
-- theorem 留下 residual obligations 时，Planner 可以把 theorem 作为 scaffold，并给 Generator 提供证明建议；
-- 库内缺失 capability 时，Planner 必须形成可执行构造计划，由独立 Generator 生成新 artifact；
-- 所有结果都必须由 Lean 验证，并在报告中准确归因。
+显式 Gadget 作者化门禁测试的是“模型能否提出正确的数学构造”。有限真值表验证可以由 Lean
+`by decide` 完成，因为验证器自动检查一个明确提出的构造，并不替模型寻找构造。
 
-## 1. 当前基线与证据
+“模型手写完整双向证明”是独立的 Gadget 正确性证明门禁。不能在第一阶段同时混入，否则无法区分：
 
-### 1.1 已完成的 Gadget 能力
+- 模型没有找到 gadget；
+- 模型找到了 gadget，但不会写 Lean 证明；
+- 模型会证明，但被框架样板或上下文问题阻塞。
 
-当前 Boolean CSP finite gadget 路径已经能够：
+## 1. 研究目标与判定边界
 
-- 识别一部分 LanguageInterpretation 和 pointwise Gadget 目标；
-- 枚举有限 pp-formula 候选；
-- 对完整 Boolean truth table 做可执行检查；
-- materialize Lean Spec；
-- 使用 Spec.toGadget 把有限 certificate 提升为正式 Gadget；
-- 将 Lean-verified Gadget 或 LanguageInterpretation 注册为 generated capability；
-- 在禁用 CanonicalDatabase.gadget 和 canonical closure theorem 时继续工作。
+### 1.1 核心研究问题
 
-但当前实现仍有明显限制：
+本门禁必须回答：
 
-- agent/generative_reduction/plugins/boolean_csp.py 通过若干已知 hard-core 名称识别 source；
-- Lean 侧 defaultSpecs 主要由固定 templates 驱动；
-- Planner 没有真正决定 witness grammar、变量界、约束界和 CEGIS 策略；
-- Generator 没有从任意 finite Gamma 的 relation table 动态产生搜索空间；
-- generated gadget 虽然能通过 Lean，但其后 direct-TM 或 semantic 失败时，最终 artifact 无法完成。
+> 在没有有限模板搜索器、canonical gadget、目标专用现成 gadget 和 Schaefer
+> 通用闭包定理的情况下，Agent 是否能够根据源关系和目标语言的真值表，提出一个新的
+> pp-definition，并生成一个被最终 NP-hardness 证明实际使用的 Lean-verified gadget？
 
-### 1.2 direct-TM 独立门禁
+### 1.2 什么计为“真实数学内容”
 
-权威报告：
+对 显式 Gadget 作者化门禁，一份 gadget 的实质数学内容定义为以下语义载荷：
 
-    Reports/GENERAL_AGENT_BOOLEAN_CSP_DIRECT_TM_GATE_REAL_API_REPORT.json
+```text
+source_core
+source_symbol
+variable_count
+formula = [(target_symbol, variable_mapping), ...]
+outputs = [output_variable_0, ..., output_variable_(arity-1)]
+```
 
-设置：
+其中：
 
-- 保留 semantic library theorem；
-- 禁止现有 direct-TM closure theorem 和相关自动 transport wrapper；
-- 同时保持 CanonicalDatabase.gadget 及两个 canonical closure theorem 的禁用；
-- 使用真实 DeepSeek API；
-- 执行 Boolean CSP benchmark 20 题。
+- `source_core` 决定从 NAE-3 或 1-IN-3 等哪个已知 NP-hard core 出发；
+- `formula` 是一个存在量词合取公式；
+- 每个约束使用目标语言 `Γ` 中的一个 relation symbol；
+- `variable_mapping` 指定该目标 relation 的各坐标连接到哪些输入或辅助变量；
+- `outputs` 指定源 relation 的自由变量。
 
-结果：
+只有当这些字段来自模型响应，且被最终 Lean artifact 使用时，才计为模型生成的数学
+构造。
 
-- 20/20 case 有终态；
-- 3 个 VERIFIED，均为完整证明复用控制组；
-- 17 个 BUDGET_EXHAUSTED；
-- 293 次真实 API 调用，293 次 HTTP 200；
-- 17/17 个非复用 case 到达精确 TMPolyTimeMap 子目标；
-- 0 个目标形状 direct-TM capability 被生成、注册并由最终 artifact 使用；
-- 0 forbidden direct/transitive dependency。
+以下内容不计为新的数学构造：
 
-进一步审计：
+- 模型只说“使用 NAE gadget”或“搜索一个 pp-definition”；
+- 模型只选择一个 theorem、plugin 或模板；
+- 确定性程序枚举候选并选择第一个正确项；
+- 模型引用库中已有的 `Gadget` 或 `LanguageInterpretation`；
+- 模型生成的声明通过 Lean，但最终证明未使用它；
+- 模型只生成策略文本，最终 capability 由 deterministic compiler 产生；
+- 确定性 renderer 在模型计划之外补充了数学约束。
 
-- direct-TM 目标相关 ContextCapsule 共 53 个；
-- 53/53 的 candidate_signatures 为空；
-- 53/53 的 relevant_lemmas 为空；
-- token_estimate 只有约 150 到 162；
-- 17 个 case 虽然都到达目标，但只有 8 个 case 真正获得 target-specific authoring design；
-- 其余 case 在 gadget、interpretation 或其他上游 design 上耗尽全局 synthesis_designs；
-- direct-TM 目标 design 中约一半是没有 residual goal 的 helper-first design，创建后立即废弃；
-- 常见候选错误包括把 interpret 函数当作 TM proof、猜测不存在的 toTMPolyTimeMap、polyTime、interpretation_to_poly_time_map 等接口。
+### 1.3 语义作者化与 Lean 语法作者化分离
 
-结论：
+显式 Gadget 作者化门禁不要求模型亲自拼写所有 Lean record 语法。允许以下两种实现：
 
-当前测试证明端到端 Agent 尚不具备 direct-TM 生成能力，但失败同时包含：
+- 推荐：模型输出结构化 `BooleanCSPGadgetPlanV1`，确定性 renderer 原样转成
+  `Spec`；
+- 兼容：模型直接输出含显式局部 `Spec` 的 Lean proof body。
+
+正式门禁优先采用结构化计划。原因是该方式更容易证明：
+
+- 数学对象确实由模型给出；
+- renderer 没有暗中搜索；
+- 每次 repair 改变了哪些约束；
+- 可稳定提取变量数、约束数和输出映射；
+- Lean 语法错误不会污染对数学构造能力的测量。
+
+确定性 renderer 只要满足“结构保持、零数学补全”，不改变贡献分类：
+
+```text
+模型选择全部语义字段
+        +
+确定性语法序列化与验证
+        =
+MODEL_GENERATED_CAPABILITY
+```
+
+如果确定性程序搜索、选择、添加或替换任何公式原子，则必须分类为
+`HYBRID_GENERATED_CAPABILITY` 或
+`DETERMINISTIC_GENERATED_CAPABILITY`，不能通过 显式 Gadget 作者化门禁。
+
+### 1.4 非目标
+
+显式 Gadget 作者化门禁暂不测试：
+
+- 从 Cook–Levin 起完整构造 NAE-3 或 1-IN-3 NP-hardness；
+- 手工展开整个公式层面的 satisfiability 等价；
+- 手工证明 TM 多项式时间；
+- 手工展开 `NativeTMNPHard` 的所有证书量词；
+- gadget 必须不同于所有经典构造；
+- 最短 gadget 或最少辅助变量。
+
+这些目标分别属于 Gadget 正确性证明门禁、语义与复杂度作者化、源 NP-hard 归约作者化门禁或独立优化实验。
+
+## 2. 当前代码事实与原计划修正
+
+### 2.1 finite gadget 插件并非 authoritative
+
+`BooleanCSPExplicitFiniteGadgetPlugin` 和
+`BooleanCSPCanonicalDatabaseFinitePlugin` 当前都声明：
+
+```python
+authoritative_typed_compiler = False
+```
+
+它们通常获胜，是因为 action 成本低且确定性成功，而不是因为 authoritative provider
+压制了模型通道。
+
+因此不能通过“把 model provider 全局设为 authoritative”解决问题。正确做法是：
+
+- 门禁运行时按 capability kind 过滤竞争插件；
+- 只对 `Gadget` / `LanguageInterpretation` 目标禁用确定性 gadget 插件；
+- 保留 exact reuse 对锚点题和其他 capability 的正常行为；
+- 保留 direct-TM 与 semantic compiler，避免 显式 Gadget 作者化门禁同时测试三个不同能力。
+
+相关实现位置：
+
+- `agent/generative_reduction/plugins/boolean_csp.py`
+- `agent/generative_reduction/action_providers.py`
+- `agent/generative_reduction/orchestrator.py`
+
+### 2.2 不能禁掉整个 finite gadget 模块
+
+`BooleanCSPFiniteGadget.lean` 同时包含两类声明。
+
+允许保留的中性证书声明：
 
-- 构造知识缺失；
-- dependent handle 不稳定；
-- Planner 设计不足；
-- design budget 调度错误；
-- Generator 本身的程序证明能力不足。
+- `FiniteConstraint`
+- `FiniteConstraint.Satisfies`
+- `FiniteConstraint.toConstraint`
+- `FiniteFormula`
+- `FiniteFormula.Satisfies`
+- `FiniteFormula.toFormula`
+- `FiniteFormula.extend`
+- `FiniteFormula.restrict`
+- `FiniteFormula.satisfies_extend_iff`
+- `FiniteFormula.satisfies_restrict_iff`
+- `Spec`
+- `Spec.Correct`
+- `Spec.toGadget`
 
-不能把全部失败归因于底层模型。
+必须禁止的发现、搜索与选择声明：
 
-### 1.3 semantic 独立门禁
+- `AnyCorrect`
+- `anyCorrectDecidable`
+- `chooseCorrect`
+- `gadgetOfCandidates`
+- `plannedMappedVariable`
+- `plannedConstraintOfMapping`
+- `plannedSpecOfFormula`
+- `plannedFormulasForTemplate`
+- `plannedSpecs`
+- `firstPlannedCounterexample?`
+- `renderPlannedCounterexample`
+- `gadgetOfPlannedSearch`
+- `mappedVariable`
+- `constraintOfMapping`
+- `formulasForTemplate`
+- `templates`
+- `defaultSpecs`
+- `gadgetOfDefaultSearch`
+
+门禁实现应对该 namespace 采用“允许列表”而不是只维护一个容易漏项的禁止列表：
+
+```text
+BooleanCSPFiniteGadget namespace 中：
+    仅允许证书定义、语义定义和 Spec.toGadget 提升引理；
+    其他声明默认禁止。
+```
+
+### 2.3 当前 evaluator 已经过时
+
+`agent/generative_reduction/boolean_csp_capability_gate.py` 当前：
+
+- 只支持 `direct-tm` 和 `semantic`；
+- 通过目标类型字符串判断 capability；
+- 硬编码 `required_nonreuse_cases = 17`；
+- 不要求 contribution class 为 `MODEL_GENERATED_CAPABILITY`；
+- 不验证显式 gadget 载荷；
+- 不验证 deterministic gadget plugin 是否被实际禁用。
+
+30 题 suite 已存在后，任何继续使用固定数字 17 的 gate 都不能作为正式作者化证据。
+
+### 2.4 当前 authoring 通道可以复用
+
+已有基础设施包括：
+
+- `lean-authoring-initial`；
+- `lean-authoring-repair`；
+- runtime-owned declaration header；
+- `proof_body` 与 `helper_declarations`；
+- source hash；
+- independent Lean check；
+- forbidden dependency audit；
+- `ContributionReceipt`；
+- `MODEL_GENERATED_CAPABILITY`。
+
+显式 Gadget 作者化门禁不需要重写整个 authoring 系统。应在其上增加一个 Boolean CSP 专用的结构化
+gadget protocol，并复用模型调用、预算、repair、source binding 和最终贡献审计。
+
+## 3. 门禁阶梯
+
+| 层级 | 状态 | 禁止内容 | 模型必须产生 | 主要测量 |
+|---|---|---|---|---|
+| 确定性基线门禁 | 已有 | Schaefer 通用捷径及 canonical closure | 允许 finite search 产生 gadget | 端到端基础能力 |
+| **显式 Gadget 作者化门禁** | **当前实施** | 搜索器、模板、candidate selection、现成 gadget | 完整 pp-formula 和输出映射 | 数学构造 |
+| Gadget 正确性证明门禁| 显式 Gadget 作者化门禁稳定后 | 再限制整段 `by decide` | 正向、反向局部等价证明 | 有限证明组织 |
+| 公式语义作者化门禁| 后续 | 高层公式语义组装器 | 公式级 satisfiability iff | 归约正确性 |
+| Direct-TM 复杂度作者化门禁| 后续 | 高层 TM/time 组装器 | 尺寸界与多项式时间证明 | 复杂度分析 |
+| 源 NP-hard 归约作者化门禁| 高风险 canary | NAE-3、1-IN-3 硬 core theorem | 3SAT 到 hard core 的完整归约 | 长程归约 |
+| 证书与 Hardness 量词作者化门禁| 可选 | 通用证书组装器 | 手工展开 `CertifiedReduction` 等 | 框架/API 掌握 |
+
+证书与 Hardness 量词作者化门禁不作为“数学能力最高等级”。它很可能主要测量 Lean 框架样板和库 API 熟悉度。
+
+## 4. 显式 Gadget 作者化门禁
+
+### 4.1 目标 capability
+
+每个 required case 至少生成一个：
+
+```lean
+LanguageInterpretation sourceCore targetGamma
+```
+
+或一个被该 interpretation 直接使用的 pointwise：
+
+```lean
+(symbol : sourceCore.Symbol) →
+  Gadget targetGamma (sourceCore.relationOf symbol)
+```
+
+源 hard core 可以是当前库内已有 NP-hardness 的有限 Boolean core，例如：
+
+- NAE-3；
+- 1-IN-3。
+
+选择哪个 source core 可以由 Planner LLM 完成，也可以由已验证 scaffold 暴露出来，但
+必须在 contribution receipt 中记录。显式 Gadget 作者化门禁的核心评分对象仍是具体 gadget，而不是 source
+hardness theorem。
+
+### 4.2 结构化模型协议
+
+新增 schema：
+
+```json
+{
+  "schema": "boolean_csp_gadget_plan_v1",
+  "source_core": "nae3 | one_in_three3",
+  "gadgets": [
+    {
+      "source_symbol": "<stable source symbol id>",
+      "variable_count": 6,
+      "outputs": [0, 1, 2],
+      "constraints": [
+        {
+          "target_symbol": "<stable target symbol id>",
+          "vars": [0, 3, 4, 1]
+        }
+      ]
+    }
+  ],
+  "mathematical_rationale": "<short natural-language explanation>"
+}
+```
+
+约束：
+
+- `gadgets` 必须覆盖 source language 的每个 symbol；
+- `variable_count` 必须至少覆盖全部 outputs；
+- `outputs` 长度必须等于 source relation arity；
+- outputs 必须两两不同；
+- 每个 `vars` 长度必须等于对应 target relation arity；
+- 所有变量编号必须小于 `variable_count`；
+- constraints 的顺序只影响稳定 hash，不影响语义；
+- `mathematical_rationale` 用于审计，不作为证明权威；
+- 模型不得提交候选列表，必须每次提交一个确定构造。
+
+### 4.3 模型必须看到的上下文
+
+Generator brief 必须包含：
+
+- 当前 case ID、input module 和 exact goal；
+- source core 的关系 arity 和完整真值表；
+- target `Γ` 的全部 symbol、arity 和完整真值表；
+- pp-definition 的自然语言语义；
+- `Spec.Correct` 的精确定义；
+- schema；
+- 当前资源上限；
+- 上一次失败的 schema error、语义反例或 Lean error；
+- 允许使用的中性声明签名；
+- 禁止声明列表及 policy hash。
+
+不得包含：
+
+- `templates` 的内容；
+- Python `_dual_cardinality_template`；
+- 任何已知正确 gadget 的 formula；
+- q-b07 的现成 complement gadget；
+- oracle、gold proof 或隐藏评分字段；
+- 其他 benchmark case 的成功 gadget；
+- deterministic search 产生的候选列表；
+- 能直接关闭当前 gadget 目标的现成 theorem body。
+
+可以提供一个与 benchmark 无关、只解释 JSON 字段格式的微型语法例子，但不能提供与
+NAE、1-IN-3、固定基数或随机表语言同构的答案模板。
+
+### 4.4 允许的确定性工作
+
+以下操作是验证或编译，不改变作者归因：
+
+- JSON schema validation；
+- relation symbol 和 arity 检查；
+- 把模型的整数变量编号忠实序列化为 `Fin`；
+- 把 constraints 原样序列化为 `FiniteConstraint`；
+- 构造模型明确给出的 outputs；
+- 用 `by decide` 证明有限 outputs injectivity；
+- 对模型提交的单个 formula 枚举辅助变量赋值，检查完整真值表；
+- 返回第一个 false-positive 或 false-negative 反例；
+- 用 `Spec.Correct` 和 `Spec.toGadget` 进行 Lean kernel 验证；
+- 使用现有 semantic/direct-TM compiler 将已验证 interpretation 组装进最终证明。
+
+验证器可以搜索“给定 formula 是否存在辅助变量赋值”，因为这是 pp-formula 语义的一部分。
+它不能搜索“应该使用哪个 formula”。
+
+### 4.5 禁止的确定性工作
+
+以下任一行为发生时，显式 Gadget 作者化门禁失败：
+
+- 枚举多个 formula；
+- 从多个 candidate 中选择正确项；
+- 自动增加、删除、重排之外地修改 constraint；
+- 自动选择 target symbol；
+- 自动扩大 formula 并重试；
+- 根据真值表反例自动合成新 constraint；
+- 调用 fixed template、dual-cardinality template 或 canonical database；
+- 复用库中现成 gadget；
+- 将搜索结果伪装成模型 proposal；
+- renderer 产生模型 payload 中不存在的数学原子。
+
+变量编号的规范化、record 语法、namespace、类型标注和证明样板不属于数学原子。
+
+### 4.6 repair 协议
+
+一次 authoring attempt 的状态机：
+
+```text
+MODEL_PROPOSAL
+    → SCHEMA_CHECK
+    → FINITE_SEMANTIC_CHECK
+    → LEAN_MATERIALIZATION
+    → INDEPENDENT_REPLAY
+    → REGISTER_CAPABILITY
+    → FINAL_USE_AUDIT
+```
+
+失败反馈分三类：
+
+1. Schema failure：
+   - 缺字段；
+   - arity 不匹配；
+   - 越界变量；
+   - outputs 非单射。
+2. Semantic failure：
+   - source tuple；
+   - 期望 relation truth value；
+   - 当前 formula 是否存在 extension；
+   - 方向：false-positive 或 false-negative。
+3. Lean failure：
+   - 最小化后的类型错误；
+   - 固定 header 和 exact expected type；
+   - 不返回任何已知正确候选。
+
+repair 必须满足：
+
+- 每次均产生新的 model response hash；
+- gadget semantic payload hash 必须发生变化，否则判为重复尝试；
+- 不允许 deterministic fixer 修改计划；
+- 默认最多 5 次 repair；
+- 达到上限后标记明确 failure code，不得回退到 deterministic gadget plugin。
+
+### 4.7 推荐资源上限
+
+初始资源 profile：
+
+- `max_initial_authoring_attempts = 1`；
+- `max_gadget_repairs = 5`；
+- `model_max_tokens = 16000`；
+- `model_timeout_seconds = 300`；
+- `lean_timeout_seconds = 600`；
+- `wall_clock_timeout_seconds = 3600`；
+- `max_lean_checks = 400`；
+- `max_model_calls = 16`；
+- `max_authoring_calls = 12`。
+
+公式资源上限不应沿用旧模板的“最多 6 变量、7 约束”。建议先通过 microbenchmark
+确定两个 profile：
+
+- canary：最多 8 个变量、16 个约束；
+- full：最多 12 个变量、24 个约束。
+
+这些是计算资源限制，不是 template grammar。模型可以在限制内给出任意约束结构。若
+发现正式题确实需要更大 witness，应版本化提高 profile，而不是暗中加入新模板。
+
+## 5. 门禁策略与代码结构
+
+### 5.1 新增统一 GatePolicy
+
+建议新增：
+
+```text
+agent/generative_reduction/capability_gate_policy.py
+```
+
+核心数据结构建议为：
+
+```python
+@dataclass(frozen=True)
+class CapabilityGatePolicy:
+    name: str
+    policy_version: str
+    required_case_ids: tuple[str, ...]
+    anchor_case_ids: tuple[str, ...]
+    required_capability_kind: CapabilityKind
+    required_contribution_classes: tuple[ContributionClass, ...]
+    disabled_finite_synthesis_plugins: tuple[str, ...]
+    forbidden_declarations: tuple[str, ...]
+    excluded_candidate_declarations: tuple[str, ...]
+    allowed_certificate_declarations: tuple[str, ...]
+    require_model_semantic_payload: bool
+    require_final_artifact_use: bool
+    require_independent_lean: bool
+    require_zero_forbidden_dependencies: bool
+```
+
+所有 case 数量由 policy 的 case IDs 推导，禁止再次硬编码 17、27 或其他数字。
+
+### 5.2 Orchestrator 增加门禁感知插件过滤
+
+`GenerativeReductionConfig` 至少新增：
+
+```python
+gate_policy: CapabilityGatePolicy | None = None
+```
+
+安装插件后、传入 `RecursiveSearchRuntime` 前执行：
+
+```python
+finite_plugins = tuple(
+    plugin
+    for plugin in finite_plugins
+    if plugin.name not in gate_policy.disabled_finite_synthesis_plugins
+)
+```
+
+显式 Gadget 作者化门禁必须禁用：
+
+- `boolean-csp-explicit-finite-gadget`
+- `boolean-csp-canonical-database`
+
+必须保留：
+
+- `boolean-csp-direct-tm-compiler`
+- `boolean-csp-semantic-compiler`
+
+报告必须记录：
+
+- 安装前插件名；
+- 被 policy 禁用的插件名；
+- 实际传给 runtime 的插件名；
+- policy version 和 policy hash。
+
+如果被声明禁用的插件仍产生 action 或 receipt，运行立即判定为 policy violation。
+
+### 5.3 theorem 路由过滤
+
+继续保留现有基础禁令：
+
+- `NativeTMNPHard_of_notSchaeferTractable`
+- `NativeTMNPHard_of_notSchaeferTractable_with_oneInThree`
+- `schaefer_dichotomy`
+- `CanonicalHardCores.oneInThreeInterpretation`
+- `CanonicalHardCores.naeInterpretation`
+- `CanonicalDatabase.gadget`
+- canonical closed lemmas。
+
+显式 Gadget 作者化门禁再增加：
+
+- finite gadget namespace 中所有非 allowlist 声明；
+- q-b07 的
+  `oneInThreeGadgetOfExactlyTwo3`；
+- q-b07 的
+  `exactlyTwo3InterpretsOneInThree`；
+- theorem index 中任何能够无实质 residual obligation 关闭 required-case
+  `Gadget` 或 `LanguageInterpretation` 目标的现成声明。
+
+例外：
+
+- `Spec.toGadget` 可以作为 constructor/scaffold；
+- 它必须消费本次模型生成的显式 `Spec` 和正确性证据；
+- source core NP-hardness theorem 可以复用；
+- 显式 interpretation packaging theorem 可以复用；
+- direct-TM 和 semantic 的确定性编译器可以在 显式 Gadget 作者化门禁使用。
+
+### 5.4 不全局改变 provider 权威性
+
+显式 Gadget 作者化门禁通过 policy 过滤不合格 action，不修改生产模式下的默认 provider 语义。
+
+这保证：
+
+- production-hybrid 仍可优先使用确定性 gadget；
+- 其他 benchmark 不受影响；
+- q-b01、q-b03、q-b04 等锚点仍能合法 exact reuse；
+- 门禁行为完全由报告中的 policy hash 重放。
+
+## 6. 专用 Gadget Generator
+
+### 6.1 Planner 输出
+
+Planner 只负责形成类型化构造合同，不得提交候选 formula 列表。
+
+计划至少包含：
+
+- source core 选择；
+- source/target truth-table handles；
+- 每个 source symbol 需要一个 gadget；
+- variable/constraint resource bounds；
+- 是否允许常量模拟、重复变量和辅助变量；
+- expected exact Lean type；
+- 最终 interpretation declaration；
+- 后续 semantic、direct-TM 和 final packaging 节点。
+
+Planner 提议不计为 gadget 成功。只有 Generator 的结构化计划通过验证并 final-used 才计分。
+
+### 6.2 Generator 输出
+
+新增专用 provider，例如：
+
+```text
+BooleanCSPGadgetAuthoringGenerator
+```
+
+模型调用 purpose 建议为：
+
+- `gadget-authoring-initial`
+- `gadget-authoring-repair`
+
+底层仍复用现有 JSON model client、调用记录、预算和错误处理。
+
+### 6.3 Canonical renderer
+
+新增纯序列化器，例如：
+
+```text
+render_boolean_csp_gadget_plan
+```
+
+输出形状应稳定：
+
+```lean
+by
+  classical
+  refine { gadgetOf := ?_ }
+  intro sourceSymbol
+  fin_cases sourceSymbol
+  let spec : BooleanCSPFiniteGadget.Spec target relation variableCount := {
+    formula := [
+      -- 与模型 constraints 一一对应
+    ]
+    outputs := ...
+    outputs_injective := by decide
+  }
+  exact BooleanCSPFiniteGadget.Spec.toGadget spec (by decide)
+```
+
+renderer 的约束：
+
+- constraints 数量与顺序必须与模型 payload 完全一致；
+- target symbol 与变量数组必须逐项一致；
+- outputs 必须逐项一致；
+- 不得调用任何 search helper；
+- 生成前后都计算 canonical semantic payload hash；
+- 报告 `renderer_added_semantic_atom_count = 0`；
+- renderer 版本进入 policy hash。
 
-权威报告：
+### 6.4 独立有限语义检查器
 
-    Reports/GENERAL_AGENT_BOOLEAN_CSP_SEMANTIC_GATE_REAL_API_REPORT.json
+在 Lean 前增加一个诊断检查器：
 
-设置：
+```text
+check_explicit_gadget_plan(plan, source_tables, target_tables)
+```
+
+它对每个 source tuple 检查：
+
+[
+R(\bar x)
+\iff
+\exists \bar y\;
+\bigwedge_i C_i(\bar x,\bar y).
+]
+
+检查器只接受一个模型 plan，不枚举 plan 空间。
 
-- 保留 direct-TM library theorem；
-- 禁止完整 satisfiable iff、formula-level forward、formula-level reverse closure theorem 和相关 transport wrapper；
-- 同时保持 CanonicalDatabase.gadget 及两个 canonical closure theorem 的禁用；
-- 使用真实 DeepSeek API；
-- 执行 Boolean CSP benchmark 20 题。
+输出：
 
-结果：
+- success；
+- 或第一个稳定排序的反例；
+- 被检查的 source row 数；
+- 被检查的 auxiliary assignment 数；
+- checker version 和 input hash。
 
-- 20/20 case 有终态；
-- 3 个 VERIFIED，均为完整证明复用控制组；
-- 17 个 BUDGET_EXHAUSTED；
-- 267 次真实 API 调用；
-- 266 次 HTTP 200；
-- 17/17 个非复用 case 到达精确 semantic iff 子目标；
-- 0 个目标形状 semantic capability 被生成、注册并由最终 artifact 使用；
-- 0 forbidden direct/transitive dependency。
+最终证明权威仍是 Lean，不是 Python checker。Python checker 只用于快速反馈和可解释报告。
 
-进一步审计：
+## 7. 贡献归因与审计
 
-- semantic 目标相关 ContextCapsule 共 94 个；
-- 94/94 的 candidate_signatures 为空；
-- 94/94 的 relevant_lemmas 为空；
-- token_estimate 只有约 164 到 186；
-- 17/17 case 都获得 target-specific authoring；
-- 86 个 semantic 目标 design 中，43 个 theorem-composition design 因没有 residual helper goal 而立即废弃；
-- 43 个 direct-authoring design 中，大量失败来自遗漏 frozen declaration、临时 probe 名称、协议截断、forbidden source 和不存在的 structure field；
-- 只有少部分失败真正到达具体的 semantic Lean residual goal。
+### 7.1 AuthorshipEvidence
+
+建议在通用 `ContributionReceipt` 中增加可选的作者化证据：
+
+```python
+@dataclass(frozen=True)
+class AuthorshipEvidence:
+    semantic_payload_schema: str
+    semantic_payload_sha256: str
+    model_response_sha256: str
+    origin: str
+    renderer_name: str
+    renderer_version: str
+    renderer_added_semantic_atom_count: int
+    validation_only_steps: tuple[str, ...]
+    variable_count: int | None
+    constraint_count: int | None
+    output_mapping: tuple[int, ...]
+    relation_symbols_used: tuple[str, ...]
+    repair_payload_hashes: tuple[str, ...]
+```
+
+显式 Gadget 作者化门禁要求：
+
+```text
+origin == "model"
+semantic_payload_schema == "boolean_csp_gadget_plan_v1"
+renderer_added_semantic_atom_count == 0
+model_response_sha256 非空
+semantic_payload_sha256 非空
+```
+
+### 7.2 Contribution class 规则
+
+`MODEL_GENERATED_CAPABILITY`：
+
+- 全部 semantic atoms 来自模型 payload；
+- renderer 只序列化；
+- checker 只验证；
+- final artifact 使用该 capability。
 
-结论：
+`HYBRID_GENERATED_CAPABILITY`：
+
+- 模型提出部分结构；
+- deterministic solver 补充、搜索或选择了其余结构。
+
+`DETERMINISTIC_GENERATED_CAPABILITY`：
+
+- formula 由 template、enumerator、canonical database 或 solver 产生。
+
+显式 Gadget 作者化门禁只接受第一类。
+
+### 7.3 final-use 不能靠脆弱字符串搜索
+
+当前 `_artifact_uses` 通过在文件中搜索 declaration name 判断使用关系，只能作为辅助。
+
+正式 显式 Gadget 作者化门禁应使用：
+
+- Lean environment 中的声明依赖闭包；
+- generated declaration 的 fully-qualified name；
+- final endpoint declaration 的 transitive dependency graph；
+- source hash 与声明注册记录；
+- independent replay 结果。
+
+字符串命中可以保留为诊断，但不能作为唯一通过依据。
+
+### 7.4 禁止依赖审计
 
-semantic 当前更接近“Planner 和 grounding 没有给 Generator 形成可执行证明设计”，而不是经过充分条件后仍无法生成。
+每个 required case 必须满足：
+
+- forbidden direct dependency count = 0；
+- forbidden transitive dependency count = 0；
+- oracle/gold dependency count = 0；
+- disabled plugin contribution count = 0；
+- pre-existing exact gadget reuse count = 0；
+- unresolved probe handle count = 0；
+- final-used deterministic gadget receipt count = 0。
 
-### 1.4 当前最小问题陈述
+## 8. 显式 Gadget 作者化门禁评估器
 
-当前 Agent 已经能够找到数学瓶颈，也能在部分场景生成 gadget 和辅助声明。
+新增：
 
-真正缺少的是：
+```text
+evaluate_gadget_authoring_gate(report, policy)
+```
 
-> 把一个被识别出的 capability gap 转换成一个可执行、类型化、可修复、可回溯的 Planner→Generator 合同，并按 capability 的语义结构生成新的 Lean artifact。
+不要继续把 gadget 逻辑塞进只支持 direct-TM/semantic 的字符串分支。
 
-## 2. 核心术语与贡献分类
+### 8.1 每题状态
 
-### 2.1 theorem 候选角色
+每题输出以下互斥状态之一：
 
-不要用主观的“高层”或“低层”决定 theorem 是否可用，而应根据它对当前 exact goal 的 Lean 行为分类。
+- `ANCHOR_REUSE_VERIFIED`
+- `MODEL_GADGET_VERIFIED_AND_FINAL_USED`
+- `ROUTE_NOT_REACHED`
+- `MODEL_PLAN_NOT_PRODUCED`
+- `MODEL_PROTOCOL_INVALID`
+- `GADGET_PLAN_SCHEMA_INVALID`
+- `GADGET_SEMANTIC_COUNTEREXAMPLE`
+- `LEAN_MATERIALIZATION_FAILED`
+- `FORBIDDEN_DEPENDENCY`
+- `ATTRIBUTION_MISMATCH`
+- `CAPABILITY_NOT_FINAL_USED`
+- `BUDGET_EXHAUSTED`
+- `SYSTEM_ERROR`
 
-#### Exact closure
+这一区分很重要：`ROUTE_NOT_REACHED` 不能被解释为模型不会构造 gadget。
 
-一个 theorem 实例化后直接得到当前 exact goal，且没有 residual obligations。
+### 8.2 required-case 硬检查
 
-例如在未屏蔽时：
+对 policy 中每个 required case：
 
-    interpretation_tmPolyTime interpretation
+- case 完成；
+- root proof 为 `VERIFIED`；
+- 至少一个 final-used gadget receipt；
+- capability kind 为 `gadget` 或明确绑定的
+  `language-interpretation`；
+- contribution class 为 `MODEL_GENERATED_CAPABILITY`；
+- authorship evidence 完整；
+- semantic payload 来自本 case 的模型调用；
+- independent Lean passed；
+- forbidden audit passed；
+- final root artifact 的依赖闭包含生成声明；
+- 无 deterministic gadget contribution；
+- 无搜索、模板、canonical 或目标专用 gadget 依赖。
 
-可以直接关闭 direct-TM 目标。
+### 8.3 anchor-case 硬检查
 
-处理方式：
+锚点题：
 
-- Planner 应优先选择；
-- 由 deterministic theorem executor 直接 materialize；
-- 一般不需要调用 Generator LLM；
-- 结果归类为 THEOREM_REUSE。
+- 允许 `THEOREM_REUSE`；
+- 必须 `VERIFIED`；
+- 不要求模型生成 gadget；
+- 不得被计入 authored success numerator 或 denominator。
 
-#### Conditional closure / scaffold
+### 8.4 suite 级输出
 
-一个 theorem 可以得到当前 exact goal，但实例化后留下实质性 residual obligations。
+报告同时给出：
 
-例如显式 NP-hardness packaging theorem可以留下：
+- `integrity_passed`：所有来源、依赖、policy 和重放检查通过；
+- `required_case_count`；
+- `authored_success_count`；
+- `authored_success_rate`；
+- `anchor_verified_count`；
+- `route_failure_count`；
+- `mathematical_failure_count`；
+- `lean_only_failure_count`；
+- `system_failure_count`；
+- `strict_gate_passed`。
 
-- LanguageInterpretation；
-- direct-TM；
-- semantic iff。
+`strict_gate_passed` 的定义：
 
-处理方式：
+```text
+integrity_passed
+and all anchor cases verified
+and authored_success_count == required_case_count
+```
 
-- Planner 可以选择并给出 theorem application plan；
-- ApplicationFrame 管理 residual obligations；
-- 已有 premise 由 theorem search、reuse 或 solver 关闭；
-- 缺失 premise 分别拉起对应 Generator；
-- 结果归类为 THEOREM_GUIDED_GENERATION 或 THEOREM_COMPOSITION。
+研究报告必须保留部分成功率，不能因为 strict gate 未通过就丢失能力信号。
 
-#### Primitive
+## 9. 30 题的分组策略
 
-只提供局部构造能力或局部规律的 declaration，例如：
+### 9.1 锚点题
 
-- structure constructor；
-- Gadget.correct；
-- TMPolyTimeMap.comp；
-- map、fold、flatten、encoding primitive；
-- membership、assignment agreement、finite certificate theorem。
+显式 Gadget 作者化门禁锚点：
 
-处理方式：
+- q-b01-canonical-three-sat-like；
+- q-b03-positive-nae3；
+- q-b04-positive-exactly-one3。
 
-- Planner 可以排序并推荐；
-- Generator 可以调用；
-- 它们是构造基础，不是完整答案。
+原因：
 
-#### Verified example
+- q-b01 是库内 endpoint reuse 基线；
+- q-b03、q-b04 本身就是允许作为 source 的 hard core；
+- 强制它们“再解释自身”不能有效测试新的目标语言 gadget。
 
-与当前目标结构相似、但不直接闭合目标的已验证例子。
+### 9.2 正式 required cases
 
-处理方式：
+显式 Gadget 作者化门禁的正式 authored set 共 27 题：
 
-- 只能在明确的 example policy 下提供；
-- 必须通过 dependency 和 answer-leak audit；
-- 能省略时优先省略；
-- 能提供 type/outline 时，不直接提供完整 proof body；
-- 能否使用由运行模式决定。
+- q-b02；
+- q-b05–q-b30。
 
-### 2.2 最终结果分类
+其中 q-b07 必须额外禁止现成 exactly-two/one-in-three gadget 和 interpretation。
 
-报告至少区分：
+不要在 evaluator 中写 `27`。该数字必须由 policy 中显式 case IDs 计算。
 
-- THEOREM_REUSE：现有 exact closure 直接关闭目标；
-- THEOREM_COMPOSITION：只组合已有高层 theorem，没有新 substantive helper；
-- THEOREM_GUIDED_GENERATION：Planner 使用 scaffold，Generator 补齐 residual capability；
-- GENERATED_GLUE：生成了新的证明 glue，但没有新的计算对象或 witness；
-- GENERATED_CAPABILITY：生成了新的程序、witness、interpretation、invariant 或 substantive helper，并由最终 artifact 实际使用；
-- DETERMINISTIC_GENERATED_CAPABILITY：新 capability 由 enumerator、compiler 或 solver 生成，未依赖 LLM authoring；
-- MODEL_GENERATED_CAPABILITY：新 capability 的结构或实现由 Generator LLM 产生；
-- HYBRID_GENERATED_CAPABILITY：Planner LLM、Generator LLM 和 deterministic solver 共同产生。
+### 9.3 开发、验证与 heldout 纪律
 
-生产 Agent 允许所有合法类型。
+现有 split：
 
-能力测试只有明确要求的生成类别计为成功，不能把 THEOREM_REUSE 计为 GENERATED_CAPABILITY。
+- dev：q-b01–q-b04；
+- validation：q-b05–q-b10；
+- heldout：q-b11–q-b30。
 
-## 3. 运行模式
+开发阶段只能反复使用：
 
-### 3.1 production-hybrid
+- q-b02；
+- 新增的非正式 `ga-dev-*` synthetic gadget fixtures。
 
-目标是最快、最可靠地完成用户请求。
+建议增加三个不计入正式 30 题的开发 fixture：
 
-默认顺序：
+- 一个四元单关系随机 hard-side 语言；
+- 一个固定基数的对偶变体；
+- 一个双 relation、混合 arity 语言。
 
-1. exact closure；
-2. verified reuse；
-3. conditional closure / scaffold；
-4. structural action；
-5. deterministic solver/plugin；
-6. Planner-guided Generator；
-7. direct authoring fallback。
+它们只用于协议、renderer 和 repair 调试。
 
-如果库内已有 direct-TM、semantic 或 gadget theorem，应直接使用。
+在 policy、prompt、renderer 和预算冻结后：
 
-### 3.2 capability-gate
+1. 一次性运行 validation q-b05–q-b10；
+2. 不根据 heldout 单题答案修改 prompt；
+3. 最后一次性运行 q-b11–q-b30；
+4. 若查看 heldout 失败后修改系统，必须提升 gate version，并把旧 heldout 结果标为已污染，
+   不能与首次结果合并。
 
-目标是测试某一项 capability generation。
+q-b21–q-b30 的随机真值表题尤其不能被用作日常 prompt 调参 canary。
 
-规则：
+## 10. 组件门禁与端到端门禁
 
-- 只屏蔽当前能力的 exact closure、near-exact closure、alias 和自动 transport；
-- 保留能够暴露该能力 exact child goal 的 scaffold；
-- 保留 lower-level primitive；
-- 保留其他独立能力的 theorem；
-- final artifact 做 direct/transitive forbidden dependency audit；
-- exact closure 控制组不计入 generation success。
+只从 `NativeTMNPHard problem` 根目标运行，会把以下失败混在一起：
 
-例子：
+- Planner 没有选择 source core；
+- theorem scaffold 没有展开；
+- gadget authoring 没获得预算；
+- gadget 构造失败；
+- 后续 semantic/TM packaging 失败。
 
-- direct-TM gate：屏蔽 interpretation_tmPolyTime，保留 semantic；
-- semantic gate：屏蔽 iff、forward、reverse closure，保留 direct-TM；
-- gadget gate：屏蔽完整 gadget/interpretation closure，保留 Gadget.mk、finite semantics 和 certificate primitive。
+因此 显式 Gadget 作者化门禁采用双层检查。
 
-### 3.3 from-basis
+### 10.1 组件级 authoring checkpoint
 
-目标是研究 Generator 从较低抽象层构造 capability 的能力。
+门禁 runner 为每个 required case 创建一个类型化 gadget construction contract：
 
-规则：
+- 输入是公开的 source/target truth tables；
+- Planner 选择一个允许的 source core；
+- Generator 产生 `BooleanCSPGadgetPlanV1`；
+- renderer 和 Lean 得到 verified
+  `LanguageInterpretation`。
 
-- 不提供 exact closure；
-- 不提供 near-identical proof body；
-- 只提供 definitions、constructors、primitive contracts 和显式允许的 scaffold；
-- Planner 仍可以对这些候选排序并给出证明建议；
-- Generator 必须产生新的 substantive artifact。
+该 checkpoint 判断模型是否真正找到局部数学构造。
 
-该模式不是默认生产模式，只用于能力研究和更严格的 held-out 测试。
+### 10.2 原题端到端 final-use checkpoint
 
-## 4. 目标架构
+组件级 capability 注册后，继续运行原始目标：
 
-整体流程：
+```lean
+NativeTMNPHard problem
+```
 
-    OpenGoal
-      → Lean Typed Discovery
-      → Deterministic Exact Closure
-      → Planner LLM
-          ├─ select exact theorem application
-          ├─ select scaffold and residual DAG
-          ├─ select deterministic plugin/compiler
-          └─ produce CapabilityPlan + GeneratorBrief
-      → Action/ApplicationFrame/SynthesisDesign
-      → Independent Generator
-      → Lean materialization
-      → diagnostic-driven repair or planner replan
-      → generated capability registration
-      → GlobalProofFrontier
-      → final reconstruction and audit
+允许现有确定性 semantic/direct-TM machinery 使用这个 interpretation。
 
-### 4.1 Planner LLM 的职责
+最终通过仍要求：
 
-Planner 负责：
+- 原始 root proof verified；
+- root declaration 的依赖闭包含模型生成 interpretation；
+- 组件 capability 不是孤立的 side artifact。
 
-- 对 theorem、reuse、plugin、structural action 和 synthesis design 排序；
-- 选择 source core、theorem route 和 construction mode；
-- 判断 theorem 是 exact closure、scaffold 还是 primitive；
-- 选择要交给 Generator 的 typed basis；
-- 给 Generator 提供有顺序的 proof advice；
-- 提议 helper role 和 exact type；
-- 提议 witness schema、program decomposition 或 semantic invariant；
-- 在 repair、switch-design 和 backtrack 之间做选择；
-- 根据 diagnostics、counterexamples、历史成功率和预算重新规划；
-- 请求额外 lookup 或 definition expansion。
+### 10.3 调度保证
 
-Planner 不负责：
+显式 Gadget 作者化门禁为 gadget capability 预留独立预算，不能让上游无效 design 消耗：
 
-- 声明 proof 已经正确；
-- 返回未经 Lean 验证的成功结论；
-- 通过自由文本发明一个可直接执行的 theorem 名称；
-- 绕过 forbidden declaration；
-- 把自然语言建议直接写入 ProofState；
-- 在 Generator 失败后静默改变 frozen plan。
+- 一个初始 Planner 调用；
+- 一个 initial gadget authoring 调用；
+- 五个 repair slot；
+- 对应 Lean checks。
 
-### 4.2 Independent Generator 的职责
+如果根搜索没有自然暴露 gadget 子目标，runner 应通过经过验证的显式 scaffold 创建该
+subgoal，而不是回退到通用 Schaefer theorem。
 
-Generator 以新模型调用、独立上下文和冻结的 GeneratorBrief 启动。
+## 11. 测试计划
 
-Generator 负责：
+### 11.1 Policy 单元测试
 
-- 生成新的 Lean declaration body；
-- 生成新 witness、program、helper、invariant 或 proof glue；
-- 调用 Planner 选定的 theorem/primitive；
-- 对同一 design 根据 Lean diagnostics 做局部 repair；
-- 返回 plan-infeasible，要求 Planner 重新规划；
-- 明确报告实际使用的 planner advice 和 declaration IDs。
+新增测试：
 
-Generator 不应看到：
+- required 与 anchor case 不相交；
+- 两者并集符合当前 suite policy；
+- 未知 case ID 被拒绝；
+- 未知 plugin 名被拒绝；
+- policy hash 稳定；
+- required count 从 case IDs 动态计算；
+- q-b07 特殊禁令存在；
+- finite gadget namespace allowlist 无漏放。
 
-- 不属于当前 plan 的完整 theorem index；
-- 被 capability gate 禁止的 theorem body；
-- benchmark oracle；
-- case-specific 答案；
-- Planner 的隐藏推理文本；
-- 与当前 design 无关的完整模块源码。
+### 11.2 插件过滤测试
 
-### 4.3 Deterministic executor 的职责
+验证 显式 Gadget 作者化门禁：
 
-以下工作不需要浪费 Generator LLM：
+- explicit finite gadget plugin 不进入 runtime；
+- canonical database plugin 不进入 runtime；
+- direct-TM compiler 仍存在；
+- semantic compiler 仍存在；
+- production-hybrid 不受影响；
+- disabled plugin 若产生 action，立即 policy violation。
 
-- exact closure theorem application；
-- structure constructor 的机械组装；
-- ApplicationFrame 重建；
-- 已知 primitive 的机械 composition；
-- finite candidate 的 executable checking；
-- Lean command 执行；
-- proof dependency 和 forbidden audit；
-- fixed declaration envelope；
-- schema repair；
-- stable handle canonicalization。
+### 11.3 Schema 与 renderer 测试
 
-如果统一接口要求经过 Generator 层，也应使用 deterministic materializer，而不是调用模型。
+覆盖：
 
-### 4.4 不建立平行 frontier
+- 单 relation target；
+- 双 relation target；
+- 不同 arity；
+- 重复变量；
+- 辅助变量；
+- 非前缀 outputs；
+- 越界变量拒绝；
+- arity mismatch 拒绝；
+- 非单射 outputs 拒绝；
+- canonical payload hash 稳定；
+- renderer 不增加 semantic atom；
+- 同一 payload 产生字节稳定的 Lean body。
 
-Gadget、direct-TM 和 semantic Generator 都是现有 GlobalProofFrontier 中的 capability-specific SynthesisDesign executor。
+### 11.4 有限 checker 测试
 
-它们不能：
+覆盖：
 
-- 各自维护与主搜索无关的根目标；
-- 绕过 ApplicationFrame；
-- 绕过 failure memory；
-- 绕过 global budget；
-- 绕过 capability registration；
-- 绕过 final reconstruction。
+- 正确 gadget；
+- false-positive；
+- false-negative；
+- 无辅助变量；
+- 多辅助变量；
+- 多 target relation；
+- 反例排序稳定；
+- checker 与 Lean `Spec.Correct` 在 fixture 上一致。
 
-“独立拉起 Generator”只表示新的模型上下文和冻结合同，不表示创建另一套证明搜索器。
+### 11.5 归因负测试
 
-## 5. 共享数据协议
+以下 fixture 必须被 gate 拒绝：
 
-### 5.1 CandidateReceipt
+- 模型只输出 strategy；
+- final receipt 为 deterministic；
+- model source hash 为空；
+- 声明未被 final artifact 使用；
+- 调用 `gadgetOfPlannedSearch`；
+- 调用 `gadgetOfCandidates`；
+- 调用 `CanonicalDatabase.gadget`；
+- q-b07 复用现成 interpretation；
+- renderer 添加一条模型未给出的 constraint；
+- 只有字符串命中但 Lean dependency graph 不包含生成声明；
+- 模型计划来自另一个 case 的未绑定 response；
+- source/policy/brief hash 不一致。
 
-新增或扩展：
+### 11.6 repair 测试
 
-    CandidateReceipt
-      candidate_id
-      declaration
-      exact_type
-      module
-      declaration_kind
-      candidate_role
-      exact_closure
-      residual_obligations
-      application_skeleton
-      dependency_distance
-      forbidden_status
-      historical_success
-      estimated_cost
+使用 fake model：
 
-candidate_role 取值：
+1. 第一次提交 schema-invalid plan；
+2. 第二次提交语义错误 plan；
+3. 第三次提交正确 plan；
+4. 验证反馈只包含错误与反例；
+5. 验证第三次 payload final-used；
+6. 验证前两次不能被记为贡献。
 
-- exact-closure；
-- conditional-closure；
-- scaffold；
-- primitive；
-- constructor；
-- verified-example。
+重复提交相同 payload 必须被识别并停止浪费预算。
 
-候选角色必须由 Lean application receipt 和 residual obligations 决定，不能只靠名称。
+### 11.7 evaluator 测试
 
-### 5.2 TheoremApplicationPlan
+构造 30 题 synthetic report：
 
-    TheoremApplicationPlan
-      plan_id
-      candidate_id
-      exact_instantiation
-      application_skeleton
-      solved_premises
-      residual_obligations
-      expected_result_type
-      contribution_class
-      forbidden_receipt
+- 3 个 anchor reuse；
+- 27 个 model-authored final-used gadget；
+- strict gate 应通过。
 
-如果 residual obligations 为空，直接交 deterministic executor。
+逐项破坏以下字段并验证失败：
 
-如果不为空，创建 ApplicationFrame。
+- 一个 required case 缺失；
+- 一个 contribution class 错误；
+- 一个 source hash 为空；
+- 一个 forbidden dependency；
+- 一个 independent Lean failure；
+- 一个 final-use failure；
+- 一个 disabled plugin receipt；
+- selected/completed case 集合漂移。
 
-### 5.3 CapabilityPlan
+### 11.8 真实 Lean smoke test
 
-    CapabilityPlan
-      plan_id
-      capability_kind
-      goal_id
-      exact_goal
-      selected_route
-      selected_action_id
-      selected_design_id
-      selected_candidate_ids
-      construction_basis_ids
-      forbidden_closure_ids
-      proof_outline
-      helper_specs
-      witness_schema
-      residual_goal_dag
-      budget_allocation
-      fallback_plans
-      context_requirements
-      plan_fingerprint
+在调用真实 API 前至少完成：
 
-capability_kind 至少支持：
+- 一个手工 fixture 的结构化 plan → Lean `Spec.toGadget`；
+- interpretation → semantic/direct-TM → root proof；
+- 独立 replay；
+- dependency closure audit；
+- clean output directory 重放。
 
-- gadget；
-- language-interpretation；
-- direct-tm；
-- semantic；
-- final-packaging；
-- generic-helper。
+## 12. 分阶段实施
 
-### 5.4 GeneratorBrief
+### 冻结现状与对照报告
 
-    GeneratorBrief
-      brief_id
-      plan_id
-      exact_declaration_name
-      exact_declaration_type
-      fixed_declaration_envelope
-      selected_design
-      selected_candidate_ids
-      ordered_proof_hints
-      helper_contracts
-      witness_contract
-      expected_residuals
-      allowed_identifier_manifest
-      forbidden_declarations
-      generated_capability_signatures
-      local_context
-      relevant_definitions
-      prior_counterexamples
-      prior_diagnostics
-      failed_source_hashes
-      brief_fingerprint
+任务：
 
-proof hint 至少支持：
+- 保存当前 30 题 确定性基线 路径报告；
+- 记录每题最终 contribution class；
+- 记录 finite plugin、canonical theorem 和 exact reuse 使用情况；
+- 生成现有系统的作者化归因表。
 
-- apply-candidate；
-- unfold-definition；
-- introduce-helper；
-- construct-witness；
-- split-structurally；
-- prove-endpoint-equality；
-- request-lookup；
-- avoid-failed-pattern。
+完成标准：
 
-如果 hint 引用 theorem，必须引用 candidate_id。
+- 能明确区分 30 题中的 theorem reuse、deterministic gadget、generic Schaefer route；
+- 对照报告有 suite hash、代码 commit、model 配置和 policy hash。
 
-自然语言建议可以存在，但不能代替 typed ID 和 exact type。
+### GatePolicy 与插件过滤
 
-### 5.5 GeneratorResult
+任务：
 
-    GeneratorResult
-      result_id
-      brief_id
-      status
-      implementation_body
-      helper_declarations
-      used_candidate_ids
-      used_generated_capabilities
-      planner_hints_followed
-      planner_hints_rejected
-      rejection_reason
-      requested_lookup
-      requested_replan
-      implementation_hash
+- 新增 `CapabilityGatePolicy`；
+- 给 orchestrator 接入 policy；
+- 按 plugin name 过滤 finite synthesis plugin；
+- 报告实际 plugin 集合；
+- 将旧 evaluator 的 17 改为 policy-driven；
+- 新增 `gadget-authoring` CLI 选项或独立 runner。
 
-status 至少支持：
+完成标准：
 
-- proposed；
-- plan-infeasible；
-- needs-lookup；
-- needs-replan；
-- protocol-invalid。
+- 单元测试证明两个 gadget 插件在 显式 Gadget 作者化门禁完全不可见；
+- direct-TM/semantic compiler 仍可用；
+- production 模式行为不变。
 
-### 5.6 ContributionReceipt
+### 结构化 Gadget Generator
 
-    ContributionReceipt
-      capability_declaration
-      contribution_class
-      exact_closure_candidates_used
-      scaffold_candidates_used
-      primitive_candidates_used
-      planner_advice_ids
-      generated_helpers
-      generated_data_objects
-      deterministic_solver_steps
-      model_generated_source_hashes
-      final_artifact_used
-      forbidden_audit_passed
-      independent_lean_passed
+任务：
 
-报告必须能够回答：
+- 定义 `BooleanCSPGadgetPlanV1`；
+- 构造 answer-free Generator brief；
+- 实现 schema validator；
+- 实现 canonical semantic payload hash；
+- 实现 Lean renderer；
+- 接入 initial/repair model calls。
 
-- Planner 选择了什么；
-- Generator 新生成了什么；
-- 哪些已有 theorem 被直接调用；
-- 哪些已有 theorem 只是 primitive；
-- 新 capability 是否被最终 artifact 使用。
+完成标准：
 
-## 6. 共享基础设施改进
+- fake model 可以生成一个 verified `Spec`；
+- renderer 的 semantic atom count 与 payload 完全一致；
+- 没有 search helper dependency。
 
-### 6.1 构造知识检索，而不是无边界答案检索
+### 显式 checker 与 CEGIS repair
 
-当前 theorem index 主要检索可以直接统一当前 conclusion head 的 declaration。
+任务：
 
-新增 construction-basis discovery：
+- 实现单计划有限语义 checker；
+- 输出稳定反例；
+- 把反例接入 repair prompt；
+- 区分 schema、semantic、Lean failure；
+- 记录全部 attempt hashes。
 
-1. 提取 exact goal 中全部 constants；
-2. 提取目标函数和目标 predicate 的 definition；
-3. 提取 constructor 和 structure fields；
-4. 检索引用这些 constants 的 declaration；
-5. 检索 Planner 已选 candidate 的 premise dependencies；
-6. 检索 diagnostics 中 unknown/invalid field 的真实声明；
-7. 建立一到两层 typed dependency neighborhood；
-8. 根据 candidate role、dependency distance 和 token budget 排序。
+完成标准：
 
-限制：
+- 错误计划得到正确方向的反例；
+- checker 不生成候选；
+- fake model 三步 repair 测试通过；
+- 最终 Lean 仍是证明权威。
 
-- production-hybrid 可以召回 exact closure；
-- capability-gate 将被禁 closure 从 executable candidates 中删除；
-- Generator 只收到 Planner 选定的 construction basis；
-- 不把完整 theorem index 或完整模块源码发送给模型。
+### 贡献归因与 final-use
 
-### 6.2 完成 ContextCapsule
+任务：
 
-当前 ContextCapsule 中以下字段不能继续固定为空：
+- 增加 `AuthorshipEvidence`；
+- 明确 model/hybrid/deterministic 分类规则；
+- 用 Lean 依赖闭包替代单纯字符串 final-use；
+- 实现显式 Gadget 作者化门禁评估器；
+- 增加全部负测试。
 
-- goal_head_type；
-- goal_head_definition；
-- relevant_definitions；
-- relevant_lemmas；
-- constructors；
-- verified_examples；
-- application_skeletons。
+完成标准：
 
-新增强制门禁：
+- deterministic plugin 结果不能伪装为 model-generated；
+- 孤立的生成 gadget 不能通过；
+- 所有来源 hash 可以从 report 重放。
 
-如果一个非平凡 generation goal 的 capsule 同时满足：
+### 开发 canary
 
-- candidate_signatures 为空；
-- relevant_definitions 为空；
-- constructors 为空；
-- application_skeletons 为空；
+运行：
 
-则禁止调用 Generator，必须先：
+- q-b02；
+- 三个 `ga-dev-*` fixture。
 
-- expand context；
-- request lookup；
-- 或返回 context-insufficient blocker。
+目标不是立即证明模型 4/4，而是验证：
 
-不能继续在只有 150 到 180 token 构造知识的情况下消耗大模型调用。
+- 每题都真正调用 gadget Generator；
+- 上下文非空且 answer-free；
+- 每个失败都有准确 failure class；
+- 至少一个模型构造通过完整 component + end-to-end 路径；
+- 没有 deterministic fallback。
 
-### 6.3 稳定 dependent handle
+若失败主要为 route、schema 或 renderer 问题，继续修工程。只有当失败已稳定落在
+`GADGET_SEMANTIC_COUNTEREXAMPLE`，才开始将其视为模型数学能力信号。
 
-当前 RuleInstantiationProbe 可能创建：
+### 冻结后 validation
 
-    RuleInstantiationProbe.N...bound3
-    RuleInstantiationProbe.N...bound4
+冻结：
 
-这些声明只存在于 probe 文件，不能进入独立生成文件的 exact goal。
+- policy version；
+- prompt template；
+- schema；
+- renderer；
+- checker；
+- model 与参数；
+- 预算；
+- validation case 集合。
 
-修复要求：
+一次性运行 q-b05–q-b10。
 
-1. 已有 fragment.declaration 且 Lean 证明其 exact type 匹配时，优先使用稳定 declaration；
-2. 不再通过 proof_term 文本是否等于 declaration 决定稳定绑定；
-3. 如果 proof term 需要 eta-expansion，生成 job-local stable wrapper；
-4. dependent sibling 的 exact type 必须使用 stable declaration 重新 elaboration；
-5. Generator 调用前运行 resolvable-constant audit；
-6. exact goal 中出现 RuleInstantiationProbe namespace 时禁止 authoring。
+完成标准：
 
-### 6.4 固定 declaration envelope
+- 所有运行完整结束；
+- 无 policy/integrity failure；
+- 输出逐题能力结果；
+- 不根据某题正确 gadget 手工增加模板。
 
-runtime 负责生成：
+### heldout 与完整 30 题
 
-    noncomputable def capability_x : ExactType := by
-      <generator body>
+在不修改冻结配置的情况下运行：
 
-Generator 默认只返回 proof body 或显式 helper declarations 加 proof body。
+- q-b11–q-b30 heldout；
+- 最后合并 q-b01–q-b30 full report。
 
-不再要求模型每轮重复：
+正式 full gate：
 
-- exact declaration name；
-- exact type；
-- namespace；
-- frozen source/target；
-- 固定 wrapper。
+- 3 个 anchor verified；
+- 27 个 required case 都有
+  `MODEL_GADGET_VERIFIED_AND_FINAL_USED`；
+- zero forbidden dependency；
+- zero disabled-plugin contribution；
+- independent replay 全部通过。
 
-这将消除大量 omitted frozen declaration 和 editable fence 失败。
+如果未达到 27/27，报告 strict gate failure，同时保留作者化成功率和失败分类。不得把
+部分成功包装成 gate passed。
 
-### 6.5 allowed identifier manifest
+### Gadget 正确性证明门禁
 
-GeneratorBrief 提供动态白名单：
+仅当 显式 Gadget 作者化门禁的工程性失败接近零后启动。
 
-- Lean core syntax 和标准构造器；
-- local context identifiers；
-- Planner 选择的 candidate declarations；
-- selected primitive；
-- generated capability declarations；
-- diagnostics expansion 后新增的合法声明。
+任务：
 
-Generator 可以提出 request-lookup，但不能直接使用未解析的猜测名称。
+- 冻结显式 Gadget 作者化门禁的 gadget payload；
+- 增加 `ForwardCorrect`、`ReverseCorrect` 和 `ExplicitCorrectness` 中性接口；
+- 实现 构造性正确性证书 proof-plan schema；
+- 实现 witness、forward、reverse 独立 authoring；
+- 增加 whole-goal decide closure audit；
+- 先运行 q-b02 和 dev fixtures，再运行分层 validation。
 
-source fence 在 Lean 前先做 identifier audit：
+完成标准：
 
-- 未在 manifest 中的完整 qualified name 触发 needs-lookup；
-- forbidden name 立即拒绝；
-- 已知不存在的 field 不再次进入 Lean；
-- lookup 扩充后才能继续 repair。
+- formula drift 为 0；
+- 至少一个非平凡 gadget 的双向 proof model-authored；
+- forward/reverse sibling preservation 工作；
+- final `Spec.Correct` 依赖模型 proof。
 
-### 6.6 design 预验证和预算隔离
+### 公式语义作者化门禁
 
-当前不可执行 helper-first 或 theorem-composition design 会先写入并消耗 synthesis_designs。
+任务：
 
-改进：
+- 禁用 semantic deterministic compiler；
+- 扩展 `SemanticCapabilityPlan`；
+- 先完成 公式语义提升 generic theorem；
+- 再实现 Assignment Witness 作者化 assignment witness authoring；
+- 实现 unique generic capability 与 27 次 final-use 分离统计。
 
-- 没有 residual helper goal 时，不生成 helper-first design；
-- 没有 selected theorem application 时，不生成 theorem-composition design；
-- constructor-first 只有 StructuralActionProvider 确认构造器可用时才创建；
-- finite design 只有 plugin support receipt 通过时才创建；
-- direct-authoring 只有 context-ready 后才计入 materialization budget；
-- 只有 materializable design 计入 synthesis_designs；
-- budget 超限事件不能先写入第 N+1 个 design 再报错。
+完成标准：
 
-预算从全 case 单一计数改为：
+- 一个 generic semantic certificate verified；
+- Assignment Witness 作者化 witness origin 为 model；
+- 27 个 required case final-use；
+- forbidden semantic closure dependency 为 0。
 
-    case budget
-      → route budget
-      → capability budget
-      → design budget
-      → repair budget
+### Direct-TM 复杂度作者化门禁
 
-每个已激活的关键能力至少保留：
+任务：
 
-- 一次 Planner decision；
-- 一个 executable design；
-- 一次 initial generation；
-- 一次 Lean check；
-- 一次 diagnostic-driven repair；
-- final verification reserve。
+- 先跑 Direct-TM API 校准；
+- 增加 growth certificate interface；
+- 禁用 direct-TM deterministic compiler；
+- 扩展 `DirectTMCapabilityPlan` 的 node origin 和 growth fields；
+- 完成 程序 DAG 与增长界 generic program DAG；
+- 底层解释器编译证明 只保留一个高风险 diagnostic canary。
 
-### 6.7 repair 与 replan 分离
+完成标准：
 
-同一 Generator repair：
+- model-authored growth certificate verified；
+- code DAG 核心节点 model-authored；
+- generic direct-TM theorem final-used 于 27 个 required case；
+- `interpretCode_tmPolyTime` forbidden dependency 为 0。
 
-- parser error；
-- 局部 unknown identifier，在 lookup 后可修；
-- type mismatch；
-- invalid field；
-- 一个局部 unsolved goal；
-- declaration envelope 内的小范围错误；
-- schema 或输出格式错误。
+### 3SAT→NAE-3 源归约
 
-返回 Planner replan：
+任务：
 
-- witness 被 counterexample 推翻；
-- program DAG 缺失关键 primitive；
-- endpoint equality 说明当前分解错误；
-- 同一 diagnostic 重复；
-- helper role 不足以关闭 parent；
-- forbidden dependency；
-- design cost 超出剩余预算；
-- Generator 明确返回 plan-infeasible。
+- 建立 answer-free 3SAT/NAE3 facade；
+- 隔离现有完整 NAE route；
+- 实现 source reduction plan、clause-block checker 和 artifact DAG；
+- 分别生成 executable、forward、reverse、growth、certificate；
+- 从 Cook–Levin source hardness 得到 NAE3 root hardness。
 
-Generator 不得在 repair 中静默：
+完成标准：
 
-- 更换 source core；
-- 更换 theorem route；
-- 更换 witness schema；
-- 更换 direct-TM program decomposition；
-- 更换 semantic direction strategy。
+- 3SAT→NAE3 完整 model-authored reduction verified；
+- existing NAE route dependency 为 0；
+- program/semantic/complexity 三者绑定同一 executable。
 
-这些必须回到 Planner 并形成新的 plan_id。
+### 3SAT→1-IN-3 源归约
 
-### 6.8 模型协议可靠性
+任务：
 
-- Strategy 和 Generator 使用独立 schema；
-- schema repair 与数学 generation 分离；
-- schema repair 不创建新的数学 design；
-- stale base hash 由 runtime request binding 保证，不要求模型承担并发一致性；
-- response hash 和 request ID 由 runtime 记录；
-- finish_reason=length 时缩小任务、减少输出范围或拆分 helper；
-- transport failure 至少允许一次有界 retry；
-- retry 不重置 repair lineage；
-- Planner 和 Generator 使用独立模型预算。
+- 禁止所有现成 1-IN-3 hardness route；
+- 组合 model-authored 3SAT→NAE-3 源归约 与 model-authored NAE3→1-IN-3 interpretation；
+- 验证两段来源和 composition dependency；
+- 将 direct 3SAT→1-IN-3 保留为后续扩展。
 
-## 7. Root Route Planner
+完成标准：
 
-Root Planner 负责选择整体 reduction route，而不是生成所有证明。
+- 1-IN-3 root hardness verified；
+- 两段 substantive capability 都是 model-authored；
+- existing GraphColoring/ExactCover/oneInThree route dependency 为 0。
 
-对 Boolean CSP hardness，典型 route：
+### 证书与 Hardness 量词作者化门禁
 
-    source hardness
-      + LanguageInterpretation source target
-      + direct-TM of interpret
-      + semantic iff of interpret
-      → explicit certified reduction
-      → target NP-hardness
+任务：
 
-Planner 输入：
+- 冻结前级 reduction、semantic 和 TM artifacts；
+- 依次实现 CertifiedReduction 记录构造、CertifiedReduction 手工组合、NativeTMNPHard 手工运输；
+- 禁止 certificate/hardness 高层 packager；
+- 增加 formal glue 与 mathematical novelty 分离统计。
 
-- root exact goal；
-- 可用 source hard cores；
-- source hardness closure；
-- 每个 source 到 target 的 gadget constructibility；
-- direct-TM 和 semantic capability 状态；
-- forbidden declarations；
-- 历史 branch 成本；
-- 当前 generated capabilities。
+完成标准：
 
-Planner 输出：
+- 三个 generic certificate artifacts verified；
+- 27 个 required case final-use；
+- packager dependency 为 0；
+- novelty credit 不被错误增加。
 
-- selected source；
-- selected packaging scaffold；
-- child capability DAG；
-- child priority；
-- 是否允许 direct-TM 和 semantic 在 interpretation 完成后并行进入 frontier；
-- fallback source 顺序；
-- 每个 capability 的初始 budget。
+## 13. Gadget 正确性证明门禁
 
-Root Planner 可以直接选择库内完整 NP-hardness theorem。
+### 13.1 研究问题
 
-如果 production-hybrid 下 exact closure 可用，则立即结束。
+Gadget 正确性证明门禁回答：
 
-如果 capability-gate 禁止该 closure，则必须选择显式 scaffold，暴露被测试子目标。
+> 在一个 pp-formula 已经冻结且已知正确的情况下，模型能否自己组织“可实现性”和
+> “可靠性”两个方向的形式证明，而不是让整个真值表命题被一个 `by decide` 关闭？
 
-## 8. Gadget Planner + Generator
+Gadget 正确性证明门禁不再测试 formula 的发现。公式发现已经由 显式 Gadget 作者化门禁测量。Gadget 正确性证明门禁必须冻结：
 
-### 8.1 目标形状
-
-至少支持：
-
-    Gadget target relation
-
-    (symbol : source.Symbol) →
-      Gadget target (source.relationOf symbol)
-
-    LanguageInterpretation source target
-
-LanguageInterpretation packaging 本身优先由 structural constructor 完成。
-
-真正需要 Generator 的核心是 pointwise Gadget。
-
-### 8.2 Gadget Planner 输入
-
-由 Lean reify：
-
-- source Gamma 的 Symbol 是否 finite；
-- 当前 source symbol；
-- source relation arity；
-- source relation 完整 truth table；
-- target Gamma 的全部 symbols；
-- 每个 target relation 的 arity 和 truth table；
-- target semantics 是否 decidable；
-- 可用 variable carrier；
-- 已有 generated gadgets；
-- 已有 primitive/certificate；
-- previous candidates；
-- accumulated counterexamples；
-- finite search budget；
-- forbidden gadget/interpretation closures。
-
-不能使用：
-
-- benchmark case ID；
-- split 标签；
-- oracle witness；
-- Case02、NAE4、ExactlyTwo 等题目名称分支。
-
-### 8.3 Gadget Planner 输出
-
-新增 GadgetCapabilityPlan：
-
-    GadgetCapabilityPlan
-      source_relation_receipt
-      target_gamma_receipt
-      design_kind
-      variable_bound
-      constraint_bound
-      witness_grammar
-      output_schema
-      symmetry_breaking
-      seed_patterns
-      selected_generated_gadgets
-      selected_primitive_ids
-      counterexample_policy
-      enumeration_order
-      fallback_designs
-
-design_kind：
-
-- existing-gadget-composition；
-- constructor-first；
-- finite-enumeration；
-- cegis-finite-spec；
-- symbolic-formula；
-- direct-authoring。
-
-Planner LLM 可以：
-
-- 根据 relation table 识别 symmetry、complement、cardinality 特征；
-- 决定是否优先 repeated-variable constraint；
-- 决定是否需要 auxiliary variables；
-- 推荐 output mapping；
-- 推荐先组合已有 gadget 还是重新搜索；
-- 根据 counterexample 修改 grammar；
-- 给 Generator 解释候选 formula 应满足什么。
-
-Planner 不直接声明某个 formula 正确。
-
-### 8.4 Gadget Generator
-
-#### finite-enumeration
-
-deterministic enumerator 按 Planner 给定 grammar 搜索：
-
-- constraint 数；
-- auxiliary variable 数；
-- relation symbol；
-- argument projection；
-- argument permutation；
-- repeated variables；
-- formula conjunction；
-- output mapping。
-
-先运行 executable semantics，只有通过完整 truth table 的候选才 materialize Lean。
-
-#### cegis-finite-spec
-
-Independent Generator LLM 提出：
-
-- FiniteFormula；
+- 显式 Gadget 作者化门禁的 semantic payload hash；
+- variable count；
+- constraints；
 - outputs；
-- auxiliary layout；
-- formula shape rationale。
+- source/target truth tables；
+- renderer version。
 
-checker 返回：
+在一次 Gadget 正确性证明门禁运行中，模型不得修改上述任何字段。若模型认为 formula 难以证明而提出新
+formula，应返回 `REQUEST_GADGET_REPLAN`，本次 Gadget 正确性证明门禁记为未通过，不能在 proof repair 中
+悄悄改变数学对象。
 
-- source tuple；
-- expected source relation value；
-- 当前 formula satisfiability；
-- 必要时给出 target assignment 或不存在 witness 的 receipt。
+### 13.2 将 `Spec.Correct` 拆成显式方向
 
-下一轮 Generator 必须满足累计 counterexamples。
+建议在 `BooleanCSPFiniteGadget.lean` 或一个独立的中性 gate interface 中增加：
+
+```lean
+def Spec.OutputsAgree
+    (spec : Spec Γ relation variableCount)
+    (assignment : Fin variableCount → Bool)
+    (tuple : BooleanTuple relation.arity) : Prop :=
+  ∀ index, assignment (spec.outputs index) = tuple index
+
+def Spec.ForwardCorrect
+    (spec : Spec Γ relation variableCount) : Prop :=
+  ∀ tuple, relation.Holds tuple →
+    ∃ assignment,
+      spec.formula.Satisfies assignment ∧
+      spec.OutputsAgree assignment tuple
 
-#### symbolic-formula
+def Spec.ReverseCorrect
+    (spec : Spec Γ relation variableCount) : Prop :=
+  ∀ tuple assignment,
+    spec.formula.Satisfies assignment →
+    spec.OutputsAgree assignment tuple →
+    relation.Holds tuple
+
+structure Spec.ExplicitCorrectness
+    (spec : Spec Γ relation variableCount) : Prop where
+  forward : spec.ForwardCorrect
+  reverse : spec.ReverseCorrect
 
-Generator 产生：
+theorem Spec.correct_of_explicit
+    (proof : spec.ExplicitCorrectness) : spec.Correct := ...
+```
 
-- formula definition；
-- output definition；
-- injectivity proof；
-- correctness helper DAG。
+`correct_of_explicit` 是允许复用的中性逻辑包装器。它只把两个方向重新组装为 iff，
+不包含任何目标关系特有的数学内容。
+
+### 13.3 强制构造性的 forward witness
+
+仅要求一个 forward theorem 仍可能被整段 finite decision procedure 关闭。正式 Gadget 正确性证明门禁
+还应要求模型定义一个显式 witness assignment：
+
+```lean
+noncomputable def authoredWitness
+    (tuple : BooleanTuple relation.arity) :
+    Fin variableCount → Bool := ...
+```
+
+然后证明：
+
+```lean
+theorem authoredWitness_realizes :
+  ∀ tuple, relation.Holds tuple →
+    spec.formula.Satisfies (authoredWitness tuple) ∧
+    spec.OutputsAgree (authoredWitness tuple) tuple := ...
+```
+
+允许 witness 采用：
+
+- 按 tuple 分支；
+- Hamming weight 分支；
+- 布尔表达式；
+- 显式辅助变量表；
+- 由已有输入位计算辅助位的函数。
+
+不允许 runtime 根据 formula 自动求出 witness 再写回模型 proof。
+
+### 13.4 reverse 方向的数学载荷
+
+reverse proof 必须说明目标约束为何排除了所有非法 source tuple。模型至少应提交：
+
+- 使用哪些 constraint；
+- 从每个 constraint 得到什么局部事实；
+- 如何把这些事实组合成 source relation；
+- 是否按 tuple、Hamming weight、布尔恒等式或矛盾分类。
+
+对固定基数关系，一个合理 proof outline 例如：
+
+```text
+目标约束 1、2 ⇒ 至少 t 个输出为真
+目标约束 3、4 ⇒ 至多 t 个输出为真
+二者合并 ⇒ Hamming weight = t
+```
+
+门禁不要求证明必须使用这种形式，但要求 reverse artifact 的依赖闭包包含模型生成的局部
+invariant/helper，而不是只包含一个完整 decidability closure。
+
+### 13.5 两个子级
+
+#### 构造性正确性证书
+
+模型输出结构化：
+
+```json
+{
+  "schema": "boolean_csp_gadget_correctness_plan_v1",
+  "frozen_gadget_payload_sha256": "sha256:...",
+  "forward_witness": {
+    "definition_name": "...",
+    "construction_kind": "case_split | boolean_expression | table",
+    "definition_body": "..."
+  },
+  "forward_invariants": [],
+  "reverse_invariants": [],
+  "case_split": "tuple | hamming_weight | custom",
+  "proof_outline": []
+}
+```
+
+构造性正确性证书 要求结构化证书和 witness 通过独立有限 checker，但可以暂不要求完整 Lean proof。
+它用于确认模型已经给出可验证的证明思路。
+
+#### Gadget Lean 双向证明
+
+Gadget Lean 双向证明 是正式 Gadget 正确性证明门禁：
+
+- witness definition 由模型生成；
+- forward theorem 由模型生成；
+- reverse theorem 由模型生成；
+- `ExplicitCorrectness` 由模型组装；
+- `correct_of_explicit` 可以确定性调用；
+- 最终 `Gadget.correct` 依赖上述四项。
+
+Gadget Lean 双向证明 只有在 构造性正确性证书 计划固定后启动。Lean repair 可以改 proof body，但不能改 frozen
+gadget 或 proof plan 的核心 witness schema。
+
+### 13.6 `decide` 使用政策
+
+不能仅搜索字符串 `by decide`。正式政策为：
+
+- 禁止用一个 decision proof 关闭：
+  - `Spec.Correct`；
+  - `Spec.ForwardCorrect`；
+  - `Spec.ReverseCorrect`；
+  - `Spec.ExplicitCorrectness`；
+  - 含完整 `∃ assignment` 的方向目标。
+- 允许在被标注为 `computational_leaf` 的 helper 中使用 `decide`；
+- leaf 只能证明：
+  - 一个具体 Bool 等式；
+  - 一个具体 Fin 索引事实；
+  - 一个固定 tuple 的 relation truth；
+  - 一个固定 constraint 的 satisfaction；
+  - 小型 list membership。
+- leaf exact type 不得量化所有 tuple 或所有 assignment；
+- final direction proof 必须显式引用 witness、invariant 和 case split helper；
+- dependency audit 应识别 `of_decide_eq_true`、`native_decide` 等完整闭包形式。
+
+如果无法可靠区分顶层和 leaf 计算，宁可先把该运行标记为
+`AUTOMATION_ATTRIBUTION_UNCERTAIN`，不要误报为模型证明。
+
+### 13.7 允许与禁止
+
+允许：
+
+- 冻结的显式 Gadget 作者化门禁 `Spec`；
+- `FiniteFormula.Satisfies` 与 relation 基本定义；
+- `Spec.OutputsAgree`；
+- Bool、Fin、List 的基础引理；
+- `simp`、`fin_cases`、`omega` 等局部工具；
+- `correct_of_explicit`；
+- 已证明的、与当前 gadget 无关的通用布尔恒等式。
+
+禁止：
+
+- `Spec.Correct` 的 Decidable instance直接闭包；
+- 显式 Gadget 作者化门禁使用的 `by decide` correctness；
+- 同一 gadget 的任何库内 `correct` theorem；
+- 搜索器和 canonical gadget；
+- 自动生成 witness assignment；
+- 从有限 checker 导出完整 Lean proof；
+- proof repair 修改 formula。
+
+### 13.8 模型调用与 repair
+
+调用 purpose：
+
+- `gadget-proof-plan`
+- `gadget-proof-forward-initial`
+- `gadget-proof-reverse-initial`
+- `gadget-proof-forward-repair`
+- `gadget-proof-reverse-repair`
+- `gadget-proof-assembly`
+
+forward 与 reverse 使用独立预算和独立状态。一个方向通过后，另一个方向失败时必须保留
+已验证 artifact，不得重新生成已通过方向。
+
+repair 反馈只包含：
+
+- 当前方向 exact type；
+- frozen witness/invariant schema；
+- Lean error；
+- 未闭合 goals；
+- 已允许的 lemma signatures。
+
+不得返回 library 中同构 gadget 的完整 proof body。
+
+### 13.9 贡献归因
+
+每题至少产生以下 receipt：
+
+- witness data/function；
+- forward theorem；
+- reverse theorem；
+- explicit correctness assembly。
+
+硬检查：
+
+- 四项均有 model source hash；
+- frozen gadget payload hash 一致；
+- forward/reverse final-used；
+- final `Spec.Correct` 依赖 `correct_of_explicit`；
+- 无完整 decide closure；
+- 无 formula drift；
+- independent Lean replay；
+- forbidden dependency 为 0。
 
-该模式只在 finite checking 不适用或 grammar 太大时启用。
+### 13.10 case 分层
 
-### 8.5 Lean materialization
+开发：
 
-优先路径：
+- q-b02；
+- 一个固定基数 dev fixture；
+- 一个双 relation dev fixture。
 
-    generated Spec
-      + executable full-table receipt
-      + Lean proof of Spec.Correct
-      → Spec.toGadget
+validation 建议选择：
 
-Python 或 LLM 的 executable check 不能替代 Lean proof。
+- q-b05：组合不同 relation；
+- q-b07：布尔互补；
+- q-b10：固定基数对偶；
+- q-b20：OR/XOR 混合。
 
-Lean materializer 必须输出：
+heldout：
 
-- exact Gadget declaration；
-- candidate source hash；
-- truth-table certificate receipt；
-- no-placeholder receipt；
-- dependency audit。
+- 从 q-b11–q-b19 选择至少三个不同 Hamming weight；
+- 从 q-b21–q-b30 选择至少三个随机关系；
+- 完整的 Gadget 正确性证明门禁最终可扩展到显式 Gadget 作者化门禁的全部 27 个 required cases。
 
-### 8.6 当前实现改进
+不能把同一证明模板在对偶题上的机械实例化计为两个独立 proof idea。报告必须同时给出：
 
-修改 agent/generative_reduction/plugins/boolean_csp.py：
+- unique proof-plan hash 数；
+- final-use instance 数；
+- alpha-renaming/布尔对偶归一化后的重复数。
 
-- 删除仅通过已知 hard-core 名称决定支持性的核心依赖；
-- 从 Lean reification receipt 读取任意 finite Gamma；
-- 将固定 templates 降级为 seed_patterns；
-- Planner 动态控制 bound 和 grammar；
-- 支持多轮 CEGIS；
-- 每个 counterexample 持久化；
-- 支持已有 generated gadget composition；
-- plugin action metadata 引用 GadgetCapabilityPlan。
+### 13.11 预算
 
-扩展 Lean/Reference/ComplexityReduction/Agent/GenerativeReduction/Plugins/BooleanCSPFiniteGadget.lean：
+建议每题：
 
-- 通用 finite Gamma reification receipt；
-- parameterized variableCount；
-- parameterized grammar materialization；
-- candidate certificate；
-- counterexample rendering；
-- 任意 finite symbol list；
-- 不把默认模板作为唯一入口。
+- proof-plan 1 次；
+- forward initial 1 次、repair 6 次；
+- reverse initial 1 次、repair 8 次；
+- assembly repair 2 次；
+- `model_max_tokens = 24000`；
+- `model_timeout_seconds = 480`；
+- `lean_timeout_seconds = 900`；
+- `max_lean_checks = 800`；
+- `wall_clock_timeout_seconds = 7200`。
 
-### 8.7 Gadget feedback
+reverse 通常比 forward 困难，因此预算不对称。
 
-同 design repair：
+### 13.12 测试
 
-- formula Lean syntax；
-- output index 类型；
-- injectivity proof；
-- materializer 错误。
+必须覆盖：
 
-Planner replan：
+- witness hash 与 frozen gadget 不匹配；
+- forward 通过、reverse 失败后 forward 被保留；
+- proof repair 试图改变 formula；
+- 顶层 `by decide` 被拒绝；
+- leaf `decide` 被允许；
+- final theorem 未依赖 witness；
+- final theorem 未依赖 reverse helper；
+- library correct theorem 被间接调用；
+- 同一 proof plan 被多题重复实例化时 unique count 正确。
 
-- truth-table counterexample；
-- search bound exhausted；
-- grammar 无法表达 relation；
-- auxiliary variable bound 不足；
-- 当前 target Gamma 不支持 finite reification；
-- composition route 循环。
+### 13.13 完成标准
 
-### 8.8 Gadget 成功判据
+- 显式 Gadget 作者化门禁已稳定；
+- 至少一个非平凡 gadget 的 forward/reverse 均由模型证明；
+- validation 四类关系全部有明确结果；
+- 工程性 failure 与数学 proof failure 可区分；
+- 完整 decide closure 为 0；
+- final artifact 使用模型 proof；
+- 独立重放和依赖审计通过。
 
-- 生成新 formula 或组合结构；
-- 完整 finite semantics 通过；
-- Lean Spec.Correct 通过；
-- Gadget exact type 通过；
-- capability 注册；
-- parent LanguageInterpretation 使用；
-- final artifact 使用；
-- 0 forbidden dependency。
+## 14. 公式语义作者化门禁
 
-只调用已有完整 Gadget theorem 时归类为 THEOREM_REUSE。
+### 14.1 研究问题
+
+公式语义作者化门禁回答：
 
-## 9. LanguageInterpretation 组装
+> 已知每个局部 gadget 正确时，模型能否构造全局 assignment 变换，并证明把每个源约束
+> 替换成 gadget 后，整个 CSP 公式的可满足性双向保持？
 
-LanguageInterpretation 是 Gadget 与后续两项能力之间的稳定边界。
+当前 `PPDefinability.lean` 已包含完整通用证明：
 
-默认不需要独立 Generator LLM。
-
-执行：
-
-1. StructuralActionProvider 应用 LanguageInterpretation.mk；
-2. intro source symbol；
-3. 对每个 symbol 激活 pointwise Gadget child goal；
-4. exact closure、reuse、generated gadget 分别关闭 child；
-5. ApplicationFrame 重建完整 interpretation；
-6. 注册稳定 declaration；
-7. 后续 direct-TM 和 semantic exact goal 只引用稳定 declaration。
-
-只有以下情况才调用 Generator：
-
-- symbol dependent pattern 需要非平凡 matching；
-- source.Symbol 不是有限可枚举类型；
-- pointwise gadget 需要共享新的 helper；
-- structural reconstruction 暴露真实 Lean gap。
-
-成功判据：
-
-- declaration stable；
-- 无 RuleInstantiationProbe handle；
-- direct-TM 和 semantic 都能引用同一 declaration；
-- interpretation 是 final artifact 的真实依赖。
-
-## 10. direct-TM Planner + Generator
-
-### 10.1 目标形状
-
-核心目标：
-
-    TMPolyTimeMap sourceEncoded targetEncoded function
-
-在 Boolean CSP gate 中：
-
-    function = interpret interpretation
-
-direct-TM 的真正生成对象不是一句 theorem application，而是：
-
-- 一个程序分解；
-- 每个节点的 polynomial-time proof；
-- 节点 composition；
-- 编码转换；
-- 最终 endpoint equality。
-
-### 10.2 direct-TM Planner 输入
-
-必须包含：
-
-- source EncodedType；
-- target EncodedType；
-- target function 的完整 type；
-- target function 的按需 definition expansion；
-- encoding 和 decoding declarations；
-- 已有 TMPolyTimeMap primitives；
-- composition、map、fold、flatten、pair、projection 等通用 combinators；
-- 已有 generated helpers；
-- exact closure 和 forbidden status；
-- prior program DAG；
-- node-level diagnostics；
-- endpoint equality diagnostics；
-- budget。
-
-不能只提供：
-
-- exact goal；
-- interpretation signature；
-- 完整 import 列表。
-
-### 10.3 Program IR
-
-新增通用 TypedProgramNode：
-
-    TypedProgramNode
-      node_id
-      operation
-      input_type
-      output_type
-      function_term
-      child_node_ids
-      candidate_primitive_ids
-      coverage_status
-      residual_tm_goal
-      residual_equality_goal
-      estimated_cost
-
-operation 至少支持：
-
-- identity；
-- constant；
-- composition；
-- pair；
-- projection；
-- map；
-- flatMap；
-- fold；
-- append；
-- flatten；
-- branch；
-- encoding equivalence；
-- code-to-structure；
-- user-defined-helper。
-
-新增 DirectTMCapabilityPlan：
-
-    DirectTMCapabilityPlan
-      source_encoding
-      target_encoding
-      target_function
-      normalized_program_dag
-      selected_primitive_ids
-      covered_nodes
-      nodes_to_generate
-      endpoint_equality_plan
-      size_or_runtime_obligations
-      helper_specs
-      composition_order
-      fallback_dags
-
-### 10.4 direct-TM Planner 的作用
-
-Planner LLM 可以：
-
-- 决定在 formula 层还是 code 层证明；
-- 对多个 definition expansion 选择最适合 TM primitives 的表示；
-- 选择 program DAG 的 stage boundaries；
-- 排序 TMPolyTimeMap.comp、map、flatten、encoding 等候选；
-- 建议先生成哪个 helper；
-- 识别某个节点需要新 executable helper；
-- 识别 endpoint equality 应单独生成；
-- 根据 diagnostics 换 DAG；
-- 根据预算在短但难的直接证明与长但结构化的节点证明之间选择。
-
-Planner 输出的 theorem 建议必须引用 candidate_id。
-
-Planner 可以在 production-hybrid 下直接选择 interpretation_tmPolyTime。
-
-在 direct-TM capability-gate 中，该 exact closure 不可执行，Planner 必须选择 lower-level DAG。
-
-### 10.5 direct-TM Generator
-
-Generator 每次只处理一个：
-
-- uncovered program node；
-- missing TM primitive instance；
+- `witness`；
+- `forwardAssignment`；
+- `instantiate_satisfies_forward`；
+- `instantiate_satisfies_reverse`；
+- `interpret_satisfies_forward`；
+- `interpret_satisfies_reverse`；
+- `interpret_satisfiable_iff`。
+
+当前 deterministic semantic compiler 也会直接生成方向 helper。因此 公式语义作者化门禁必须禁用
+`boolean-csp-semantic-compiler`，否则模型仍不会生成最终数学证明。
+
+### 14.2 通用能力不能按 27 题重复计数
+
+公式语义定理对任意 `Γ'`、`Γ` 和 `LanguageInterpretation` 参数化。它本质上是一个
+通用 theorem，而不是 27 个不同 theorem。
+
+正式统计必须区分：
+
+- `unique_model_generated_semantic_capability_count`；
+- `semantic_final_use_instance_count`。
+
+同一个模型生成通用 theorem 可以在 27 个 case 中实例化，但数学贡献只计一次，final-use
+覆盖率可以计 27 次。
+
+### 14.3 两个子级
+
+#### 公式语义提升
+
+禁止高层 theorem，但允许低层 assignment 和单块语义 primitive。
+
+模型必须生成：
+
+- formula-level reverse helper；
+- formula-level forward helper；
+- satisfiable iff。
+
+允许复用：
+
+- `forwardAssignment`；
+- `forwardAssignment_source`；
+- `forwardAssignment_fresh`；
+- `instantiate_satisfies_forward`；
+- `instantiate_satisfies_reverse`；
+- `constraint_vars_le_formula_maxVar`；
+- `List.mem_flatMap`。
+
+公式语义提升 测试模型能否从局部 invariant 提升到列表/公式层面。它是较低风险的第一步。
+
+#### Assignment Witness 作者化
+
+在 公式语义提升 基础上进一步禁止：
+
+- `witness`；
+- `witness_spec`；
+- `forwardAssignment`；
+- `forwardAssignment_source`；
+- `forwardAssignment_fresh`；
+- `instantiate_satisfies_forward`；
+- `instantiate_satisfies_reverse`。
+
+模型必须自己定义：
+
+- source 变量区域与 fresh 变量区域；
+- 每个 source constraint 的局部 gadget witness；
+- fresh variable key 的一致性；
+- 不同 gadget block 辅助变量不冲突；
+- forward assignment；
+- reverse assignment/restriction；
+- 单块和全公式语义。
+
+Assignment Witness 作者化 才是完整的 assignment transformation 作者化门禁。
+
+### 14.4 中性接口
+
+建议新增一个不包含证明的接口：
+
+```lean
+structure InterpretationSemanticCertificate
+    (interpretation : LanguageInterpretation Γ' Γ) where
+  forwardMap :
+    ∀ formula source,
+      Formula.Satisfies formula source →
+      SAT.Assignment
+  forward :
+    ∀ formula source sourceSatisfies,
+      Formula.Satisfies (interpret interpretation formula)
+        (forwardMap formula source sourceSatisfies)
+  reverse :
+    ∀ formula target,
+      Formula.Satisfies (interpret interpretation formula) target →
+      Formula.Satisfies formula target
+```
+
+允许一个中性 theorem 从该 structure 推出：
+
+```lean
+∀ formula,
+  Formula.Satisfiable (interpret interpretation formula) ↔
+  Formula.Satisfiable formula
+```
+
+公式语义提升 可以把 `forwardMap` 设为现有 `forwardAssignment`；Assignment Witness 作者化 要求
+`forwardMap` 本身来自模型。
+
+### 14.5 SemanticCapabilityPlan 扩展
+
+复用已有 `SemanticCapabilityPlan`，增加：
+
+```text
+authoring_level = formula-lift | witness-authoring
+witness_origin = library | model
+fresh_variable_scheme
+block_separation_invariant
+source_region_invariant
+forward_helper_id
+reverse_helper_id
+final_iff_helper_id
+```
+
+计划必须是 DAG：
+
+```text
+local witness
+    ├── source-region agreement
+    ├── fresh-region agreement
+    └── block separation
+              ↓
+        forward direction
+
+block extraction
+              ↓
+        reverse direction
+
+forward + reverse
+              ↓
+        satisfiable iff
+```
+
+一个方向失败时保留另一个方向的 verified helper。
+
+### 14.6 禁止声明
+
+公式语义提升 禁止：
+
+- `interpret_satisfiable_iff`；
+- `interpret_satisfies_forward`；
+- `interpret_satisfies_reverse`；
+- 所有直接包装上述 theorem 的 case-specific iff；
+- `boolean-csp-semantic-compiler`。
+
+Assignment Witness 作者化 再禁止：
+
+- `witness`；
+- `witness_spec`；
+- `forwardAssignment`；
+- `forwardAssignment_source`；
+- `forwardAssignment_fresh`；
+- `instantiate_satisfies_forward`；
+- `instantiate_satisfies_reverse`；
+- 与这些声明等价的 transport wrapper。
+
+允许：
+
+- `instantiate`、`instantiateVar`、`freshVar` 的定义；
+- gadget.correct；
+- fresh key injectivity/above-reference 基础引理；
+- formula/list membership 基础引理；
+- Bool/Fin/Nat 基础库。
+
+### 14.7 模型上下文
+
+必须提供：
+
+- `Gadget.correct` 和 `LanguageInterpretation` 签名；
+- `instantiateVar`、`instantiate`、`interpret` 的定义；
+- `freshVar` 及其 injectivity/region lemmas；
+- `Formula.Satisfies`、`Formula.Satisfiable` 定义；
+- `List.mem_flatMap` 等必要签名；
+- 当前 authoring level；
+- 禁止声明列表；
+- exact helper types。
+
+不得提供：
+
+- 三个被禁高层 theorem 的 proof body；
+- deterministic semantic compiler 生成的固定 proof text；
+- 已生成的 generic semantic theorem；
+- gold direction helper。
+
+### 14.8 模型协议
+
+新增或扩展 schema：
+
+```json
+{
+  "schema": "boolean_csp_semantic_plan_v2",
+  "authoring_level": "formula-lift | witness-authoring",
+  "forward": {
+    "assignment_definition": "...",
+    "invariants": [],
+    "helper_declarations": [],
+    "proof_body": "..."
+  },
+  "reverse": {
+    "assignment_recovery": "...",
+    "invariants": [],
+    "helper_declarations": [],
+    "proof_body": "..."
+  },
+  "final_iff": {
+    "proof_body": "..."
+  }
+}
+```
+
+在 Assignment Witness 作者化 中，`assignment_definition` 不能为空且 origin 必须为 model。
+
+### 14.9 component 与 final-use
+
+组件目标是生成一个通用：
+
+```lean
+noncomputable def authoredInterpretationSemantics
+    {Γ' Γ : Gamma}
+    (interpretation : LanguageInterpretation Γ' Γ) :
+    InterpretationSemanticCertificate interpretation := ...
+```
+
+然后从该 certificate 得到通用 satisfiable iff。
+
+端到端检查：
+
+- q-b02 canary；
+- q-b05–q-b10 validation；
+- q-b11–q-b30 heldout；
+- 27 个 required case 的显式 NP-hardness packaging 均使用该 model-generated theorem。
+
+锚点题不计 final-use coverage。
+
+### 14.10 评估器
+
+硬检查：
+
+- unique generic semantic capability 至少 1；
+- contribution class 为 `MODEL_GENERATED_CAPABILITY`；
+- Assignment Witness 作者化 时 witness origin 为 model；
+- forward、reverse、iff 三个 helper final-used；
+- deterministic semantic compiler receipt 为 0；
+- 被禁 theorem dependency 为 0；
+- 27 个 required case 的 final-use coverage 完整；
+- 不把 27 次实例化计为 27 个 unique capability；
+- independent Lean replay；
+- sibling direction preservation 生效。
+
+失败分类：
+
+- `SEMANTIC_PLAN_INVALID`
+- `FORWARD_ASSIGNMENT_INVALID`
+- `FRESH_VARIABLE_COLLISION`
+- `FORWARD_BLOCK_PROOF_FAILED`
+- `REVERSE_BLOCK_EXTRACTION_FAILED`
+- `IFF_ASSEMBLY_FAILED`
+- `GENERICITY_LOST`
+- `SEMANTIC_NOT_FINAL_USED`
+
+`GENERICITY_LOST` 表示模型只证明了某个具体 case，而 gate 要求通用 theorem。
+
+### 14.11 测试
+
+必须覆盖：
+
+- 只有 forward；
+- 只有 reverse；
+- final iff 未引用两个方向；
+- forwardMap 偷用 library `forwardAssignment`（Assignment Witness 作者化）；
+- fresh key 在两个 source constraint 间冲突；
+- reverse 只证明单个 block；
+- theorem 对固定 Γ 有效但没有泛化；
+- deterministic compiler 仍产生 action；
+- 一个 generic theorem 在 27 题复用时 unique count 为 1；
+- 某个 case 没有 final-use 时 coverage 失败。
+
+### 14.12 预算与 rollout
+
+公式语义提升：
+
+- model tokens 20000；
+- forward/reverse 各 5 次 repair；
+- Lean checks 600；
+- wall time 5400 秒。
+
+Assignment Witness 作者化：
+
+- model tokens 32000；
+- witness 4 次 repair；
+- forward 8 次 repair；
+- reverse 8 次 repair；
+- Lean checks 1200；
+- wall time 10800 秒。
+
+实施顺序：
+
+1. synthetic two-constraint formula；
+2. q-b02 interpretation；
+3. generic 公式语义提升；
+4. validation final-use；
+5. generic Assignment Witness 作者化；
+6. heldout final-use。
+
+### 14.13 完成标准
+
+- semantic compiler 在门禁中不可见；
+- 至少一个 generic model-authored semantic certificate verified；
+- Assignment Witness 作者化 的 assignment transformation 来自模型；
+- forward/reverse 都 final-used；
+- 27 个 required case 使用同一个经过审计的 generic capability；
+- unique contribution 与实例化次数正确区分；
+- forbidden dependency 和独立重放全部通过。
+
+## 15. Direct-TM 复杂度作者化门禁
+
+### 15.1 研究问题
+
+Direct-TM 复杂度作者化门禁回答：
+
+> 模型能否把 pp-substitution 写成一个明确的 code-level 程序 DAG，证明该程序按输入公式
+> 规模多项式运行，并把 code-level 程序正确运输回语义上的 `interpret`？
+
+只禁止 `interpretation_tmPolyTime` 不够。当前 deterministic compiler 会自动生成：
+
+- formula encoding helper；
+- `interpretCode_tmPolyTime` 的 composition；
 - endpoint equality；
-- small composition group。
+- `formula_tmPolyTime_of_code` transport。
 
-GeneratorBrief 示例内容：
+这种运行主要测试 fixed compiler，不测试模型复杂度推理。
 
-    exact node goal
-    node operation
-    child node capabilities
-    selected primitive signatures
-    function definition
-    expected composition skeleton
-    endpoint obligation
-    forbidden closures
+### 15.2 复杂度数学载荷
 
-Generator 可以产生：
+Direct-TM 复杂度作者化门禁的实质内容至少包括：
 
-- 新 executable helper；
-- 新 TMPolyTimeMap helper；
-- composition proof；
-- conversion proof；
-- extensional equality；
-- 必要的 map/fold invariant。
+- 程序节点及数据流；
+- 每个 source constraint 产生的 target block；
+- list map/flatMap/flatten 的组合；
+- fresh variable 编码的增长；
+- 约束数量界；
+- 编码长度或最大变量编号的多项式界；
+- 最终 `TMPolyTimeMap`。
 
-不能让 Generator 每次从整个 NP-hardness 根目标重新开始。
+仅从已有 `TMPolyTimeMap` 投影 `outputSizeBound` 不算模型生成了尺寸分析。模型必须先给出
+一个独立、可读的组合界。
 
-### 10.6 deterministic TM compiler
+### 15.3 建议新增中性尺寸接口
 
-新增 typed compiler：
+```lean
+def maxGadgetConstraintCount
+    (interpretation : LanguageInterpretation Γ' Γ) : Nat := ...
 
-    normalized Program DAG
-      + node capability map
-      → Lean composition source
+def maxGadgetVariable
+    (interpretation : LanguageInterpretation Γ' Γ) : Nat := ...
 
-compiler 负责机械部分：
-
-- TMPolyTimeMap.comp；
-- type-aligned node wiring；
-- child proof substitution；
-- stable helper declarations；
-- final composition；
-- exact endpoint check。
-
-贡献分类：
-
-- 所有节点已存在，只机械 composition：THEOREM_COMPOSITION；
-- compiler 从一般 expression 自动产生新 theorem：DETERMINISTIC_GENERATED_CAPABILITY；
-- LLM 生成新 helper/DAG/equality：MODEL 或 HYBRID GENERATED_CAPABILITY。
-
-### 10.7 direct-TM repair 与 replan
-
-同 Generator repair：
-
-- 一个 node 的 type mismatch；
-- primitive application 参数错误；
-- 局部 endpoint simp 失败；
-- missing import 已由 manifest 发现；
-- composition 顺序错误。
-
-Planner replan：
-
-- target definition 无法映射到当前 DAG；
-- 多个节点缺失同一种 primitive；
-- endpoint equality 表明 normalization 不正确；
-- 当前 code-level route 比 formula-level route更困难；
-- repeated unknown field/theorem；
-- node budget 超限。
-
-### 10.8 direct-TM 成功判据
-
-- 17 个有效 gate case 都获得 target-specific DirectTMCapabilityPlan；
-- 不再出现到达目标但未分配 target authoring 的 case；
-- 每个 plan 至少一个 executable DAG；
-- 所有 node exact type 可解析；
-- final TMPolyTimeMap kernel verified；
-- 不是被禁 theorem 的 alias；
-- generated node/helper 被 final theorem 使用；
-- final artifact 使用 direct-TM capability；
-- 0 forbidden dependency。
-
-## 11. semantic Planner + Generator
-
-### 11.1 目标形状
-
-核心目标：
-
+structure InterpretationGrowthCertificate
+    (interpretation : LanguageInterpretation Γ' Γ) where
+  constraintBound : Nat
+  variableDegree : Nat
+  constraint_count :
     ∀ formula,
-      Satisfiable (interpret interpretation formula)
-        ↔ Satisfiable formula
+      (interpret interpretation formula).length ≤
+        constraintBound * formula.length
+  variable_bound :
+    ∀ formula constraint,
+      constraint ∈ interpret interpretation formula →
+      Constraint.maxVar constraint ≤
+        growthPolynomial variableDegree
+          (Formula.maxVar formula + formula.length + 1)
+```
 
-semantic capability 由两个方向组成：
+定义与 generic aggregation 可以由库提供；具体 bound 值与证明必须由模型生成。
 
-- target assignment → source satisfaction；
-- source assignment → target witness。
+### 15.4 三个子级
 
-真正困难的部分是：
+#### Direct-TM API 校准
 
-- witness transformation；
-- source-variable agreement；
-- fresh auxiliary variable consistency；
-- instantiated gadget correctness；
-- constraint-to-formula lifting。
+只禁 `interpretation_tmPolyTime`，允许 `interpretCode_tmPolyTime`、
+`interpretCode_eq_formulaCode` 和 `formula_tmPolyTime_of_code`。
 
-### 11.2 通用 structural decomposition
+该级只校准 authoring/Lean API，不计“复杂度数学能力”正式得分。
 
-在调用 semantic Planner 前，deterministic structural provider 应优先形成：
+#### 程序 DAG 与增长界
 
-    intro formula
-    constructor
+正式推荐级别。
 
-必要时继续展开：
+禁止：
 
-    intro satisfiable witness
-    rcases witness with assignment, satisfies
+- `interpretation_tmPolyTime`；
+- `interpretCode_tmPolyTime`；
+- automatic direct-TM compiler；
+- automatic reduction packager。
 
-但 structural provider 不能擅自选择 semantic witness。
+允许：
 
-选择 witness 和 invariant 属于 Planner 与 Generator。
+- `instantiateCode_tmPolyTime`；
+- `codeMaxVar_tmPolyTime`；
+- list map、context map、flatten 的通用 TM primitive；
+- `interpretCode_eq_formulaCode`；
+- `formula_tmPolyTime_of_code`；
+- encoding equivalence primitive。
 
-### 11.3 semantic Planner 输入
+模型必须生成：
 
-必须包含：
+- `InterpretationGrowthCertificate`；
+- code-level program DAG；
+- `interpretCode` 的 TM proof；
+- final semantic `interpret` TM proof。
 
-- Formula.Satisfiable definition；
-- Formula.Satisfies definition；
-- interpret definition；
-- instantiate definition；
-- Gadget structure 和 Gadget.correct；
-- formula membership structure；
-- constraint membership structure；
-- source/target assignment type；
-- 可用 lower-level semantic primitive；
-- generated interpretation；
-- prior witness schemas；
-- prior counterexamples 或 unsolved goals；
-- forbidden iff/forward/reverse closures；
-- current local context。
+#### 底层解释器编译证明
 
-### 11.4 SemanticCapabilityPlan
+进一步禁止：
 
-    SemanticCapabilityPlan
-      formula_binder
-      reverse_direction_plan
-      forward_direction_plan
-      selected_primitive_ids
-      witness_schemas
-      invariant_specs
-      helper_dag
-      structural_steps
-      membership_decomposition
-      fresh_variable_policy
-      fallback_witnesses
+- `instantiateCode_tmPolyTime`；
+- `instantiateRow_tmPolyTime`；
+- `instantiateVarCode_tmPolyTime`；
+- `rowsByCode_tmPolyTime`；
+- `interpretCode_eq_formulaCode`；
+- `formula_tmPolyTime_of_code`。
 
-每个 direction plan：
+模型必须从 pair、Nat arithmetic、list lookup、map、fold、flatten 和 encoding transport 等
+更低层 primitive 重建完整 compiler。
 
-    SemanticDirectionPlan
-      direction
-      input_witness_type
-      output_witness_schema
-      transformation_helper
-      local_invariants
-      constraint_level_goal
-      formula_level_goal
-      selected_candidate_ids
-      helper_specs
+底层解释器编译证明 很可能达到数百行，只在 程序 DAG 与增长界 稳定后做一个 generic canary。
 
-### 11.5 semantic Planner 的作用
+### 15.5 DirectTMCapabilityPlan 扩展
 
-Planner LLM 可以：
+已有 `DirectTMCapabilityPlan` 和 `TypedProgramNode` 可以复用。增加：
 
-- 选择 reverse witness 是原 assignment、restriction 还是 projection；
-- 选择 forward witness 的 fresh-variable 编码；
-- 判断是否复用已有 assignment function 但重新证明其性质；
-- 排序 Gadget.correct、instantiate-level primitive、membership theorem；
-- 决定先证明 output agreement 还是 formula-level statement；
-- 把一个大 Iff 规划为 helper DAG；
-- 根据 unsolved goal 修改 invariant；
-- 在 constraint induction、list membership decomposition 和直接逐约束证明之间选择；
-- 给 Generator 说明两个方向如何共享 helper。
+```text
+authoring_level
+node_origin
+growth_certificate_id
+growth_bound_dependencies
+program_node_source_hash
+endpoint_equality_origin
+transport_origin
+```
 
-Planner 在 production-hybrid 下可以直接选择 interpret_satisfiable_iff。
+每个 node 必须标注：
 
-在 semantic capability-gate 中，完整 iff、formula-level forward 和 formula-level reverse closure 不可执行，但 Planner 仍可推荐更低层 primitive。
+- `library-primitive`；
+- `model-authored-helper`；
+- `deterministic-syntax-only`。
 
-### 11.6 semantic Generator
+程序 DAG 与增长界 的核心 code node 和 growth certificate 必须是
+`model-authored-helper`。
 
-Generator 按 helper DAG 分阶段生成。
+### 15.6 模型协议
 
-#### reverse direction
+```json
+{
+  "schema": "boolean_csp_direct_tm_plan_v2",
+  "authoring_level": "program-dag-growth | low-level-compiler",
+  "growth_certificate": {
+    "constraint_bound": "...",
+    "variable_bound": "...",
+    "proof_helpers": []
+  },
+  "nodes": [
+    {
+      "node_id": "...",
+      "operation": "map | flatMap | flatten | composition | transport",
+      "exact_type": "...",
+      "dependencies": [],
+      "primitive_declarations": [],
+      "proof_body": "..."
+    }
+  ],
+  "final_node_id": "...",
+  "endpoint_equality": {
+    "origin": "library | model",
+    "proof_body": "..."
+  }
+}
+```
 
-可能生成：
+runtime 只验证 DAG、冻结 exact types 并逐节点调用 Lean，不得替模型选择 program node。
 
-- assignment restriction/projection；
-- one interpreted block implies source constraint；
-- target formula satisfaction implies every source constraint；
-- source satisfiable witness。
+### 15.7 禁止与允许
 
-#### forward direction
+程序 DAG 与增长界 必须禁用：
 
-可能生成：
+- `boolean-csp-direct-tm-compiler`；
+- `interpretation_tmPolyTime`；
+- `interpretCode_tmPolyTime`；
+- `certifiedReduction_of_interpretation_auto`；
+- `nPHard_of_interpretation_auto`；
+- 所有直接提供目标 exact `TMPolyTimeMap` 的 wrapper。
 
-- generatedForwardAssignment；
-- source coordinate preservation；
-- fresh auxiliary variable allocation；
-- per-gadget witness selection；
-- fresh assignments 之间的非冲突 invariant；
-- one source constraint produces one satisfied target block；
-- target formula satisfaction；
-- target satisfiable witness。
+保留：
 
-#### final assembly
+- semantic theorem 或公式语义作者化门禁输出；
+- `TMPolyTimeMap.comp`、`prod_mk`、`list_map`；
+- context-list map；
+- flatten；
+- Nat pair/add/lookup primitive；
+- `PolyProg` compiler；
+- 程序 DAG 与增长界 指定的 code/semantic endpoint bridge。
 
-只有在两个 direction capability 都通过 Lean 后，才生成最终 Iff。
+### 15.8 节点级 authoring 与 repair
 
-如果正向已经通过而反向失败，正向 capability 必须保留并回注 ProofState。
+节点按拓扑顺序生成：
 
-### 11.7 helper-first 的真实语义
+1. formula encoding；
+2. reference/max-var；
+3. per-constraint block；
+4. context attachment；
+5. list map；
+6. flatten；
+7. code endpoint；
+8. semantic transport。
 
-semantic helper-first 不能再是没有 residual goal 的标签。
+一个节点 verified 后写入 capability store。后续节点失败不能重写已通过节点，除非
+Planner 明确发出 replan 并使所有下游 artifact 失效。
 
-Planner 必须产生 exact helper specs，例如：
+repair 只接收：
 
-    helper role: source-coordinate-preservation
-    exact type: ...
-    consumed by: forward-constraint-proof
+- 当前 node exact type；
+- 已验证 dependency signatures；
+- Lean error；
+- 允许 primitive；
+- growth invariant。
 
-    helper role: interpreted-block-reverse
-    exact type: ...
-    consumed by: formula-reverse
+不得接收完整 `InterpretCompiler.lean` proof body。
 
-这些 helper 作为普通 child goals 进入 GlobalProofFrontier。
+### 15.9 通用 capability 与 27 题 final-use
 
-如果 Planner 没有产生 helper exact type，则不创建 helper-first design。
+与 公式语义作者化门禁相同，Direct-TM 复杂度作者化门禁目标是一个 generic theorem：
 
-### 11.8 semantic feedback
+```lean
+∀ {Γ' Γ} (interpretation : LanguageInterpretation Γ' Γ),
+  TMPolyTimeMap ... (interpret interpretation)
+```
 
-同 Generator repair：
+正式统计：
 
-- intro/rcases 结构错误；
-- local binder 名称和类型；
-- 一个 membership lemma application；
-- witness exact type mismatch；
-- 一个 constraint-level unsolved goal。
+- unique model-generated direct-TM capability；
+- generated node 数；
+- model-authored node 数；
+- library primitive node 数；
+- 27 个 case 的 final-use 实例数。
 
-Planner replan：
+不能把同一 generic theorem 的 27 次实例化计成 27 次复杂度发现。
 
-- witness transformation 无法满足 invariant；
-- fresh variables 冲突；
-- direction helper DAG 缺边；
-- 当前 decomposition 依赖被禁 closure；
-- repeated same residual goal；
-- formula-level proof需要新的 constraint primitive。
+### 15.10 评估器
 
-### 11.9 semantic 成功判据
+程序 DAG 与增长界 硬检查：
 
-- 17 个有效 gate case 都产生 SemanticCapabilityPlan；
-- 94/94 空 context 的问题消失；
-- 每个方向都有明确 witness schema；
-- 至少一个 direction helper 由 Generator 新生成；
-- 两个方向独立 Lean verified；
-- final Iff 使用生成的 helpers；
-- 不是现有 iff/forward/reverse theorem 的 alias；
-- final artifact 使用 semantic capability；
-- 0 forbidden dependency。
+- direct-TM deterministic compiler receipt 为 0；
+- generic direct-TM theorem model-generated；
+- growth certificate model-generated 且 final-used；
+- `interpretCode_tmPolyTime` forbidden dependency 为 0；
+- code node DAG acyclic、类型一致；
+- 至少一个非平凡 list map/flatten node 来自模型；
+- final semantic transport verified；
+- 27 个 required case final-use；
+- unique/instance count 分离；
+- independent Lean replay。
 
-## 12. Final Packaging
+失败分类：
 
-当以下 capability 可用：
+- `PROGRAM_DAG_INVALID`
+- `MISSING_GROWTH_BOUND`
+- `GROWTH_BOUND_FALSE`
+- `NODE_TYPE_MISMATCH`
+- `PRIMITIVE_NOT_ALLOWED`
+- `NODE_PROOF_FAILED`
+- `ENDPOINT_EQUALITY_FAILED`
+- `DIRECT_TM_NOT_FINAL_USED`
+- `DETERMINISTIC_COMPILER_LEAK`
+
+### 15.11 测试
+
+必须覆盖：
+
+- DAG cycle；
+- dependency 缺失；
+- input/output encoded type 不匹配；
+- renderer 自动插入 node；
+- growth certificate 未被 final theorem 使用；
+- 只调用被禁 `interpretCode_tmPolyTime`；
+- final theorem 与 code node function 不一致；
+- node verified 后 sibling failure preservation；
+- generic theorem 只对固定 Γ 成立；
+- 27 次实例化的 unique count 为 1。
+
+### 15.12 预算
+
+程序 DAG 与增长界：
+
+- planner 2 次；
+- growth certificate 6 次 authoring/repair；
+- 每个 program node 4 次 repair；
+- model tokens 28000；
+- Lean checks 1200；
+- wall time 10800 秒。
+
+底层解释器编译证明：
+
+- model tokens 48000；
+- Lean checks 2400；
+- wall time 21600 秒；
+- 只运行一个 generic canary。
+
+### 15.13 完成标准
+
+- deterministic direct-TM compiler 在门禁中不可见；
+- 一个 generic model-authored direct-TM theorem verified；
+- 一个显式增长证书 final-used；
+- 程序 DAG 与增长界 code DAG 的核心节点来自模型；
+- 27 个 required case 复用该 theorem 完成 root proof；
+- 无 high-level direct-TM closure 依赖；
+- 独立重放通过。
+
+## 16. 源 NP-hard 归约作者化门禁
+
+### 16.1 研究问题
+
+源 NP-hard 归约作者化门禁回答：
+
+> 在只保留 Cook–Levin/3SAT hardness 锚点和中性程序、证书接口时，模型能否发明并形式化
+> 3SAT 到一个 Boolean CSP hard core 的完整多项式时间 many-one reduction？
+
+源 NP-hard 归约作者化门禁的数学对象不再是局部 pp-gadget，而是：
+
+- 全局变量编码；
+- 每个 clause 的替换块；
+- 可能共享的 reference/constant 变量；
+- 新辅助变量分配；
+- forward assignment；
+- reverse assignment；
+- clause 与全公式正确性；
+- 多项式规模/时间；
+- 精确 endpoint 的 `CertifiedReduction`。
+
+### 16.2 不能只禁两个 hardness theorem
+
+只禁 `nae3CoreNPHard` 和 `oneInThreeCoreNPHard` 不够。当前库还存在：
+
+- `nae3CoreReduction`；
+- `ThreeSATToNAEThreeSAT.executable`；
+- `ThreeSATToNAEThreeSAT.executable_correct`；
+- `ThreeSATToNAEThreeSAT.executable_tmPolyTime`；
+- `BooleanCSPAuthoringSources.PositiveNAE3CSP.*`；
+- `threeSATToPositiveNAE3CSPIngress`；
+- `GraphColoringToOneInThree.*` 的完整 route；
+- ExactCover/GraphColoring 等可到达 1-IN-3 的完整 route；
+- 多个 transport wrapper。
+
+源 NP-hard 归约作者化门禁必须执行 route-level quarantine：
+
+- prompt 不暴露上述 proof body；
+- theorem index 不提供这些 exact/conditional closure；
+- final dependency audit 禁止整个完整 route；
+- 只通过 answer-free facade 暴露 source/target 数据定义和基础语义。
+
+### 16.3 两条门禁
+
+#### 3SAT→NAE-3 源归约
+
+正式第一个 canary。
+
+模型需要发现类似以下数学问题的解，而不是获得答案：
+
+- 如何用一个全局 reference bit 表示 literal polarity；
+- 如何把三文字析取转成 NAE 条件；
+- 如何把可能出现的 NAE-4 block 拆成 NAE-3；
+- 如何给每个 clause 分配互不冲突的辅助变量；
+- satisfying assignment 如何扩展；
+- target assignment 如何恢复 source truth assignment，必要时处理全局 complement。
+
+精确目标建议是：
+
+```lean
+CertifiedReduction
+  ThreeSATSourceProblem
+  (cspOf nae3Core)
+```
+
+source endpoint 必须与 Cook–Levin hardness 锚点精确兼容。
+
+#### 3SAT→1-IN-3 源归约
+
+分两步实施。
+
+第一步允许组合：
+
+```text
+模型生成的 3SAT → NAE-3 reduction
+        +
+模型生成的 NAE-3 → 1-IN-3 interpretation/gadget
+```
+
+两段都必须来自当前或受信任的先前 model-authored artifact，不能复用现成
+`oneInThreeCoreNPHard`。
+
+第二步 `直接 3SAT→1-IN-3 源归约扩展` 再要求模型直接给出 3SAT clause 到 1-IN-3 blocks 的 reduction。
+direct 版本是高风险扩展，不作为 源 NP-hard 归约作者化门禁初始完成条件。
+
+### 16.4 分离组合数学与证书样板
+
+源 NP-hard 归约作者化门禁允许：
+
+- `CertifiedReduction` structure；
+- `CertifiedReduction.comp`；
+- `NativeTMNPHard.alongPath`；
+- `PolyProg` 和通用 compiler；
+- generic list/map/flatMap TM primitive。
+
+这些包装器在 证书与 Hardness 量词作者化门禁才禁。
+
+因此 源 NP-hard 归约作者化门禁评分只关注：
+
+- reduction program；
+- assignment transformations；
+- semantic correctness；
+- size/time evidence。
+
+root hardness theorem 可以是 hybrid packaging，但上述四项必须有 final-used
+`MODEL_GENERATED_CAPABILITY` receipt。
+
+### 16.5 Answer-free facade
+
+新增专用接口模块，只暴露：
+
+- 3CNF/ThreeSATLike input type；
+- clause、literal 和 satisfaction 定义；
+- target `nae3Core` / `oneInThreeCore` 的 relation 定义；
+- formula/constraint constructors；
+- encoded endpoint；
+- Bool、List、Nat 的中性基础引理；
+- Cook–Levin source hardness declaration的签名。
+
+不得暴露：
+
+- 现有 executable；
+- literalKey/referenceVar/splitWitness 的答案性定义；
+- existing assignment transformation；
+- existing correctness proof；
+- route-specific helper names；
+- 完整 TM proof。
+
+Lean import closure中这些声明可能仍存在，因此最终还必须靠 forbidden dependency audit，
+不能只依赖 prompt 隐藏。
+
+### 16.6 ReductionPlan 协议
+
+```json
+{
+  "schema": "boolean_csp_source_reduction_plan_v1",
+  "route": "three_sat_to_nae3 | three_sat_to_one_in_three",
+  "variable_layout": {
+    "source_variables": "...",
+    "global_variables": [],
+    "per_clause_auxiliary_variables": "...",
+    "injectivity_invariants": []
+  },
+  "clause_blocks": [
+    {
+      "case": "polarity/shape selector",
+      "target_constraints": [],
+      "local_correctness_statement": "..."
+    }
+  ],
+  "program": {
+    "definition_body": "...",
+    "program_dag": []
+  },
+  "forward_assignment": {
+    "definition_body": "...",
+    "invariants": []
+  },
+  "reverse_assignment": {
+    "definition_body": "...",
+    "invariants": []
+  },
+  "semantic_helpers": [],
+  "growth_bound": {},
+  "proof_dag": []
+}
+```
+
+Planner 可以要求 replan，但 deterministic runtime 不得生成 clause block。
+
+### 16.7 局部 verifier
+
+允许一个 answer-free checker 验证模型给出的单个 clause block：
+
+- 枚举 source clause 的有限 literal truth values；
+- 枚举模型声明的局部辅助变量；
+- 检查局部 iff；
+- 返回 false-positive/false-negative row。
+
+checker 不验证全局 variable collision，也不生成新 block。全局 injectivity、共享 reference
+和 formula correctness 必须由 Lean proof。
+
+### 16.8 必需 artifact DAG
+
+3SAT→NAE-3 源归约 至少生成：
+
+1. variable layout；
+2. clause block constructor；
+3. clause block local correctness；
+4. whole-formula executable；
+5. forward assignment；
+6. forward semantics；
+7. reverse assignment或读取规则；
+8. reverse semantics；
+9. growth bound；
+10. direct-TM / `PolyProg`；
+11. `CertifiedReduction`；
+12. root hardness transport。
+
+每个 substantive artifact 记录独立 source hash。后续节点失败时，已验证的上游节点保留。
+
+### 16.9 禁止策略
+
+3SAT→NAE-3 源归约 至少禁止：
+
+- `nae3CoreReduction`；
+- `nae3CoreNPHard`；
+- `ThreeSATToNAEThreeSAT` 中完整 executable、correctness、TM 和 certificate；
+- `PositiveNAE3CSP` 中对应完整声明；
+- `threeSATToPositiveNAE3CSPIngress`；
+- 能从这些 route 直接推出目标的 wrapper。
+
+3SAT→1-IN-3 源归约 再禁止：
+
+- `oneInThreeCoreNPHard`；
+- `GraphColoringToOneInThree.oneInThreeCoreNPHard`；
+- GraphColoring→1-IN-3 完整 executable/correctness/TM route；
+- ExactCover→1-IN-3 完整 route；
+- 现成 NAE/1-IN-3 interpretation；
+- 能形成同一目标的 complete path。
+
+应使用“exact route dependency set + 动态 closure filter”，不要只维护两个 theorem 名。
+
+### 16.10 模型上下文与泄漏控制
+
+模型可以看到：
+
+- source/target 的公开自然语言定义；
+- exact Lean types；
+- local checker 反例；
+- 中性 constructor/primitive signatures；
+- proof obligation DAG；
+- 已验证的本次运行 helper signatures。
+
+模型不能看到：
+
+- 现有 route 的声明名提示；
+- 现有 clause block 数量；
+- 现有 auxiliary layout；
+- 现有 witness function；
+- gold program；
+- 其他模型运行中成功的源 NP-hard 归约作者化门禁计划。
+
+源 NP-hard 归约作者化门禁的 heldout 变体可对 literal 坐标、clause 顺序、变量编码 facade 做语义保持的重命名，降低
+代码记忆的作用。
+
+### 16.11 evaluator
+
+3SAT→NAE-3 源归约 硬检查：
+
+- Cook–Levin/3SAT source hardness是允许的唯一 hardness anchor；
+- model-authored program final-used；
+- model-authored forward/reverse semantics final-used；
+- model-authored growth/complexity evidence final-used，或明确由模型 program 的通用 compiler
+  合法投影；
+- existing NAE route dependency 为 0；
+- root `NativeTMNPHard (cspOf nae3Core)` verified；
+- independent replay。
+
+3SAT→1-IN-3 源归约 硬检查：
+
+- NAE3/1-IN-3 两个新段的来源均可追踪；
+- 不依赖现成 oneInThree hardness；
+- composition 的 dependency DAG 完整；
+- root `NativeTMNPHard (cspOf oneInThreeCore)` verified。
+
+失败分类：
+
+- `REDUCTION_PLAN_INVALID`
+- `CLAUSE_GADGET_COUNTEREXAMPLE`
+- `VARIABLE_LAYOUT_COLLISION`
+- `FORWARD_SEMANTIC_FAILURE`
+- `REVERSE_SEMANTIC_FAILURE`
+- `GLOBAL_COMPLEMENT_ARGUMENT_MISSING`
+- `GROWTH_BOUND_MISSING`
+- `SOURCE_ENDPOINT_MISMATCH`
+- `EXISTING_ROUTE_LEAK`
+- `CERTIFIED_REDUCTION_NOT_FINAL_USED`
+
+### 16.12 测试
+
+必须覆盖：
+
+- 一个局部 clause block 正确但全局 auxiliary key 冲突；
+- forward 正确、reverse 错误；
+- reference bit complement 情形遗漏；
+- source endpoint presentation 不一致；
+- program 与 semantic theorem 使用不同 executable；
+- growth theorem针对另一个 program；
+- existing route 经 wrapper 间接泄漏；
+- 3SAT→1-IN-3 源归约 只有一段 model-authored；
+- local checker 试图自动修复 block；
+- root artifact 未使用 authored reduction。
+
+### 16.13 rollout 与预算
+
+3SAT→NAE-3 源归约 阶段：
+
+1. clause block plan only；
+2. local finite verification；
+3. executable；
+4. forward semantics；
+5. reverse semantics；
+6. complexity；
+7. certificate/root。
+
+预算建议：
+
+- plan 3 次；
+- clause block repair 8 次；
+- forward 10 次；
+- reverse 12 次；
+- complexity 8 次；
+- certificate 4 次；
+- model tokens 48000；
+- Lean checks 2400；
+- wall time 21600 秒。
+
+3SAT→1-IN-3 源归约 composition 预算可在 3SAT→NAE-3 源归约 基础上增加 50%。
+
+### 16.14 完成标准
+
+源 NP-hard 归约作者化门禁的初始完成要求：
+
+- 3SAT→NAE-3 源归约 完整通过；
+- 3SAT→1-IN-3 源归约 composition 通过；
+- 两条 root hardness artifact verified；
+- existing complete route dependency 为 0；
+- program、语义和复杂度来源清晰；
+- 直接 3SAT→1-IN-3 源归约扩展 可以保持为后续扩展。
+
+源 NP-hard 归约作者化门禁不对 30 个 target language 重复运行。30 题用于局部 Gadget、
+公式语义和复杂度门禁；本门禁只测试 source hard-core 归约的生成。
+
+## 17. 证书与 Hardness 量词作者化门禁
+
+### 17.1 定位
+
+证书与 Hardness 量词作者化门禁测试：
+
+> 模型是否理解本库的精确 endpoint、`PolyProg`、`CertifiedReduction` 和
+> `NativeTMNPHard` 定义，并能在没有通用组装器时手工闭合证书？
+
+证书与 Hardness 量词作者化门禁主要是 formal framework authoring，不应计入“新数学构造”总分。
+
+### 17.2 冻结输入
+
+证书与 Hardness 量词作者化门禁不允许模型同时重新发明 gadget、semantic 或 TM 程序。输入必须是前级已经验证的：
 
 - source hardness；
-- stable LanguageInterpretation；
-- direct-TM；
-- semantic iff；
+- source→target `CertifiedReduction` 或其 program + correctness；
+- exact source/target presentations；
+- program endpoint equality。
 
-final packaging 应由 deterministic scaffold 完成。
+证书与 Hardness 量词作者化门禁只负责重新组装证书和 hardness 的全称量词。
 
-优先使用显式 packaging theorem：
+### 17.3 三个子级
 
-    certifiedReduction_of_interpretation_explicit
-    nPHard_of_interpretation_explicit
+#### CertifiedReduction 记录构造
 
-Planner 可以选择其他合法 scaffold。
+给定：
 
-final packaging 不应重新调用 Gadget、direct-TM 或 semantic Generator。
+- 一个 `TMPolyTimeMap`；
+- 对应 executable；
+- exact semantic iff。
 
-如果 packaging 失败，应报告：
+禁止：
 
-- endpoint mismatch；
-- interpretation declaration mismatch；
-- direct-TM function 不同；
-- semantic function 不同；
-- source hardness endpoint 不同；
-- forbidden dependency；
-- reconstruction bug。
+- `certifiedReduction_of_interpretation`；
+- `certifiedReduction_of_interpretation_explicit`；
+- `certifiedReduction_of_interpretation_auto`；
+- 其他 target-specific certificate constructor。
 
-不能把 packaging 失败笼统记为 generation failure。
+模型必须自己构造：
 
-## 13. Planner 调用策略
+```lean
+{
+  program := .atom (Primitive.ofTMPolyTime executable directTM)
+  correct := ...
+}
+```
 
-### 13.1 必须调用 Planner 的情况
+并证明 `program.run` 与 semantic theorem 使用同一 executable。
 
-- 至少两个 executable theorem/action/design；
-- exact closure 与 generation route 都合法，且需要成本/贡献权衡；
-- 一个 scaffold 有多个 residual solving order；
-- gadget 有多个 grammar/bound；
-- direct-TM 有多个 program DAG；
-- semantic 有多个 witness schema；
-- repair 与 switch-design 之间需要选择；
-- data witness 或 source core 需要回溯；
-- 剩余预算不足以展开全部方案。
+#### CertifiedReduction 手工组合
 
-### 13.2 可以跳过 Planner 的情况
+给定：
 
-- 唯一 exact closure；
-- 唯一 deterministic structural action；
-- 唯一 plugin action，且没有失败历史；
-- 当前 plan 已冻结，只需同 design repair；
-- schema repair；
-- deterministic final packaging。
+- `before : CertifiedReduction source middle`；
+- `after : CertifiedReduction middle target`。
 
-### 13.3 Planner 输出的建议必须生效
+禁止：
 
-每次 Planner 调用必须产生：
-
-- selected action；
-- selected theorem application；
-- selected design；
-- GeneratorBrief；
-- request lookup；
-- replan；
-- 或 current-state backtrack。
-
-新增 PlannerEffectReceipt：
-
-    PlannerEffectReceipt
-      plan_id
-      selected_action_id
-      selected_candidate_ids
-      selected_design_id
-      generated_brief_id
-      applied_effect
-      subsequent_event_id
-      override_reason
-
-要求：
-
-- valid Planner proposal 不能被静默忽略；
-- subsequent Generator 必须引用 brief_id；
-- final report 能从 Planner decision 追踪到 generated declaration。
-
-## 14. Generator 调用策略
-
-### 14.1 独立上下文
-
-每个 initial Generator call：
-
-- 使用冻结 GeneratorBrief；
-- 不继承 Planner 对话历史；
-- 不继承其他 case 的模型上下文；
-- 不包含 API credential；
-- 不包含 oracle；
-- 不包含未选择 theorem 候选；
-- 不包含被禁 closure body。
-
-### 14.2 生成粒度
-
-Generator 默认只处理最小 substantive gap：
-
-- 一个 Gadget Spec；
-- 一个 program node；
-- 一个 endpoint equality；
-- 一个 semantic helper；
-- 一个 witness transformation；
-- 一个 invariant；
-- 一个 direction proof。
-
-禁止把整个 NP-hardness root 作为 direct authoring fallback，除非：
-
-- 其他分解全部不可用；
-- Planner 明确选择；
-- context 完整；
-- goal size 在限制内；
-- report 标记为 monolithic fallback。
-
-### 14.3 失败保留
-
-已经 Lean-verified 的生成结果必须保留：
-
-- gadget 成功后 direct-TM 失败，gadget 仍保留；
-- semantic forward 成功后 reverse 失败，forward 仍保留；
-- direct-TM node 成功后 endpoint equality 失败，node 仍保留；
-- plan switch 复用所有 exact-type-compatible capability。
-
-## 15. 报告与指标
-
-### 15.1 通用字段
-
-新增或明确：
-
-- theorem_exact_closure_count；
-- theorem_scaffold_count；
-- theorem_primitive_count；
-- planner_call_count；
-- planner_plan_count；
-- planner_brief_count；
-- planner_advice_used_count；
-- planner_advice_rejected_count；
-- generator_initial_count；
-- generator_repair_count；
-- generator_replan_request_count；
-- context_insufficient_count；
-- unresolved_probe_handle_count；
-- executable_design_count；
-- rejected_nonexecutable_design_count；
-- capability_contribution_receipts；
-- generated_capability_final_used_count。
-
-### 15.2 Gadget 字段
-
-- gadget_plan_count；
-- gadget_design_kind_counts；
-- finite_candidate_count；
-- truth_table_rejection_count；
-- counterexample_count；
-- bound_expansion_count；
-- gadget_certificate_count；
-- gadget_registered_count；
-- gadget_final_used_count。
-
-### 15.3 direct-TM 字段
-
-- direct_tm_plan_count；
-- program_dag_count；
-- program_node_count；
-- primitive_covered_node_count；
-- generated_node_count；
-- node_lean_success_count；
-- endpoint_equality_attempt_count；
-- endpoint_equality_success_count；
-- direct_tm_registered_count；
-- direct_tm_final_used_count。
-
-### 15.4 semantic 字段
-
-- semantic_plan_count；
-- forward_plan_count；
-- reverse_plan_count；
-- witness_schema_count；
-- semantic_helper_count；
-- forward_helper_success_count；
-- reverse_helper_success_count；
-- semantic_iff_registered_count；
-- semantic_iff_final_used_count。
-
-### 15.5 强制一致性
-
-要求：
-
-    planner_plan_count
-      = planner_brief_count
-      + theorem_application_plan_count
-      + planner_replan_count
-      + planner_backtrack_count
-
-    generated_capability_final_used_count
-      ≤ registered_generated_capability_count
-      ≤ lean_verified_generated_capability_count
-
-每个 capability-gate success 必须有：
-
-- target exact goal receipt；
-- Planner plan；
-- Generator 或 deterministic synthesis receipt；
-- Lean receipt；
-- contribution receipt；
-- final-used receipt；
-- forbidden dependency receipt。
-
-## 16. 测试策略
-
-### 16.1 Python unit
-
-- candidate role classification；
-- exact closure 与 scaffold 区分；
-- Planner candidate ranking；
-- Planner GeneratorBrief schema；
-- invalid candidate ID rejection；
-- request-lookup；
-- context-insufficient gate；
-- stable declaration rebinding；
-- RuleInstantiationProbe handle rejection；
-- non-executable design 不计预算；
-- capability-scoped budget reserve；
-- fixed declaration envelope；
-- allowed identifier manifest；
-- repair 与 replan 分流；
-- contribution classification。
-
-### 16.2 Lean synthetic
-
-#### Shared
-
-- exact closure zero residual；
-- scaffold with dependent residuals；
-- stable generated declaration进入 dependent sibling；
-- unresolved probe handle 被拒绝；
-- generated helper final-used；
-- alias existing theorem 被识别为 reuse；
-- forbidden transitive dependency rejection。
-
-#### Gadget
-
-- 任意 synthetic finite Gamma reification；
-- 非预置 relation table；
-- bounded finite search；
-- counterexample-guided repair；
-- generated Spec.toGadget；
-- multiple source symbols；
-- no benchmark name branch。
-
-#### direct-TM
-
-- simple composition DAG；
-- map + flatten DAG；
-- encoding equivalence；
-- missing node generation；
-- endpoint equality；
-- wrong DAG replan；
-- generated node reused in final TM theorem。
-
-#### semantic
-
-- generic Iff structural split；
-- generated forward witness；
-- generated reverse projection；
-- constraint-level helper；
-- formula-level lifting；
-- forward success preserved after reverse failure；
-- final Iff uses both generated directions。
-
-### 16.3 Integration
-
-- production exact theorem reuse；
-- scaffold + one generated residual；
-- Planner advice passed to independent Generator；
-- Generator request lookup；
-- Generator plan-infeasible triggers replan；
-- gadget → interpretation → direct-TM → semantic → packaging；
-- capability survives branch requeue/resume；
-- source switch reuses compatible generated capability；
-- complete contribution report。
-
-### 16.4 防退化
-
-- root fast path 不回归；
-- theorem recursion 不回归；
-- data binding backtrack 不回归；
-- exact closure 在 production 模式仍优先；
-- Planner 仍能排序 theorem 候选；
-- capability-gate 不泄漏被禁 closure；
-- Generator 不收到完整 theorem index；
-- generic core 不包含 Boolean CSP case ID；
-- plugin executable check 不替代 Lean；
-- no parallel frontier；
-- final audit 不降低。
-
-## 17. 真实 API 验证矩阵
-
-### 17.1 Case02 分层门禁
-
-Case02 继续作为小规模黑盒验收，不作为实现特判。
-
-依次运行：
-
-1. production-hybrid；
-2. gadget capability-gate；
-3. direct-TM capability-gate；
-4. semantic capability-gate；
-5. from-basis research mode。
-
-每轮报告：
-
-- exact closures allowed/forbidden；
-- Planner selected route；
-- GeneratorBrief；
-- generated declarations；
-- final contribution classification；
-- forbidden dependency。
-
-### 17.2 Gadget 20 题
-
-目标：
-
-- 禁止完整 gadget/interpretation closure；
-- direct-TM 和 semantic 可复用；
-- 统计实际需要 gadget generation 的 case；
-- 生成 capability 必须 final-used；
-- 测试 arbitrary finite relation adapter，而不是只测试已有 core 名称。
-
-### 17.3 direct-TM 20 题
-
-沿用：
-
-    python -m agent.generative_reduction.boolean_csp_capability_gate
-
-但必须先满足：
-
-- 17/17 case 获得 DirectTMCapabilityPlan；
-- target-specific authoring/design coverage 为 17/17；
-- direct-TM capsule 非空；
-- no RuleInstantiationProbe handle；
-- no non-executable helper design；
-- capability-scoped budget 已保留。
-
-### 17.4 semantic 20 题
-
-必须先满足：
-
-- 17/17 case 获得 SemanticCapabilityPlan；
-- forward/reverse plan 均存在；
-- semantic capsule 包含定义、primitive 和 constructor；
-- no empty theorem-composition design；
-- direction helper 可以独立保存和复用。
-
-### 17.5 交叉领域 held-out
-
-为了证明通用性，新增非 Boolean CSP held-out：
-
-- finite graph gadget 或有限自动机 witness；
-- 一个非 Boolean CSP 的 direct-TM program composition；
-- 一个非 Boolean CSP 的 bidirectional semantic witness proof。
-
-验收：
-
-- 不增加 case-specific planner rule；
-- 使用相同 CapabilityPlan/GeneratorBrief；
-- 使用相同 contribution classification；
-- 至少一项 generated capability kernel verified。
-
-## 18. 实施阶段
-
-### Phase 0：模型和报告 schema
-
-修改：
-
-- agent/generative_reduction/models.py；
-- agent/generative_reduction/model/protocol.py；
-- agent/generative_reduction/reporting.py；
-- tests/test_generative_reduction.py。
-
-任务：
-
-- CandidateReceipt；
-- TheoremApplicationPlan；
-- CapabilityPlan；
-- GeneratorBrief；
-- GeneratorResult；
-- ContributionReceipt；
-- PlannerEffectReceipt；
-- serialization/resume；
-- report consistency。
-
-验收：
-
-- mock Planner plan 可序列化；
-- brief 与 plan fingerprint 一致；
-- GeneratorResult 只能引用 brief 中候选；
-- contribution report 可区分 reuse 和 generation。
-
-### Phase 1：P0 正确性修复
-
-修改：
-
-- agent/generative_reduction/context_capsule.py；
-- agent/generative_reduction/lean_bridge.py；
-- agent/generative_reduction/recursive_runtime.py；
-- agent/generative_reduction/providers/synthesis.py；
-- agent/generative_reduction/model/authoring.py；
-- tests。
-
-任务：
-
-- stable dependent binding；
-- probe handle audit；
-- context-insufficient gate；
-- construction-basis expansion；
-- fixed declaration envelope；
-- identifier manifest；
-- non-executable design prefilter；
-- capability-scoped budgets；
-- transport/protocol retry；
-- repair/replan split。
-
-验收：
-
-- direct-TM 和 semantic synthetic capsule 不为空；
-- exact goal 不含 RuleInstantiationProbe；
-- omitted frozen declaration 类错误消失；
-- helper-first 无 residual 时不创建 design；
-- target capability 至少保留一轮完整 generation budget。
-
-### Phase 2：Planner → Independent Generator
-
-修改：
-
-- agent/generative_reduction/model/strategy.py；
-- 新增或扩展 capability planner 模块；
-- agent/generative_reduction/capability_planner.py；
-- agent/generative_reduction/recursive_runtime.py；
-- agent/generative_reduction/model/authoring.py；
-- tests。
-
-任务：
-
-- Planner 输出 theorem plan 或 CapabilityPlan；
-- Planner 生成 GeneratorBrief；
-- typed proof hints；
-- request-lookup；
-- plan-infeasible；
-- brief-bound Generator；
-- Planner effect receipt；
-- Generator hint usage receipt；
-- plan switch。
-
-验收：
-
-- Planner 选择 theorem 后 deterministic closure；
-- Planner 选择 scaffold 后 residual 进入 frontier；
-- Planner 建议第二个 primitive，Generator 实际使用；
-- Generator 不能使用 brief 外 theorem；
-- Generator request-replan 能形成新 plan_id。
-
-### Phase 3：Gadget Planner/Generator v2
-
-修改：
-
-- agent/generative_reduction/plugins/boolean_csp.py；
-- finite synthesis protocol；
-- BooleanCSPFiniteGadget.lean；
-- capability-specific planner/generator adapter；
-- tests。
-
-任务：
-
-- arbitrary finite Gamma reification；
-- dynamic grammar/bounds；
-- fixed templates 降级为 seeds；
-- Planner-selected enumeration/CEGIS；
-- counterexample accumulation；
-- generated gadget composition；
-- contribution receipts。
-
-验收：
-
-- 一个非预置 synthetic relation 生成 Gadget；
-- Case02 gadget gate 通过；
-- 至少一个 Boolean CSP benchmark gadget final-used；
-- 无 canonical closure dependency。
-
-### Phase 4：Semantic Planner/Generator
-
-修改/新增：
-
-- semantic capability plan；
-- structural direction decomposition；
-- witness/invariant generator；
-- helper DAG execution；
-- direction-level capability registration；
-- tests。
-
-任务：
-
-- forward/reverse plans；
-- witness schema；
-- exact helper specs；
-- direction-level GeneratorBrief；
-- preserve successful direction；
-- final Iff assembler；
-- semantic contribution receipt。
-
-验收：
-
-- synthetic semantic proof 不调用完整 iff/forward/reverse closure；
-- Case02 semantic gate 通过；
-- semantic 20 题中至少一个非复用 case 生成并 final-use semantic capability；
-- 17/17 case 具有有效 plan 和非空 context。
-
-### Phase 5：direct-TM Planner/Generator
-
-修改/新增：
-
-- TypedProgramNode；
-- DirectTMCapabilityPlan；
-- program normalization probe；
-- TM primitive registry；
-- node Generator；
-- deterministic TM compiler；
-- endpoint equality generator；
-- tests。
-
-任务：
-
-- function definition expansion；
-- program DAG；
-- node primitive coverage；
-- missing node helper generation；
-- node-level repair；
-- endpoint equality；
-- final TM theorem assembly；
-- direct-TM contribution receipt。
-
-验收：
-
-- synthetic map/flatten program 通过；
-- Case02 direct-TM gate 通过；
-- direct-TM 20 题中至少一个非复用 case 生成并 final-use direct-TM capability；
-- 17/17 case 获得 target-specific plan。
-
-### Phase 6：完整回归与 held-out
-
-任务：
-
-- production-hybrid Boolean CSP 20 题；
-- gadget gate 20 题；
-- direct-TM gate 20 题；
-- semantic gate 20 题；
-- from-basis 小规模测试；
-- 非 Boolean CSP held-out；
-- token/cost/wall-time comparison；
-- contribution audit。
-
-硬验收：
-
-- 所有 suite 有完整终态；
-- 0 forbidden dependency；
-- 0 unresolved probe handles；
-- 0 empty-context Generator call；
-- 0 ignored valid Planner decision；
-- 0 non-executable design 消耗数学 design budget；
-- 每项能力至少一个真正 generated capability final-used；
-- production 模式已有 theorem 仍能快速复用；
-- generic core 无 benchmark 特判。
-
-## 19. 完成标准
-
-本计划完成必须同时满足：
-
-1. Planner LLM 仍能排序 theorem、action 和 design；
-2. exact closure 在未屏蔽时可以直接快速结束子步骤；
-3. scaffold 可以形成 residual DAG 并向 Generator 传递 typed proof advice；
-4. Generator 以独立上下文和冻结 brief 工作；
-5. Generator 能生成新的 Gadget witness；
-6. Generator 能生成新的 direct-TM program node/helper 或 endpoint proof；
-7. Generator 能生成新的 semantic witness/invariant/helper；
-8. ContextCapsule 不再为空壳；
-9. dependent goals 不再引用临时 probe declarations；
-10. repair 和 replan 边界明确；
-11. design budget 不再被不可执行方案消耗；
-12. 每个 generated capability 有 Lean、dependency、contribution 和 final-used receipt；
-13. production-hybrid 和 capability-gate 的结果不会混淆；
-14. direct-TM、semantic 和 gadget 各至少有一个真实 API 非复用成功；
-15. held-out 证明机制不依赖 Boolean CSP case/name；
-16. final artifact 继续通过完整可信审计。
-
-## 20. 立即执行顺序
-
-1. 定义 CandidateReceipt、CapabilityPlan、GeneratorBrief 和 ContributionReceipt；
-2. 修复 stable dependent binding 和 RuleInstantiationProbe 泄漏；
-3. 加入 context-insufficient gate；
-4. 完成 construction-basis ContextCapsule；
-5. fixed declaration envelope；
-6. non-executable design prefilter；
-7. capability-scoped budget；
-8. 扩展 Planner 输出 theorem plan、proof advice 和 GeneratorBrief；
-9. 建立 independent Generator execution；
-10. 将 Gadget 固定模板改为 Planner-controlled grammar/CEGIS；
-11. 实现 semantic direction plan 和 helper DAG；
-12. 实现 direct-TM program DAG 和 node generator；
-13. 运行 synthetic tests；
-14. 运行 Case02 分层门禁；
-15. 依次运行 gadget、semantic、direct-TM 20 题能力门禁；
-16. 运行 production-hybrid 20 题回归；
-17. 运行非 Boolean CSP held-out。
-
-本轮核心判据：
-
-> Planner 可以充分利用库内已有 theorem，也可以把 theorem、primitive 和数学建议交给独立 Generator；但只有 Generator 或确定性 synthesis 真正产生并由最终 artifact 使用的新程序、witness、invariant 或 substantive helper，才计为库内缺失能力的生成。
+- `CertifiedReduction.comp`；
+- `CertifiedPath.toCertifiedReduction`；
+- path composition wrapper。
+
+模型必须自己构造：
+
+```lean
+{
+  program := .comp after.program before.program
+  correct := by
+    intro input
+    exact (before.correct input).trans
+      (after.correct (before.program.run input))
+}
+```
+
+正式测试不向模型提供上述完整 body，只提供 structure 和 field signatures。
+
+#### NativeTMNPHard 手工运输
+
+给定：
+
+- `coreHardness : NativeTMNPHard core`；
+- `step : CertifiedReduction core target`。
+
+禁止：
+
+- `nPHard_of_interpretation`；
+- `nPHard_of_interpretation_explicit`；
+- `nPHard_of_interpretation_auto`；
+- `NativeTMNPHard.alongPath`；
+- `NativeTMNPHard.ofCompleteAlongPath`；
+- `CompletenessTransport.alongPath`；
+- `CertifiedReduction.comp`；
+- RuleKernel/FinalCheck 的 hardness transport wrapper。
+
+模型必须展开：
+
+```lean
+∀ source : PresentedProblem,
+  NativeTMInNP source →
+  Nonempty (CertifiedReduction source target)
+```
+
+对任意 source：
+
+- 调用 `coreHardness source sourceMembership`；
+- 取出 source→core reduction；
+- 手工构造 source→target program composition；
+- 手工证明 correctness transitivity；
+- 放回 `Nonempty`。
+
+### 17.4 Gate artifact
+
+建议先生成一个 generic theorem：
+
+```lean
+theorem authored_hardness_transport
+    {core target : PresentedProblem}
+    (coreHardness : NativeTMNPHard core)
+    (step : CertifiedReduction core target) :
+    NativeTMNPHard target := ...
+```
+
+随后在 27 个 Boolean CSP required case 中实例化，验证 final-use。
+
+同样只计：
+
+- 1 个 unique generic certificate theorem；
+- 27 个 final-use instances。
+
+### 17.5 贡献分类
+
+证书与 Hardness 量词作者化门禁默认应分类为：
+
+- `GENERATED_GLUE`，若只展开 record 和量词；
+- `MODEL_GENERATED_CAPABILITY`，仅当模型还生成了新的可复用证书 combinator，
+  且该 combinator 超出单次目标样板。
+
+报告必须增加：
+
+```text
+authorship_category = formal-certificate-assembly
+mathematical_novelty_credit = 0
+```
+
+不得把 证书与 Hardness 量词作者化门禁成功加入 gadget、semantic 或 reduction 数学能力分数。
+
+### 17.6 模型协议
+
+```json
+{
+  "schema": "certificate_assembly_plan_v1",
+  "level": "reduction-record | reduction-composition | hardness-transport",
+  "binders": [],
+  "input_certificates": [],
+  "program_expression": "...",
+  "semantic_chain": [],
+  "nonempty_elimination": "...",
+  "proof_body": "..."
+}
+```
+
+runtime 冻结 binders 和 exact endpoints。模型不得更换 source、middle 或 target。
+
+### 17.7 允许与禁止
+
+允许：
+
+- `CertifiedReduction` structure及字段投影；
+- `PolyProg.atom`、`PolyProg.comp`；
+- `Primitive.ofTMPolyTime`；
+- `Iff.trans`；
+- `Nonempty` 的构造与消去；
+- `NativeTMNPHard` 定义；
+- 已冻结的 program/semantic/direct-TM capability。
+
+禁止：
+
+- 所有高层 reduction/hardness composition；
+- exact endpoint 自动 transport；
+- theorem search 找到等价 generic transport；
+- deterministic certificate compiler；
+- 修改冻结 program；
+- 使用不同 semantic theorem。
+
+### 17.8 evaluator
+
+硬检查：
+
+- generic theorem body model-authored；
+- forbidden packager dependency 为 0；
+- `CertifiedReduction.comp` dependency 为 0；
+- `NativeTMNPHard.alongPath` dependency 为 0；
+- exact source/middle/target 一致；
+- program composition final-used；
+- correctness chain包含 before 与 after；
+- 27 个 required case final-use；
+- unique contribution count 为 1；
+- contribution 不计数学 novelty；
+- independent replay。
+
+失败分类：
+
+- `CERTIFICATE_ENDPOINT_MISMATCH`
+- `PROGRAM_SEMANTIC_MISMATCH`
+- `NONEMPTY_ELIMINATION_FAILED`
+- `HARDNESS_QUANTIFIER_NOT_UNFOLDED`
+- `FORBIDDEN_PACKAGER_USED`
+- `CERTIFICATE_NOT_FINAL_USED`
+- `NOVELTY_MISCLASSIFIED`
+
+### 17.9 测试
+
+必须覆盖：
+
+- source/middle endpoint 对不上；
+- program 用 after∘before，但 correctness 写反；
+- semantic theorem针对不同 executable；
+- 忘记 `Nonempty`；
+- 偷用 `CertifiedReduction.comp`；
+- 偷用 `alongPath`；
+- generic theorem只对一个具体 target；
+- 27 次实例化被错误计成 27 个数学贡献；
+- 证书与 Hardness 量词作者化门禁的 contribution 被错误加入 novelty score。
+
+### 17.10 预算
+
+CertifiedReduction 记录构造：
+
+- model tokens 12000；
+- repair 4 次；
+- Lean checks 200。
+
+CertifiedReduction 手工组合：
+
+- model tokens 12000；
+- repair 4 次；
+- Lean checks 250。
+
+NativeTMNPHard 手工运输：
+
+- model tokens 18000；
+- repair 6 次；
+- Lean checks 400；
+- wall time 3600 秒。
+
+### 17.11 完成标准
+
+- CertifiedReduction 记录构造、CertifiedReduction 手工组合、NativeTMNPHard 手工运输 各有一个 generic verified artifact；
+- 所有高层 packager 禁令生效；
+- 27 个 required case 能使用 NativeTMNPHard 手工运输 artifact 完成 final packaging；
+- unique/instance count 正确；
+- formal authoring 与 mathematical novelty 分数严格分离；
+- independent replay 和 endpoint audit 通过。
+
+## 18. 报告与产物
+
+### 18.1 报告命名
+
+- `Reports/GENERAL_AGENT_BOOLEAN_CSP_GADGET_AUTHORING_DEV_REAL_API_REPORT.json`
+- `Reports/GENERAL_AGENT_BOOLEAN_CSP_GADGET_AUTHORING_VALIDATION_REAL_API_REPORT.json`
+- `Reports/GENERAL_AGENT_BOOLEAN_CSP_GADGET_AUTHORING_HELDOUT_REAL_API_REPORT.json`
+- `Reports/GENERAL_AGENT_BOOLEAN_CSP_GADGET_AUTHORING_FULL_REAL_API_REPORT.json`
+- `Reports/GENERAL_AGENT_BOOLEAN_CSP_GADGET_PROOF_REAL_API_REPORT.json`
+- `Reports/GENERAL_AGENT_BOOLEAN_CSP_FORMULA_SEMANTIC_REAL_API_REPORT.json`
+- `Reports/GENERAL_AGENT_BOOLEAN_CSP_ASSIGNMENT_WITNESS_AUTHORING_REAL_API_REPORT.json`
+- `Reports/GENERAL_AGENT_BOOLEAN_CSP_DIRECT_TM_PROGRAM_DAG_REAL_API_REPORT.json`
+- `Reports/GENERAL_AGENT_BOOLEAN_CSP_DIRECT_TM_LOW_LEVEL_COMPILER_REAL_API_REPORT.json`
+- `Reports/GENERAL_AGENT_BOOLEAN_CSP_THREE_SAT_TO_NAE3_REAL_API_REPORT.json`
+- `Reports/GENERAL_AGENT_BOOLEAN_CSP_THREE_SAT_TO_ONE_IN_THREE_REAL_API_REPORT.json`
+- `Reports/GENERAL_AGENT_BOOLEAN_CSP_CERTIFICATE_ASSEMBLY_REAL_API_REPORT.json`
+
+每份报告还必须有不可变 run manifest：
+
+```text
+gate_name
+gate_version
+policy_sha256
+suite_sha256
+source_commit
+model_name
+model_parameters
+prompt_template_sha256
+renderer/checker/compiler versions
+forbidden declaration set sha256
+allowed primitive set sha256
+start/end timestamp
+```
+
+### 18.2 通用逐项记录
+
+对 case-based gate，每题至少记录：
+
+- case ID 与 split；
+- source core；
+- exact capability type；
+- model call purpose/status/usage；
+- plan、brief、prompt 和 policy hashes；
+- 每次模型 semantic/proof/program payload hash；
+- gate-specific 数学对象统计；
+- checker 或 Lean 反例；
+- Lean attempt 结果；
+- generated declarations 与 dependency DAG；
+- contribution class；
+- unique capability ID；
+- final-use instance ID；
+- final-use dependency path；
+- forbidden audit；
+- independent replay；
+- 最终 failure class。
+
+对 generic theorem gate，必须记录：
+
+- generic exact type；
+- genericity audit；
+- unique source hash；
+- 参数化变量；
+- 每个 benchmark instance 的实例化目标；
+- unique contribution count；
+- final-use instance count；
+- duplicate/alpha-equivalent artifact count。
+
+### 18.3 分层指标
+
+显式 Gadget 作者化门禁：
+
+- anchor 通过数；
+- required case 数；
+- model-authored gadget final-used 数；
+- deterministic/hybrid 数；
+- 平均/中位约束数和辅助变量数；
+- 与已知模板的相似度诊断；
+
+Gadget 正确性证明门禁：
+
+- witness、forward、reverse、assembly 通过数；
+- whole-goal decide closure 数；
+- unique proof-plan 数；
+- proof helper 数；
+- formula drift 数。
+
+公式语义作者化门禁：
+
+- unique generic semantic capability 数；
+- forward/reverse 独立通过率；
+- model-authored assignment transformation 数；
+- fresh-variable invariant failure 数；
+- 27 题 final-use coverage。
+
+Direct-TM 复杂度作者化门禁：
+
+- unique generic direct-TM capability 数；
+- model-authored program node 数；
+- library primitive node 数；
+- growth certificate 数；
+- failed DAG node 分布；
+- 27 题 final-use coverage。
+
+源 NP-hard 归约作者化门禁：
+
+- clause block、program、forward、reverse、growth、certificate 分阶段通过情况；
+- local counterexample 数；
+- route leak 数；
+- source endpoint mismatch 数。
+
+证书与 Hardness 量词作者化门禁：
+
+- reduction-record、composition、hardness-transport 通过情况；
+- endpoint mismatch 数；
+- forbidden packager 使用数；
+- formal glue 数；
+- mathematical novelty credit 固定为 0。
+
+### 18.4 suite 汇总
+
+所有报告至少给出：
+
+- route、数学、Lean、预算、系统失败数；
+- initial 成功与 repair 成功数；
+- model、hybrid、deterministic、reuse、glue 贡献数；
+- unique capability 与 final-use instance 数；
+- exact duplicate payload 数；
+- forbidden direct/transitive dependency 数；
+- integrity checks；
+- strict gate result；
+- partial capability score。
+
+相似度只做诊断，不做硬条件。
+
+### 18.5 预计代码改动点
+
+通用 policy 与 evaluator：
+
+- `agent/generative_reduction/capability_gate_policy.py`；
+- `agent/generative_reduction/boolean_csp_capability_gate.py`；
+- `agent/generative_reduction/orchestrator.py`；
+- `agent/generative_reduction/models.py`；
+- `agent/generative_reduction/generator_protocol.py`。
+
+显式 Gadget 作者化门禁/Gadget 正确性证明门禁：
+
+- `agent/generative_reduction/plugins/boolean_csp.py`；
+- 新增 Boolean CSP gadget plan/checker/renderer 模块；
+- `Lean/Reference/ComplexityReduction/Agent/GenerativeReduction/Plugins/BooleanCSPFiniteGadget.lean`
+  或新增独立 authoring interface；
+- `agent/generative_reduction/model/authoring.py`。
+
+公式语义作者化门禁：
+
+- `agent/generative_reduction/capability_compilers.py` 中保留 production compiler，但 gate
+  policy 禁用其 action；
+- 扩展 `SemanticCapabilityPlan`；
+- 新增 semantic authoring provider 和方向级 repair；
+- 新增 genericity/final-use evaluator。
+
+Direct-TM 复杂度作者化门禁：
+
+- 扩展 `DirectTMCapabilityPlan` 与 `TypedProgramNode`；
+- 新增 growth certificate authoring；
+- 新增 node-level model provider；
+- 在 `InterpretCompiler.lean` 附近增加中性 growth interface，不能加入答案性 theorem。
+
+源 NP-hard 归约作者化门禁：
+
+- 新增 answer-free Lean facade；
+- 新增 source-reduction plan/parser/checker；
+- 新增 artifact DAG runner；
+- 新增 route-level forbidden dependency builder；
+- 新增 3SAT→NAE-3 源归约/3SAT→1-IN-3 源归约 evaluator。
+
+证书与 Hardness 量词作者化门禁：
+
+- 新增 certificate assembly plan；
+- 新增 endpoint binder validator；
+- 新增 generic CertifiedReduction 记录构造/CertifiedReduction 手工组合/NativeTMNPHard 手工运输 authoring runner；
+- 扩展 contribution report，以区分 formal glue 和 mathematical novelty。
+
+测试：
+
+- 扩展 `tests/test_generative_reduction.py`；
+- 复杂 gate 建议拆分为
+  `tests/test_boolean_csp_gadget_gates.py`、
+  `tests/test_boolean_csp_semantic_tm_gates.py`、
+  `tests/test_boolean_csp_source_reduction_gate.py` 和
+  `tests/test_certificate_assembly_gate.py`；
+- 每个 gate 均包含 positive、negative、attribution、final-use 和 independent replay fixture。
+
+## 19. 反背诵与实验完整性
+
+### 19.1 不采用“必须非同构”
+
+不要求 gadget 与库内构造不同构。理由：
+
+- 重新发现经典最优构造是有效数学能力；
+- 变量重命名、约束排列和布尔对偶使同构判定复杂；
+- 强制不同会鼓励无意义地增加辅助变量。
+
+### 19.2 采用输入隔离
+
+正式措施：
+
+- 不向模型提供 template source；
+- 不提供其他 case 的成功 formula；
+- 禁止 oracle/gold import；
+- prompt 中只含当前公开 relation table；
+- heldout 运行前冻结所有代码与 prompt hash；
+- 使用全新 output root；
+- 报告 suite hash、commit hash、policy hash 和模型参数。
+
+### 19.3 随机题的角色
+
+q-b21–q-b30 用于检验：
+
+- 无语义名称时是否仍能推理；
+- 是否只会匹配固定基数和 NAE 模板；
+- 是否能处理双 relation 与混合 arity；
+- 是否能利用 counterexample 修正一个明确 formula。
+
+这些题不得在正式 heldout 前用于反复 prompt 调试。
+
+### 19.4 Gadget 正确性证明门禁：证明泄漏控制
+
+- 不提供现有 gadget correct proof body；
+- 不提供其他 case 的 witness definition；
+- leaf computation 与完整 proof 分开审计；
+- proof-plan hash 在 Lean authoring 前冻结；
+- formula payload 在整个 Gadget 正确性证明门禁运行中不可变。
+
+### 19.5 语义与复杂度作者化：通用 theorem 泄漏控制
+
+- prompt 只提供被允许 primitive 的签名；
+- 不提供被禁 generic theorem 的 proof body；
+- deterministic semantic/direct-TM compiler 在相应 gate 中禁用；
+- generic theorem 生成一次，后续 case 只实例化；
+- 报告不得用实例化次数夸大数学贡献。
+
+### 19.6 源 NP-hard 归约作者化门禁：路线隔离
+
+- 使用 answer-free facade；
+- 现有完整 reduction namespace进入 forbidden dependency set；
+- theorem index 排除 exact/conditional closure；
+- prompt 不出现现有 route helper 的答案性名称；
+- local checker只验证模型 block，不搜索 block。
+
+### 19.7 证书与 Hardness 量词作者化门禁：评分隔离
+
+- 证书与 Hardness 量词作者化门禁产物单独标记 formal-certificate-assembly；
+- novelty credit 固定为 0；
+- 证书与 Hardness 量词作者化门禁成功不提升 gadget、semantic、complexity 或 reduction 数学得分；
+- 只衡量形式框架掌握和证书闭合率。
+
+## 20. 风险与缓解
+
+### 风险 1：根搜索到不了 gadget 目标
+
+缓解：
+
+- 使用组件级 authoring checkpoint；
+- 给 gadget capability 预留预算；
+- 单独记录 `ROUTE_NOT_REACHED`；
+- 通过显式、已验证 scaffold 暴露 residual gadget goal。
+
+### 风险 2：结构化 renderer 被误认为确定性数学生成
+
+缓解：
+
+- semantic payload 完全由模型给出；
+- renderer 一一映射；
+- 记录 `renderer_added_semantic_atom_count = 0`；
+- 对 payload 与 Lean AST/依赖做一致性检查；
+- renderer 无 candidate enumeration API。
+
+### 风险 3：`by decide` 掩盖证明能力
+
+缓解：
+
+- 显式 Gadget 作者化门禁明确只评分构造；
+- Gadget 正确性证明门禁单独评分 forward/reverse proof；
+- 不把二者混成一个结论。
+
+### 风险 4：公式资源上限导致假阴性
+
+缓解：
+
+- 资源 profile 版本化；
+- 先做有限 verifier microbenchmark；
+- 报告 `RESOURCE_BOUND_EXCEEDED`；
+- 不通过加入新模板来解决。
+
+### 风险 5：模型从名称背诵
+
+缓解：
+
+- 随机真值表 heldout；
+- prompt 以 truth table 为主；
+- 记录名称可见性；
+- 后续增加坐标置换和 relation symbol 重命名变体。
+
+### 风险 6：validation/heldout 被开发污染
+
+缓解：
+
+- 只使用 q-b02 和 `ga-dev-*` 迭代；
+- 冻结后一次性运行 validation；
+- heldout 结果一旦用于修改系统，提升版本并标记污染。
+
+### 风险 7：模型生成了 gadget，但最终走了另一条 proof
+
+缓解：
+
+- component success 与 root final-use 分开；
+- strict gate 要求 root dependency closure；
+- side artifact 不计成功。
+
+### 风险 8：同一个 generic theorem 被重复计分
+
+缓解：
+
+- 以 normalized exact type + source hash 形成 unique capability ID；
+- 实例化另计 final-use instance；
+- 报告同时显示 unique count 和 instance count；
+- promotion 规则使用 unique capability 与 coverage 的组合，而不是简单 artifact 数。
+
+### 风险 9：Direct-TM 复杂度作者化门禁退化为 API 拼接
+
+缓解：
+
+- Direct-TM API 校准 只作校准；
+- 正式得分要求 model-authored growth certificate；
+- 禁 `interpretCode_tmPolyTime`；
+- 记录每个 program node 的 origin；
+- 至少一个核心 map/flatten DAG 由模型生成。
+
+### 风险 10：源 NP-hard 归约作者化门禁通过间接 wrapper 复用旧 route
+
+缓解：
+
+- 对完整 route 做 transitive dependency quarantine；
+- 动态排除能关闭 exact target 的候选；
+- 对 final artifact 做 Lean environment dependency closure；
+- 不依赖声明字符串扫描。
+
+### 风险 11：前级 artifact 错误污染后级结论
+
+缓解：
+
+- 每层只接受前级 independent-replay-passed artifact；
+- 输入 artifact hash 固定；
+- 后级 report记录 prerequisite gate/version；
+- 前级 artifact 变化自动使后级缓存失效。
+
+### 风险 12：长 proof 的预算失败被误认为数学失败
+
+缓解：
+
+- 节点级 artifact preservation；
+- failure taxonomy 区分预算、route、Lean 与数学反例；
+- 先跑 component gate；
+- 只在工程 failure 接近零后解释模型能力；
+- 源 NP-hard 归约作者化门禁/底层解释器编译证明 使用独立大预算 profile。
+
+## 21. 完成定义
+
+### 21.1 显式 Gadget 作者化门禁：基础设施完成
+
+以下全部满足：
+
+- policy-driven case 集合；
+- 无硬编码 17；
+- 两个 deterministic gadget 插件被过滤；
+- finite gadget namespace allowlist 生效；
+- 结构化 plan schema、renderer、checker 和 repair 工作；
+- authorship evidence 可重放；
+- Lean dependency final-use 审计工作；
+- 全部 unit、negative 和 smoke tests 通过；
+- production 模式无行为回归。
+
+### 21.2 显式 Gadget 作者化门禁：开发 canary 完成
+
+- q-b02 与三个 dev fixture 全部产生明确终态；
+- 至少一个真实模型 gadget 完成 component + root final-use；
+- 所有失败都能归入稳定 failure taxonomy；
+- 无 deterministic fallback；
+- 无 forbidden dependency；
+- 无 oracle 泄漏。
+
+### 21.3 显式 Gadget 作者化门禁：正式评测完成
+
+- validation 和 heldout 使用冻结配置；
+- 30 题全部完成；
+- 3 个 anchor verified；
+- 27 个 required case 均为
+  `MODEL_GADGET_VERIFIED_AND_FINAL_USED`；
+- independent Lean replay 全通过；
+- forbidden dependency 为 0；
+- disabled plugin contribution 为 0；
+- full report、逐题 artifact 和 provenance receipts 完整。
+
+未达到 27/27 时，显式 Gadget 作者化门禁的严格能力判定保持失败，但基础设施仍可视为完成；报告必须如实给出模型
+实际成功率。
+
+### 21.4 Gadget 正确性证明门禁完成
+
+- 构造性正确性证书 proof plan 可验证；
+- Gadget Lean 双向证明 witness、forward、reverse、assembly 均由模型生成；
+- whole-goal decide closure 为 0；
+- frozen 显式 Gadget 作者化门禁 payload 无变化；
+- validation 关系类型覆盖完成；
+- full run 给出 unique proof-plan 与 instance coverage。
+
+### 21.5 公式语义作者化门禁完成
+
+- 公式语义提升 generic theorem通过；
+- Assignment Witness 作者化 assignment transformation 来自模型；
+- semantic compiler leak 为 0；
+- forward/reverse/iff 全部 final-used；
+- 27 个 required case final-use；
+- unique theorem count 与实例化数分离。
+
+### 21.6 Direct-TM 复杂度作者化门禁完成
+
+- 程序 DAG 与增长界 generic direct-TM theorem通过；
+- growth certificate model-authored；
+- deterministic direct-TM compiler leak 为 0；
+- program DAG 核心节点 model-authored；
+- 27 个 required case final-use；
+- 底层解释器编译证明 至少完成一个 diagnostic canary 或明确标为后续高风险项。
+
+### 21.7 源 NP-hard 归约作者化门禁完成
+
+- 3SAT→NAE-3 完整 reduction 通过；
+- 3SAT→1-IN-3 组合路线通过；
+- program、forward、reverse、growth 和 certificate 来源可追踪；
+- existing source route dependency 为 0；
+- 两个 root hardness artifacts 独立重放通过。
+
+### 21.8 证书与 Hardness 量词作者化门禁完成
+
+- CertifiedReduction 记录构造、CertifiedReduction 手工组合、NativeTMNPHard 手工运输 generic artifacts通过；
+- 高层 packager dependency 为 0；
+- 27 个 required case final-use；
+- formal glue 与数学 novelty 严格分离；
+- endpoint audit 和独立重放通过。
+
+### 21.9 整体计划完成
+
+只有在以下事实能够从报告自动验证时，整个 improvement plan 才完成：
+
+- gadget 构造由模型产生；
+- gadget proof 由模型产生；
+- generic formula semantics 由模型产生；
+- generic complexity proof 和增长界由模型产生；
+- 至少一条 source hard-core reduction 由模型产生；
+- certificate assembly 来源单独归类；
+- 所有最终结论具有 dependency、source hash 和 independent replay 证据；
+- reuse、deterministic、hybrid、model 和 glue 不再混淆。
+
+## 22. 当前优先级
+
+按以下顺序执行，不并行扩大范围：
+
+1. 冻结对照报告；
+2. GatePolicy、插件过滤、动态 case evaluator；
+3. 结构化 gadget plan 与 renderer；
+4. 有限 checker 与 repair；
+5. 作者归因和 dependency final-use；
+6. q-b02 + dev fixtures；
+7. 冻结后 validation；
+8. heldout 与完整 30 题；
+9. 构造性正确性证书：proof plan 与 witness schema；
+10. Gadget Lean 双向证明：forward/reverse Lean authoring；
+11. 公式语义提升：公式提升；
+12. Assignment Witness 作者化：assignment witness；
+13. Direct-TM API 校准：API 校准，不计正式得分；
+14. 程序 DAG 与增长界；
+15. 3SAT→NAE-3 源归约：3SAT→NAE3；
+16. 3SAT→1-IN-3 源归约：组合得到 1-IN-3；
+17. CertifiedReduction 记录构造/CertifiedReduction 手工组合/NativeTMNPHard 手工运输；
+18. 底层解释器编译证明 与 直接 3SAT→1-IN-3 源归约扩展 高风险扩展。
+
+在显式 Gadget 作者化门禁完成前，不启动全量语义与复杂度作者化、源 NP-hard 归约作者化门禁或
+证书与 Hardness 量词作者化门禁，也不通过新增 deterministic template 提高通过率。
+
+每一层只有在以下条件满足后才能升级：
+
+- 当前层工程性 failure 已接近零；
+- 当前层至少一个真实模型 artifact verified；
+- contribution attribution 完整；
+- forbidden dependency audit 稳定；
+- independent replay 稳定；
+- 下一层不会把当前层失败重新混入测量。
+
+## 23. 自适应 Token 收敛门禁（2026-08-22 阶段）
+
+### 23.1 触发证据
+
+随机补充题 q-b21 至 q-b30 的真实 API 高预算诊断报告
+`Reports/GENERAL_AGENT_BOOLEAN_CSP_HIGH_TOKEN_RANDOM10_REAL_API_REPORT.json`
+显示：64k 单档从 16k 基线的 2/10 提升到 6/10，但 q-b23、q-b27、q-b29 的两个 source-core
+调用仍在 64k 以 `finish_reason=length` 终止；q-b24 则先产生可检查但错误的 gadget，再在语义 repair
+阶段耗尽 64k。由此，下一阶段不把所有请求无条件放大，而是把“上下文不足”“搜索不收敛”和“语义
+修复不收敛”拆成可审计终态。
+
+### 23.2 冻结调用协议
+
+- 模型配置 ceiling 固定为 64k，单个逻辑 authoring attempt 首先使用 16k；
+- 只有未产生有效 plan 且 provider 明确返回 `finish_reason=length` 时，允许一次 64k 升级；
+- 升级调用必须保持 system prompt、JSON prompt、answer-free brief、repair base hash、case、source core
+  和 logical attempt 不变；以 request payload SHA-256 自动审计；
+- schema invalid、semantic counterexample、Lean failure、timeout、HTTP error 和普通空响应不得触发 token
+  升级；它们继续走各自 repair 或 failure taxonomy；
+- 每个逻辑 attempt 最多一次升级，不允许 64k 后继续扩大或无界重试；
+- 运行预算提升为 `max_authoring_calls=24`、`max_model_calls=32`，覆盖两个允许 source core 在六个逻辑
+  attempt 下的最坏 16k→64k 调用数，并保持 strategy 与 authoring 总预算闭合。
+
+### 23.3 新增终态与归因
+
+- `MODEL_SEARCH_NONCONVERGENT`：同一提示词在 16k 和 64k 均以 length 终止；
+- `GADGET_SEMANTIC_REPAIR_FAILED`：已有有限语义反例，针对该反例的同上下文 repair 在 16k 和 64k
+  均不收敛；
+- `GADGET_SEMANTIC_COUNTEREXAMPLE` 仅表示模型确实返回了可解析 plan 且 finite checker 给出反例，不再
+  混入 repair token 耗尽；
+- 每个 model call 和 typed receipt 必须记录 token profile、requested max tokens、finish reason、prompt
+  hash、logical/transport attempt、source core、authoring context key 和 escalation lineage；
+- full report 分别汇总 base/high 调用数、length 次数、成功升级数、终止不收敛数、语义 repair 不收敛数
+  和各 source-core 调用数。
+
+### 23.4 阶段门禁
+
+- generator/receipt/policy/freeze 协议全部升版并重新计算组件哈希；
+- 单元测试覆盖 16k 直接成功、16k length→64k 成功、双 length 非收敛、语义 repair 双 length、非 length
+  错误不升级、预算与 base-hash 审计；
+- 全量本地测试和 Lean 独立重放通过；
+- 阶段完成后，必须使用冻结配置和真实网络 API 重新运行 CSP benchmark 全部 30 题；
+- 只有完整报告、30 个逐题终态、API/usage 记账、forbidden dependency、final-use、source-route 和自适应
+  token 审计均完整，才允许进入下一阶段。
+
+### 23.5 真实 API 执行结果
+
+冻结 full30 于 2026-08-22 使用真实 DeepSeek API 完成，正式报告为
+`Reports/GENERAL_AGENT_BOOLEAN_CSP_ADAPTIVE_TOKEN_FULL30_REAL_API_REPORT.json`：
+
+- 30/30 题均形成终态，3/3 anchor verified；
+- 27 个 required case 中 23 个达到 `MODEL_GADGET_VERIFIED_AND_FINAL_USED`，作者化成功率为
+  23/27（85.19%），全套为 26/30 verified；
+- q-b23、q-b24、q-b26 为 `MODEL_SEARCH_NONCONVERGENT`，q-b30 为
+  `GADGET_SEMANTIC_REPAIR_FAILED`，因此严格能力门禁保持失败；
+- 156 次真实外部调用中 155 次 HTTP 200，总计 2,739,581 tokens；54 次 16k base、36 次 64k
+  escalation、47 次 length exhaustion、24 次成功升级、11 个终止不收敛 receipt、5 个语义 repair
+  不收敛 receipt；
+- configuration freeze、forbidden dependency、final-use、作者归因、source-route、base-hash、升级链和
+  token-profile 审计全部通过；正式运行唯一 API 完整性失败来自 q-b24 repair 的一次偶发
+  `IncompleteRead`；
+- q-b24 随后以同配置单题隔离复测，报告为
+  `Reports/GENERAL_AGENT_BOOLEAN_CSP_ADAPTIVE_TOKEN_Q24_NETWORK_RETRY_REAL_API_REPORT.json`；两条
+  source-core 路线的 16k/64k 共四次 gadget-authoring 调用均 HTTP 200 且均以
+  `finish_reason=length` 终止，确认网络中断不是该题失败的主因。
+
+本阶段的自适应 token 协议与审计基础设施视为完成，但显式 Gadget 作者化的严格能力门禁不通过。
+下一阶段应优先实现 source-core 路线排序与路线级止损，并让 repair 根据有限语义反例产生受控多样性；
+不得把继续提高 max token 作为主改进手段。
+
+---
+
+本计划的最终判据不是“Agent 是否调用过模型”或“最终 Lean 文件是否通过”，而是：
+
+> 对每一层被声称为模型生成的数学内容，能否指出其精确语义载荷、模型 source hash、
+> Lean 声明、依赖闭包和最终使用路径，并证明确定性系统只完成了该层政策允许的验证、
+> 序列化或中性组装工作。

@@ -9,6 +9,7 @@ from typing import Mapping, Sequence
 from .context_capsule import ContextCapsule
 from .model.protocol import AuthoringProposal
 from .models import (
+    AuthorshipEvidence,
     CandidateAction,
     CandidateRole,
     CapabilityKind,
@@ -328,6 +329,7 @@ def contribution_from_verified_generation(
     declaration: str,
     implementation: str,
     source_hash: str,
+    authorship_evidence: AuthorshipEvidence | None = None,
 ) -> ContributionReceipt:
     receipt_by_id = {
         receipt.candidate_id: receipt for receipt in substep_plan.candidate_receipts
@@ -368,6 +370,7 @@ def contribution_from_verified_generation(
             if item.get("helper_id")
         ),
         model_generated_source_hashes=(source_hash,),
+        authorship_evidence=authorship_evidence,
         forbidden_audit_passed=True,
         independent_lean_passed=True,
     )

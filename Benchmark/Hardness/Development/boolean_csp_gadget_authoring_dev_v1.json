@@ -1,0 +1,36 @@
+{
+  "schema_version": "boolean_csp_gadget_authoring_dev_suite_v1",
+  "suite_id": "boolean-csp-gadget-authoring-dev-v1",
+  "objective": "prove_np_hard",
+  "final_lean_type": "ComplexityReduction.Certificate.NativeTMNPHard input",
+  "cases": [
+    {
+      "case_id": "q-b02-positive-nae4",
+      "split": "dev",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case02PositiveNAE4",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case02PositiveNAE4.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "ga-dev-random-hard4",
+      "split": "dev",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.GadgetAuthoringDevRandomHard4",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.GadgetAuthoringDevRandomHard4.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "ga-dev-dual-exactly-five7",
+      "split": "dev",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.GadgetAuthoringDevDualExactlyFive7",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.GadgetAuthoringDevDualExactlyFive7.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "ga-dev-mixed-nand2-or3",
+      "split": "dev",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.GadgetAuthoringDevMixedNAND2OR3",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.GadgetAuthoringDevMixedNAND2OR3.problem",
+      "budget_profile": "formal-default"
+    }
+  ]
+}

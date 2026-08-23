@@ -1,7 +1,7 @@
 {
   "schema_version": "hardness_benchmark_registry_v1",
   "benchmark_id": "np-hard-real-reduction-v1",
-  "description": "The single 78-case hardness benchmark registry: 32 capability cases, 2 frontier cases, 24 exact reduction edges, and 20 Boolean CSP cases. All execution is owned by scripts/run_hardness_benchmark.py.",
+  "description": "The single 88-case hardness benchmark registry: 32 capability cases, 2 frontier cases, 24 exact reduction edges, and 30 Boolean CSP cases. All execution is owned by scripts/run_hardness_benchmark.py.",
   "sources": {
     "capability": {
       "manifest": "Benchmark/Hardness/CAPABILITY_MANIFEST_V2.json",
@@ -29,16 +29,16 @@
       "split_counts": {
         "dev": 4,
         "validation": 6,
-        "heldout": 10
+        "heldout": 20
       }
     }
   },
   "capability_case_count": 32,
   "exact_edge_case_count": 24,
   "frontier_case_count": 2,
-  "boolean_csp_case_count": 20,
-  "total_case_count": 78,
-  "scored_case_count": 76,
+  "boolean_csp_case_count": 30,
+  "total_case_count": 88,
+  "scored_case_count": 86,
   "oracles": {
     "capability": {
       "file": "Evaluation/np_hard_capability_oracle_v2.json",
@@ -832,6 +832,106 @@
       "family": "boolean-csp",
       "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case20OR3XOR2",
       "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case20OR3XOR2.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b21-random-table-a",
+      "kind": "boolean_csp",
+      "split": "heldout",
+      "tier": "C0",
+      "family": "boolean-csp",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case21RandomTableA",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case21RandomTableA.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b22-random-table-b",
+      "kind": "boolean_csp",
+      "split": "heldout",
+      "tier": "C0",
+      "family": "boolean-csp",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case22RandomTableB",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case22RandomTableB.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b23-random-table-c",
+      "kind": "boolean_csp",
+      "split": "heldout",
+      "tier": "C0",
+      "family": "boolean-csp",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case23RandomTableC",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case23RandomTableC.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b24-random-table-d",
+      "kind": "boolean_csp",
+      "split": "heldout",
+      "tier": "C0",
+      "family": "boolean-csp",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case24RandomTableD",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case24RandomTableD.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b25-random-table-e",
+      "kind": "boolean_csp",
+      "split": "heldout",
+      "tier": "C0",
+      "family": "boolean-csp",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case25RandomTableE",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case25RandomTableE.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b26-random-table-f",
+      "kind": "boolean_csp",
+      "split": "heldout",
+      "tier": "C0",
+      "family": "boolean-csp",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case26RandomTableF",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case26RandomTableF.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b27-random-table-g",
+      "kind": "boolean_csp",
+      "split": "heldout",
+      "tier": "C0",
+      "family": "boolean-csp",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case27RandomTableG",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case27RandomTableG.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b28-random-table-h",
+      "kind": "boolean_csp",
+      "split": "heldout",
+      "tier": "C0",
+      "family": "boolean-csp",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case28RandomTableH",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case28RandomTableH.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b29-random-table-i",
+      "kind": "boolean_csp",
+      "split": "heldout",
+      "tier": "C0",
+      "family": "boolean-csp",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case29RandomTableI",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case29RandomTableI.problem",
+      "budget_profile": "formal-default"
+    },
+    {
+      "case_id": "q-b30-random-table-j",
+      "kind": "boolean_csp",
+      "split": "heldout",
+      "tier": "C0",
+      "family": "boolean-csp",
+      "module": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case30RandomTableJ",
+      "problem": "Benchmark.Hardness.Inputs.BooleanCSPNPHard.Case30RandomTableJ.problem",
       "budget_profile": "formal-default"
     }
   ]

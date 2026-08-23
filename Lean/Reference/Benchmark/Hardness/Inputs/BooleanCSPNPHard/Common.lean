@@ -35,6 +35,17 @@ def pairGamma (falseRelation trueRelation : BoolRel) : Gamma where
     | false => falseRelation
     | true => trueRelation
 
+/-- Binary index of a tuple in lexicographic order `000...0, ..., 111...1`. -/
+def tupleIndex {arity : Nat} (tuple : BoolTuple arity) : Nat :=
+  (List.ofFn tuple).foldl (fun index bit => index * 2 + bit.toNat) 0
+
+/--
+Build a Boolean relation from a truth-table bit mask. Bit `i` is set exactly
+when the tuple whose `tupleIndex` is `i` is accepted.
+-/
+def truthTableRel (arity mask : Nat) : BoolRel :=
+  BoolRel.ofPredicate arity fun tuple => mask.testBit (tupleIndex tuple) = true
+
 end
 
 end Benchmark.Hardness.Inputs.BooleanCSPNPHard.Common

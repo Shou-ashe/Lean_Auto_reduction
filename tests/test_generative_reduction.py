@@ -43,6 +43,7 @@ from agent.generative_reduction.goal_kind_adapters import classify_goal
 from agent.generative_reduction.models import (
     ActionDisposition,
     ApplicationFrame,
+    AuthorshipEvidence,
     BinderSlot,
     CandidateReceipt,
     CandidateRole,
@@ -104,6 +105,7 @@ from agent.generative_reduction.reconstruction import (
     build_authored_capability_source,
     build_authored_artifact_source,
     build_frame_check_source,
+    build_search_artifact_source,
 )
 from agent.generative_reduction.recursive_runtime import RecursiveSearchRuntime
 from agent.generative_reduction.generator_protocol import (
@@ -115,6 +117,7 @@ from agent.generative_reduction.model.protocol import AuthoringProposal
 from agent.generative_reduction.boolean_csp_capability_gate import (
     evaluate_capability_gate,
 )
+from agent.generative_reduction.capability_gate_policy import CapabilityGatePolicy
 from agent.generative_reduction.search import SearchCoordinator
 from agent.generative_reduction.lean_bridge import (
     RuleInstantiationReceipt,
@@ -441,6 +444,21 @@ def test_planner_generator_protocol_records_round_trip_without_losing_enums() ->
         status=GeneratorStatus.PROPOSED,
         implementation_body="exact ComplexityReduction.TMPolyTimeMap.id X",
     )
+    authorship = AuthorshipEvidence(
+        semantic_payload_schema="example_payload_v1",
+        semantic_payload_sha256="sha256:semantic",
+        model_response_sha256="sha256:model",
+        origin="model",
+        renderer_name="example-renderer",
+        renderer_version="example-renderer-v1",
+        renderer_added_semantic_atom_count=0,
+        validation_only_steps=("schema", "lean"),
+        variable_count=4,
+        constraint_count=2,
+        output_mapping=(0, 2),
+        relation_symbols_used=("target-0",),
+        repair_payload_hashes=("sha256:repair",),
+    )
     contribution = ContributionReceipt(
         capability_declaration="Generated.generatedDirectTM",
         contribution_class=ContributionClass.DETERMINISTIC_GENERATED_CAPABILITY,
@@ -448,6 +466,7 @@ def test_planner_generator_protocol_records_round_trip_without_losing_enums() ->
         plan_id=plan.plan_id,
         brief_id=brief.brief_id,
         generator_result_id=result.result_id,
+        authorship_evidence=authorship,
     )
     effect = PlannerEffectReceipt(
         plan_id=plan.plan_id,
@@ -469,6 +488,7 @@ def test_planner_generator_protocol_records_round_trip_without_losing_enums() ->
     assert CapabilityPlan.from_dict(asdict(plan)) == plan
     assert GeneratorBrief.from_dict(asdict(brief)) == brief
     assert GeneratorResult.from_dict(asdict(result)) == result
+    assert AuthorshipEvidence.from_dict(asdict(authorship)) == authorship
     assert ContributionReceipt.from_dict(asdict(contribution)) == contribution
     assert PlannerEffectReceipt.from_dict(asdict(effect)) == effect
     assert TheoremApplicationPlan.from_dict(asdict(theorem_plan)) == theorem_plan
@@ -1843,9 +1863,20 @@ end HeldOutCapabilityGeneration
 def test_capability_gate_requires_full_verified_plan_context_and_final_use_coverage(
     tmp_path: Path,
 ) -> None:
+    case_ids = tuple(f"SyntheticCase{ordinal + 1:02d}" for ordinal in range(20))
+    policy = CapabilityGatePolicy(
+        name="direct-tm",
+        policy_version="test-policy-v1",
+        required_case_ids=case_ids[3:],
+        anchor_case_ids=case_ids[:3],
+        required_capability_kind=CapabilityKind.DIRECT_TM,
+        required_contribution_classes=(
+            ContributionClass.DETERMINISTIC_GENERATED_CAPABILITY,
+        ),
+    )
     rows = []
     for ordinal in range(20):
-        case = f"SyntheticCase{ordinal + 1:02d}"
+        case = case_ids[ordinal]
         row = {
             "case": case,
             "proof_status": "VERIFIED",
@@ -1930,14 +1961,16 @@ def test_capability_gate_requires_full_verified_plan_context_and_final_use_cover
         },
         "cases": rows,
     }
-    evaluation = evaluate_capability_gate(report, "direct-tm")
+    evaluation = evaluate_capability_gate(report, "direct-tm", policy)
     assert evaluation["gate_passed"]
     assert evaluation["verified_case_count_with_final_used_match"] == 17
     incomplete = {
         **report,
         "results": {"verified_case_count": 3},
     }
-    assert not evaluate_capability_gate(incomplete, "direct-tm")["gate_passed"]
+    assert not evaluate_capability_gate(
+        incomplete, "direct-tm", policy
+    )["gate_passed"]
 
 
 def test_capability_dag_preserves_verified_stage_when_later_stage_fails(
@@ -2422,6 +2455,92 @@ def test_final_used_generated_capabilities_follow_root_dependency_graph() -> Non
 
     assert reachable == frozenset(
         {"Example.Generated.parent", "Example.Generated.child"}
+    )
+
+
+def test_search_artifact_emits_kernel_dependency_assertions() -> None:
+    root_goal = RootGoal(
+        input_module="Example.Input",
+        problem_declaration="Example.problem",
+        exact_type="Example.Root",
+        endpoint_fingerprint="example-root",
+    )
+    capability = GeneratedCapability(
+        capability_id="child",
+        exact_type="Example.Child",
+        declaration="Example.Generated.child",
+        namespace="Example.Generated",
+        implementation="noncomputable def child : Example.Child := Example.childProof",
+        source_hash="sha256:child",
+        action_id="generate-child",
+    )
+    completed = SimpleNamespace(
+        complete=True,
+        root_goal=root_goal,
+        root_fragment=ReusableFragment(
+            exact_type=root_goal.exact_type,
+            proof_term="Example.finish Example.Generated.child",
+        ),
+        application_frames=(),
+        completed_fragments=(),
+        generated_capabilities=(capability,),
+    )
+
+    source = build_search_artifact_source(
+        completed_state=completed,
+        input_module=root_goal.input_module,
+        problem_declaration=root_goal.problem_declaration,
+        required_declarations=(capability.declaration,),
+    )
+
+    assert (
+        "#generative_reduction_assert_transitive_dependency "
+        "ComplexityReduction.Agent.GenerativeReduction.Generated.problemIsNPHard "
+        '"Example.Generated.child"'
+    ) in source
+
+
+def test_route_audit_kernel_dependency_command_accepts_used_and_rejects_unused(
+    tmp_path: Path,
+) -> None:
+    passing = tmp_path / "RouteAuditDependencyPass.lean"
+    passing.write_text(
+        """import ComplexityReduction.Agent.GenerativeReduction.RouteAudit
+
+namespace RouteAuditDependencySmoke
+
+def child : Nat := 7
+def root : Nat := child
+
+#generative_reduction_assert_transitive_dependency RouteAuditDependencySmoke.root "RouteAuditDependencySmoke.child"
+
+end RouteAuditDependencySmoke
+""",
+        encoding="utf-8",
+    )
+    passing_command = run_lean_file(root=ROOT, path=passing, timeout_seconds=120)
+    assert passing_command.ok, passing_command.stderr or passing_command.stdout
+
+    failing = tmp_path / "RouteAuditDependencyFail.lean"
+    failing.write_text(
+        """import ComplexityReduction.Agent.GenerativeReduction.RouteAudit
+
+namespace RouteAuditDependencySmoke
+
+def child : Nat := 7
+def unused : Nat := 11
+def root : Nat := child
+
+#generative_reduction_assert_transitive_dependency RouteAuditDependencySmoke.root "RouteAuditDependencySmoke.unused"
+
+end RouteAuditDependencySmoke
+""",
+        encoding="utf-8",
+    )
+    failing_command = run_lean_file(root=ROOT, path=failing, timeout_seconds=120)
+    assert not failing_command.ok
+    assert "missing dependency RouteAuditDependencySmoke.unused" in (
+        failing_command.stderr or failing_command.stdout
     )
 
 
