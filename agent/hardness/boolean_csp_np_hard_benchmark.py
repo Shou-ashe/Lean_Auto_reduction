@@ -1,4 +1,4 @@
-"""Runner/scorer contracts for the twenty-case NP-hard Boolean CSP suite.
+"""Runner/scorer contracts for the thirty-case NP-hard Boolean CSP suite.
 
 The production run path reads only the answer-free public suite.  Oracle loading
 is exposed as a separate scoring operation and is never called by ``run_suite``.
@@ -40,7 +40,7 @@ ORACLE_SCHEMA = "boolean_csp_np_hard_oracle_v1"
 RUN_SCHEMA = "boolean_csp_np_hard_run_v1"
 SCORE_SCHEMA = "boolean_csp_np_hard_score_v1"
 SUITE_ID = "boolean-csp-np-hard-v1"
-CASE_COUNT = 20
+CASE_COUNT = 30
 SPLITS = frozenset({"dev", "validation", "heldout"})
 CASE_ID_RE = re.compile(r"[a-z0-9][a-z0-9-]*")
 DECL_RE = re.compile(r"[A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z_][A-Za-z0-9_]*)+")
@@ -121,7 +121,7 @@ def _exact_keys(value: Mapping[str, Any], expected: set[str], *, label: str) -> 
 
 
 def load_suite(path: Path) -> BooleanCSPSuite:
-    """Load and strictly validate the answer-free twenty-case public suite."""
+    """Load and strictly validate the answer-free thirty-case public suite."""
 
     resolved = path.resolve()
     value = _read_json(resolved, label="Boolean-CSP public suite")
@@ -180,7 +180,7 @@ def load_suite(path: Path) -> BooleanCSPSuite:
     if len(set(problems)) != CASE_COUNT or len(set(modules)) != CASE_COUNT:
         raise BooleanCSPBenchmarkError("each Boolean-CSP case needs an isolated module/problem")
     split_counts = {split: sum(case.split == split for case in cases) for split in SPLITS}
-    if split_counts != {"dev": 4, "validation": 6, "heldout": 10}:
+    if split_counts != {"dev": 4, "validation": 6, "heldout": 20}:
         raise BooleanCSPBenchmarkError(f"Boolean-CSP split counts drifted: {split_counts!r}")
     return BooleanCSPSuite(
         suite_id=value["suite_id"],
@@ -452,7 +452,9 @@ def load_oracle(path: Path, *, suite: BooleanCSPSuite) -> dict[str, Any]:
         raise BooleanCSPBenchmarkError("Boolean-CSP oracle identity mismatch")
     raw_cases = value["cases"]
     if not isinstance(raw_cases, list) or len(raw_cases) != CASE_COUNT:
-        raise BooleanCSPBenchmarkError("Boolean-CSP oracle must contain exactly twenty cases")
+        raise BooleanCSPBenchmarkError(
+            f"Boolean-CSP oracle must contain exactly {CASE_COUNT} cases"
+        )
     expected_fields = {
         "case_id",
         "expected_public_status",

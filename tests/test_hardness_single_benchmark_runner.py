@@ -40,7 +40,7 @@ def test_runner_does_not_delegate_to_python_scripts() -> None:
     assert "subprocess" not in boolean_backend
 
 
-def test_only_runner_lists_exactly_all_78_suite_cases() -> None:
+def test_only_runner_lists_exactly_all_88_suite_cases() -> None:
     completed = subprocess.run(
         [sys.executable, str(RUNNER), "--list"],
         cwd=ROOT,
@@ -54,11 +54,11 @@ def test_only_runner_lists_exactly_all_78_suite_cases() -> None:
         "capability": 32,
         "frontier": 2,
         "exact_edge": 24,
-        "boolean_csp": 20,
-        "total": 78,
+        "boolean_csp": 30,
+        "total": 88,
     }
     listed = [case_id for cases in payload["lanes"].values() for case_id in cases]
-    assert len(listed) == len(set(listed)) == 78
+    assert len(listed) == len(set(listed)) == 88
 
     suite_cases: set[str] = set()
     for path in (ROOT / "Benchmark" / "Hardness" / "Suites").glob("*.json"):

@@ -13,7 +13,18 @@ from typing import Callable, Mapping, MutableSequence, Sequence
 
 from agent.hardness.model_client import DeepSeekClient, DeepSeekConfig
 
+from .boolean_csp_gadget_authoring import (
+    BooleanCSPGadgetAuthoringBrief,
+    BooleanCSPGadgetContext,
+    BooleanCSPGadgetProtocolError,
+    GADGET_AUTHORING_RECEIPT_SCHEMA,
+    GADGET_PLAN_SCHEMA,
+    check_explicit_gadget_plan,
+    gadget_endpoints,
+    render_boolean_csp_gadget_plan,
+)
 from .budgets import BudgetExhausted, BudgetTracker
+from .capability_gate_policy import CapabilityGatePolicy
 from .capability_planner import CapabilityPlanner
 from .context_capsule import ContextCapsule, build_context_capsule
 from .construction_basis import (
@@ -52,12 +63,21 @@ from .model import (
     propose_strategy,
     validate_strategy_proposal,
 )
+from .model.gadget_authoring import (
+    BooleanCSPGadgetModelAttempt,
+    GADGET_AUTHORING_BASE_TOKEN_PROFILE,
+    GADGET_AUTHORING_ESCALATED_TOKEN_PROFILE,
+    propose_gadget_plan_repair,
+    propose_initial_gadget_plan,
+)
 from .models import (
     ActionDisposition,
     ApplicationFrame,
+    AuthorshipEvidence,
     BinderSlot,
     CapabilityPlan,
     CandidateAction,
+    CapabilityKind,
     ContributionClass,
     ContributionReceipt,
     FrameStatus,
@@ -112,6 +132,87 @@ def _slot_exact_type(slot: BinderSlot | PremiseSlot) -> str | None:
     return slot.instantiated_exact_type
 
 
+def _gadget_authoring_action_rejection(
+    *,
+    policy: CapabilityGatePolicy | None,
+    case_id: str | None,
+    goal: OpenGoal,
+    plan: SubstepPlan,
+    action: CandidateAction,
+) -> str | None:
+    """Reject proof actions that introduce an unsupported gadget source core."""
+
+    if (
+        policy is None
+        or policy.name != "gadget-authoring"
+        or case_id not in set(policy.required_case_ids)
+    ):
+        return None
+    allowed = set(policy.allowed_gadget_source_declarations)
+    if not allowed:
+        return "gadget-authoring policy has no allowed source core"
+    residual_by_id = {
+        item.obligation_id: item.exact_type for item in plan.residual_obligations
+    }
+    exact_types = (
+        goal.exact_type,
+        *(
+            residual_by_id[obligation_id]
+            for obligation_id in action.residual_obligation_ids
+            if obligation_id in residual_by_id
+        ),
+    )
+    for exact_type in exact_types:
+        endpoints = gadget_endpoints(exact_type)
+        if endpoints is None:
+            continue
+        source_handle, _, _ = endpoints
+        if contains_unresolved_metavariable(source_handle):
+            continue
+        if source_handle not in allowed:
+            return (
+                "gadget-authoring action introduces unsupported source core "
+                f"{source_handle}"
+            )
+    return None
+
+
+def _gadget_authoring_data_witness_entries(
+    *,
+    policy: CapabilityGatePolicy | None,
+    case_id: str | None,
+    goal: OpenGoal,
+    frame: ApplicationFrame,
+    entries: Sequence[TheoremIndexEntry],
+) -> tuple[TheoremIndexEntry, ...]:
+    """Keep only policy-approved source Gamma witnesses before lookahead."""
+
+    if (
+        policy is None
+        or policy.name != "gadget-authoring"
+        or case_id not in set(policy.required_case_ids)
+        or not _same_type(
+            goal.exact_type, "ComplexityReduction.Domain.BooleanCSP.Gamma"
+        )
+        or goal.producer_slot_id is None
+    ):
+        return tuple(entries)
+    dependent_types = tuple(
+        exact_type
+        for slot in frame.slots
+        if goal.producer_slot_id in slot.dependency_slot_ids
+        if (exact_type := _slot_exact_type(slot)) is not None
+    )
+    if not any(
+        "ComplexityReduction.Domain.BooleanCSP.Hardness.LanguageInterpretation"
+        in " ".join(exact_type.split())
+        for exact_type in dependent_types
+    ):
+        return tuple(entries)
+    allowed = set(policy.allowed_gadget_source_declarations)
+    return tuple(entry for entry in entries if entry.declaration in allowed)
+
+
 class RecursiveSearchRuntime:
     def __init__(
         self,
@@ -132,6 +233,8 @@ class RecursiveSearchRuntime:
         model_calls: MutableSequence[ModelCallRecord],
         event_sink: EventSink | None = None,
         finite_plugins: Sequence[FiniteSynthesisPlugin] = (),
+        gate_policy: CapabilityGatePolicy | None = None,
+        capability_gate_case_id: str | None = None,
     ):
         self.root = root.resolve()
         self.store = store
@@ -149,6 +252,8 @@ class RecursiveSearchRuntime:
         self.commands = commands
         self.model_calls = model_calls
         self.event_sink = event_sink
+        self.gate_policy = gate_policy
+        self.capability_gate_case_id = capability_gate_case_id
         self._finite_plugins = {plugin.name: plugin for plugin in finite_plugins}
         self._candidate_cache: dict[str, tuple[TheoremIndexEntry, ...]] = {}
         self._construction_basis_cache: dict[str, ConstructionBasisReceipt] = {}
@@ -163,6 +268,8 @@ class RecursiveSearchRuntime:
         self._frame_actions: dict[str, CandidateAction] = {}
         self._strategy_decisions: dict[str, StrategyDecision] = {}
         self._candidate_source_hashes: set[str] = set()
+        self._gadget_semantic_payload_hashes: set[str] = set()
+        self._gadget_authoring_context_keys_attempted: set[str] = set()
         self._verified_plugin_stage_sources: set[str] = set()
         self._synthesis_designs: dict[str, SynthesisDesign] = {}
         self._counted_synthesis_design_ids: set[str] = set()
@@ -185,6 +292,22 @@ class RecursiveSearchRuntime:
             tracker=tracker,
             checker=self.check_closure,
             finite_plugins=finite_plugins,
+        )
+
+    def gate_action_rejection(
+        self,
+        state: ProofState,
+        goal: OpenGoal,
+        plan: SubstepPlan,
+        action: CandidateAction,
+    ) -> str | None:
+        del state
+        return _gadget_authoring_action_rejection(
+            policy=self.gate_policy,
+            case_id=self.capability_gate_case_id,
+            goal=goal,
+            plan=plan,
+            action=action,
         )
 
     def _event(self, name: str, **details: object) -> None:
@@ -1020,6 +1143,29 @@ class RecursiveSearchRuntime:
             except KeyError:
                 has_dependent_sibling = False
         if goal.kind == GoalKind.DATA and has_dependent_sibling:
+            frame = state.frame(goal.producer_frame_id)
+            policy_entries = _gadget_authoring_data_witness_entries(
+                policy=self.gate_policy,
+                case_id=self.capability_gate_case_id,
+                goal=goal,
+                frame=frame,
+                entries=entries,
+            )
+            if len(policy_entries) != len(entries):
+                retained = {entry.candidate_id for entry in policy_entries}
+                self._event(
+                    "DATA_WITNESS_CANDIDATES_PRUNED_GATE_POLICY",
+                    goal_id=goal.goal_id,
+                    retained_declarations=[
+                        entry.declaration for entry in policy_entries
+                    ],
+                    pruned_declarations=[
+                        entry.declaration
+                        for entry in entries
+                        if entry.candidate_id not in retained
+                    ],
+                )
+            entries = policy_entries
             entries = self._rank_data_witnesses(state, goal, entries)
         self._last_candidates_by_goal[goal.goal_id] = tuple(entries)
         return entries
@@ -3143,6 +3289,1188 @@ class RecursiveSearchRuntime:
             )
         return state, None
 
+    def _execute_structured_boolean_csp_gadget_authoring(
+        self,
+        *,
+        state: ProofState,
+        goal: OpenGoal,
+        plan: SubstepPlan,
+        action: CandidateAction,
+        design: SynthesisDesign,
+        declaration_name: str,
+        namespace: str,
+        digest: str,
+    ) -> ProofState | None:
+        """Run the answer-free structured protocol when its gate is active.
+
+        ``None`` means the policy does not apply to this goal.  Once a required
+        gate case reaches any Gadget/LanguageInterpretation goal, the generic
+        free-form Lean author is intentionally not used as a fallback.
+        """
+
+        policy = self.gate_policy
+        case_id = self.capability_gate_case_id
+        if (
+            policy is None
+            or policy.name != "gadget-authoring"
+            or case_id not in set(policy.required_case_ids)
+            or gadget_endpoints(goal.exact_type) is None
+        ):
+            return None
+        if (
+            policy.max_gadget_variable_count is None
+            or policy.max_gadget_constraint_count is None
+            or policy.gadget_authoring_base_max_tokens is None
+            or policy.gadget_authoring_escalated_max_tokens is None
+            or policy.gadget_authoring_reasoning_effort is None
+            or policy.max_gadget_token_escalations_per_attempt != 1
+        ):
+            return state.remember_failure(
+                action=action,
+                diagnostic=(
+                    "gadget-authoring policy omitted structured resource or "
+                    "adaptive-token bounds"
+                ),
+                blocker_code="gadget_authoring_policy_incomplete",
+                goal_id=goal.goal_id,
+            )
+        if (
+            self.deepseek is not None
+            and self.deepseek.max_tokens
+            < policy.gadget_authoring_escalated_max_tokens
+        ):
+            return state.remember_failure(
+                action=action,
+                diagnostic=(
+                    "configured model token ceiling is below the policy-bound "
+                    "gadget-authoring escalation profile"
+                ),
+                blocker_code="gadget_authoring_model_ceiling_too_low",
+                goal_id=goal.goal_id,
+            )
+        base_max_tokens = policy.gadget_authoring_base_max_tokens
+        escalated_max_tokens = policy.gadget_authoring_escalated_max_tokens
+        authoring_reasoning_effort = policy.gadget_authoring_reasoning_effort
+        try:
+            context = BooleanCSPGadgetContext.create(
+                case_id=case_id or "",
+                input_module=self.input_module,
+                exact_goal=goal.exact_type,
+                policy_sha256=policy.policy_sha256,
+                max_variable_count=policy.max_gadget_variable_count,
+                max_constraint_count=policy.max_gadget_constraint_count,
+            )
+        except BooleanCSPGadgetProtocolError as error:
+            self._event(
+                "GADGET_AUTHORING_CONTEXT_REJECTED",
+                goal_id=goal.goal_id,
+                action_id=action.action_id,
+                case_id=case_id,
+                error_code=error.code,
+                error=error.message,
+            )
+            return state.remember_failure(
+                action=action,
+                diagnostic=error.message,
+                blocker_code=error.code,
+                goal_id=goal.goal_id,
+            )
+
+        source_truth_table_sha256 = context.source.prompt_dict()[
+            "truth_table_sha256"
+        ]
+        target_truth_table_sha256 = context.target.prompt_dict()[
+            "truth_table_sha256"
+        ]
+        authoring_context_key = stable_sha256(
+            {
+                "case_id": case_id,
+                "source_core": context.source_core,
+                "source_truth_table_sha256": source_truth_table_sha256,
+                "target_truth_table_sha256": target_truth_table_sha256,
+                "policy_sha256": policy.policy_sha256,
+            }
+        )
+        if authoring_context_key in self._gadget_authoring_context_keys_attempted:
+            self._event(
+                "GADGET_AUTHORING_CONTEXT_DUPLICATE_REJECTED",
+                goal_id=goal.goal_id,
+                action_id=action.action_id,
+                case_id=case_id,
+                source_core=context.source_core,
+                authoring_context_key=authoring_context_key,
+            )
+            return state.remember_failure(
+                action=action,
+                diagnostic=(
+                    "the same case/source/target semantic authoring context was "
+                    "already attempted"
+                ),
+                blocker_code="duplicate_gadget_authoring_context",
+                goal_id=goal.goal_id,
+            )
+        self._gadget_authoring_context_keys_attempted.add(authoring_context_key)
+
+        context_receipt_id = (
+            "gadget-context-"
+            + context.context_sha256.removeprefix("sha256:")[:24]
+        )
+        design = self._store_design(
+            design.transition(
+                "context-ready",
+                status="context-ready",
+                context_capsule_id=context_receipt_id,
+            )
+        )
+        witness_contract = {
+            "semantic_payload_schema": policy.semantic_payload_schema,
+            "source_core": context.source_core,
+            "source_truth_table_sha256": source_truth_table_sha256,
+            "target_truth_table_sha256": target_truth_table_sha256,
+            "context_sha256": context.context_sha256,
+            "authoring_context_key": authoring_context_key,
+            "max_variable_count": context.max_variable_count,
+            "max_constraint_count": context.max_constraint_count,
+            "base_max_tokens": base_max_tokens,
+            "escalated_max_tokens": escalated_max_tokens,
+            "reasoning_effort": authoring_reasoning_effort,
+            "max_token_escalations_per_attempt": (
+                policy.max_gadget_token_escalations_per_attempt
+            ),
+            "semantic_checker_name": policy.checker_name,
+            "semantic_checker_version": policy.checker_version,
+            "candidate_enumeration_allowed": False,
+        }
+        capability_plan = CapabilityPlan.create(
+            capability_kind=CapabilityKind.GADGET,
+            goal_id=goal.goal_id,
+            exact_goal=goal.exact_type,
+            selected_route="structured-model-authored-gadget",
+            selected_action_id=action.action_id,
+            selected_design_id=design.design_id,
+            forbidden_closure_ids=self.forbidden_declarations,
+            proof_outline=(
+                "model authors one BooleanCSPGadgetPlanV1 payload",
+                "runtime validates schema without searching",
+                "finite checker validates exactly that payload without generating candidates",
+                "canonical renderer serializes the payload one-for-one",
+                "Lean checks Spec.Correct and Spec.toGadget",
+            ),
+            witness_schema=witness_contract,
+            budget_allocation={
+                "initial_generation_calls_max": (
+                    1 + policy.max_gadget_token_escalations_per_attempt
+                ),
+                "repair_generation_calls_max": (
+                    policy.max_gadget_repairs
+                    * (1 + policy.max_gadget_token_escalations_per_attempt)
+                ),
+                "lean_check_per_valid_payload": 1,
+            },
+            context_requirements=(
+                "complete public source truth tables",
+                "complete public target truth tables",
+                "answer-free generator brief",
+                "policy-bound finite semantic checker",
+                "policy-bound renderer",
+            ),
+        )
+        generic_brief = GeneratorBrief.create(
+            plan=capability_plan,
+            exact_declaration_name=declaration_name,
+            exact_declaration_type=goal.exact_type,
+            fixed_declaration_envelope={
+                "header": (
+                    f"noncomputable def {declaration_name} : "
+                    f"{goal.exact_type} := by"
+                ),
+                "model_may_edit_header": "false",
+                "owner": "canonical-gadget-renderer",
+            },
+            selected_design={
+                **asdict(design),
+                "design_kind": "structured-model-authored-gadget",
+            },
+            witness_contract=witness_contract,
+            allowed_identifier_manifest=(
+                *policy.allowed_certificate_declarations,
+                context.source.handle,
+                context.target.handle,
+                context.target.constructor_declaration,
+            ),
+            forbidden_declarations=self.forbidden_declarations,
+        )
+        self._record_generator_plan(
+            plan=capability_plan,
+            brief=generic_brief,
+            action=action,
+            effect="issued-answer-free-structured-gadget-brief",
+        )
+        self._event(
+            "GADGET_AUTHORING_CONTEXT_READY",
+            goal_id=goal.goal_id,
+            action_id=action.action_id,
+            case_id=case_id,
+            context_sha256=context.context_sha256,
+            source_core=context.source_core,
+            source_truth_table_sha256=witness_contract[
+                "source_truth_table_sha256"
+            ],
+            target_truth_table_sha256=witness_contract[
+                "target_truth_table_sha256"
+            ],
+            answer_free=True,
+        )
+
+        previous_attempt: BooleanCSPGadgetModelAttempt | None = None
+        prior_failure: Mapping[str, object] | None = None
+        repair_payload_hashes: list[str] = []
+        last_diagnostic = "no structured gadget payload was accepted"
+        terminal_blocker_code = "structured_gadget_authoring_not_verified"
+        attempts = 1 + min(
+            policy.max_gadget_repairs,
+            self.tracker.budget.max_repairs_per_design,
+        )
+        for attempt_index in range(attempts):
+            logical_attempt = attempt_index + 1
+            logical_kind = "initial" if previous_attempt is None else "repair"
+            attempt_prior_failure = prior_failure
+            authoring_brief = BooleanCSPGadgetAuthoringBrief.create(
+                context=context,
+                forbidden_declarations=self.forbidden_declarations,
+                allowed_neutral_declaration_signatures=(
+                    *policy.allowed_certificate_declarations,
+                    context.source.handle,
+                    context.target.handle,
+                    context.target.constructor_declaration,
+                ),
+                prior_failure=prior_failure,
+            )
+            reservation_scope = stable_sha256(
+                {
+                    "case_id": case_id,
+                    "goal": goal.key.fingerprint,
+                    "action": action.action_id,
+                    "capability_plan": capability_plan.plan_id,
+                    "design": design.design_id,
+                    "gadget_brief": authoring_brief.brief_id,
+                    "attempt": logical_attempt,
+                    "transport_attempt": 1,
+                    "token_profile": GADGET_AUTHORING_BASE_TOKEN_PROFILE,
+                }
+            )
+            if not self._reserve_capability_budget(
+                scope_id=reservation_scope,
+                hierarchy=(
+                    f"case:{self.input_module}",
+                    "route:structured-gadget-authoring",
+                    f"capability:{capability_plan.plan_id}",
+                    f"design:{design.design_id}",
+                    f"logical-attempt:{logical_attempt}",
+                    "transport-attempt:1",
+                ),
+                requirements={
+                    "authoring_calls": 1,
+                    "model_calls": 1,
+                    "lean_checks": 1,
+                    "generated_files": 1,
+                },
+                goal_id=goal.goal_id,
+                action_id=action.action_id,
+            ):
+                last_diagnostic = (
+                    "capability-scoped budget cannot cover one structured "
+                    "Generator/Lean attempt"
+                )
+                terminal_blocker_code = "gadget_authoring_attempt_budget_exhausted"
+                break
+            self.tracker.consume("authoring_calls")
+            self.tracker.consume("model_calls")
+            design = self._store_design(
+                design.transition("materializing", status="materializing")
+            )
+
+            def invoke_profile(
+                *,
+                token_profile: str,
+                max_tokens: int,
+                transport_attempt: int,
+                escalation_of_response_sha256: str | None = None,
+            ) -> tuple[
+                BooleanCSPGadgetModelAttempt,
+                ModelCallRecord,
+                dict[str, object],
+            ]:
+                if previous_attempt is None:
+                    current_attempt, current_call = propose_initial_gadget_plan(
+                        model=self._client,
+                        brief=authoring_brief,
+                        token_profile=token_profile,
+                        max_tokens=max_tokens,
+                        reasoning_effort=authoring_reasoning_effort,
+                    )
+                else:
+                    current_attempt, current_call = propose_gadget_plan_repair(
+                        model=self._client,
+                        brief=authoring_brief,
+                        previous_attempt=previous_attempt,
+                        token_profile=token_profile,
+                        max_tokens=max_tokens,
+                        reasoning_effort=authoring_reasoning_effort,
+                    )
+                    repair_payload_hashes.append(
+                        current_attempt.response_payload_sha256
+                    )
+                current_call = replace(
+                    current_call,
+                    authoring_context_key=authoring_context_key,
+                    source_core=context.source_core,
+                    logical_attempt=logical_attempt,
+                    transport_attempt=transport_attempt,
+                    escalation_of_response_sha256=(
+                        escalation_of_response_sha256
+                    ),
+                )
+                current_call = self._record_model_call(current_call)
+                receipt: dict[str, object] = {
+                    "schema_version": GADGET_AUTHORING_RECEIPT_SCHEMA,
+                    "case_id": case_id,
+                    "input_module": self.input_module,
+                    "goal_id": goal.goal_id,
+                    "exact_goal": goal.exact_type,
+                    "action_id": action.action_id,
+                    "design_id": design.design_id,
+                    "design_kind": "structured-model-authored-gadget",
+                    "capability_plan_id": capability_plan.plan_id,
+                    "generic_generator_brief_id": generic_brief.brief_id,
+                    "gadget_brief": authoring_brief.prompt_dict(),
+                    "attempt": logical_attempt,
+                    "logical_attempt": logical_attempt,
+                    "transport_attempt": transport_attempt,
+                    "kind": logical_kind,
+                    "policy_sha256": policy.policy_sha256,
+                    "context_sha256": context.context_sha256,
+                    "authoring_context_key": authoring_context_key,
+                    "source_core": context.source_core,
+                    "answer_free": True,
+                    "model_attempt": current_attempt.to_receipt_dict(),
+                    "model_call_http_status": current_call.status_code,
+                }
+                self._event(
+                    "GADGET_AUTHORING_MODEL_RESPONSE",
+                    goal_id=goal.goal_id,
+                    action_id=action.action_id,
+                    case_id=case_id,
+                    source_core=context.source_core,
+                    authoring_context_key=authoring_context_key,
+                    attempt=logical_attempt,
+                    transport_attempt=transport_attempt,
+                    purpose=current_attempt.purpose,
+                    token_profile=current_attempt.token_profile,
+                    requested_max_tokens=current_attempt.requested_max_tokens,
+                    reasoning_effort=current_attempt.reasoning_effort,
+                    finish_reason=current_attempt.finish_reason,
+                    request_payload_sha256=(
+                        current_attempt.request_payload_sha256
+                    ),
+                    escalation_of_response_sha256=(
+                        escalation_of_response_sha256
+                    ),
+                    response_payload_sha256=(
+                        current_attempt.response_payload_sha256
+                    ),
+                    model_response_sha256=(
+                        current_attempt.model_response_sha256
+                    ),
+                    plan_id=(
+                        current_attempt.plan.plan_id
+                        if current_attempt.plan is not None
+                        else None
+                    ),
+                    protocol_error_code=current_attempt.error_code,
+                    http_status=current_call.status_code,
+                    network_attempts=current_call.attempts,
+                    error=current_call.error,
+                )
+                return current_attempt, current_call, receipt
+
+            model_attempt, call, attempt_receipt = invoke_profile(
+                token_profile=GADGET_AUTHORING_BASE_TOKEN_PROFILE,
+                max_tokens=base_max_tokens,
+                transport_attempt=1,
+            )
+            if model_attempt.length_exhausted:
+                base_attempt = model_attempt
+                base_receipt = attempt_receipt
+                escalation_scope = stable_sha256(
+                    {
+                        "case_id": case_id,
+                        "goal": goal.key.fingerprint,
+                        "action": action.action_id,
+                        "capability_plan": capability_plan.plan_id,
+                        "design": design.design_id,
+                        "gadget_brief": authoring_brief.brief_id,
+                        "attempt": logical_attempt,
+                        "transport_attempt": 2,
+                        "token_profile": (
+                            GADGET_AUTHORING_ESCALATED_TOKEN_PROFILE
+                        ),
+                    }
+                )
+                if not self._reserve_capability_budget(
+                    scope_id=escalation_scope,
+                    hierarchy=(
+                        f"case:{self.input_module}",
+                        "route:structured-gadget-authoring",
+                        f"capability:{capability_plan.plan_id}",
+                        f"design:{design.design_id}",
+                        f"logical-attempt:{logical_attempt}",
+                        "transport-attempt:2",
+                        "reason:length-exhausted",
+                    ),
+                    requirements={"authoring_calls": 1, "model_calls": 1},
+                    goal_id=goal.goal_id,
+                    action_id=action.action_id,
+                ):
+                    last_diagnostic = (
+                        "adaptive token escalation was required after "
+                        "finish_reason=length but its bounded budget was unavailable"
+                    )
+                    terminal_blocker_code = (
+                        "gadget_authoring_escalation_budget_exhausted"
+                    )
+                    failure = {
+                        "failure_class": "budget",
+                        "error_code": terminal_blocker_code,
+                        "message": last_diagnostic,
+                        "finish_reason": base_attempt.finish_reason,
+                    }
+                    base_receipt.update(
+                        {
+                            "status": "transport-escalation-budget-exhausted",
+                            "failure": failure,
+                        }
+                    )
+                    self._typed_plan_receipts[
+                        stable_sha256(base_receipt)
+                    ] = base_receipt
+                    self._repair_lineage.append(
+                        {
+                            "design_id": design.design_id,
+                            "attempt": logical_attempt,
+                            "transport_attempt": 1,
+                            "kind": logical_kind,
+                            "protocol": "structured-gadget-authoring",
+                            "failure_class": "budget",
+                            "gadget_brief_id": authoring_brief.brief_id,
+                            "authoring_context_key": authoring_context_key,
+                            "source_core": context.source_core,
+                            "request_payload_sha256": (
+                                base_attempt.request_payload_sha256
+                            ),
+                            "response_payload_sha256": (
+                                base_attempt.response_payload_sha256
+                            ),
+                            "model_response_sha256": (
+                                base_attempt.model_response_sha256
+                            ),
+                            "token_profile": base_attempt.token_profile,
+                            "requested_max_tokens": (
+                                base_attempt.requested_max_tokens
+                            ),
+                            "finish_reason": base_attempt.finish_reason,
+                            "status": (
+                                "transport-escalation-budget-exhausted"
+                            ),
+                            "diagnostic_code": terminal_blocker_code,
+                            "base_sha256": base_attempt.requested_base_sha256,
+                            "requested_base_sha256": (
+                                base_attempt.requested_base_sha256
+                            ),
+                            "returned_base_sha256": (
+                                base_attempt.returned_base_sha256
+                            ),
+                        }
+                    )
+                    break
+                escalation_failure = {
+                    "failure_class": "transport-length",
+                    "error_code": "gadget_authoring_output_length_exhausted",
+                    "message": (
+                        base_attempt.error
+                        or "base token profile exhausted before a plan was produced"
+                    ),
+                    "finish_reason": base_attempt.finish_reason,
+                    "escalated_to_token_profile": (
+                        GADGET_AUTHORING_ESCALATED_TOKEN_PROFILE
+                    ),
+                }
+                base_receipt.update(
+                    {
+                        "status": "transport-escalated",
+                        "failure": escalation_failure,
+                    }
+                )
+                self._typed_plan_receipts[stable_sha256(base_receipt)] = (
+                    base_receipt
+                )
+                self._repair_lineage.append(
+                    {
+                        "design_id": design.design_id,
+                        "attempt": logical_attempt,
+                        "transport_attempt": 1,
+                        "kind": logical_kind,
+                        "protocol": "structured-gadget-authoring",
+                        "failure_class": "transport-length",
+                        "gadget_brief_id": authoring_brief.brief_id,
+                        "authoring_context_key": authoring_context_key,
+                        "source_core": context.source_core,
+                        "request_payload_sha256": (
+                            base_attempt.request_payload_sha256
+                        ),
+                        "response_payload_sha256": (
+                            base_attempt.response_payload_sha256
+                        ),
+                        "model_response_sha256": (
+                            base_attempt.model_response_sha256
+                        ),
+                        "token_profile": base_attempt.token_profile,
+                        "requested_max_tokens": (
+                            base_attempt.requested_max_tokens
+                        ),
+                        "finish_reason": base_attempt.finish_reason,
+                        "status": "transport-escalated",
+                        "diagnostic_code": (
+                            "gadget_authoring_output_length_exhausted"
+                        ),
+                        "base_sha256": base_attempt.requested_base_sha256,
+                        "requested_base_sha256": (
+                            base_attempt.requested_base_sha256
+                        ),
+                        "returned_base_sha256": (
+                            base_attempt.returned_base_sha256
+                        ),
+                    }
+                )
+                self.tracker.consume("authoring_calls")
+                self.tracker.consume("model_calls")
+                model_attempt, call, attempt_receipt = invoke_profile(
+                    token_profile=GADGET_AUTHORING_ESCALATED_TOKEN_PROFILE,
+                    max_tokens=escalated_max_tokens,
+                    transport_attempt=2,
+                    escalation_of_response_sha256=(
+                        base_attempt.model_response_sha256
+                    ),
+                )
+                same_request = (
+                    model_attempt.request_payload_sha256
+                    == base_attempt.request_payload_sha256
+                )
+                same_base = (
+                    model_attempt.requested_base_sha256
+                    == base_attempt.requested_base_sha256
+                )
+                attempt_receipt["token_escalation"] = {
+                    "trigger_finish_reason": base_attempt.finish_reason,
+                    "from_token_profile": base_attempt.token_profile,
+                    "from_requested_max_tokens": (
+                        base_attempt.requested_max_tokens
+                    ),
+                    "from_model_response_sha256": (
+                        base_attempt.model_response_sha256
+                    ),
+                    "to_token_profile": model_attempt.token_profile,
+                    "to_requested_max_tokens": (
+                        model_attempt.requested_max_tokens
+                    ),
+                    "same_request_payload_sha256": same_request,
+                    "same_requested_base_sha256": same_base,
+                }
+                if not same_request or not same_base:
+                    last_diagnostic = (
+                        "adaptive token escalation changed the prompt or repair base"
+                    )
+                    terminal_blocker_code = (
+                        "gadget_authoring_escalation_context_drift"
+                    )
+                    failure = {
+                        "failure_class": "protocol",
+                        "error_code": terminal_blocker_code,
+                        "message": last_diagnostic,
+                    }
+                    attempt_receipt.update(
+                        {"status": "escalation-context-drift", "failure": failure}
+                    )
+                    self._typed_plan_receipts[
+                        stable_sha256(attempt_receipt)
+                    ] = attempt_receipt
+                    self._repair_lineage.append(
+                        {
+                            "design_id": design.design_id,
+                            "attempt": logical_attempt,
+                            "transport_attempt": 2,
+                            "kind": logical_kind,
+                            "protocol": "structured-gadget-authoring",
+                            "failure_class": "protocol",
+                            "gadget_brief_id": authoring_brief.brief_id,
+                            "authoring_context_key": authoring_context_key,
+                            "source_core": context.source_core,
+                            "request_payload_sha256": (
+                                model_attempt.request_payload_sha256
+                            ),
+                            "response_payload_sha256": (
+                                model_attempt.response_payload_sha256
+                            ),
+                            "model_response_sha256": (
+                                model_attempt.model_response_sha256
+                            ),
+                            "token_profile": model_attempt.token_profile,
+                            "requested_max_tokens": (
+                                model_attempt.requested_max_tokens
+                            ),
+                            "finish_reason": model_attempt.finish_reason,
+                            "status": "escalation-context-drift",
+                            "diagnostic_code": terminal_blocker_code,
+                        }
+                    )
+                    break
+            if model_attempt.plan is None:
+                last_diagnostic = (
+                    model_attempt.error
+                    or call.error
+                    or "structured gadget response failed schema validation"
+                )
+                escalation_exhausted = (
+                    model_attempt.length_exhausted
+                    and attempt_receipt.get("transport_attempt") == 2
+                )
+                semantic_repair_exhausted = (
+                    escalation_exhausted
+                    and logical_kind == "repair"
+                    and isinstance(attempt_prior_failure, Mapping)
+                    and attempt_prior_failure.get("failure_class") == "semantic"
+                )
+                transport_failed = (
+                    model_attempt.error_code
+                    == "gadget_authoring_transport_error"
+                )
+                if semantic_repair_exhausted:
+                    failure_class = "semantic-repair"
+                    failure_status = "semantic-repair-escalation-exhausted"
+                    diagnostic_code = "gadget_semantic_repair_nonconvergent"
+                    terminal_blocker_code = diagnostic_code
+                elif escalation_exhausted:
+                    failure_class = "search-nonconvergent"
+                    failure_status = "transport-escalation-exhausted"
+                    diagnostic_code = "gadget_authoring_search_nonconvergent"
+                    terminal_blocker_code = diagnostic_code
+                elif transport_failed:
+                    failure_class = "transport"
+                    failure_status = "transport-failed"
+                    diagnostic_code = "gadget_authoring_transport_error"
+                else:
+                    failure_class = "schema"
+                    failure_status = "schema-failed"
+                    diagnostic_code = (
+                        model_attempt.error_code or "gadget_plan_schema_invalid"
+                    )
+                prior_failure = {
+                    "failure_class": failure_class,
+                    "error_code": diagnostic_code,
+                    "message": last_diagnostic[-3000:],
+                    "finish_reason": model_attempt.finish_reason,
+                    "token_profile": model_attempt.token_profile,
+                    "requested_max_tokens": model_attempt.requested_max_tokens,
+                }
+                attempt_receipt.update(
+                    {
+                        "status": failure_status,
+                        "failure": dict(prior_failure),
+                    }
+                )
+                self._typed_plan_receipts[
+                    stable_sha256(attempt_receipt)
+                ] = attempt_receipt
+                self._repair_lineage.append(
+                    {
+                        "design_id": design.design_id,
+                        "attempt": logical_attempt,
+                        "transport_attempt": attempt_receipt.get(
+                            "transport_attempt"
+                        ),
+                        "kind": logical_kind,
+                        "protocol": "structured-gadget-authoring",
+                        "failure_class": failure_class,
+                        "gadget_brief_id": authoring_brief.brief_id,
+                        "authoring_context_key": authoring_context_key,
+                        "source_core": context.source_core,
+                        "request_payload_sha256": (
+                            model_attempt.request_payload_sha256
+                        ),
+                        "response_payload_sha256": (
+                            model_attempt.response_payload_sha256
+                        ),
+                        "model_response_sha256": model_attempt.model_response_sha256,
+                        "token_profile": model_attempt.token_profile,
+                        "requested_max_tokens": (
+                            model_attempt.requested_max_tokens
+                        ),
+                        "finish_reason": model_attempt.finish_reason,
+                        "status": failure_status,
+                        "diagnostic_code": prior_failure["error_code"],
+                        "base_sha256": model_attempt.requested_base_sha256,
+                        "requested_base_sha256": (
+                            model_attempt.requested_base_sha256
+                        ),
+                        "returned_base_sha256": (
+                            model_attempt.returned_base_sha256
+                        ),
+                    }
+                )
+                if transport_failed or escalation_exhausted:
+                    break
+                previous_attempt = model_attempt
+                continue
+
+            gadget_plan = model_attempt.plan
+            semantic_hash = gadget_plan.semantic_payload_sha256
+            attempt_receipt["plan_id"] = gadget_plan.plan_id
+            attempt_receipt["gadget_plan"] = gadget_plan.receipt_dict()
+            if semantic_hash in self._gadget_semantic_payload_hashes:
+                self.tracker.consume("duplicate_candidate_rejections")
+                last_diagnostic = (
+                    "repair repeated an already rejected structured semantic payload"
+                )
+                prior_failure = {
+                    "failure_class": "schema",
+                    "error_code": "duplicate_gadget_semantic_payload",
+                    "message": last_diagnostic,
+                    "semantic_payload_sha256": semantic_hash,
+                }
+                attempt_receipt.update(
+                    {
+                        "status": "duplicate-semantic-payload-rejected",
+                        "failure": dict(prior_failure),
+                    }
+                )
+                self._typed_plan_receipts[
+                    stable_sha256(attempt_receipt)
+                ] = attempt_receipt
+                self._repair_lineage.append(
+                    {
+                        "design_id": design.design_id,
+                        "attempt": attempt_index + 1,
+                        "kind": "initial" if attempt_index == 0 else "repair",
+                        "protocol": "structured-gadget-authoring",
+                        "failure_class": "duplicate-payload",
+                        "gadget_brief_id": authoring_brief.brief_id,
+                        "semantic_payload_sha256": semantic_hash,
+                        "status": "duplicate-semantic-payload-rejected-before-lean",
+                        "base_sha256": model_attempt.requested_base_sha256,
+                        "requested_base_sha256": (
+                            model_attempt.requested_base_sha256
+                        ),
+                        "returned_base_sha256": (
+                            model_attempt.returned_base_sha256
+                        ),
+                    }
+                )
+                break
+            self._gadget_semantic_payload_hashes.add(semantic_hash)
+            semantic_check = check_explicit_gadget_plan(
+                plan=gadget_plan,
+                context=context,
+            )
+            attempt_receipt["semantic_checker"] = semantic_check.to_dict()
+            self._event(
+                "GADGET_AUTHORING_SEMANTIC_CHECKED",
+                goal_id=goal.goal_id,
+                action_id=action.action_id,
+                case_id=case_id,
+                attempt=attempt_index + 1,
+                plan_id=gadget_plan.plan_id,
+                semantic_payload_sha256=semantic_hash,
+                checker_input_sha256=semantic_check.checker_input_sha256,
+                checker_version=semantic_check.checker_version,
+                success=semantic_check.success,
+                source_rows_checked=semantic_check.source_rows_checked,
+                auxiliary_assignments_checked=(
+                    semantic_check.auxiliary_assignments_checked
+                ),
+                counterexample=(
+                    None
+                    if semantic_check.counterexample is None
+                    else semantic_check.counterexample.to_dict()
+                ),
+            )
+            if not semantic_check.success:
+                counterexample = semantic_check.counterexample
+                if counterexample is None:
+                    raise RuntimeError(
+                        "failed gadget semantic check omitted its counterexample"
+                    )
+                last_diagnostic = (
+                    "finite semantic checker found a "
+                    f"{counterexample.direction} at source row "
+                    f"{counterexample.source_row_index}"
+                )
+                prior_failure = {
+                    "failure_class": "semantic",
+                    "error_code": "gadget_semantic_counterexample",
+                    "message": last_diagnostic,
+                    "semantic_payload_sha256": semantic_hash,
+                    "semantic_checker": semantic_check.to_dict(),
+                }
+                attempt_receipt.update(
+                    {
+                        "status": "semantic-failed",
+                        "failure": dict(prior_failure),
+                    }
+                )
+                self._typed_plan_receipts[
+                    stable_sha256(attempt_receipt)
+                ] = attempt_receipt
+                self._repair_lineage.append(
+                    {
+                        "design_id": design.design_id,
+                        "attempt": attempt_index + 1,
+                        "kind": "initial" if attempt_index == 0 else "repair",
+                        "protocol": "structured-gadget-authoring",
+                        "failure_class": "semantic",
+                        "gadget_brief_id": authoring_brief.brief_id,
+                        "semantic_payload_sha256": semantic_hash,
+                        "model_response_sha256": (
+                            model_attempt.model_response_sha256
+                        ),
+                        "checker_input_sha256": (
+                            semantic_check.checker_input_sha256
+                        ),
+                        "checker_version": semantic_check.checker_version,
+                        "counterexample": counterexample.to_dict(),
+                        "status": "semantic-failed-before-lean",
+                        "diagnostic_code": "gadget_semantic_counterexample",
+                        "base_sha256": model_attempt.requested_base_sha256,
+                        "requested_base_sha256": (
+                            model_attempt.requested_base_sha256
+                        ),
+                        "returned_base_sha256": (
+                            model_attempt.returned_base_sha256
+                        ),
+                    }
+                )
+                previous_attempt = model_attempt
+                continue
+            try:
+                render_receipt = render_boolean_csp_gadget_plan(
+                    plan=gadget_plan,
+                    context=context,
+                    declaration_name=declaration_name,
+                )
+                source, declaration = build_authored_capability_source(
+                    input_module=self.input_module,
+                    exact_type=goal.exact_type,
+                    namespace=namespace,
+                    declaration_name=declaration_name,
+                    implementation=render_receipt.implementation,
+                    extra_imports=(*self.plugin_imports, *state.imports),
+                    generated_capabilities=state.generated_capabilities,
+                    forbidden_declarations=self.forbidden_declarations,
+                )
+            except (BooleanCSPGadgetProtocolError, ValueError) as error:
+                last_diagnostic = str(error)
+                prior_failure = {
+                    "failure_class": "schema",
+                    "error_code": "gadget_renderer_rejected",
+                    "message": last_diagnostic[-3000:],
+                }
+                attempt_receipt.update(
+                    {
+                        "status": "renderer-failed",
+                        "failure": dict(prior_failure),
+                    }
+                )
+                self._typed_plan_receipts[
+                    stable_sha256(attempt_receipt)
+                ] = attempt_receipt
+                previous_attempt = model_attempt
+                continue
+            source_hash = stable_sha256(source)
+            if source_hash in self._candidate_source_hashes:
+                self.tracker.consume("duplicate_candidate_rejections")
+                last_diagnostic = "candidate source hash was already Lean-checked"
+                prior_failure = {
+                    "failure_class": "schema",
+                    "error_code": "duplicate_gadget_source",
+                    "message": last_diagnostic,
+                    "source_sha256": source_hash,
+                }
+                attempt_receipt.update(
+                    {
+                        "status": "duplicate-source-rejected",
+                        "renderer": render_receipt.to_dict(),
+                        "source_sha256": source_hash,
+                        "failure": dict(prior_failure),
+                    }
+                )
+                self._typed_plan_receipts[
+                    stable_sha256(attempt_receipt)
+                ] = attempt_receipt
+                previous_attempt = model_attempt
+                continue
+            self._candidate_source_hashes.add(source_hash)
+            self.tracker.consume("lean_checks")
+            self.tracker.consume("generated_lean_checks")
+            self.tracker.consume("generated_files")
+            self.tracker.consume("synthesis_materializations")
+            file_stem = (
+                f"{design.design_id}-gadget-attempt-{attempt_index + 1}-"
+                f"{semantic_hash.removeprefix('sha256:')[:10]}-"
+                f"{source_hash.removeprefix('sha256:')[:10]}"
+            )
+            path = self.store.write_text(
+                f"work/generated/{file_stem}.lean", source
+            )
+            command = run_lean_file(
+                root=self.root,
+                path=path,
+                timeout_seconds=self.lean_timeout_seconds,
+            )
+            self._record_command(command)
+            design = replace(
+                design,
+                previous_implementation=render_receipt.implementation,
+                previous_source_hash=source_hash,
+                candidate_implementation_hashes=(
+                    *design.candidate_implementation_hashes,
+                    semantic_hash,
+                ),
+                candidate_source_hashes=(
+                    *design.candidate_source_hashes,
+                    source_hash,
+                ),
+                generated_files=(*design.generated_files, str(path)),
+                materialization_attempts=design.materialization_attempts + 1,
+                repair_attempts=design.repair_attempts + int(attempt_index > 0),
+            )
+            attempt_receipt.update(
+                {
+                    "renderer": render_receipt.to_dict(),
+                    "source_sha256": source_hash,
+                    "generated_file": str(path),
+                }
+            )
+            if not command.ok:
+                diagnostic = (command.stderr or command.stdout)[-4000:]
+                classified = classify_lean_diagnostic(diagnostic)
+                last_diagnostic = classified.normalized or diagnostic
+                prior_failure = {
+                    "failure_class": "lean",
+                    "error_code": classified.code,
+                    "diagnostic_fingerprint": classified.fingerprint,
+                    "normalized_diagnostics": last_diagnostic[-3000:],
+                    "semantic_payload_sha256": semantic_hash,
+                }
+                design = self._store_design(record_diagnostic(design, classified))
+                attempt_receipt.update(
+                    {"status": "lean-failed", "failure": dict(prior_failure)}
+                )
+                self._typed_plan_receipts[
+                    stable_sha256(attempt_receipt)
+                ] = attempt_receipt
+                self._repair_lineage.append(
+                    {
+                        "design_id": design.design_id,
+                        "attempt": attempt_index + 1,
+                        "kind": "initial" if attempt_index == 0 else "repair",
+                        "protocol": "structured-gadget-authoring",
+                        "failure_class": "lean",
+                        "gadget_brief_id": authoring_brief.brief_id,
+                        "semantic_payload_sha256": semantic_hash,
+                        "model_response_sha256": model_attempt.model_response_sha256,
+                        "source_hash": source_hash,
+                        "file": str(path),
+                        "status": "lean-failed",
+                        "diagnostic_code": classified.code,
+                        "diagnostic_fingerprint": classified.fingerprint,
+                        "base_sha256": model_attempt.requested_base_sha256,
+                        "requested_base_sha256": (
+                            model_attempt.requested_base_sha256
+                        ),
+                        "returned_base_sha256": (
+                            model_attempt.returned_base_sha256
+                        ),
+                    }
+                )
+                previous_attempt = model_attempt
+                continue
+
+            self.tracker.consume("generated_lean_successes")
+            self.tracker.consume("capability_registrations")
+            generator_result = GeneratorResult.create(
+                brief=generic_brief,
+                status=GeneratorStatus.PROPOSED,
+                implementation_body=render_receipt.proof_body,
+                planner_hints_followed=("structured-gadget-plan",),
+            )
+            self._record_generator_result(generator_result)
+            capability = GeneratedCapability(
+                capability_id=f"capability-{digest}",
+                exact_type=goal.exact_type,
+                declaration=declaration,
+                namespace=namespace,
+                implementation=render_receipt.implementation,
+                source_hash=source_hash,
+                action_id=action.action_id,
+                provenance="model-structured-gadget-plan-v2",
+            )
+            fragment = ReusableFragment(
+                exact_type=goal.exact_type,
+                proof_term=declaration,
+                declaration=declaration,
+                imports=tuple(dict.fromkeys((*self.plugin_imports, *state.imports))),
+                provenance="job-local-model-structured-gadget",
+                lean_verified=True,
+                source_hash=source_hash,
+            )
+            state = state.add_generated_capability(capability, fragment)
+            authorship_evidence = AuthorshipEvidence(
+                semantic_payload_schema=GADGET_PLAN_SCHEMA,
+                semantic_payload_sha256=semantic_hash,
+                model_response_sha256=model_attempt.model_response_sha256,
+                origin="model",
+                renderer_name=render_receipt.renderer_name,
+                renderer_version=render_receipt.renderer_version,
+                renderer_added_semantic_atom_count=(
+                    render_receipt.renderer_added_semantic_atom_count
+                ),
+                validation_only_steps=(
+                    "schema-validate-model-payload",
+                    "check-single-explicit-plan-over-finite-truth-tables",
+                    "render-plan-without-semantic-additions",
+                    "lean-kernel-check-spec-correct-and-to-gadget",
+                ),
+                variable_count=gadget_plan.maximum_variable_count,
+                constraint_count=gadget_plan.constraint_count,
+                output_mapping=tuple(
+                    variable
+                    for gadget in gadget_plan.gadgets
+                    for variable in gadget.outputs
+                ),
+                relation_symbols_used=tuple(
+                    dict.fromkeys(
+                        constraint.target_symbol
+                        for gadget in gadget_plan.gadgets
+                        for constraint in gadget.constraints
+                    )
+                ),
+                repair_payload_hashes=tuple(repair_payload_hashes),
+            )
+            self._contribution_receipts.append(
+                contribution_from_verified_generation(
+                    capability_plan=capability_plan,
+                    brief=generic_brief,
+                    generator_result=generator_result,
+                    substep_plan=plan,
+                    declaration=declaration,
+                    implementation=render_receipt.implementation,
+                    source_hash=source_hash,
+                    authorship_evidence=authorship_evidence,
+                )
+            )
+            self.planner.invalidate_for_new_capability(state.capability_fingerprint)
+            design = self._store_design(
+                design.transition(
+                    "verified",
+                    status="verified",
+                    declarations=(*design.declarations, declaration),
+                    verified_capabilities=(
+                        *design.verified_capabilities,
+                        declaration,
+                    ),
+                )
+            )
+            attempt_receipt.update(
+                {
+                    "status": "lean-verified",
+                    "declaration": declaration,
+                    "generator_result_id": generator_result.result_id,
+                }
+            )
+            self._typed_plan_receipts[
+                stable_sha256(attempt_receipt)
+            ] = attempt_receipt
+            self._repair_lineage.append(
+                {
+                    "design_id": design.design_id,
+                    "attempt": attempt_index + 1,
+                    "kind": "initial" if attempt_index == 0 else "repair",
+                    "protocol": "structured-gadget-authoring",
+                    "gadget_brief_id": authoring_brief.brief_id,
+                    "semantic_payload_sha256": semantic_hash,
+                    "model_response_sha256": model_attempt.model_response_sha256,
+                    "source_hash": source_hash,
+                    "file": str(path),
+                    "status": "lean-verified",
+                    "declaration": declaration,
+                    "base_sha256": model_attempt.requested_base_sha256,
+                    "requested_base_sha256": model_attempt.requested_base_sha256,
+                    "returned_base_sha256": model_attempt.returned_base_sha256,
+                }
+            )
+            state = state.close_goal(
+                goal_id=goal.goal_id,
+                action=action,
+                fragment=fragment,
+                step=ProofStep(
+                    action_id=action.action_id,
+                    provider=ProviderKind.SYNTHESIS,
+                    disposition=ActionDisposition.CLOSED,
+                    goal_id=goal.goal_id,
+                    exact_type=goal.exact_type,
+                    declaration=declaration,
+                    solver="boolean-csp-gadget-authoring-generator",
+                ),
+            )
+            self._event(
+                "GENERATED_CAPABILITY_REGISTERED",
+                goal_id=goal.goal_id,
+                declaration=declaration,
+                source_hash=source_hash,
+                design_id=design.design_id,
+                context_capsule_id=context_receipt_id,
+                provider="boolean-csp-gadget-authoring-generator",
+                semantic_payload_sha256=semantic_hash,
+                renderer_added_semantic_atom_count=(
+                    render_receipt.renderer_added_semantic_atom_count
+                ),
+            )
+            if goal.producer_frame_id and goal.producer_slot_id:
+                return self._fill_frame_slot(
+                    state,
+                    frame_id=goal.producer_frame_id,
+                    slot_id=goal.producer_slot_id,
+                    fragment=fragment,
+                    attempted_actions=tuple(
+                        dict.fromkeys((*goal.attempted_actions, action.action_id))
+                    ),
+                )
+            return state
+
+        if design.status != "abandoned":
+            design = self._store_design(
+                design.transition(
+                    "abandoned",
+                    status="abandoned",
+                    terminal_reason=last_diagnostic[-1000:],
+                )
+            )
+        return state.remember_failure(
+            action=action,
+            diagnostic=design.terminal_reason or last_diagnostic,
+            blocker_code=terminal_blocker_code,
+            goal_id=goal.goal_id,
+        )
+
     def _execute_synthesis(
         self,
         state: ProofState,
@@ -3286,6 +4614,36 @@ class RecursiveSearchRuntime:
             candidate_modules = tuple(
                 dict.fromkeys((*candidate_modules, *(item.module for item in helper_candidates)))
         )
+
+        if helper_obligation is None:
+            structured_result = self._execute_structured_boolean_csp_gadget_authoring(
+                state=state,
+                goal=authored_goal,
+                plan=plan,
+                action=action,
+                design=design,
+                declaration_name=declaration_name,
+                namespace=namespace,
+                digest=digest,
+            )
+            if structured_result is not None:
+                return structured_result
+        elif (
+            self.gate_policy is not None
+            and self.gate_policy.name == "gadget-authoring"
+            and self.capability_gate_case_id
+            in set(self.gate_policy.required_case_ids)
+            and gadget_endpoints(authored_goal.exact_type) is not None
+        ):
+            return state.remember_failure(
+                action=action,
+                diagnostic=(
+                    "required structured gadget authoring must use a direct child "
+                    "capability action"
+                ),
+                blocker_code="structured_gadget_helper_design_rejected",
+                goal_id=goal.goal_id,
+            )
 
         for attempt in range(attempts):
             if attempt > self.tracker.budget.max_context_expansions_per_design:

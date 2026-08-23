@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""The repository's only benchmark runner: execute and score all 78 cases.
+"""The repository's only benchmark runner: execute and score all 88 cases.
 
 Reads BENCHMARK_REGISTRY.json and executes exactly the frozen lanes:
   - capability: 32 C0 target-hardness cases (dev/validation/heldout)
   - frontier:   2 F0 unscored cases (frontier split)
   - exact_edge: 24 certified-reduction edge cases (dev/heldout/validation)
-  - boolean_csp: 20 NP-hard Boolean-CSP cases (dev/validation/heldout)
+  - boolean_csp: 30 NP-hard Boolean-CSP cases (dev/validation/heldout)
 
 The scorer-only oracles are opened only after every production case finishes.
 """
@@ -132,8 +132,8 @@ def _validate_registry(registry: dict[str, Any]) -> dict[str, Any]:
     if set(boolean_ids) != source_boolean_ids:
         raise ValueError("registry Boolean-CSP set drifted from its public suite")
     all_ids = [str(case.get("case_id")) for case in registry.get("cases", ())]
-    if len(all_ids) != 78 or len(set(all_ids)) != 78:
-        raise ValueError("benchmark registry must contain exactly 78 unique cases")
+    if len(all_ids) != 88 or len(set(all_ids)) != 88:
+        raise ValueError("benchmark registry must contain exactly 88 unique cases")
     return {
         "benchmark_id": registry["benchmark_id"],
         "capability_case_count": len(capability_ids),

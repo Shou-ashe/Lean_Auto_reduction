@@ -24,6 +24,7 @@ from agent.hardness.np_hard_input import (
 
 from .baseline import verify_stable_entrypoints
 from .budgets import BudgetExhausted, BudgetTracker, SearchBudget
+from .capability_gate_policy import CapabilityGatePolicy
 from .job import GeneralJobStore
 from .lean_bridge import run_lean_file, snapshot_environment
 from .models import (
@@ -80,6 +81,28 @@ class GenerativeReductionConfig:
     lean_timeout_seconds: int = 600
     deepseek: DeepSeekConfig | None = None
     runtime_prebuilt: bool = False
+    gate_policy: CapabilityGatePolicy | None = None
+    capability_gate_case_id: str | None = None
+
+
+def filter_finite_synthesis_plugins(
+    finite_plugins: Sequence[Any],
+    gate_policy: CapabilityGatePolicy | None,
+) -> tuple[tuple[Any, ...], tuple[Any, ...]]:
+    installed = tuple(finite_plugins)
+    if gate_policy is None:
+        return installed, ()
+    gate_policy.validate_finite_plugin_names(
+        tuple(str(plugin.name) for plugin in installed)
+    )
+    disabled_names = set(gate_policy.disabled_finite_synthesis_plugins)
+    disabled = tuple(
+        plugin for plugin in installed if str(plugin.name) in disabled_names
+    )
+    runtime = tuple(
+        plugin for plugin in installed if str(plugin.name) not in disabled_names
+    )
+    return runtime, disabled
 
 
 class GenerativeReductionOrchestrator:
@@ -91,16 +114,39 @@ class GenerativeReductionOrchestrator:
         config.budget.validate()
         if config.lean_timeout_seconds < 1:
             raise ValueError("Lean timeout must be positive")
+        if (
+            config.gate_policy is not None
+            and config.capability_gate_case_id is not None
+            and config.capability_gate_case_id
+            not in set(config.gate_policy.selected_case_ids)
+        ):
+            raise ValueError(
+                "capability-gate case ID is not selected by the configured policy"
+            )
         self.forbidden_declarations = tuple(
             dict.fromkeys(
                 validate_declaration_name(item, label="forbidden declaration")
-                for item in config.forbidden_declarations
+                for item in (
+                    *config.forbidden_declarations,
+                    *(
+                        config.gate_policy.forbidden_declarations
+                        if config.gate_policy is not None
+                        else ()
+                    ),
+                )
             )
         )
         self.excluded_candidate_declarations = tuple(
             dict.fromkeys(
                 validate_declaration_name(item, label="excluded candidate declaration")
-                for item in config.excluded_candidate_declarations
+                for item in (
+                    *config.excluded_candidate_declarations,
+                    *(
+                        config.gate_policy.excluded_candidate_declarations
+                        if config.gate_policy is not None
+                        else ()
+                    ),
+                )
             )
         )
 
@@ -352,7 +398,9 @@ class GenerativeReductionOrchestrator:
                     search_outcome, "context_expansion_count", 0
                 ),
                 repair_authoring_count=sum(
-                    bool(call.called) and call.purpose == "lean-authoring-repair"
+                    bool(call.called)
+                    and call.purpose
+                    in {"lean-authoring-repair", "gadget-authoring-repair"}
                     for call in model_calls
                 ),
                 duplicate_candidate_rejection_count=getattr(
@@ -612,12 +660,24 @@ class GenerativeReductionOrchestrator:
             for candidate in indexed_candidates
             if candidate.declaration not in self.forbidden_declarations
             and candidate.declaration not in self.excluded_candidate_declarations
+            and (
+                self.config.gate_policy is None
+                or self.config.gate_policy.candidate_declaration_allowed(
+                    candidate.declaration
+                )
+            )
         )
         excluded_candidates = tuple(
             candidate
             for candidate in indexed_candidates
             if candidate.declaration in self.forbidden_declarations
             or candidate.declaration in self.excluded_candidate_declarations
+            or (
+                self.config.gate_policy is not None
+                and not self.config.gate_policy.candidate_declaration_allowed(
+                    candidate.declaration
+                )
+            )
         )
         store.write_json(
             "planner/theorem-index.json",
@@ -634,6 +694,11 @@ class GenerativeReductionOrchestrator:
                     ],
                     "raw_candidate_count": len(indexed_candidates),
                     "eligible_candidate_count": len(candidates),
+                    "gate_policy": (
+                        self.config.gate_policy.to_report_dict()
+                        if self.config.gate_policy is not None
+                        else None
+                    ),
                 },
             },
         )
@@ -647,16 +712,49 @@ class GenerativeReductionOrchestrator:
 
         registry = default_registry()
         installed_plugins = install_plugins(registry, self.config.plugins)
-        finite_plugins = tuple(
+        installed_finite_plugins = tuple(
             finite
             for plugin in installed_plugins
             for finite in plugin.finite_synthesis_plugins
+        )
+        finite_plugins, disabled_finite_plugins = filter_finite_synthesis_plugins(
+            installed_finite_plugins, self.config.gate_policy
         )
         plugin_imports = tuple(
             imported
             for plugin in installed_plugins
             for imported in plugin.lean_imports
         )
+        if self.config.gate_policy is not None:
+            case_id = self.config.capability_gate_case_id
+            case_role = None
+            if case_id in set(self.config.gate_policy.required_case_ids):
+                case_role = "required"
+            elif case_id in set(self.config.gate_policy.anchor_case_ids):
+                case_role = "anchor"
+            store.write_json(
+                "planner/gate-policy.json",
+                {
+                    "policy": self.config.gate_policy.to_report_dict(),
+                    "case_id": case_id,
+                    "case_role": case_role,
+                    "structured_gadget_authoring_enabled": case_role == "required",
+                    "configured_domain_plugins": list(self.config.plugins),
+                    "installed_finite_synthesis_plugins": [
+                        plugin.name for plugin in installed_finite_plugins
+                    ],
+                    "disabled_finite_synthesis_plugins": [
+                        plugin.name for plugin in disabled_finite_plugins
+                    ],
+                    "runtime_finite_synthesis_plugins": [
+                        plugin.name for plugin in finite_plugins
+                    ],
+                    "disabled_plugins_absent_from_runtime": not (
+                        set(self.config.gate_policy.disabled_finite_synthesis_plugins)
+                        & {plugin.name for plugin in finite_plugins}
+                    ),
+                },
+            )
         initial_state = ProofState.initial(
             root_goal,
             import_closure_fingerprint=snapshot.import_closure_fingerprint,
@@ -678,6 +776,8 @@ class GenerativeReductionOrchestrator:
             model_calls=model_calls,
             event_sink=lambda name, details: store.append_event(name, details=details),
             finite_plugins=finite_plugins,
+            gate_policy=self.config.gate_policy,
+            capability_gate_case_id=self.config.capability_gate_case_id,
         )
         runtime.seed_candidates(initial_state, root_goal.exact_type, candidates)
         coordinator = SearchCoordinator(
@@ -688,6 +788,7 @@ class GenerativeReductionOrchestrator:
             capability_fingerprint=lambda state: state.capability_fingerprint,
             candidate_lookup=runtime.candidate_lookup,
             action_executor=runtime.execute,
+            action_eligibility=runtime.gate_action_rejection,
             dead_end_handler=runtime.dead_end,
             strategy_decider=runtime.decide_strategy,
             forbidden_declarations=self.forbidden_declarations,
@@ -764,11 +865,15 @@ class GenerativeReductionOrchestrator:
         )
         if outcome.completed_state is not None:
             completed = outcome.completed_state
+            required_generated_dependencies = tuple(
+                sorted(self._reachable_generated_declarations(completed))
+            )
             source = build_search_artifact_source(
                 completed_state=completed,
                 input_module=reference.input_module,
                 problem_declaration=reference.problem_declaration,
                 forbidden_declarations=self.forbidden_declarations,
+                required_declarations=required_generated_dependencies,
                 extra_imports=plugin_imports,
             )
             evidence = (
@@ -808,6 +913,7 @@ class GenerativeReductionOrchestrator:
                 provider_statistics=outcome.provider_statistics,
                 search_outcome=outcome,
                 final_state=completed,
+                required_dependencies=required_generated_dependencies,
                 synthesis_designs=synthesis_designs,
                 context_capsules=context_capsules,
                 repair_lineage=repair_lineage,
@@ -940,6 +1046,7 @@ class GenerativeReductionOrchestrator:
         contribution_receipts=(),
         planner_effect_receipts=(),
         typed_capability_plans: Sequence[Mapping[str, Any]] = (),
+        required_dependencies: Sequence[str] = (),
     ) -> GeneralNPHardResult:
         artifact_path = store.write_text("Artifact.lean", source)
         store.transition("PROOF_RECONSTRUCTED")
@@ -988,12 +1095,16 @@ class GenerativeReductionOrchestrator:
         store.transition("GENERATION_CLASSIFIED", details={"classification": classification.value})
         qualification = initial_qualification_status(self.profile)
         store.transition("PROFILE_EVALUATED", details={"qualification": qualification.value})
-        reachable_generated = self._reachable_generated_declarations(final_state)
+        required_dependency_set = frozenset(required_dependencies)
+        required_dependency_audit_passed = (
+            verification.kernel_verified and verification.independent_replay_passed
+        )
         finalized_contributions = tuple(
             replace(
                 receipt,
                 final_artifact_used=(
-                    receipt.capability_declaration in reachable_generated
+                    required_dependency_audit_passed
+                    and receipt.capability_declaration in required_dependency_set
                 ),
                 independent_lean_passed=(
                     receipt.independent_lean_passed
@@ -1092,6 +1203,13 @@ class GenerativeReductionOrchestrator:
             final_route_audit_receipt={
                 "forbidden_declarations": list(self.forbidden_declarations),
                 "transitive_audit_emitted": bool(self.forbidden_declarations),
+                "forbidden_dependencies_passed": verification.kernel_verified,
+                "required_dependencies": list(required_dependencies),
+                "required_dependency_audit_emitted": bool(required_dependencies),
+                "required_dependency_count": len(tuple(required_dependencies)),
+                "required_dependencies_passed": (
+                    required_dependency_audit_passed
+                ),
                 "passed": verification.kernel_verified,
             },
             strategy_valid_proposal_count=getattr(
@@ -1150,7 +1268,9 @@ class GenerativeReductionOrchestrator:
                 search_outcome, "context_expansion_count", 0
             ),
             repair_authoring_count=sum(
-                bool(call.called) and call.purpose == "lean-authoring-repair"
+                bool(call.called)
+                and call.purpose
+                in {"lean-authoring-repair", "gadget-authoring-repair"}
                 for call in model_calls
             ),
             duplicate_candidate_rejection_count=getattr(
@@ -1197,5 +1317,6 @@ def public_status(result: GeneralNPHardResult) -> str:
 __all__ = [
     "GenerativeReductionConfig",
     "GenerativeReductionOrchestrator",
+    "filter_finite_synthesis_plugins",
     "public_status",
 ]

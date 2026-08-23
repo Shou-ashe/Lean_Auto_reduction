@@ -11,7 +11,7 @@ STABLE_ENTRYPOINT_HASHES = {
         "976dd31924a95e5810841f15c68b7c52e0d9f9811f9ee73f3e88fb9635437de1"
     ),
     "agent/hardness/boolean_csp_np_hard_benchmark.py": (
-        "0cc7ce55a68faa2b0680dc6229e0d929c6e6abe76fcfec41e7ef8028889ac460"
+        "99721ea0469378d11cf2b8a452f2574a94ec1fa534feeb0855df9ac2595dc477"
     ),
 }
 
